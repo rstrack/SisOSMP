@@ -1,5 +1,4 @@
-import sys
-from PyQt6 import uic, QtWidgets
+import pymysql as sql
 
 from model.modelo import *
 

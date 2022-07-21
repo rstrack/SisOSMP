@@ -1,10 +1,4 @@
-from codecs import charmap_build
 import datetime
-from email.policy import default
-from operator import truediv
-from pickle import TRUE
-
-import pymysql as sql
 from peewee import *
 
 # NOME DO BANCO DE DADOS EM QUESTÃO
