@@ -1,10 +1,14 @@
+from codecs import charmap_build
 import datetime
+from email.policy import default
+from operator import truediv
+from pickle import TRUE
 
 import pymysql as sql
 from peewee import *
 
 # NOME DO BANCO DE DADOS EM QUESTÃO
-NOMEBANCODEDADOS = "teste2"
+NOMEBANCODEDADOS = "teste"
 
 db = MySQLDatabase(NOMEBANCODEDADOS, user='root', password='admin', host='localhost', port=3306)
 
@@ -15,41 +19,44 @@ class BaseModel(Model):
 
 
 class Estado(BaseModel):
-    nome = CharField(max_length=30)
+    UF = CharField(max_length=2)
 
 
 class Cidade(BaseModel):
+    nome = CharField(max_length=50)
     estado = ForeignKeyField(Estado, backref='estados')
-    nome = CharField(max_length=50)
+    
+
+class Marca(BaseModel):
+    marca = CharField(max_length=50)
 
 
-class Bairro(BaseModel):
-    cidade = ForeignKeyField(Cidade, backref='cidades')
-    nome = CharField(max_length=50)
-
-
-class Carro(BaseModel):
-    marca = CharField(max_length=20)
+class Veiculo(BaseModel):
     modelo = CharField(max_length=30)
     ano = CharField(max_length=4)
     placa = CharField(max_length=7)
+    marca = ForeignKeyField(Marca, backref='marcas')
 
 
 class Cliente(BaseModel):
     nome = CharField(max_length=50)
-    cpfj = CharField(max_length=14, null=True)
-    endereco = CharField(null=True)
-    bairro = ForeignKeyField(Bairro, backref='bairros', null=True)
+    cpf = CharField(max_length=11, null=True)
+    cnpj = CharField(max_length=14, null=True)
+    endereco = CharField(max_length=80,null=True)
+    numero = CharField(max_length=6, null=True)
+    bairro = CharField(max_length=50, null=True)
+    cidade = ForeignKeyField(Cidade, backref='cidades', null=True)
 
 
-class Carro_Cliente(BaseModel):
-    carro = ForeignKeyField(Carro, backref='carros')
+class Veiculo_Cliente(BaseModel):
+    Veiculo = ForeignKeyField(Veiculo, backref='Veiculos')
     cliente = ForeignKeyField(Cliente, backref='clientes')
-    dataAdd = DateField(default=datetime.date)
+    habilitado = BooleanField(default=False)
 
 
 class Peca(BaseModel):
     descricao = CharField(max_length=80)
+    un = CharField(max_length=5)
     valor = DoubleField()
 
 
@@ -60,10 +67,13 @@ class Servico(BaseModel):
 
 class OrdemServico(BaseModel):
     data = DateField(default=datetime.date)
-    aprovado = BooleanField(default=False)
-    dataAprovacao = DateField()
     cliente = ForeignKeyField(Cliente, backref='clientes')
-    carro = ForeignKeyField(Carro, backref='carros')
+    Veiculo = ForeignKeyField(Veiculo, backref='Veiculos')
+    km = CharField(max_length=6)
+    valorTotal = DoubleField()
+    aprovado = BooleanField(default=False)
+    dataAprovacao = DateField(null=True)
+    dataPrevista = DateField()
 
 
 class ItemPeca(BaseModel):
