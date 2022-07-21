@@ -13,6 +13,7 @@ class BaseModel(Model):
 
 
 class Estado(BaseModel):
+    estados = []
     UF = CharField(max_length=2)
 
 
