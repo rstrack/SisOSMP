@@ -34,7 +34,7 @@ class Veiculo(BaseModel):
 
 class Cliente(BaseModel):
     nome = CharField(max_length=50)
-    cpf = CharField(max_length=11, null=True)
+    cpf = CharField(max_length=11, null=True, constraints=[Check('LENGTH(cpf)=11')])
     cnpj = CharField(max_length=14, null=True)
     endereco = CharField(max_length=80,null=True)
     numero = CharField(max_length=6, null=True)

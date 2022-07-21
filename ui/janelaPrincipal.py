@@ -41,7 +41,7 @@ class Ui_MainWindow(object):
         #logo
         self.logo_label = QtWidgets.QLabel(self.logo_frame)
         self.logo_label.setMaximumHeight(150)
-        self.logo_label.setPixmap(QtGui.QPixmap(u"ui/logo.png")) #CONSERTAR LIGAÇÃO
+        self.logo_label.setPixmap(QtGui.QPixmap("logo.png")) #CONSERTAR LIGAÇÃO
         self.logo_label.setScaledContents(True)
         self.logo_label.setAlignment(QtCore.Qt.AlignmentFlag.AlignLeading|QtCore.Qt.AlignmentFlag.AlignLeft|QtCore.Qt.AlignmentFlag.AlignTop)
         self.verticalLayout2.addWidget(self.logo_label)
