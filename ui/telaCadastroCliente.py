@@ -321,4 +321,8 @@ if __name__ == "__main__":
     ui = TelaCadastroCliente(MainWindow)
     ui.setupUi(MainWindow)
     MainWindow.show()
+
+    style = open('./ui/styles.qss').read()
+    app.setStyleSheet(style)
+    
     sys.exit(app.exec())
