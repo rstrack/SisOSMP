@@ -121,6 +121,7 @@ class TelaInicial(QtWidgets.QWidget):
                 #página inicial
 
                 self.label_inicio = QtWidgets.QLabel(self.main_frame)
+                self.label_inicio.setObjectName("bemvindo")
                 self.label_inicio.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
                 self.vlayout6.addWidget(self.label_inicio)
                 
@@ -166,4 +167,6 @@ if __name__ == "__main__":
     ui = TelaInicial(MainWindow)
     ui.setupUi(MainWindow)
     MainWindow.show()
+    style = open('./ui/styles.qss').read()
+    app.setStyleSheet(style)
     sys.exit(app.exec())

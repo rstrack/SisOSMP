@@ -105,15 +105,21 @@ class TelaCadastroServico(QtWidgets.QWidget):
 
                 ###################################################################################
 
-                self.frame_titulo = QtWidgets.QFrame(self.main_frame)
-                self.vlayout6.addWidget(self.frame_titulo)
-                self.labelTitulo = QtWidgets.QLabel(self.frame_titulo)
+                self.labelTitulo = QtWidgets.QLabel(self.main_frame)
                 self.labelTitulo.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
+                self.labelTitulo.setObjectName("titulo")
+                
                 self.vlayout6.addWidget(self.labelTitulo)
                 self.vlayout6.setContentsMargins(18, 18, 18, 18)
                 self.vlayout6.setSpacing(50)
 
-                self.framedados = QtWidgets.QFrame(self.main_frame)
+                self.scrollarea = QtWidgets.QScrollArea(self.main_frame)
+                self.scrollarea.setWidgetResizable(True)
+                self.scrollarea.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarPolicy.ScrollBarAlwaysOn)
+                self.vlayout6.addWidget(self.scrollarea)
+                self.framedados = QtWidgets.QFrame(self.scrollarea)
+                self.scrollarea.setWidget(self.framedados)
+
                 self.gridLayout = QtWidgets.QGridLayout(self.framedados)   
                 self.labelnome = QtWidgets.QLabel(self.framedados)
                 self.gridLayout.addWidget(self.labelnome, 0, 0, 1, 1)
@@ -135,15 +141,9 @@ class TelaCadastroServico(QtWidgets.QWidget):
                 self.gridLayout.addWidget(self.botaoadd, 0, 5, 1, 1)
                 spacerItem2 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Minimum)
                 self.gridLayout.addItem(spacerItem2, 0, 2, 1, 1)
-                self.vlayout6.addWidget(self.framedados)
-                self.frame_4 = QtWidgets.QFrame(self.main_frame)
-                sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Preferred, QtWidgets.QSizePolicy.Policy.Expanding)
-                sizePolicy.setHorizontalStretch(0)
-                sizePolicy.setVerticalStretch(0)
-                sizePolicy.setHeightForWidth(self.frame_4.sizePolicy().hasHeightForWidth())
-                self.frame_4.setSizePolicy(sizePolicy)
-                self.vlayout6.addWidget(self.frame_4)
-                
+                self.spacer = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding)
+                self.gridLayout.addItem(self.spacer, 1, 0, 1, 1)
+
                 self.frameBotoes1 = QtWidgets.QFrame(self.main_frame)
                 self.hlayout2 = QtWidgets.QHBoxLayout(self.frameBotoes1)
                 spacerItem3 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
@@ -211,6 +211,9 @@ class TelaCadastroServico(QtWidgets.QWidget):
                 self.gridLayout.addWidget(lineedit2, len(self.linhasservico), 4, 1, 1)
                 self.linhasservico.append([lineedit1, lineedit2])
                 self.gridLayout.addWidget(self.botaoadd, len(self.linhasservico)-1, 5, 1, 1)
+                self.gridLayout.addWidget(self.botaoadd, len(self.linhasservico)-1, 5, 1, 1)
+                self.gridLayout.removeItem(self.spacer)
+                self.gridLayout.addItem(self.spacer, len(self.linhasservico), 0, 1, 1)
 
 
 if __name__ == "__main__":
@@ -219,6 +222,7 @@ if __name__ == "__main__":
     MainWindow = QtWidgets.QMainWindow()
     ui = TelaCadastroServico(MainWindow)
     ui.setupUi(MainWindow)
-    
+    style = open('./ui/styles.qss').read()
+    app.setStyleSheet(style)
     MainWindow.show()
     sys.exit(app.exec())

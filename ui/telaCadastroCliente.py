@@ -115,6 +115,7 @@ class TelaCadastroCliente(QtWidgets.QWidget):
             self.vlayout6.addWidget(self.frame_titulo)
             self.labelTitulo = QtWidgets.QLabel(self.frame_titulo)
             self.labelTitulo.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
+            self.labelTitulo.setObjectName("titulo")
             self.vlayout6.setContentsMargins(18, 18, 18, 18)
             self.vlayout6.setSpacing(50)
             self.vlayout6.addWidget(self.labelTitulo)
@@ -295,23 +296,9 @@ class TelaCadastroCliente(QtWidgets.QWidget):
         self.labelModelo.setText(_translate("MainWindow", "Modelo"))
         self.labelMarca.setText(_translate("MainWindow", "Marca"))
 
-
         self.botaolimpar.setText(_translate("MainWindow", "Limpar"))
         self.botaoSalvar.setText(_translate("MainWindow", "Salvar"))
 
-
-    def addlinhapeca(self):
-            label1 = QtWidgets.QLabel(text="Nome da peça")
-            lineedit1 = QtWidgets.QLineEdit()
-            label2 = QtWidgets.QLabel(text="Valor")
-            lineedit2 = QtWidgets.QLineEdit()
-            self.gridLayout.addWidget(label1, len(self.linhaspeca), 0, 1, 1)
-            self.gridLayout.addWidget(lineedit1, len(self.linhaspeca), 1, 1, 1)
-            self.gridLayout.addWidget(label2, len(self.linhaspeca), 3, 1, 1)
-            lineedit2.setMaximumWidth(100)
-            self.gridLayout.addWidget(lineedit2, len(self.linhaspeca), 4, 1, 1)
-            self.linhaspeca.append([lineedit1, lineedit2])
-            self.gridLayout.addWidget(self.botaoadd, len(self.linhaspeca)-1, 5, 1, 1)
 
 
 if __name__ == "__main__":

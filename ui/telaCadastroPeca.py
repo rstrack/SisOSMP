@@ -109,15 +109,20 @@ class TelaCadastroPeca(QtWidgets.QWidget):
                 
                 #####################################################################################
 
-                self.frame_titulo = QtWidgets.QFrame(self.main_frame)
-                self.vlayout6.addWidget(self.frame_titulo)
-                self.label = QtWidgets.QLabel(self.frame_titulo)
+                self.label = QtWidgets.QLabel(self.main_frame)
                 self.label.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
+                self.label.setObjectName("titulo")
+
                 self.vlayout6.addWidget(self.label)
                 self.vlayout6.setContentsMargins(18, 18, 18, 18)
                 self.vlayout6.setSpacing(50)
+                
+                self.scrollarea = QtWidgets.QScrollArea(self.main_frame)
+                self.scrollarea.setWidgetResizable(True)
+                self.vlayout6.addWidget(self.scrollarea)
+                self.framedados = QtWidgets.QFrame(self.scrollarea)
+                self.scrollarea.setWidget(self.framedados)
 
-                self.framedados = QtWidgets.QFrame(self.main_frame)
                 self.gridLayout = QtWidgets.QGridLayout(self.framedados)   
                 self.labelnome = QtWidgets.QLabel(self.framedados)
                 self.gridLayout.addWidget(self.labelnome, 0, 0, 1, 1)
@@ -139,15 +144,9 @@ class TelaCadastroPeca(QtWidgets.QWidget):
                 self.gridLayout.addWidget(self.botaoadd, 0, 5, 1, 1)
                 spacerItem2 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Minimum)
                 self.gridLayout.addItem(spacerItem2, 0, 2, 1, 1)
-                self.vlayout6.addWidget(self.framedados)
-                self.frame_4 = QtWidgets.QFrame(self.main_frame)
-                sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Policy.Preferred, QtWidgets.QSizePolicy.Policy.Expanding)
-                sizePolicy.setHorizontalStretch(0)
-                sizePolicy.setVerticalStretch(0)
-                sizePolicy.setHeightForWidth(self.frame_4.sizePolicy().hasHeightForWidth())
-                self.frame_4.setSizePolicy(sizePolicy)
-                self.vlayout6.addWidget(self.frame_4)
-                
+                self.spacer = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding)
+                self.gridLayout.addItem(self.spacer, 1, 0, 1, 1)
+
                 self.frameBotoes1 = QtWidgets.QFrame(self.main_frame)
                 self.hlayout2 = QtWidgets.QHBoxLayout(self.frameBotoes1)
                 spacerItem3 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
@@ -214,6 +213,8 @@ class TelaCadastroPeca(QtWidgets.QWidget):
                 self.gridLayout.addWidget(lineedit2, len(self.linhaspeca), 4, 1, 1)
                 self.linhaspeca.append([lineedit1, lineedit2])
                 self.gridLayout.addWidget(self.botaoadd, len(self.linhaspeca)-1, 5, 1, 1)
+                self.gridLayout.removeItem(self.spacer)
+                self.gridLayout.addItem(self.spacer, len(self.linhaspeca), 0, 1, 1)
 
 
 if __name__ == "__main__":
@@ -223,4 +224,6 @@ if __name__ == "__main__":
     ui = TelaCadastroPeca(MainWindow)
     ui.setupUi(MainWindow)
     MainWindow.show()
+    style = open('./ui/styles.qss').read()
+    app.setStyleSheet(style)
     sys.exit(app.exec())
