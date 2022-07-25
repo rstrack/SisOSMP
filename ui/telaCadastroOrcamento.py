@@ -229,8 +229,8 @@ class TelaCadastroOrcamento(QtWidgets.QWidget):
                 self.lineEditKm = QtWidgets.QLineEdit(self.groupBoxVeiculo)
                 self.gridLayoutVeiculo.addWidget(self.lineEditKm, 3, 1, 1, 1)
 
-                self.gridLayoutVeiculo.setColumnStretch(1,4)
-                self.gridLayoutVeiculo.setColumnStretch(2,4)
+                self.gridLayoutVeiculo.setColumnStretch(1,3)
+                self.gridLayoutVeiculo.setColumnStretch(2,5)
                 self.gridLayoutVeiculo.setColumnStretch(4,3)
                 '''spacerItem1 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding)
                 self.gridLayoutVeiculo.addItem(spacerItem1, 3, 0, 1, 1)'''
