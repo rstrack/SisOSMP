@@ -1,7 +1,7 @@
 import pymysql as sql
 
 from model.modelo import *
-from orcamentoController import OrcamentoController
+from controller.orcamentoController import OrcamentoController
 
 """
 mysql://ba92f7c1b49b96:96ccbd2f@us-cdbr-east-05.cleardb.net/heroku_9dc20ebb2063eae?reconnect=true
