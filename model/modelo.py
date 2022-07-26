@@ -45,8 +45,8 @@ class Veiculo(BaseModel):
 class Cliente(BaseModel):
     idCliente = AutoField()
     nome = CharField(max_length=80,null=False)
-    cpf = CharField(max_length=11, null=True, constraints=[Check('CHAR_LENGTH(cpf)=11')])
-    cnpj = CharField(max_length=14, null=True, constraints=[Check('CHAR_LENGTH(cnpj)=14')])
+    cpf = CharField(max_length=11, null=True,unique=True, constraints=[Check('CHAR_LENGTH(cpf)=11')])
+    cnpj = CharField(max_length=14, null=True,unique=True, constraints=[Check('CHAR_LENGTH(cnpj)=14')])
     cep = CharField(max_length=8, null=True,constraints=[Check('CHAR_LENGTH(cep)=8')])
     endereco = CharField(max_length=80,null=True)
     numero = CharField(max_length=6, null=True, constraints=[Check('numero>=0')])

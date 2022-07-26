@@ -30,6 +30,3 @@ if cursor.execute(f"SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SC
 
 c = OrcamentoController()
 c.run()
-
-
-

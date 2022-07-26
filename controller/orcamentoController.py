@@ -1,7 +1,8 @@
 import sys
-from PyQt6 import QtWidgets
+from PyQt6 import QtWidgets, QtGui
 from model.modelo import *
 from ui.telaCadastroOrcamento import TelaCadastroOrcamento
+from ui.telaConsultaAux import TelaConsultaAux
 from util.buscaCEP import buscarCEP
 
 class OrcamentoController():
@@ -66,10 +67,135 @@ class OrcamentoController():
         self.view.gridLayout_5.addItem(self.view.spacerservico, len(self.view.linhasservicos), 0, 1, 1)
 
     def buscarCliente(self):
-        pass
+        try:
+            self.window = QtWidgets.QMainWindow()
+            self.viewBusca = TelaConsultaAux(self.window)
+            queryCliente = Cliente.select()
+            model = QtGui.QStandardItemModel(len(queryCliente),1)
+            row=0
+            for cliente in queryCliente:
+                item = QtGui.QStandardItem(str(cliente.idCliente))
+                model.setItem(row, 0, item)
+                item = QtGui.QStandardItem(cliente.nome)
+                model.setItem(row, 1, item)
+                item = QtGui.QStandardItem(cliente.cpf)
+                model.setItem(row, 2, item)               
+                item = QtGui.QStandardItem(cliente.cnpj)
+                model.setItem(row, 3, item)
+                queryVeiculo = Veiculo.select().join(Veiculo_Cliente).join(Cliente).where((Veiculo_Cliente.cliente == cliente))
+                column = 4
+                for veiculo in queryVeiculo:
+                    item = QtGui.QStandardItem(veiculo.modelo)
+                    model.setItem(row, column, item)
+                    item = QtGui.QStandardItem(veiculo.placa)
+                    model.setItem(row, column+1, item)                    
+                    column=column+2
+                row=row+1
+            
+            self.viewBusca.filter.setSourceModel(model)
+            self.viewBusca.filter.setFilterKeyColumn(-1)
+            self.viewBusca.lineEditBusca.textChanged.connect(self.viewBusca.filter.setFilterRegularExpression)
+            self.viewBusca.tabela.setModel(self.viewBusca.filter)
+            header = self.viewBusca.tabela.horizontalHeader()
+            header.setSectionResizeMode(QtWidgets.QHeaderView.ResizeMode.Stretch)
+            header.setSectionResizeMode(0,QtWidgets.QHeaderView.ResizeMode.ResizeToContents)
+            self.viewBusca.botaoSelecionar.clicked.connect(self.usarCliente)
+            self.window.show()
+        except Exception as e:
+            msg =  QtWidgets.QMessageBox()
+            msg.setWindowTitle("Erro")
+            msg.setText(str(e))
+            msg.exec()
+
+    def usarCliente(self):
+        self.linha = self.viewBusca.tabela.selectionModel().selectedRows()[0]
+        id = self.viewBusca.tabela.model().index(self.linha.row(),0).data()
+        queryCliente = Cliente.select().where(Cliente.idCliente==int(id))
+        self.view.lineEditNomeCliente.setText(queryCliente[0].nome)
+        self.view.lineEditCEP.setText(queryCliente[0].cep)
+        self.view.lineEditEnder.setText(queryCliente[0].endereco)
+        self.view.lineEditNumero.setText(queryCliente[0].numero)
+        self.view.lineEditBairro.setText(queryCliente[0].bairro)
+        if(queryCliente[0].cpf):
+            self.view.lineEditCPFJ.setText(queryCliente[0].cpf)
+            self.view.labelcpfj.setText("CPF")
+            self.view.comboBox.setCurrentIndex(0)
+        if(queryCliente[0].cnpj):
+            self.view.lineEditCPFJ.setText(queryCliente[0].cnpj)
+            self.view.labelcpfj.setText("CNPJ")
+            self.view.comboBox.setCurrentIndex(1)
+        queryCidade = Cidade.select().join(Cliente).where(queryCliente[0].cidade_id==Cidade.idCidade)
+        self.view.lineEditCidade.setText(queryCidade[0].nome)
+        queryEstado = Estado.select().join(Cidade).where(queryCidade[0].estado_id==Estado.UF)
+        for index in range(self.view.comboBoxuf.count()):
+            if(self.view.comboBoxuf.itemText(index)==queryEstado[0].UF):
+                self.view.comboBoxuf.setCurrentIndex(index)
+                break
+        self.idCliente = queryCliente[0].idCliente
+        self.window.close()
 
     def buscarVeiculo(self):
-        pass
+        try:    
+            self.window = QtWidgets.QMainWindow()
+            self.viewBusca = TelaConsultaAux(self.window)
+            queryCliente = (Cliente.select()
+            .where((Cliente.nome==self.view.lineEditNomeCliente.text())))
+        
+            queryVeiculo = Veiculo.select()
+
+            model = QtGui.QStandardItemModel(len(queryVeiculo),1)
+            model.setHorizontalHeaderLabels(['Marca','Modelo', 'Ano', 'Placa'])
+            
+            row=0
+            for veiculo in queryVeiculo:
+                item = QtGui.QStandardItem(str(veiculo.idVeiculo))
+                model.setItem(row, 0, item)
+                querymarca = Marca.select(Marca.marca).join(Veiculo).where(Marca.idMarca==veiculo.marca_id)
+                item = QtGui.QStandardItem(querymarca[0].marca)
+                model.setItem(row, 1, item)
+                item = QtGui.QStandardItem(veiculo.modelo)
+                model.setItem(row, 2, item)
+                item = QtGui.QStandardItem(veiculo.ano)
+                model.setItem(row, 3, item)
+                item = QtGui.QStandardItem(veiculo.placa)
+                model.setItem(row, 4, item)
+                queryCliente = Cliente.select().join(Veiculo_Cliente).where(Veiculo_Cliente.veiculo==veiculo)
+                item = QtGui.QStandardItem(queryCliente[0].nome)
+                model.setItem(row, 5, item)
+                row=row+1
+
+            self.viewBusca.filter.setSourceModel(model)
+            self.viewBusca.filter.setFilterKeyColumn(-1)
+            self.viewBusca.lineEditBusca.textChanged.connect(self.viewBusca.filter.setFilterRegularExpression)
+            
+            self.viewBusca.tabela.setModel(self.viewBusca.filter)
+
+            header = self.viewBusca.tabela.horizontalHeader()
+            header.setSectionResizeMode(QtWidgets.QHeaderView.ResizeMode.Stretch)
+
+            self.viewBusca.botaoSelecionar.clicked.connect(self.usarVeiculo)
+
+            self.window.show()
+        except Exception as e:
+                msg =  QtWidgets.QMessageBox()
+                msg.setWindowTitle("Erro")
+                msg.setText(str(e))
+                msg.exec()
+
+    def usarVeiculo(self):
+        self.linha = self.viewBusca.tabela.selectionModel().selectedRows()[0]
+        id = self.viewBusca.tabela.model().index(self.linha.row(),0).data()
+        queryVeiculo = Veiculo.select().where(Veiculo.idVeiculo==int(id))
+        self.view.lineEditModelo.setText(queryVeiculo[0].modelo)
+        self.view.lineEditPlaca.setText(queryVeiculo[0].placa)
+        self.view.lineEditAno.setText(queryVeiculo[0].ano)
+        queryMarca = Marca.select().join(Veiculo).where(queryVeiculo[0].marca_id==Marca.idMarca)
+        for index in range(self.view.comboBoxMarca.count()):
+            if(self.view.comboBoxMarca.itemText(index)==queryMarca[0].marca):
+                self.view.comboBoxMarca.setCurrentIndex(index)
+                break
+        self.idVeiculo = queryVeiculo[0].idVeiculo
+        self.window.close()
 
     def buscarDadosCEP(self):
         cep = self.view.lineEditCEP.text()
@@ -92,88 +218,72 @@ class OrcamentoController():
         self.marcas()
 
     def salvarCliente(self):
-        with db.atomic() as transaction:
-            try:
-                dict = {}
-                if(self.view.lineEditCPFJ.text()):
-                    if(self.view.comboBox.currentIndex()==0):
-                        dict['cpf'] = self.view.lineEditCPFJ.text()
-                    else:
-                        dict['cnpj'] = self.view.lineEditCPFJ.text()
-                if(self.view.lineEditNomeCliente.text()):
-                    dict['nome'] = self.view.lineEditNomeCliente.text()
-                else: raise Exception("Campo 'Nome' obrigatório")
-                if(self.view.lineEditCEP.text()):
-                    dict['cep'] = self.view.lineEditCEP.text()
-                if(self.view.lineEditEnder.text()):
-                    dict['endereco'] = self.view.lineEditEnder.text()
-                if(self.view.lineEditNumero.text()):
-                    dict['numero'] = self.view.lineEditNumero.text()
-                if(self.view.lineEditBairro.text()):
-                    dict['bairro'] = self.view.lineEditBairro.text()
+        dict = {}
+        if(self.view.lineEditCPFJ.text()):
+            if(self.view.comboBox.currentIndex()==0):
+                dict['cpf'] = self.view.lineEditCPFJ.text()
+            else:
+                dict['cnpj'] = self.view.lineEditCPFJ.text()
+        if(self.view.lineEditNomeCliente.text()):
+            dict['nome'] = self.view.lineEditNomeCliente.text()
+        else: raise Exception("Campo 'Nome' obrigatório")
+        if(self.view.lineEditCEP.text()):
+            dict['cep'] = self.view.lineEditCEP.text()
+        if(self.view.lineEditEnder.text()):
+            dict['endereco'] = self.view.lineEditEnder.text()
+        if(self.view.lineEditNumero.text()):
+            dict['numero'] = self.view.lineEditNumero.text()
+        if(self.view.lineEditBairro.text()):
+            dict['bairro'] = self.view.lineEditBairro.text()
 
-                if(self.view.lineEditCidade.text()):
-                    query = Cidade.select().where(Cidade.nome==self.view.lineEditCidade.text())
-                    estado = Estado.select(Estado.UF).where(Estado.UF==self.view.comboBoxuf.currentText())
-                    if not estado:
-                        estado = Estado.create(UF=self.view.comboBoxuf.currentText())
-                    if query:
-                        dict['cidade'] = list(query)[0]
-                    else:
-                        cidade = Cidade.create(nome=self.view.lineEditCidade.text(), estado=estado)
-                        dict['cidade'] = cidade
-                return Cliente.create(**dict)
-            
-            except Exception as e:
-                msg =  QtWidgets.QMessageBox()
-                msg.setWindowTitle("Erro")
-                msg.setText(str(e))
-                msg.exec()
-                transaction.rollback()
-                return -1
+        if(self.view.lineEditCidade.text()):
+            queryCliente = Cidade.select().where(Cidade.nome==self.view.lineEditCidade.text())
+            estado = Estado.select(Estado.UF).where(Estado.UF==self.view.comboBoxuf.currentText())
+            if not estado:
+                estado = Estado.create(UF=self.view.comboBoxuf.currentText())
+            if queryCliente:
+                dict['cidade'] = list(queryCliente)[0]
+            else:
+                cidade = Cidade.create(nome=self.view.lineEditCidade.text(), estado=estado)
+                dict['cidade'] = cidade
+        return Cliente.create(**dict)
     
     def salvarVeiculo(self):
-        with db.atomic() as transaction:
-            try:
-                dict = {}
-                marca = Marca.select(Marca.idMarca).where(Marca.marca==self.view.comboBoxMarca.currentText()) 
-                if not marca:
-                    marca = Marca.create(marca=self.view.comboBoxMarca.currentText())
-                dict['marca'] = marca
-                if(self.view.lineEditModelo.text()):
-                    dict['modelo'] = self.view.lineEditModelo.text()
-                if(self.view.lineEditPlaca.text()):
-                    dict['placa'] = self.view.lineEditPlaca.text()
-                if(self.view.lineEditAno.text()):
-                    dict['ano'] = self.view.lineEditAno.text()
-                if(self.view.lineEditEnder.text()):
-                    dict['endereco'] = self.view.lineEditEnder.text()
-                if(self.view.lineEditKm.text()):
-                    dict['km'] = self.view.lineEditKm.text()
+        dict = {}
+        marca = Marca.select(Marca.idMarca).where(Marca.marca==self.view.comboBoxMarca.currentText()) 
+        if not marca:
+            marca = Marca.create(marca=self.view.comboBoxMarca.currentText())
+        dict['marca'] = marca
+        if(self.view.lineEditModelo.text()):
+            dict['modelo'] = self.view.lineEditModelo.text()
+        if(self.view.lineEditPlaca.text()):
+            dict['placa'] = self.view.lineEditPlaca.text()
+        if(self.view.lineEditAno.text()):
+            dict['ano'] = self.view.lineEditAno.text()
+        if(self.view.lineEditEnder.text()):
+            dict['endereco'] = self.view.lineEditEnder.text()
+        if(self.view.lineEditKm.text()):
+            dict['km'] = self.view.lineEditKm.text()
 
-                return Veiculo.create(**dict)
-            
-            except Exception as e:
-                msg =  QtWidgets.QMessageBox()
-                msg.setWindowTitle("Erro")
-                msg.setText(str(e))
-                msg.exec()
-                transaction.rollback()
-                return -1
+        return Veiculo.create(**dict)
 
+    def salvarPecas(self):
+        pass
+
+    def salvarServicos(self):
+        pass
 
     def salvarOrcamento(self):
         with db.atomic() as transaction:
             try:
-                cliente = self.salvarCliente()
-                veiculo = self.salvarVeiculo()
-                if(cliente == -1 or veiculo ==-1):
-                    raise Exception()
-                '''pecas = self.salvarPecas()
-                servicos = self.salvarServicos()'''
-
+                if not self.idCliente:
+                    cliente = self.salvarCliente()
+                if not self.idVeiculo:
+                    veiculo = self.salvarVeiculo()
+                    veiculocliente = Veiculo_Cliente.create(cliente=cliente, veiculo=veiculo)
                 
-                
+                pecas = self.salvarPecas()
+                servicos = self.salvarServicos()
                 
                 msg =  QtWidgets.QMessageBox()
                 msg.setWindowTitle("Aviso")
@@ -182,6 +292,11 @@ class OrcamentoController():
             
             except Exception as e:
                 transaction.rollback()
+                msg =  QtWidgets.QMessageBox()
+                msg.setWindowTitle("Erro")
+                msg.setText(str(e))
+                msg.exec()
+                
 
 
 
