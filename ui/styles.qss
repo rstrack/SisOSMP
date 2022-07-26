@@ -19,7 +19,7 @@ QFrame#framemenu QLabel{
 }
 
 QFrame#main_frame QLabel{
-    padding: 2px;
+    padding-left: 2px;
     color: black;
 }
 

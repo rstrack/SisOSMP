@@ -151,13 +151,12 @@ class TelaCadastroOrcamento(QtWidgets.QWidget):
                 
                 self.labelNome = QtWidgets.QLabel(self.groupBoxCliente)
                 self.gridLayoutCliente.addWidget(self.labelNome, 2, 0, 1, 1)
-                self.lineEditNome = QtWidgets.QLineEdit(self.groupBoxCliente)
-                self.gridLayoutCliente.addWidget(self.lineEditNome, 2, 1, 1, -1)
+                self.lineEditNomeCliente = QtWidgets.QLineEdit(self.groupBoxCliente)
+                self.gridLayoutCliente.addWidget(self.lineEditNomeCliente, 2, 1, 1, -1)
 
                 self.labelCEP = QtWidgets.QLabel(self.groupBoxCliente)
                 self.gridLayoutCliente.addWidget(self.labelCEP, 3, 0, 1, 1)
                 self.lineEditCEP = QtWidgets.QLineEdit(self.groupBoxCliente)
-                self.lineEditCEP.setInputMask("99999-999")
                 self.gridLayoutCliente.addWidget(self.lineEditCEP, 3, 1, 1, 1)
                 self.labelEnder = QtWidgets.QLabel(self.groupBoxCliente)
                 self.gridLayoutCliente.addWidget(self.labelEnder, 3, 2, 1, 1)
@@ -169,8 +168,8 @@ class TelaCadastroOrcamento(QtWidgets.QWidget):
                 self.gridLayoutCliente.addWidget(self.lineEditNumero, 3, 6, 1, 1)
                 self.labelBairro = QtWidgets.QLabel(self.groupBoxCliente)
                 self.gridLayoutCliente.addWidget(self.labelBairro, 4, 0, 1, 1)
-                self.lineEdit_11 = QtWidgets.QLineEdit(self.groupBoxCliente)
-                self.gridLayoutCliente.addWidget(self.lineEdit_11, 4, 1, 1, 2)
+                self.lineEditBairro = QtWidgets.QLineEdit(self.groupBoxCliente)
+                self.gridLayoutCliente.addWidget(self.lineEditBairro, 4, 1, 1, 2)
                 self.labelCidade = QtWidgets.QLabel(self.groupBoxCliente)
                 self.gridLayoutCliente.addWidget(self.labelCidade, 4, 3, 1, 1)
                 self.lineEditCidade = QtWidgets.QLineEdit(self.groupBoxCliente)
@@ -184,17 +183,15 @@ class TelaCadastroOrcamento(QtWidgets.QWidget):
                 self.labelFone1 = QtWidgets.QLabel(self.groupBoxCliente)
                 self.gridLayoutCliente.addWidget(self.labelFone1, 6, 0, 1, 1)            
                 self.lineEditFone1 = QtWidgets.QLineEdit(self.groupBoxCliente)
-                self.lineEditFone1.setInputMask("(099) 0 9999-9999")
                 self.gridLayoutCliente.addWidget(self.lineEditFone1, 6, 1, 1, 2)            
                 self.labelFone2 = QtWidgets.QLabel(self.groupBoxCliente)
                 self.gridLayoutCliente.addWidget(self.labelFone2, 6, 3, 1, 1)
                 self.lineEditFone2 = QtWidgets.QLineEdit(self.groupBoxCliente)
-                self.lineEditFone2.setInputMask("(099) 0 9999-9999")
                 self.gridLayoutCliente.addWidget(self.lineEditFone2, 6, 4, 1, 3)
                 
                 self.gridLayoutCliente.setColumnStretch(1,4)
-                self.gridLayoutCliente.setColumnStretch(4,6)
-                self.gridLayoutCliente.setColumnStretch(6,1)
+                self.gridLayoutCliente.setColumnStretch(4,5)
+                self.gridLayoutCliente.setColumnStretch(6,2)
 
                 '''spacerItem = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding)
                 self.gridLayoutCliente.addItem(spacerItem, 6, 0, 1, 1)'''
@@ -209,11 +206,11 @@ class TelaCadastroOrcamento(QtWidgets.QWidget):
                 self.labelMarca = QtWidgets.QLabel(self.groupBoxVeiculo)
                 self.gridLayoutVeiculo.addWidget(self.labelMarca, 1, 0, 1, 1)
                 self.comboBoxMarca = QtWidgets.QComboBox(self.groupBoxVeiculo)
+                self.comboBoxMarca.setEditable(True)
                 self.gridLayoutVeiculo.addWidget(self.comboBoxMarca, 1, 1, 1, 2) 
                 self.labelPlaca = QtWidgets.QLabel(self.groupBoxVeiculo)
                 self.gridLayoutVeiculo.addWidget(self.labelPlaca, 1, 3, 1, 1)
                 self.lineEditPlaca = QtWidgets.QLineEdit(self.groupBoxVeiculo)
-                self.lineEditPlaca.setInputMask("NNN-NNNN")
                 self.gridLayoutVeiculo.addWidget(self.lineEditPlaca, 1, 4, 1, 1)
                 self.labelModelo = QtWidgets.QLabel(self.groupBoxVeiculo)
                 self.gridLayoutVeiculo.addWidget(self.labelModelo, 2, 0, 1, 1)            
@@ -222,7 +219,6 @@ class TelaCadastroOrcamento(QtWidgets.QWidget):
                 self.labelAno = QtWidgets.QLabel(self.groupBoxVeiculo)
                 self.gridLayoutVeiculo.addWidget(self.labelAno, 2, 3, 1, 1)
                 self.lineEditAno = QtWidgets.QLineEdit(self.groupBoxVeiculo)
-                self.lineEditAno.setInputMask("9999")
                 self.gridLayoutVeiculo.addWidget(self.lineEditAno, 2, 4, 1, 1)
                 self.labelKm = QtWidgets.QLabel(self.groupBoxVeiculo)
                 self.gridLayoutVeiculo.addWidget(self.labelKm, 3, 0, 1, 1)
@@ -278,7 +274,7 @@ class TelaCadastroOrcamento(QtWidgets.QWidget):
                 self.gridLayout_2.addWidget(self.labelValorPeca, 0, 3, 1, 1)
                 self.lineEditValorPeca = QtWidgets.QLineEdit(self.framegroupboxpecas)
                 self.gridLayout_2.addWidget(self.lineEditValorPeca, 0, 4, 1, 1)
-                self.botaoAddPecas = QtWidgets.QPushButton(self.framegroupboxpecas, clicked=lambda: self.addlinhapeca())
+                self.botaoAddPecas = QtWidgets.QPushButton(self.framegroupboxpecas)
                 self.gridLayout_2.addWidget(self.botaoAddPecas, 0, 5, 1, 1)
                 
                 self.linhaspeca = [[self.lineEditNomePeca, self.lineEditValorPeca]]
@@ -311,7 +307,7 @@ class TelaCadastroOrcamento(QtWidgets.QWidget):
                 self.gridLayout_5.addWidget(self.labelValorServico, 0, 3, 1, 1)
                 self.lineEditValorServico = QtWidgets.QLineEdit(self.framegroupboxservicos)
                 self.gridLayout_5.addWidget(self.lineEditValorServico, 0, 4, 1, 1)
-                self.botaoAddServicos = QtWidgets.QPushButton(self.framegroupboxservicos, clicked=lambda: self.addlinhaservico())
+                self.botaoAddServicos = QtWidgets.QPushButton(self.framegroupboxservicos)
                 self.gridLayout_5.addWidget(self.botaoAddServicos, 0, 5, 1, 1)
 
                 self.linhasservicos = [[self.lineEditNomeServico, self.lineEditValorServico]]
@@ -360,7 +356,6 @@ class TelaCadastroOrcamento(QtWidgets.QWidget):
                 self.hlayout4.setContentsMargins(9,0,9,9)
                 self.vlayout6.addWidget(self.framebotoes)
 
-
                 #####################################################################################
                 
                 #barra de menu
@@ -405,7 +400,7 @@ class TelaCadastroOrcamento(QtWidgets.QWidget):
                 self.labelNome.setText(_translate("MainWindow", "Nome*"))
                 self.labelCEP.setText(_translate("MainWindow", "CEP"))
                 self.labelPessoa.setText(_translate("MainWindow", "Pessoa"))
-                self.labelcpfj.setText(_translate("MainWindow", "CPF/CNPJ"))
+                self.labelcpfj.setText(_translate("MainWindow", "CPF"))
                 self.labelUF.setText(_translate("MainWindow", "UF"))
                 self.labelCidade.setText(_translate("MainWindow", "Cidade"))
                 self.labelEnder.setText(_translate("MainWindow", "Endereço"))
@@ -434,7 +429,7 @@ class TelaCadastroOrcamento(QtWidgets.QWidget):
                 self.labelValorPeca.setText(_translate("MainWindow", "Valor"))
 
 
-        def addlinhapeca(self):
+        '''def addlinhapeca(self):
                 label1 = QtWidgets.QLabel(text="Peça")
                 lineedit1 = QtWidgets.QLineEdit()
                 label2 = QtWidgets.QLabel(text="Valor")
@@ -446,9 +441,9 @@ class TelaCadastroOrcamento(QtWidgets.QWidget):
                 self.linhaspeca.append([lineedit1, lineedit2])
                 self.gridLayout_2.addWidget(self.botaoAddPecas, len(self.linhaspeca)-1, 5, 1, 1)
                 self.gridLayout_2.removeItem(self.spacerpeca)
-                self.gridLayout_2.addItem(self.spacerpeca, len(self.linhaspeca), 0, 1, 1)
+                self.gridLayout_2.addItem(self.spacerpeca, len(self.linhaspeca), 0, 1, 1)'''
 
-        def addlinhaservico(self):
+        '''def addlinhaservico(self):
                 label1 = QtWidgets.QLabel(text="Serviço")
                 lineedit1 = QtWidgets.QLineEdit()
                 label2 = QtWidgets.QLabel(text="Valor")
@@ -460,7 +455,7 @@ class TelaCadastroOrcamento(QtWidgets.QWidget):
                 self.linhasservicos.append([lineedit1, lineedit2])
                 self.gridLayout_5.addWidget(self.botaoAddServicos, len(self.linhasservicos)-1, 5, 1, 1)
                 self.gridLayout_5.removeItem(self.spacerservico)
-                self.gridLayout_5.addItem(self.spacerservico, len(self.linhasservicos), 0, 1, 1)
+                self.gridLayout_5.addItem(self.spacerservico, len(self.linhasservicos), 0, 1, 1)'''
 
 if __name__ == "__main__":
     import sys

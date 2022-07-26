@@ -1,8 +1,13 @@
-import datetime
+import sys
+from typing import Text
 from peewee import *
 
-# NOME DO BANCO DE DADOS EM QUESTÃO
-NOMEBANCODEDADOS = "teste"
+import os
+sys.path.insert(0, os.getcwd())
+
+from util import trigger
+
+NOMEBANCODEDADOS="testeeeeeee"
 
 SIGLAESTADOS = "'AC', 'AL', 'AP', 'AM', 'BA', 'CE', 'DF', 'ES', 'GO', 'MA', 'MT', 'MS', 'MG', 'PA', 'PB', 'PR', 'PE', 'PI', 'RJ', 'RN', 'RS', 'RO', 'RR', 'SC', 'SP', 'SE', 'TO'"
 
@@ -42,6 +47,7 @@ class Cliente(BaseModel):
     nome = CharField(max_length=80,null=False)
     cpf = CharField(max_length=11, null=True, constraints=[Check('CHAR_LENGTH(cpf)=11')])
     cnpj = CharField(max_length=14, null=True, constraints=[Check('CHAR_LENGTH(cnpj)=14')])
+    cep = CharField(max_length=8, null=True,constraints=[Check('CHAR_LENGTH(cep)=8')])
     endereco = CharField(max_length=80,null=True)
     numero = CharField(max_length=6, null=True, constraints=[Check('numero>=0')])
     bairro = CharField(max_length=50, null=True)
@@ -79,7 +85,7 @@ class Orcamento(BaseModel):
     aprovado = BooleanField(constraints=[SQL('DEFAULT FALSE')])
     dataAprovacao = DateField(null=True)
     dataPrevista = DateField()
-    #dataPrevista = DateField(constraints=[SQL(f'check(dataPrevista>=({datetime.datetime.now}))')])
+    observacoes = CharField(max_length=200)
 
 
 class ItemPeca(BaseModel):
@@ -107,8 +113,11 @@ class Fone(BaseModel):
         primary_key = CompositeKey('cliente', 'fone')
 
 
-def create_tables():
+def create_tables(cursor):
     models = BaseModel.__subclasses__()
     db.create_tables(models)
+    tr1 = trigger.Trigger('orcamento', 'tr_set_data_aprovacao', 'before', 'update', 'new.aprovado=1', 'new.dataAprovacao=curdate()')
+    tr1.create_trigger(cursor)
+    
 
 
