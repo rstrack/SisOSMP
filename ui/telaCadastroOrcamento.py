@@ -139,6 +139,8 @@ class TelaCadastroOrcamento(QtWidgets.QWidget):
                 self.gridLayoutCliente.setHorizontalSpacing(9)
                 self.botaobuscarcliente = QtWidgets.QPushButton(self.groupBoxCliente)
                 self.gridLayoutCliente.addWidget(self.botaobuscarcliente, 0, 0, 1, 2)
+                self.checkboxNovoCliente = QtWidgets.QCheckBox(self.groupBoxCliente)
+                self.gridLayoutCliente.addWidget(self.checkboxNovoCliente, 0, 2, 1, 2)
                 self.labelPessoa = QtWidgets.QLabel(self.groupBoxCliente)
                 self.gridLayoutCliente.addWidget(self.labelPessoa, 1, 0, 1, 1)
                 self.comboBox = QtWidgets.QComboBox(self.groupBoxCliente)
@@ -189,9 +191,9 @@ class TelaCadastroOrcamento(QtWidgets.QWidget):
                 self.lineEditFone2 = QtWidgets.QLineEdit(self.groupBoxCliente)
                 self.gridLayoutCliente.addWidget(self.lineEditFone2, 6, 4, 1, 3)
                 
-                self.gridLayoutCliente.setColumnStretch(1,4)
-                self.gridLayoutCliente.setColumnStretch(4,5)
-                self.gridLayoutCliente.setColumnStretch(6,2)
+                '''self.gridLayoutCliente.setColumnStretch(1,4)
+                self.gridLayoutCliente.setColumnStretch(4,6)
+                self.gridLayoutCliente.setColumnStretch(6,2)'''
 
                 '''spacerItem = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding)
                 self.gridLayoutCliente.addItem(spacerItem, 6, 0, 1, 1)'''
@@ -201,33 +203,36 @@ class TelaCadastroOrcamento(QtWidgets.QWidget):
                 #dados do veiculo
                 self.groupBoxVeiculo = QtWidgets.QGroupBox(self.framedados)
                 self.gridLayoutVeiculo = QtWidgets.QGridLayout(self.groupBoxVeiculo)
-                self.botaobuscarveiculo = QtWidgets.QPushButton(self.groupBoxCliente)
+                self.botaobuscarveiculo = QtWidgets.QPushButton(self.groupBoxVeiculo)
                 self.gridLayoutVeiculo.addWidget(self.botaobuscarveiculo, 0, 0, 1, 2)
+                self.checkboxNovoVeiculo = QtWidgets.QCheckBox(self.groupBoxVeiculo)
+                self.gridLayoutVeiculo.addWidget(self.checkboxNovoVeiculo, 0, 2, 1, 1)
                 self.labelMarca = QtWidgets.QLabel(self.groupBoxVeiculo)
                 self.gridLayoutVeiculo.addWidget(self.labelMarca, 1, 0, 1, 1)
                 self.comboBoxMarca = QtWidgets.QComboBox(self.groupBoxVeiculo)
                 self.comboBoxMarca.setEditable(True)
-                self.gridLayoutVeiculo.addWidget(self.comboBoxMarca, 1, 1, 1, 2) 
+                self.gridLayoutVeiculo.addWidget(self.comboBoxMarca, 1, 1, 1, 3) 
                 self.labelPlaca = QtWidgets.QLabel(self.groupBoxVeiculo)
-                self.gridLayoutVeiculo.addWidget(self.labelPlaca, 1, 3, 1, 1)
+                self.gridLayoutVeiculo.addWidget(self.labelPlaca, 1, 4, 1, 1)
                 self.lineEditPlaca = QtWidgets.QLineEdit(self.groupBoxVeiculo)
-                self.gridLayoutVeiculo.addWidget(self.lineEditPlaca, 1, 4, 1, 1)
+                self.gridLayoutVeiculo.addWidget(self.lineEditPlaca, 1, 5, 1, 1)
                 self.labelModelo = QtWidgets.QLabel(self.groupBoxVeiculo)
                 self.gridLayoutVeiculo.addWidget(self.labelModelo, 2, 0, 1, 1)            
                 self.lineEditModelo = QtWidgets.QLineEdit(self.groupBoxVeiculo)
-                self.gridLayoutVeiculo.addWidget(self.lineEditModelo, 2, 1, 1, 2)          
+                self.gridLayoutVeiculo.addWidget(self.lineEditModelo, 2, 1, 1, 3)          
                 self.labelAno = QtWidgets.QLabel(self.groupBoxVeiculo)
-                self.gridLayoutVeiculo.addWidget(self.labelAno, 2, 3, 1, 1)
+                self.gridLayoutVeiculo.addWidget(self.labelAno, 2, 4, 1, 1)
                 self.lineEditAno = QtWidgets.QLineEdit(self.groupBoxVeiculo)
-                self.gridLayoutVeiculo.addWidget(self.lineEditAno, 2, 4, 1, 1)
+                self.gridLayoutVeiculo.addWidget(self.lineEditAno, 2, 5, 1, 1)
                 self.labelKm = QtWidgets.QLabel(self.groupBoxVeiculo)
                 self.gridLayoutVeiculo.addWidget(self.labelKm, 3, 0, 1, 1)
                 self.lineEditKm = QtWidgets.QLineEdit(self.groupBoxVeiculo)
                 self.gridLayoutVeiculo.addWidget(self.lineEditKm, 3, 1, 1, 1)
 
-                self.gridLayoutVeiculo.setColumnStretch(1,3)
-                self.gridLayoutVeiculo.setColumnStretch(2,5)
-                self.gridLayoutVeiculo.setColumnStretch(4,3)
+                '''self.gridLayoutVeiculo.setColumnStretch(1,3)
+                self.gridLayoutVeiculo.setColumnStretch(3,4)
+                self.gridLayoutVeiculo.setColumnStretch(5,3)'''
+
                 '''spacerItem1 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding)
                 self.gridLayoutVeiculo.addItem(spacerItem1, 3, 0, 1, 1)'''
 
@@ -397,6 +402,7 @@ class TelaCadastroOrcamento(QtWidgets.QWidget):
                 self.labelTitulo.setText(_translate("MainWindow", "Orçamentos"))
                 self.groupBoxCliente.setTitle(_translate("MainWindow", "Dados do Cliente"))
                 self.botaobuscarcliente.setText(_translate("MainWindow", "Selecionar Cliente"))
+                self.checkboxNovoCliente.setText(_translate("MainWindow", "Novo Cliente"))
                 self.labelNome.setText(_translate("MainWindow", "Nome*"))
                 self.labelCEP.setText(_translate("MainWindow", "CEP"))
                 self.labelPessoa.setText(_translate("MainWindow", "Pessoa"))
@@ -410,6 +416,7 @@ class TelaCadastroOrcamento(QtWidgets.QWidget):
                 self.labelFone2.setText(_translate("MainWindow", "Fone 2"))
                 self.groupBoxVeiculo.setTitle(_translate("MainWindow", "Dados do veículo"))
                 self.botaobuscarveiculo.setText(_translate("MainWindow", "Selecionar Veículo"))
+                self.checkboxNovoVeiculo.setText(_translate("MainWindow", "Novo Veículo"))
                 self.labelMarca.setText(_translate("MainWindow", "Marca*"))
                 self.labelPlaca.setText(_translate("MainWindow", "Placa*"))
                 self.labelAno.setText(_translate("MainWindow", "Ano*"))
@@ -422,40 +429,11 @@ class TelaCadastroOrcamento(QtWidgets.QWidget):
                 self.botaoAddServicos.setText(_translate("MainWindow", "+"))
                 self.labelValorServico.setText(_translate("MainWindow", "Valor"))
                 self.labelNomeServico.setText(_translate("MainWindow", "Serviço"))
-                self.groupBoxObs.setTitle(_translate("MainWindow", "Observações"))
+                self.groupBoxObs.setTitle(_translate("MainWindow", "Observações (Max. 200 caracteres)"))
                 self.groupBoxPecas.setTitle(_translate("MainWindow", "Peças"))
                 self.botaoAddPecas.setText(_translate("MainWindow", "+"))
                 self.labelNomePeca.setText(_translate("MainWindow", "Peça"))
                 self.labelValorPeca.setText(_translate("MainWindow", "Valor"))
-
-
-        '''def addlinhapeca(self):
-                label1 = QtWidgets.QLabel(text="Peça")
-                lineedit1 = QtWidgets.QLineEdit()
-                label2 = QtWidgets.QLabel(text="Valor")
-                lineedit2 = QtWidgets.QLineEdit()
-                self.gridLayout_2.addWidget(label1, len(self.linhaspeca), 0, 1, 1)
-                self.gridLayout_2.addWidget(lineedit1, len(self.linhaspeca), 1, 1, 1)
-                self.gridLayout_2.addWidget(label2, len(self.linhaspeca), 3, 1, 1)
-                self.gridLayout_2.addWidget(lineedit2, len(self.linhaspeca), 4, 1, 1)
-                self.linhaspeca.append([lineedit1, lineedit2])
-                self.gridLayout_2.addWidget(self.botaoAddPecas, len(self.linhaspeca)-1, 5, 1, 1)
-                self.gridLayout_2.removeItem(self.spacerpeca)
-                self.gridLayout_2.addItem(self.spacerpeca, len(self.linhaspeca), 0, 1, 1)'''
-
-        '''def addlinhaservico(self):
-                label1 = QtWidgets.QLabel(text="Serviço")
-                lineedit1 = QtWidgets.QLineEdit()
-                label2 = QtWidgets.QLabel(text="Valor")
-                lineedit2 = QtWidgets.QLineEdit()
-                self.gridLayout_5.addWidget(label1, len(self.linhasservicos), 0, 1, 1)
-                self.gridLayout_5.addWidget(lineedit1, len(self.linhasservicos), 1, 1, 1)
-                self.gridLayout_5.addWidget(label2, len(self.linhasservicos), 3, 1, 1)
-                self.gridLayout_5.addWidget(lineedit2, len(self.linhasservicos), 4, 1, 1)
-                self.linhasservicos.append([lineedit1, lineedit2])
-                self.gridLayout_5.addWidget(self.botaoAddServicos, len(self.linhasservicos)-1, 5, 1, 1)
-                self.gridLayout_5.removeItem(self.spacerservico)
-                self.gridLayout_5.addItem(self.spacerservico, len(self.linhasservicos), 0, 1, 1)'''
 
 if __name__ == "__main__":
     import sys

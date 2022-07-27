@@ -1,5 +1,5 @@
 import sys
-from PyQt6 import QtWidgets, QtGui
+from PyQt6 import QtWidgets, QtGui, QtCore
 from model.modelo import *
 from ui.telaCadastroOrcamento import TelaCadastroOrcamento
 from ui.telaConsultaAux import TelaConsultaAux
@@ -15,6 +15,8 @@ class OrcamentoController():
         self.view = TelaCadastroOrcamento(self.MainWindow)
         self.initConnections()
         self.marcas()
+        self.idCliente = 0
+        self.idVeiculo =0
 
     def run(self):
         self.MainWindow.show()
@@ -70,8 +72,10 @@ class OrcamentoController():
         try:
             self.window = QtWidgets.QMainWindow()
             self.viewBusca = TelaConsultaAux(self.window)
+            listaHeader = ['ID', 'Nome', 'CPF', 'CNPJ','Veiculos']
             queryCliente = Cliente.select()
             model = QtGui.QStandardItemModel(len(queryCliente),1)
+            model.setHorizontalHeaderLabels(listaHeader)
             row=0
             for cliente in queryCliente:
                 item = QtGui.QStandardItem(str(cliente.idCliente))
@@ -83,13 +87,12 @@ class OrcamentoController():
                 item = QtGui.QStandardItem(cliente.cnpj)
                 model.setItem(row, 3, item)
                 queryVeiculo = Veiculo.select().join(Veiculo_Cliente).join(Cliente).where((Veiculo_Cliente.cliente == cliente))
-                column = 4
+                nomes=[]
                 for veiculo in queryVeiculo:
-                    item = QtGui.QStandardItem(veiculo.modelo)
-                    model.setItem(row, column, item)
-                    item = QtGui.QStandardItem(veiculo.placa)
-                    model.setItem(row, column+1, item)                    
-                    column=column+2
+                    nomes.append(': '.join([veiculo.modelo, veiculo.placa]))
+                item = QtGui.QStandardItem(', '.join(nomes))
+                model.setItem(row, 4, item)
+
                 row=row+1
             
             self.viewBusca.filter.setSourceModel(model)
@@ -97,8 +100,10 @@ class OrcamentoController():
             self.viewBusca.lineEditBusca.textChanged.connect(self.viewBusca.filter.setFilterRegularExpression)
             self.viewBusca.tabela.setModel(self.viewBusca.filter)
             header = self.viewBusca.tabela.horizontalHeader()
-            header.setSectionResizeMode(QtWidgets.QHeaderView.ResizeMode.Stretch)
+            header.setSectionResizeMode(QtWidgets.QHeaderView.ResizeMode.Interactive)
             header.setSectionResizeMode(0,QtWidgets.QHeaderView.ResizeMode.ResizeToContents)
+            header.setStretchLastSection(True)
+            
             self.viewBusca.botaoSelecionar.clicked.connect(self.usarCliente)
             self.window.show()
         except Exception as e:
@@ -138,19 +143,15 @@ class OrcamentoController():
         try:    
             self.window = QtWidgets.QMainWindow()
             self.viewBusca = TelaConsultaAux(self.window)
-            queryCliente = (Cliente.select()
-            .where((Cliente.nome==self.view.lineEditNomeCliente.text())))
-        
+            listaHeader = ['ID', 'Marca','Modelo', 'Ano', 'Placa','Clientes']
             queryVeiculo = Veiculo.select()
-
             model = QtGui.QStandardItemModel(len(queryVeiculo),1)
-            model.setHorizontalHeaderLabels(['Marca','Modelo', 'Ano', 'Placa'])
-            
+            model.setHorizontalHeaderLabels(listaHeader)
             row=0
             for veiculo in queryVeiculo:
                 item = QtGui.QStandardItem(str(veiculo.idVeiculo))
                 model.setItem(row, 0, item)
-                querymarca = Marca.select(Marca.marca).join(Veiculo).where(Marca.idMarca==veiculo.marca_id)
+                querymarca = Marca.select().join(Veiculo).where(Marca.idMarca==veiculo.marca_id)
                 item = QtGui.QStandardItem(querymarca[0].marca)
                 model.setItem(row, 1, item)
                 item = QtGui.QStandardItem(veiculo.modelo)
@@ -159,19 +160,23 @@ class OrcamentoController():
                 model.setItem(row, 3, item)
                 item = QtGui.QStandardItem(veiculo.placa)
                 model.setItem(row, 4, item)
+                ##############################################################################################
                 queryCliente = Cliente.select().join(Veiculo_Cliente).where(Veiculo_Cliente.veiculo==veiculo)
-                item = QtGui.QStandardItem(queryCliente[0].nome)
+                nomes = []
+                for cliente in queryCliente:
+                    nomes.append(cliente.nome)
+                item = QtGui.QStandardItem(', '.join(nomes))
                 model.setItem(row, 5, item)
                 row=row+1
-
             self.viewBusca.filter.setSourceModel(model)
             self.viewBusca.filter.setFilterKeyColumn(-1)
             self.viewBusca.lineEditBusca.textChanged.connect(self.viewBusca.filter.setFilterRegularExpression)
-            
             self.viewBusca.tabela.setModel(self.viewBusca.filter)
-
             header = self.viewBusca.tabela.horizontalHeader()
-            header.setSectionResizeMode(QtWidgets.QHeaderView.ResizeMode.Stretch)
+            header.setSectionResizeMode(QtWidgets.QHeaderView.ResizeMode.Interactive)
+            header.setSectionResizeMode(0,QtWidgets.QHeaderView.ResizeMode.ResizeToContents)
+            header.setSectionResizeMode(3,QtWidgets.QHeaderView.ResizeMode.ResizeToContents)
+            header.setStretchLastSection(True)
 
             self.viewBusca.botaoSelecionar.clicked.connect(self.usarVeiculo)
 
@@ -195,6 +200,10 @@ class OrcamentoController():
                 self.view.comboBoxMarca.setCurrentIndex(index)
                 break
         self.idVeiculo = queryVeiculo[0].idVeiculo
+        self.view.comboBoxMarca.setEnabled(False)
+        self.view.lineEditModelo.setReadOnly(True)
+        self.view.lineEditAno.setReadOnly(True)
+        self.view.lineEditPlaca.setReadOnly(True)
         self.window.close()
 
     def buscarDadosCEP(self):
@@ -278,9 +287,14 @@ class OrcamentoController():
             try:
                 if not self.idCliente:
                     cliente = self.salvarCliente()
+                    self.idCliente = 0
+                else:
+                    cliente = Cliente.select().where(Cliente.nome==self.view.lineEditNomeCliente.text())
                 if not self.idVeiculo:
                     veiculo = self.salvarVeiculo()
-                    veiculocliente = Veiculo_Cliente.create(cliente=cliente, veiculo=veiculo)
+                    self.idVeiculo = 0
+                else: veiculo = Veiculo.select().where(Veiculo.modelo==self.view.lineEditModelo.text())
+                veiculocliente = Veiculo_Cliente.create(cliente=cliente, veiculo=veiculo)
                 
                 pecas = self.salvarPecas()
                 servicos = self.salvarServicos()
@@ -296,9 +310,6 @@ class OrcamentoController():
                 msg.setWindowTitle("Erro")
                 msg.setText(str(e))
                 msg.exec()
-                
-
-
 
     @db.atomic
     def salvareImprimir(self):

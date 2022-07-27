@@ -38,7 +38,7 @@ class Veiculo(BaseModel):
     idVeiculo = AutoField()
     modelo = CharField(max_length=30,null=False)
     ano = CharField(max_length=4, constraints=[Check('ano > 1900')],null=False)
-    placa = CharField(max_length=7, constraints=[Check('CHAR_LENGTH(placa)=7')],null=False)
+    placa = CharField(max_length=7,unique=True, constraints=[Check('CHAR_LENGTH(placa)=7')],null=False)
     marca = ForeignKeyField(Marca, backref='marcas',null=False)
 
 
