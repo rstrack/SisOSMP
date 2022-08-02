@@ -10,7 +10,7 @@ class TelaCadastroOrcamento(QtWidgets.QWidget):
 
         def setupUi(self, MainWindow):
 
-                MainWindow.resize(1280, 720)
+                MainWindow.resize(1280, 760)
                 self.mainwidget = QtWidgets.QWidget(MainWindow)
 
                 self.hlayout1 = QtWidgets.QHBoxLayout(self.mainwidget)
@@ -31,7 +31,7 @@ class TelaCadastroOrcamento(QtWidgets.QWidget):
                 #logo
                 self.logo_label = QtWidgets.QLabel(self.logo_frame)
                 self.logo_label.setMaximumHeight(150)
-                self.logo_label.setPixmap(QtGui.QPixmap("logo.png"))
+                self.logo_label.setPixmap(QtGui.QPixmap("./resources/logo.png"))
                 self.logo_label.setScaledContents(True)
                 self.vlayout2.addWidget(self.logo_label)
                 self.vlayout1.addWidget(self.logo_frame)
@@ -138,6 +138,7 @@ class TelaCadastroOrcamento(QtWidgets.QWidget):
                 self.gridLayoutCliente.setVerticalSpacing(9)
                 self.gridLayoutCliente.setHorizontalSpacing(9)
                 self.botaobuscarcliente = QtWidgets.QPushButton(self.groupBoxCliente)
+                self.botaobuscarcliente.setFixedSize(180,25)
                 self.gridLayoutCliente.addWidget(self.botaobuscarcliente, 0, 0, 1, 2)
                 self.checkboxNovoCliente = QtWidgets.QCheckBox(self.groupBoxCliente)
                 self.gridLayoutCliente.addWidget(self.checkboxNovoCliente, 0, 2, 1, 2)
@@ -191,9 +192,9 @@ class TelaCadastroOrcamento(QtWidgets.QWidget):
                 self.lineEditFone2 = QtWidgets.QLineEdit(self.groupBoxCliente)
                 self.gridLayoutCliente.addWidget(self.lineEditFone2, 6, 4, 1, 3)
                 
-                '''self.gridLayoutCliente.setColumnStretch(1,4)
-                self.gridLayoutCliente.setColumnStretch(4,6)
-                self.gridLayoutCliente.setColumnStretch(6,2)'''
+                self.gridLayoutCliente.setColumnStretch(1,0)
+                self.gridLayoutCliente.setColumnStretch(4,4)
+                self.gridLayoutCliente.setColumnStretch(6,2)
 
                 '''spacerItem = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding)
                 self.gridLayoutCliente.addItem(spacerItem, 6, 0, 1, 1)'''
@@ -204,6 +205,7 @@ class TelaCadastroOrcamento(QtWidgets.QWidget):
                 self.groupBoxVeiculo = QtWidgets.QGroupBox(self.framedados)
                 self.gridLayoutVeiculo = QtWidgets.QGridLayout(self.groupBoxVeiculo)
                 self.botaobuscarveiculo = QtWidgets.QPushButton(self.groupBoxVeiculo)
+                self.botaobuscarveiculo.setFixedSize(180,25)
                 self.gridLayoutVeiculo.addWidget(self.botaobuscarveiculo, 0, 0, 1, 2)
                 self.checkboxNovoVeiculo = QtWidgets.QCheckBox(self.groupBoxVeiculo)
                 self.gridLayoutVeiculo.addWidget(self.checkboxNovoVeiculo, 0, 2, 1, 1)
@@ -229,9 +231,10 @@ class TelaCadastroOrcamento(QtWidgets.QWidget):
                 self.lineEditKm = QtWidgets.QLineEdit(self.groupBoxVeiculo)
                 self.gridLayoutVeiculo.addWidget(self.lineEditKm, 3, 1, 1, 1)
 
-                '''self.gridLayoutVeiculo.setColumnStretch(1,3)
+                self.gridLayoutVeiculo.setColumnStretch(1,0)
+                self.gridLayoutVeiculo.setColumnStretch(2,0)
                 self.gridLayoutVeiculo.setColumnStretch(3,4)
-                self.gridLayoutVeiculo.setColumnStretch(5,3)'''
+                self.gridLayoutVeiculo.setColumnStretch(5,3)
 
                 '''spacerItem1 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding)
                 self.gridLayoutVeiculo.addItem(spacerItem1, 3, 0, 1, 1)'''
@@ -343,6 +346,9 @@ class TelaCadastroOrcamento(QtWidgets.QWidget):
                 self.vlayout6_4.addWidget(self.textEdit)
                 self.gridLayout.addWidget(self.groupBoxObs, 4, 0, -1, -1)
 
+                self.gridLayout.setColumnStretch(0,1)
+                self.gridLayout.setColumnStretch(1,1)
+
                 #botoes
                 self.framebotoes = QtWidgets.QFrame(self.main_frame)
                 self.hlayout4 = QtWidgets.QHBoxLayout(self.framebotoes)
@@ -382,7 +388,7 @@ class TelaCadastroOrcamento(QtWidgets.QWidget):
 
         def retranslateUi(self, MainWindow):
                 _translate = QtCore.QCoreApplication.translate
-                MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
+                MainWindow.setWindowTitle(_translate("MainWindow", "Mecânica Pasetto"))
                 self.botao_pecas.setText(_translate("MainWindow", "PEÇAS"))
                 self.botao_servicos.setText(_translate("MainWindow", "SERVIÇOS"))
                 self.botao_clientes.setText(_translate("MainWindow", "CLIENTES"))

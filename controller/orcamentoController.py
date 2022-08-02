@@ -3,7 +3,7 @@ from PyQt6 import QtWidgets, QtGui, QtCore
 from model.modelo import *
 from ui.telaCadastroOrcamento import TelaCadastroOrcamento
 from ui.telaConsultaAux import TelaConsultaAux
-from util.buscaCEP import buscarCEP
+from util.buscaCEP import BuscaCEP
 
 class OrcamentoController():
     def __init__(self):
@@ -20,7 +20,9 @@ class OrcamentoController():
 
     def run(self):
         self.MainWindow.show()
-        return self.app.exec()
+
+    def exit(self):
+        self.MainWindow.hide()
 
     def initConnections(self):
         self.view.botaoAddPecas.clicked.connect(self.addLinhaPeca)
@@ -79,12 +81,16 @@ class OrcamentoController():
             row=0
             for cliente in queryCliente:
                 item = QtGui.QStandardItem(str(cliente.idCliente))
+                item.setTextAlignment(QtCore.Qt.AlignmentFlag.AlignHCenter|QtCore.Qt.AlignmentFlag.AlignVCenter)
                 model.setItem(row, 0, item)
                 item = QtGui.QStandardItem(cliente.nome)
+                item.setTextAlignment(QtCore.Qt.AlignmentFlag.AlignHCenter|QtCore.Qt.AlignmentFlag.AlignVCenter)
                 model.setItem(row, 1, item)
                 item = QtGui.QStandardItem(cliente.cpf)
+                item.setTextAlignment(QtCore.Qt.AlignmentFlag.AlignHCenter|QtCore.Qt.AlignmentFlag.AlignVCenter)
                 model.setItem(row, 2, item)               
                 item = QtGui.QStandardItem(cliente.cnpj)
+                item.setTextAlignment(QtCore.Qt.AlignmentFlag.AlignHCenter|QtCore.Qt.AlignmentFlag.AlignVCenter)
                 model.setItem(row, 3, item)
                 queryVeiculo = Veiculo.select().join(Veiculo_Cliente).join(Cliente).where((Veiculo_Cliente.cliente == cliente))
                 nomes=[]
@@ -143,22 +149,28 @@ class OrcamentoController():
         try:    
             self.window = QtWidgets.QMainWindow()
             self.viewBusca = TelaConsultaAux(self.window)
-            listaHeader = ['ID', 'Marca','Modelo', 'Ano', 'Placa','Clientes']
+            listaHeader = ['ID', 'Marca','Modelo', 'Ano', 'Placa','Clientes Vinculados']
             queryVeiculo = Veiculo.select()
             model = QtGui.QStandardItemModel(len(queryVeiculo),1)
             model.setHorizontalHeaderLabels(listaHeader)
             row=0
             for veiculo in queryVeiculo:
                 item = QtGui.QStandardItem(str(veiculo.idVeiculo))
+                item.setTextAlignment(QtCore.Qt.AlignmentFlag.AlignHCenter|QtCore.Qt.AlignmentFlag.AlignVCenter)
                 model.setItem(row, 0, item)
                 querymarca = Marca.select().join(Veiculo).where(Marca.idMarca==veiculo.marca_id)
+                item.setTextAlignment(QtCore.Qt.AlignmentFlag.AlignHCenter|QtCore.Qt.AlignmentFlag.AlignVCenter)
                 item = QtGui.QStandardItem(querymarca[0].marca)
+                item.setTextAlignment(QtCore.Qt.AlignmentFlag.AlignHCenter|QtCore.Qt.AlignmentFlag.AlignVCenter)
                 model.setItem(row, 1, item)
                 item = QtGui.QStandardItem(veiculo.modelo)
+                item.setTextAlignment(QtCore.Qt.AlignmentFlag.AlignHCenter|QtCore.Qt.AlignmentFlag.AlignVCenter)
                 model.setItem(row, 2, item)
                 item = QtGui.QStandardItem(veiculo.ano)
+                item.setTextAlignment(QtCore.Qt.AlignmentFlag.AlignHCenter|QtCore.Qt.AlignmentFlag.AlignVCenter)
                 model.setItem(row, 3, item)
                 item = QtGui.QStandardItem(veiculo.placa)
+                item.setTextAlignment(QtCore.Qt.AlignmentFlag.AlignHCenter|QtCore.Qt.AlignmentFlag.AlignVCenter)
                 model.setItem(row, 4, item)
                 ##############################################################################################
                 queryCliente = Cliente.select().join(Veiculo_Cliente).where(Veiculo_Cliente.veiculo==veiculo)
@@ -179,6 +191,11 @@ class OrcamentoController():
             header.setStretchLastSection(True)
 
             self.viewBusca.botaoSelecionar.clicked.connect(self.usarVeiculo)
+
+            botaoVinculo = QtWidgets.QPushButton(self.viewBusca.framebotoes)
+            botaoVinculo.setText("Desvincular")
+            botaoVinculo.setFixedSize(100, 25)
+            self.viewBusca.hlayoutbotoes.addWidget(botaoVinculo)
 
             self.window.show()
         except Exception as e:
@@ -210,7 +227,7 @@ class OrcamentoController():
         cep = self.view.lineEditCEP.text()
         if len(cep) !=8:
             return
-        dados = buscarCEP(self.view.lineEditCEP.text())
+        dados = BuscaCEP.buscarCEP(self.view.lineEditCEP.text())
         if 'erro' in dados:
             return
         self.view.lineEditEnder.setText(dados['logradouro'])

@@ -7,7 +7,7 @@ sys.path.insert(0, os.getcwd())
 
 from util import trigger
 
-NOMEBANCODEDADOS="testeeeeeee"
+NOMEBANCODEDADOS="dbpasetto"
 
 SIGLAESTADOS = "'AC', 'AL', 'AP', 'AM', 'BA', 'CE', 'DF', 'ES', 'GO', 'MA', 'MT', 'MS', 'MG', 'PA', 'PB', 'PR', 'PE', 'PI', 'RJ', 'RN', 'RS', 'RO', 'RR', 'SC', 'SP', 'SE', 'TO'"
 
@@ -85,7 +85,7 @@ class Orcamento(BaseModel):
     aprovado = BooleanField(constraints=[SQL('DEFAULT FALSE')])
     dataAprovacao = DateField(null=True)
     dataPrevista = DateField()
-    observacoes = CharField(max_length=200)
+    observacoes = CharField(max_length=200, null=True)
 
 
 class ItemPeca(BaseModel):
@@ -119,5 +119,3 @@ def create_tables(cursor):
     tr1 = trigger.Trigger('orcamento', 'tr_set_data_aprovacao', 'before', 'update', 'new.aprovado=1', 'new.dataAprovacao=curdate()')
     tr1.create_trigger(cursor)
     
-
-
