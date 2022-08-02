@@ -7,7 +7,6 @@ from util.buscaCEP import BuscaCEP
 
 class ClienteController():
     def __init__(self):
-        self.app = QtWidgets.QApplication(sys.argv)
         self.MainWindow = QtWidgets.QMainWindow()
         super(ClienteController, self).__init__()
         self.view = TelaCadastroCliente(self.MainWindow)

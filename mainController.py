@@ -15,8 +15,6 @@ class MainController():
         self.cOrc = OrcamentoController()
 
         self.cOrc.view.botao_clientes.clicked.connect(self.telaCadastroCliente)
-        self.cOrc.view.botao_orcamentos.clicked.connect(self.telaCadastroOrcamento)
-        self.cCli.view.botao_clientes.clicked.connect(self.telaCadastroCliente)
         self.cCli.view.botao_orcamentos.clicked.connect(self.telaCadastroOrcamento)
 
     def telaInicial(self):
@@ -32,26 +30,29 @@ class MainController():
 
         window = self.app.activeWindow()
         self.cCli.MainWindow.resize(window.size())
-
         if window != None:
             self.cCli.MainWindow.resize(window.size())
             if(window.windowState()==QtCore.Qt.WindowState.WindowMaximized):
                 self.cCli.MainWindow.setWindowState(QtCore.Qt.WindowState.WindowMaximized)
             self.cCli.MainWindow.move(window.pos())
-
+            
         self.cCli.run()
-        self.cOrc.exit()
+        window.close()
 
     def telaCadastroOrcamento(self):
 
         window = self.app.activeWindow()
+        
         if window != None:
+            
             self.cOrc.MainWindow.resize(window.size())
             if(window.windowState()==QtCore.Qt.WindowState.WindowMaximized):
                 self.cOrc.MainWindow.setWindowState(QtCore.Qt.WindowState.WindowMaximized)
             self.cOrc.MainWindow.move(window.pos())
+            window.close() 
+            
         self.cOrc.run()
-        self.cCli.exit()
+        
 
     def run(self):
         self.telaCadastroOrcamento()

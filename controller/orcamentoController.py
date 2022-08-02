@@ -8,9 +8,6 @@ from util.buscaCEP import BuscaCEP
 class OrcamentoController():
     def __init__(self):
         super(OrcamentoController, self).__init__()
-        self.app = QtWidgets.QApplication(sys.argv)
-        style = open('./ui/styles.qss').read()
-        self.app.setStyleSheet(style)
         self.MainWindow = QtWidgets.QMainWindow()
         self.view = TelaCadastroOrcamento(self.MainWindow)
         self.initConnections()
