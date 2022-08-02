@@ -1,7 +1,7 @@
 import pymysql as sql
+from mainController import MainController
 
 from model.modelo import *
-from controller.orcamentoController import OrcamentoController
 
 """
 mysql://ba92f7c1b49b96:96ccbd2f@us-cdbr-east-05.cleardb.net/heroku_9dc20ebb2063eae?reconnect=true
@@ -28,5 +28,5 @@ if cursor.execute(f"SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SC
     cursor.execute(f"use {NOMEBANCODEDADOS}")
     create_tables(cursor)
 
-c = OrcamentoController()
+c = MainController()
 c.run()
