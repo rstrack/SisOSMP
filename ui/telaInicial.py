@@ -7,8 +7,6 @@
 
 from PyQt6 import QtCore, QtGui, QtWidgets
 
-from telaCadastroPeca import TelaCadastroPeca
-
 class TelaInicial(QtWidgets.QWidget):
 
         def __init__(self, MainWindow):
@@ -24,7 +22,7 @@ class TelaInicial(QtWidgets.QWidget):
                 self.hlayout1.setSpacing(0)
                 #frame lateral
                 self.framelateral = QtWidgets.QFrame(self.mainwidget)
-                self.framelateral.setMaximumWidth(300)
+                self.framelateral.setMaximumWidth(250)
                 self.framelateral.setObjectName("framelateral")
                 self.vlayout1 = QtWidgets.QVBoxLayout(self.framelateral)
                 self.vlayout1.setContentsMargins(0, 0, 0, 0)
@@ -37,12 +35,13 @@ class TelaInicial(QtWidgets.QWidget):
                 #logo
                 self.logo_label = QtWidgets.QLabel(self.logo_frame)
                 self.logo_label.setMaximumHeight(150)
-                self.logo_label.setPixmap(QtGui.QPixmap(u"logo.png"))
+                self.logo_label.setPixmap(QtGui.QPixmap("./resources/logo.png"))
                 self.logo_label.setScaledContents(True)
                 self.vlayout2.addWidget(self.logo_label)
                 self.vlayout1.addWidget(self.logo_frame)
                 #frame do menu(dentro do frame lateral)
                 self.framemenu = QtWidgets.QFrame(self.framelateral)
+                self.framemenu.setObjectName('framemenu')
                 self.vlayout3 = QtWidgets.QVBoxLayout(self.framemenu)
                 self.vlayout3.setContentsMargins(9, -1, -1, -1)
                 
@@ -63,6 +62,7 @@ class TelaInicial(QtWidgets.QWidget):
 
                 self.labelcadastro = QtWidgets.QLabel(self.framemenu1)
                 self.labelcadastro.setText("CADASTRO")
+                self.labelcadastro.setFixedHeight(25)
                 self.vlayoutlabel1 = QtWidgets.QVBoxLayout(self.framemenu1)
                 self.vlayoutlabel1.setSizeConstraint(QtWidgets.QLayout.SizeConstraint.SetDefaultConstraint)
                 self.vlayoutlabel1.setSpacing(10)
@@ -86,6 +86,7 @@ class TelaInicial(QtWidgets.QWidget):
 
                 self.labelconsulta = QtWidgets.QLabel(self.framemenu3)
                 self.labelconsulta.setText("CONSULTA")
+                self.labelconsulta.setFixedHeight(25)
                 self.vlayoutlabel2 = QtWidgets.QVBoxLayout(self.framemenu3)
                 self.vlayoutlabel2.setSizeConstraint(QtWidgets.QLayout.SizeConstraint.SetDefaultConstraint)
                 self.vlayoutlabel2.setSpacing(10)

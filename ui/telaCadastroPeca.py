@@ -7,15 +7,14 @@ class TelaCadastroPeca(QtWidgets.QWidget):
                 self.setupUi(MainWindow)
 
         def setupUi(self, MainWindow):
-                MainWindow.resize(1280, 720)
+                MainWindow.resize(1280, 760)
                 self.mainwidget = QtWidgets.QWidget(MainWindow)
-
                 self.hlayout1 = QtWidgets.QHBoxLayout(self.mainwidget)
                 self.hlayout1.setContentsMargins(0, 0, 0, 0)
                 self.hlayout1.setSpacing(0)
                 #frame lateral
                 self.framelateral = QtWidgets.QFrame(self.mainwidget)
-                self.framelateral.setMaximumWidth(300)
+                self.framelateral.setMaximumWidth(250)
                 self.framelateral.setObjectName("framelateral")
                 self.vlayout1 = QtWidgets.QVBoxLayout(self.framelateral)
                 self.vlayout1.setContentsMargins(0, 0, 0, 0)
@@ -28,19 +27,16 @@ class TelaCadastroPeca(QtWidgets.QWidget):
                 #logo
                 self.logo_label = QtWidgets.QLabel(self.logo_frame)
                 self.logo_label.setMaximumHeight(150)
-                self.logo_label.setPixmap(QtGui.QPixmap("logo.png"))
+                self.logo_label.setPixmap(QtGui.QPixmap("./resources/logo.png"))
                 self.logo_label.setScaledContents(True)
                 self.vlayout2.addWidget(self.logo_label)
                 self.vlayout1.addWidget(self.logo_frame)
                 #frame do menu(dentro do frame lateral)
                 self.framemenu = QtWidgets.QFrame(self.framelateral)
+                self.framemenu.setObjectName('framemenu')
                 self.vlayout3 = QtWidgets.QVBoxLayout(self.framemenu)
                 self.vlayout3.setContentsMargins(9, -1, -1, -1)
-                
-                ##########################################################################################################################
-
-                #frames do menu
-                
+                #frames do menu           
                 self.framemenu1 = QtWidgets.QFrame(self.framemenu)
                 self.vlayout3.addWidget(self.framemenu1)
                 self.framemenu2 = QtWidgets.QFrame(self.framemenu)
@@ -49,11 +45,10 @@ class TelaCadastroPeca(QtWidgets.QWidget):
                 self.vlayout3.addWidget(self.framemenu3)
                 self.framemenu4 = QtWidgets.QFrame(self.framemenu)
                 self.vlayout3.addWidget(self.framemenu4)
-        
                 #aba "cadastro"
-
                 self.labelcadastro = QtWidgets.QLabel(self.framemenu1)
                 self.labelcadastro.setText("CADASTRO")
+                self.labelcadastro.setFixedHeight(25)
                 self.vlayoutlabel1 = QtWidgets.QVBoxLayout(self.framemenu1)
                 self.vlayoutlabel1.setSizeConstraint(QtWidgets.QLayout.SizeConstraint.SetDefaultConstraint)
                 self.vlayoutlabel1.setSpacing(10)
@@ -61,29 +56,26 @@ class TelaCadastroPeca(QtWidgets.QWidget):
                 self.vlayout4 = QtWidgets.QVBoxLayout(self.framemenu2)
                 self.vlayout4.setSizeConstraint(QtWidgets.QLayout.SizeConstraint.SetDefaultConstraint)
                 self.vlayout4.setSpacing(10)
-        
                 #opçoes da aba
-
                 self.botao_pecas = QtWidgets.QPushButton(self.framemenu2)
+                self.botao_pecas.setObjectName('atual')
                 self.vlayout4.addWidget(self.botao_pecas)
                 self.botao_servicos = QtWidgets.QPushButton(self.framemenu2)
                 self.vlayout4.addWidget(self.botao_servicos)
                 self.botao_clientes = QtWidgets.QPushButton(self.framemenu2)
                 self.vlayout4.addWidget(self.botao_clientes)
                 self.botao_orcamentos = QtWidgets.QPushButton(self.framemenu2)
-                self.vlayout4.addWidget(self.botao_orcamentos)
-                
+                self.vlayout4.addWidget(self.botao_orcamentos)               
                 #aba "consulta"
-
                 self.labelconsulta = QtWidgets.QLabel(self.framemenu3)
                 self.labelconsulta.setText("CONSULTA")
+                self.labelconsulta.setFixedHeight(25)
                 self.vlayoutlabel2 = QtWidgets.QVBoxLayout(self.framemenu3)
                 self.vlayoutlabel2.setSizeConstraint(QtWidgets.QLayout.SizeConstraint.SetDefaultConstraint)
                 self.vlayoutlabel2.setSpacing(10)
                 self.vlayoutlabel2.addWidget(self.labelconsulta)
                 self.vlayout5 = QtWidgets.QVBoxLayout(self.framemenu4)
                 self.vlayout5.setSpacing(9)
-
                 #opçoes da aba
                 self.botao_pecas_2 = QtWidgets.QPushButton(self.framemenu4)
                 self.vlayout5.addWidget(self.botao_pecas_2)
@@ -96,29 +88,28 @@ class TelaCadastroPeca(QtWidgets.QWidget):
                 self.botao_os = QtWidgets.QPushButton(self.framemenu4)
                 self.vlayout5.addWidget(self.botao_os)
                 spacerItem1 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding)
-                self.vlayout3.addItem(spacerItem1)
-                
+                self.vlayout3.addItem(spacerItem1)              
                 self.vlayout1.addWidget(self.framemenu)
                 self.hlayout1.addWidget(self.framelateral)
                 self.main_frame = QtWidgets.QFrame(self.mainwidget)
                 self.main_frame.setObjectName("main_frame")
                 self.hlayout1.addWidget(self.main_frame)
-                self.vlayout6 = QtWidgets.QVBoxLayout(self.main_frame)
-                self.vlayout6.setContentsMargins(0, 0, 0, 0)
-                self.vlayout6.setSpacing(0)
-                
-                #####################################################################################
-
-                self.label = QtWidgets.QLabel(self.main_frame)
-                self.label.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
-                self.label.setObjectName("titulo")
-
-                self.vlayout6.addWidget(self.label)
-                self.vlayout6.setContentsMargins(18, 18, 18, 18)
-                self.vlayout6.setSpacing(50)
-                
+                self.vlayout6 = QtWidgets.QVBoxLayout(self.main_frame)               
+                #frame titulo
+                self.frame_titulo = QtWidgets.QFrame(self.main_frame)
+                self.vlayout6.addWidget(self.frame_titulo)
+                self.labelTitulo = QtWidgets.QLabel(self.frame_titulo)
+                self.labelTitulo.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
+                self.labelTitulo.setObjectName("titulo")
+                self.vlayout6.setContentsMargins(36, 18, 36, 18)
+                self.vlayout6.setSpacing(36)
+                self.vlayout6.addWidget(self.labelTitulo)
+                self.framedados = QtWidgets.QFrame(self.main_frame)
+                self.gridLayout = QtWidgets.QGridLayout(self.framedados)
+                self.vlayout6.addWidget(self.framedados)             
                 self.scrollarea = QtWidgets.QScrollArea(self.main_frame)
                 self.scrollarea.setWidgetResizable(True)
+                self.scrollarea.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarPolicy.ScrollBarAlwaysOn)
                 self.vlayout6.addWidget(self.scrollarea)
                 self.framedados = QtWidgets.QFrame(self.scrollarea)
                 self.scrollarea.setWidget(self.framedados)
@@ -135,11 +126,9 @@ class TelaCadastroPeca(QtWidgets.QWidget):
                 self.gridLayout.setColumnStretch(1,5)
                 self.gridLayout.setColumnStretch(4,1)
 
-                self.botaoadd = QtWidgets.QPushButton(self.framedados, clicked=lambda:self.addlinhapeca())
+                self.botaoadd = QtWidgets.QPushButton(self.framedados)
 
                 self.botaoadd.setFixedSize(QtCore.QSize(26,26))
-
-                self.linhaspeca = [[self.lineEditnome, self.lineEditvalor]]
 
                 self.gridLayout.addWidget(self.botaoadd, 0, 5, 1, 1)
                 spacerItem2 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Minimum)
@@ -194,27 +183,13 @@ class TelaCadastroPeca(QtWidgets.QWidget):
                 self.actionImportar_dados.setText(_translate("MainWindow", "Importar dados"))
                 self.actionExportar_dados.setText(_translate("MainWindow", "Exportar dados"))
 
-                self.label.setText(_translate("MainWindow", "Cadastro de peças"))
+                self.labelTitulo.setText(_translate("MainWindow", "Cadastro de peças"))
                 self.labelvalor.setText(_translate("MainWindow", "Valor"))
                 self.labelnome.setText(_translate("MainWindow", "Nome da peça"))
                 self.botaoadd.setText(_translate("MainWindow", "+"))
                 self.botaolimpar.setText(_translate("MainWindow", "Limpar"))
                 self.botaosalvar.setText(_translate("MainWindow", "Salvar"))
 
-
-        def addlinhapeca(self):
-                label1 = QtWidgets.QLabel(text="Nome da peça")
-                lineedit1 = QtWidgets.QLineEdit()
-                label2 = QtWidgets.QLabel(text="Valor")
-                lineedit2 = QtWidgets.QLineEdit()
-                self.gridLayout.addWidget(label1, len(self.linhaspeca), 0, 1, 1)
-                self.gridLayout.addWidget(lineedit1, len(self.linhaspeca), 1, 1, 1)
-                self.gridLayout.addWidget(label2, len(self.linhaspeca), 3, 1, 1)
-                self.gridLayout.addWidget(lineedit2, len(self.linhaspeca), 4, 1, 1)
-                self.linhaspeca.append([lineedit1, lineedit2])
-                self.gridLayout.addWidget(self.botaoadd, len(self.linhaspeca)-1, 5, 1, 1)
-                self.gridLayout.removeItem(self.spacer)
-                self.gridLayout.addItem(self.spacer, len(self.linhaspeca), 0, 1, 1)
 
 
 if __name__ == "__main__":

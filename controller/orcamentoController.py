@@ -10,16 +10,13 @@ class OrcamentoController():
         super(OrcamentoController, self).__init__()
         self.MainWindow = QtWidgets.QMainWindow()
         self.view = TelaCadastroOrcamento(self.MainWindow)
+        self.linhaspecas = [[self.view.lineEditNomePeca, self.view.lineEditValorPeca]]
+        self.linhasServicos = [[self.view.lineEditNomeServico, self.view.lineEditValorServico]]
         self.initConnections()
         self.marcas()
-        self.idCliente = 0
-        self.idVeiculo =0
 
     def run(self):
         self.MainWindow.show()
-
-    def exit(self):
-        self.MainWindow.hide()
 
     def initConnections(self):
         self.view.botaoAddPecas.clicked.connect(self.addLinhaPeca)
@@ -31,6 +28,8 @@ class OrcamentoController():
         self.view.botaoSalvar.clicked.connect(self.salvarOrcamento)
         self.view.botaoSalvareImprimir.clicked.connect(self.salvareImprimir)
         self.view.comboBox.currentIndexChanged.connect(self.escolherPessoa)
+        self.view.checkboxNovoCliente.stateChanged.connect(self.habilitarCamposCliente)
+        self.view.checkboxNovoVeiculo.stateChanged.connect(self.habilitarCamposVeiculo)
 
     def marcas(self):
         self.view.comboBoxMarca.clear()
@@ -44,28 +43,47 @@ class OrcamentoController():
         lineedit1 = QtWidgets.QLineEdit()
         label2 = QtWidgets.QLabel(text="Valor")
         lineedit2 = QtWidgets.QLineEdit()
-        self.view.gridLayout_2.addWidget(label1, len(self.view.linhaspeca), 0, 1, 1)
-        self.view.gridLayout_2.addWidget(lineedit1, len(self.view.linhaspeca), 1, 1, 1)
-        self.view.gridLayout_2.addWidget(label2, len(self.view.linhaspeca), 3, 1, 1)
-        self.view.gridLayout_2.addWidget(lineedit2, len(self.view.linhaspeca), 4, 1, 1)
-        self.view.linhaspeca.append([lineedit1, lineedit2])
-        self.view.gridLayout_2.addWidget(self.view.botaoAddPecas, len(self.view.linhaspeca)-1, 5, 1, 1)
+        self.view.gridLayout_2.addWidget(label1, len(self.linhaspecas), 0, 1, 1)
+        self.view.gridLayout_2.addWidget(lineedit1, len(self.linhaspecas), 1, 1, 1)
+        self.view.gridLayout_2.addWidget(label2, len(self.linhaspecas), 3, 1, 1)
+        self.view.gridLayout_2.addWidget(lineedit2, len(self.linhaspecas), 4, 1, 1)
+        self.linhaspecas.append([lineedit1, lineedit2])
+        self.view.gridLayout_2.addWidget(self.view.botaoAddPecas, len(self.linhaspecas)-1, 5, 1, 1)
         self.view.gridLayout_2.removeItem(self.view.spacerpeca)
-        self.view.gridLayout_2.addItem(self.view.spacerpeca, len(self.view.linhaspeca), 0, 1, 1)
+        self.view.gridLayout_2.addItem(self.view.spacerpeca, len(self.linhaspecas), 0, 1, 1)
 
     def addLinhaServico(self):
         label1 = QtWidgets.QLabel(text="Serviço")
         lineedit1 = QtWidgets.QLineEdit()
         label2 = QtWidgets.QLabel(text="Valor")
         lineedit2 = QtWidgets.QLineEdit()
-        self.view.gridLayout_5.addWidget(label1, len(self.view.linhasservicos), 0, 1, 1)
-        self.view.gridLayout_5.addWidget(lineedit1, len(self.view.linhasservicos), 1, 1, 1)
-        self.view.gridLayout_5.addWidget(label2, len(self.view.linhasservicos), 3, 1, 1)
-        self.view.gridLayout_5.addWidget(lineedit2, len(self.view.linhasservicos), 4, 1, 1)
-        self.view.linhasservicos.append([lineedit1, lineedit2])
-        self.view.gridLayout_5.addWidget(self.view.botaoAddServicos, len(self.view.linhasservicos)-1, 5, 1, 1)
+        self.view.gridLayout_5.addWidget(label1, len(self.linhasServicos), 0, 1, 1)
+        self.view.gridLayout_5.addWidget(lineedit1, len(self.linhasServicos), 1, 1, 1)
+        self.view.gridLayout_5.addWidget(label2, len(self.linhasServicos), 3, 1, 1)
+        self.view.gridLayout_5.addWidget(lineedit2, len(self.linhasServicos), 4, 1, 1)
+        self.linhasServicos.append([lineedit1, lineedit2])
+        self.view.gridLayout_5.addWidget(self.view.botaoAddServicos, len(self.linhasServicos)-1, 5, 1, 1)
         self.view.gridLayout_5.removeItem(self.view.spacerservico)
-        self.view.gridLayout_5.addItem(self.view.spacerservico, len(self.view.linhasservicos), 0, 1, 1)
+        self.view.gridLayout_5.addItem(self.view.spacerservico, len(self.linhasServicos), 0, 1, 1)
+
+    def habilitarCamposCliente(self):
+        for lineEdit in self.view.groupBoxCliente.findChildren(QtWidgets.QLineEdit):
+            if self.view.checkboxNovoCliente.isChecked():
+                lineEdit.clear()
+                lineEdit.setReadOnly(False)
+            else:
+                lineEdit.setReadOnly(True)
+
+    def habilitarCamposVeiculo(self):
+        for lineEdit in self.view.groupBoxVeiculo.findChildren(QtWidgets.QLineEdit):
+            if self.view.checkboxNovoVeiculo.isChecked():
+                lineEdit.clear()
+                lineEdit.setReadOnly(False)
+            else:
+                lineEdit.setReadOnly(True)
+        self.view.lineEditKm.setReadOnly(False)
+
+            
 
     def buscarCliente(self):
         try:
@@ -95,9 +113,7 @@ class OrcamentoController():
                     nomes.append(': '.join([veiculo.modelo, veiculo.placa]))
                 item = QtGui.QStandardItem(', '.join(nomes))
                 model.setItem(row, 4, item)
-
-                row=row+1
-            
+                row=row+1    
             self.viewBusca.filter.setSourceModel(model)
             self.viewBusca.filter.setFilterKeyColumn(-1)
             self.viewBusca.lineEditBusca.textChanged.connect(self.viewBusca.filter.setFilterRegularExpression)
@@ -106,7 +122,6 @@ class OrcamentoController():
             header.setSectionResizeMode(QtWidgets.QHeaderView.ResizeMode.Interactive)
             header.setSectionResizeMode(0,QtWidgets.QHeaderView.ResizeMode.ResizeToContents)
             header.setStretchLastSection(True)
-            
             self.viewBusca.botaoSelecionar.clicked.connect(self.usarCliente)
             self.window.show()
         except Exception as e:
@@ -118,28 +133,36 @@ class OrcamentoController():
     def usarCliente(self):
         self.linha = self.viewBusca.tabela.selectionModel().selectedRows()[0]
         id = self.viewBusca.tabela.model().index(self.linha.row(),0).data()
-        queryCliente = Cliente.select().where(Cliente.idCliente==int(id))
-        self.view.lineEditNomeCliente.setText(queryCliente[0].nome)
-        self.view.lineEditCEP.setText(queryCliente[0].cep)
-        self.view.lineEditEnder.setText(queryCliente[0].endereco)
-        self.view.lineEditNumero.setText(queryCliente[0].numero)
-        self.view.lineEditBairro.setText(queryCliente[0].bairro)
-        if(queryCliente[0].cpf):
-            self.view.lineEditCPFJ.setText(queryCliente[0].cpf)
+        queryCliente = Cliente.select().where(Cliente.idCliente==int(id))[0]
+        self.cliente=queryCliente
+        self.view.lineEditNomeCliente.setText(queryCliente.nome)
+        self.view.lineEditNomeCliente.setReadOnly(True)
+        self.view.lineEditCEP.setText(queryCliente.cep)
+        self.view.lineEditCEP.setReadOnly(True)
+        self.view.lineEditEnder.setText(queryCliente.endereco)
+        self.view.lineEditEnder.setReadOnly(True)
+        self.view.lineEditNumero.setText(queryCliente.numero)
+        self.view.lineEditNumero.setReadOnly(True)
+        self.view.lineEditBairro.setText(queryCliente.bairro)
+        self.view.lineEditBairro.setReadOnly(True)
+        if(queryCliente.cpf):
+            self.view.lineEditCPFJ.setText(queryCliente.cpf)
             self.view.labelcpfj.setText("CPF")
             self.view.comboBox.setCurrentIndex(0)
-        if(queryCliente[0].cnpj):
-            self.view.lineEditCPFJ.setText(queryCliente[0].cnpj)
+        if(queryCliente.cnpj):
+            self.view.lineEditCPFJ.setText(queryCliente.cnpj)
             self.view.labelcpfj.setText("CNPJ")
             self.view.comboBox.setCurrentIndex(1)
-        queryCidade = Cidade.select().join(Cliente).where(queryCliente[0].cidade_id==Cidade.idCidade)
-        self.view.lineEditCidade.setText(queryCidade[0].nome)
-        queryEstado = Estado.select().join(Cidade).where(queryCidade[0].estado_id==Estado.UF)
-        for index in range(self.view.comboBoxuf.count()):
-            if(self.view.comboBoxuf.itemText(index)==queryEstado[0].UF):
-                self.view.comboBoxuf.setCurrentIndex(index)
-                break
-        self.idCliente = queryCliente[0].idCliente
+        queryCidade = Cidade.select().join(Cliente).where(queryCliente.cidade_id==Cidade.idCidade)
+        if queryCidade:
+            self.view.lineEditCidade.setText(queryCidade[0].nome)
+            queryEstado = Estado.select().join(Cidade).where(queryCidade[0].estado_id==Estado.UF)
+            if queryEstado:
+                for index in range(self.view.comboBoxuf.count()):
+                    if(self.view.comboBoxuf.itemText(index)==queryEstado[0].UF):
+                        self.view.comboBoxuf.setCurrentIndex(index)
+                        break
+        self.view.checkboxNovoCliente.setChecked(False)
         self.window.close()
 
     def buscarVeiculo(self):
@@ -193,7 +216,7 @@ class OrcamentoController():
             botaoVinculo.setText("Desvincular")
             botaoVinculo.setFixedSize(100, 25)
             self.viewBusca.hlayoutbotoes.addWidget(botaoVinculo)
-
+            self.veiculo = queryVeiculo
             self.window.show()
         except Exception as e:
                 msg =  QtWidgets.QMessageBox()
@@ -204,20 +227,22 @@ class OrcamentoController():
     def usarVeiculo(self):
         self.linha = self.viewBusca.tabela.selectionModel().selectedRows()[0]
         id = self.viewBusca.tabela.model().index(self.linha.row(),0).data()
-        queryVeiculo = Veiculo.select().where(Veiculo.idVeiculo==int(id))
-        self.view.lineEditModelo.setText(queryVeiculo[0].modelo)
-        self.view.lineEditPlaca.setText(queryVeiculo[0].placa)
-        self.view.lineEditAno.setText(queryVeiculo[0].ano)
-        queryMarca = Marca.select().join(Veiculo).where(queryVeiculo[0].marca_id==Marca.idMarca)
+        queryVeiculo = Veiculo.select().where(Veiculo.idVeiculo==int(id))[0]
+        self.veiculo=queryVeiculo
+        self.view.lineEditModelo.setText(queryVeiculo.modelo)
+        self.view.lineEditPlaca.setText(queryVeiculo.placa)
+        self.view.lineEditAno.setText(queryVeiculo.ano)
+        queryMarca = Marca.select().join(Veiculo).where(queryVeiculo.marca_id==Marca.idMarca)
         for index in range(self.view.comboBoxMarca.count()):
             if(self.view.comboBoxMarca.itemText(index)==queryMarca[0].marca):
                 self.view.comboBoxMarca.setCurrentIndex(index)
                 break
-        self.idVeiculo = queryVeiculo[0].idVeiculo
+        self.idVeiculo = queryVeiculo.idVeiculo
         self.view.comboBoxMarca.setEnabled(False)
         self.view.lineEditModelo.setReadOnly(True)
         self.view.lineEditAno.setReadOnly(True)
         self.view.lineEditPlaca.setReadOnly(True)
+        self.view.checkboxNovoVeiculo.setChecked(False)
         self.window.close()
 
     def buscarDadosCEP(self):
@@ -238,7 +263,8 @@ class OrcamentoController():
     def limparCampos(self):
         for lineedit in self.view.framedados.findChildren(QtWidgets.QLineEdit):
             lineedit.clear()
-        self.marcas()
+        self.view.checkboxNovoCliente.setChecked(True)
+        self.view.checkboxNovoVeiculo.setChecked(True)
 
     def salvarCliente(self):
         dict = {}
@@ -299,16 +325,16 @@ class OrcamentoController():
     def salvarOrcamento(self):
         with db.atomic() as transaction:
             try:
-                if not self.idCliente:
+                if self.view.checkboxNovoCliente.isChecked():
                     cliente = self.salvarCliente()
-                    self.idCliente = 0
                 else:
-                    cliente = Cliente.select().where(Cliente.nome==self.view.lineEditNomeCliente.text())
-                if not self.idVeiculo:
+                    cliente = self.cliente
+                if self.view.checkboxNovoVeiculo.isChecked():
                     veiculo = self.salvarVeiculo()
-                    self.idVeiculo = 0
-                else: veiculo = Veiculo.select().where(Veiculo.modelo==self.view.lineEditModelo.text())
-                veiculocliente = Veiculo_Cliente.create(cliente=cliente, veiculo=veiculo)
+                else: veiculo = self.veiculo
+
+                if Veiculo_Cliente.select().where(Veiculo_Cliente.cliente==cliente and  Veiculo_Cliente.veiculo==veiculo) == None:
+                    Veiculo_Cliente.create(cliente=cliente, veiculo=veiculo)
                 
                 pecas = self.salvarPecas()
                 servicos = self.salvarServicos()
@@ -317,6 +343,8 @@ class OrcamentoController():
                 msg.setWindowTitle("Aviso")
                 msg.setText("Dados inseridos ")
                 msg.exec()
+                self.limparCampos()
+                self.marcas()
             
             except Exception as e:
                 transaction.rollback()
