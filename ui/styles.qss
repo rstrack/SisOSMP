@@ -50,6 +50,14 @@ QPushButton#atual{
     background-color: #1276B9;
 }
 
+QPushButton#excluir{
+    background-color: #F50505;
+}
+
+QPushButton#excluir:hover{
+    background-color: #AA0000;
+}
+
 QLabel{
     font-family: 'Lato', sans-serif;
     font-size:14px;
@@ -82,7 +90,6 @@ QComboBox{
 }
 
 QComboBox QAbstractItemView {
-
     selection-background-color: lightgray;
 }
 

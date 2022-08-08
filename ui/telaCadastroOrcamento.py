@@ -1,102 +1,19 @@
 from PyQt6 import QtCore, QtGui, QtWidgets
 
 SIGLAESTADOS = ['AC', 'AL', 'AP', 'AM', 'BA', 'CE', 'DF', 'ES', 'GO', 'MA', 'MT', 'MS', 'MG', 'PA', 'PB', 'PR', 'PE', 'PI', 'RJ', 'RN', 'RS', 'RO', 'RR', 'SC', 'SP', 'SE', 'TO']
+UNIDADES = ['CM', 'CM2', 'CM3', 'CX', 'DZ', 'G', 'KG', 'L', 'M', 'M2', 'M3', 'ML', 'PAR', 'PCT', 'ROLO', 'UN']
 
-class TelaCadastroOrcamento(QtWidgets.QWidget):
+class TelaCadastroOrcamento(QtWidgets.QMainWindow):
 
-        def __init__(self, MainWindow):
+        def __init__(self):
                 super(TelaCadastroOrcamento, self).__init__()
-                self.setupUi(MainWindow)
+                self.setupUi()
 
-        def setupUi(self, MainWindow):
+        def setupUi(self):
 
-                MainWindow.resize(1280, 760)
-                self.mainwidget = QtWidgets.QWidget(MainWindow)
-                self.hlayout1 = QtWidgets.QHBoxLayout(self.mainwidget)
-                self.hlayout1.setContentsMargins(0, 0, 0, 0)
-                self.hlayout1.setSpacing(0)
-                #frame lateral
-                self.framelateral = QtWidgets.QFrame(self.mainwidget)
-                self.framelateral.setMaximumWidth(250)
-                self.framelateral.setObjectName("framelateral")
-                self.vlayout1 = QtWidgets.QVBoxLayout(self.framelateral)
-                self.vlayout1.setContentsMargins(0, 0, 0, 0)
-                self.vlayout1.setSpacing(0)
-                #frame da logo(dentro do frame lateral)
-                self.logo_frame = QtWidgets.QFrame(self.framelateral)
-                self.vlayout2 = QtWidgets.QVBoxLayout(self.logo_frame)
-                self.vlayout2.setContentsMargins(8, 0, 8, 0)
-                self.vlayout2.setSpacing(0)
-                #logo
-                self.logo_label = QtWidgets.QLabel(self.logo_frame)
-                self.logo_label.setMaximumHeight(150)
-                self.logo_label.setPixmap(QtGui.QPixmap("./resources/logo.png"))
-                self.logo_label.setScaledContents(True)
-                self.vlayout2.addWidget(self.logo_label)
-                self.vlayout1.addWidget(self.logo_frame)
-                #frame do menu(dentro do frame lateral)
-                self.framemenu = QtWidgets.QFrame(self.framelateral)
-                self.framemenu.setObjectName('framemenu')
-                self.vlayout3 = QtWidgets.QVBoxLayout(self.framemenu)
-                self.vlayout3.setContentsMargins(9, -1, -1, -1)
-                #frames do menu           
-                self.framemenu1 = QtWidgets.QFrame(self.framemenu)
-                self.vlayout3.addWidget(self.framemenu1)
-                self.framemenu2 = QtWidgets.QFrame(self.framemenu)
-                self.vlayout3.addWidget(self.framemenu2)
-                self.framemenu3 = QtWidgets.QFrame(self.framemenu)
-                self.vlayout3.addWidget(self.framemenu3)
-                self.framemenu4 = QtWidgets.QFrame(self.framemenu)
-                self.vlayout3.addWidget(self.framemenu4)
-                #aba "cadastro"
-                self.labelcadastro = QtWidgets.QLabel(self.framemenu1)
-                self.labelcadastro.setText("CADASTRO")
-                self.labelcadastro.setFixedHeight(25)
-                self.vlayoutlabel1 = QtWidgets.QVBoxLayout(self.framemenu1)
-                self.vlayoutlabel1.setSizeConstraint(QtWidgets.QLayout.SizeConstraint.SetDefaultConstraint)
-                self.vlayoutlabel1.setSpacing(10)
-                self.vlayoutlabel1.addWidget(self.labelcadastro)
-                self.vlayout4 = QtWidgets.QVBoxLayout(self.framemenu2)
-                self.vlayout4.setSizeConstraint(QtWidgets.QLayout.SizeConstraint.SetDefaultConstraint)
-                self.vlayout4.setSpacing(10)
-                #opçoes da aba
-                self.botao_pecas = QtWidgets.QPushButton(self.framemenu2)
-                self.vlayout4.addWidget(self.botao_pecas)
-                self.botao_servicos = QtWidgets.QPushButton(self.framemenu2)
-                self.vlayout4.addWidget(self.botao_servicos)
-                self.botao_clientes = QtWidgets.QPushButton(self.framemenu2)
-                self.vlayout4.addWidget(self.botao_clientes)
-                self.botao_orcamentos = QtWidgets.QPushButton(self.framemenu2)
-                self.botao_orcamentos.setObjectName('atual')
-                self.vlayout4.addWidget(self.botao_orcamentos)               
-                #aba "consulta"
-                self.labelconsulta = QtWidgets.QLabel(self.framemenu3)
-                self.labelconsulta.setText("CONSULTA")
-                self.labelconsulta.setFixedHeight(25)
-                self.vlayoutlabel2 = QtWidgets.QVBoxLayout(self.framemenu3)
-                self.vlayoutlabel2.setSizeConstraint(QtWidgets.QLayout.SizeConstraint.SetDefaultConstraint)
-                self.vlayoutlabel2.setSpacing(10)
-                self.vlayoutlabel2.addWidget(self.labelconsulta)
-                self.vlayout5 = QtWidgets.QVBoxLayout(self.framemenu4)
-                self.vlayout5.setSpacing(9)
-                #opçoes da aba
-                self.botao_pecas_2 = QtWidgets.QPushButton(self.framemenu4)
-                self.vlayout5.addWidget(self.botao_pecas_2)
-                self.botao_servicos_2 = QtWidgets.QPushButton(self.framemenu4)
-                self.vlayout5.addWidget(self.botao_servicos_2)
-                self.botao_clientes_2 = QtWidgets.QPushButton(self.framemenu4)
-                self.vlayout5.addWidget(self.botao_clientes_2)
-                self.botao_orcamentos_2 = QtWidgets.QPushButton(self.framemenu4)
-                self.vlayout5.addWidget(self.botao_orcamentos_2)
-                self.botao_os = QtWidgets.QPushButton(self.framemenu4)
-                self.vlayout5.addWidget(self.botao_os)
-                spacerItem1 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding)
-                self.vlayout3.addItem(spacerItem1)              
-                self.vlayout1.addWidget(self.framemenu)
-                self.hlayout1.addWidget(self.framelateral)
-                self.main_frame = QtWidgets.QFrame(self.mainwidget)
+                self.resize(1280, 760)
+                self.main_frame = QtWidgets.QFrame(self)
                 self.main_frame.setObjectName("main_frame")
-                self.hlayout1.addWidget(self.main_frame)
                 self.vlayout6 = QtWidgets.QVBoxLayout(self.main_frame)               
                 #frame titulo
                 self.frame_titulo = QtWidgets.QFrame(self.main_frame)
@@ -125,9 +42,9 @@ class TelaCadastroOrcamento(QtWidgets.QWidget):
                 self.gridLayoutCliente.addWidget(self.checkboxNovoCliente, 0, 2, 1, 2)
                 self.labelPessoa = QtWidgets.QLabel(self.groupBoxCliente)
                 self.gridLayoutCliente.addWidget(self.labelPessoa, 1, 0, 1, 1)
-                self.comboBox = QtWidgets.QComboBox(self.groupBoxCliente)
-                self.comboBox.addItems(["FÍSICA", "JURÍDICA"])
-                self.gridLayoutCliente.addWidget(self.comboBox, 1, 1, 1, 1)
+                self.comboBoxPessoa = QtWidgets.QComboBox(self.groupBoxCliente)
+                self.comboBoxPessoa.addItems(["FÍSICA", "JURÍDICA"])
+                self.gridLayoutCliente.addWidget(self.comboBoxPessoa, 1, 1, 1, 1)
                 self.labelcpfj = QtWidgets.QLabel(self.groupBoxCliente)
                 self.gridLayoutCliente.addWidget(self.labelcpfj, 1, 2, 1, 1)
                 self.lineEditCPFJ = QtWidgets.QLineEdit(self.groupBoxCliente)
@@ -169,12 +86,11 @@ class TelaCadastroOrcamento(QtWidgets.QWidget):
                 self.labelFone2 = QtWidgets.QLabel(self.groupBoxCliente)
                 self.gridLayoutCliente.addWidget(self.labelFone2, 6, 3, 1, 1)
                 self.lineEditFone2 = QtWidgets.QLineEdit(self.groupBoxCliente)
-                self.gridLayoutCliente.addWidget(self.lineEditFone2, 6, 4, 1, 3)               
+                self.gridLayoutCliente.addWidget(self.lineEditFone2, 6, 4, 1, 3)         
                 self.gridLayoutCliente.setColumnStretch(1,0)
                 self.gridLayoutCliente.setColumnStretch(4,4)
                 self.gridLayoutCliente.setColumnStretch(6,2)
-                '''spacerItem = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding)
-                self.gridLayoutCliente.addItem(spacerItem, 6, 0, 1, 1)'''
+
                 self.gridLayout.addWidget(self.groupBoxCliente, 0, 0, 2, 1)
                 #dados do veiculo
                 self.groupBoxVeiculo = QtWidgets.QGroupBox(self.framedados)
@@ -210,8 +126,7 @@ class TelaCadastroOrcamento(QtWidgets.QWidget):
                 self.gridLayoutVeiculo.setColumnStretch(2,0)
                 self.gridLayoutVeiculo.setColumnStretch(3,4)
                 self.gridLayoutVeiculo.setColumnStretch(5,3)
-                '''spacerItem1 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding)
-                self.gridLayoutVeiculo.addItem(spacerItem1, 3, 0, 1, 1)'''
+
                 self.gridLayout.addWidget(self.groupBoxVeiculo, 0, 1, 1, 1)
                 #dados especificos do orçamento
                 self.groupBoxOrcamento = QtWidgets.QGroupBox(self.framedados)
@@ -245,17 +160,30 @@ class TelaCadastroOrcamento(QtWidgets.QWidget):
                 self.gridLayout_2.addWidget(self.labelNomePeca, 0, 0, 1, 1)
                 self.lineEditNomePeca = QtWidgets.QLineEdit(self.framegroupboxpecas)
                 self.gridLayout_2.addWidget(self.lineEditNomePeca, 0, 1, 1, 1)
+                self.labelQtde = QtWidgets.QLabel(self.framegroupboxpecas)
+                self.gridLayout_2.addWidget(self.labelQtde, 0, 2, 1, 1)
+                self.lineEditQtdeP = QtWidgets.QLineEdit(self.framegroupboxpecas)      
+                self.gridLayout_2.addWidget(self.lineEditQtdeP, 0, 3, 1, 1)
+                self.labelUn = QtWidgets.QLabel(self.framegroupboxpecas)      
+                self.gridLayout_2.addWidget(self.labelUn, 0, 4, 1, 1)
+                self.comboBoxUn = QtWidgets.QComboBox(self.framegroupboxpecas)
+                self.comboBoxUn.addItems(UNIDADES)
+                self.comboBoxUn.setMinimumWidth(50)
+                self.comboBoxUn.setCurrentIndex(15)
+                self.gridLayout_2.addWidget(self.comboBoxUn, 0, 5, 1, 1)
                 self.labelValorPeca = QtWidgets.QLabel(self.framegroupboxpecas)
-                self.gridLayout_2.addWidget(self.labelValorPeca, 0, 3, 1, 1)
+                self.gridLayout_2.addWidget(self.labelValorPeca, 0, 6, 1, 1)
                 self.lineEditValorPeca = QtWidgets.QLineEdit(self.framegroupboxpecas)
-                self.gridLayout_2.addWidget(self.lineEditValorPeca, 0, 4, 1, 1)
-                self.botaoAddPecas = QtWidgets.QPushButton(self.framegroupboxpecas)
-                self.gridLayout_2.addWidget(self.botaoAddPecas, 0, 5, 1, 1)           
-                self.linhaspeca = [[self.lineEditNomePeca, self.lineEditValorPeca]]
+                self.gridLayout_2.addWidget(self.lineEditValorPeca, 0, 7, 1, 1)
+                self.botaoAddPecas = QtWidgets.QPushButton(self.framegroupboxpecas, clicked=self.addLinhaPeca)
+                self.gridLayout_2.addWidget(self.botaoAddPecas, 0, 8, 1, 1)           
+                self.linhasPeca = [[self.lineEditNomePeca, self.lineEditQtdeP, self.comboBoxUn, self.lineEditValorPeca]]
                 self.spacerpeca = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding)
                 self.gridLayout_2.addItem(self.spacerpeca, 1, 0, 1, 1)
-                self.gridLayout_2.setColumnStretch(1,4)
-                self.gridLayout_2.setColumnStretch(4,1)
+                self.gridLayout_2.setColumnStretch(1,8)
+                self.gridLayout_2.setColumnStretch(3,1)
+                self.gridLayout_2.setColumnStretch(5,1)
+                self.gridLayout_2.setColumnStretch(7,2)
                 self.gridLayout.addWidget(self.groupBoxPecas, 2, 0, 1, 1)
                 #serviços
                 self.groupBoxServicos = QtWidgets.QGroupBox(self.framedados)
@@ -273,17 +201,22 @@ class TelaCadastroOrcamento(QtWidgets.QWidget):
                 self.gridLayout_5.addWidget(self.labelNomeServico, 0, 0, 1, 1)
                 self.lineEditNomeServico = QtWidgets.QLineEdit(self.framegroupboxservicos)
                 self.gridLayout_5.addWidget(self.lineEditNomeServico, 0, 1, 1, 1)
+                self.labelQtdeS = QtWidgets.QLabel(self.framegroupboxservicos)
+                self.gridLayout_5.addWidget(self.labelQtdeS, 0, 2, 1, 1)
+                self.lineEditQtdeS = QtWidgets.QLineEdit(self.framegroupboxservicos)
+                self.gridLayout_5.addWidget(self.lineEditQtdeS, 0, 3, 1, 1)
                 self.labelValorServico = QtWidgets.QLabel(self.framegroupboxservicos)
-                self.gridLayout_5.addWidget(self.labelValorServico, 0, 3, 1, 1)
+                self.gridLayout_5.addWidget(self.labelValorServico, 0, 4, 1, 1)
                 self.lineEditValorServico = QtWidgets.QLineEdit(self.framegroupboxservicos)
-                self.gridLayout_5.addWidget(self.lineEditValorServico, 0, 4, 1, 1)
-                self.botaoAddServicos = QtWidgets.QPushButton(self.framegroupboxservicos)
-                self.gridLayout_5.addWidget(self.botaoAddServicos, 0, 5, 1, 1)
-                self.linhasservicos = [[self.lineEditNomeServico, self.lineEditValorServico]]
+                self.gridLayout_5.addWidget(self.lineEditValorServico, 0, 5, 1, 1)
+                self.botaoAddServicos = QtWidgets.QPushButton(self.framegroupboxservicos, clicked=self.addLinhaServico)
+                self.gridLayout_5.addWidget(self.botaoAddServicos, 0, 6, 1, 1)
+                self.linhasServicos = [[self.lineEditNomeServico, self.lineEditQtdeS, self.lineEditValorServico]]
                 self.spacerservico = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding)
                 self.gridLayout_5.addItem(self.spacerservico, 1, 0, 1, 1)
-                self.gridLayout_5.setColumnStretch(1,4)
-                self.gridLayout_5.setColumnStretch(4,1)
+                self.gridLayout_5.setColumnStretch(1,12)
+                self.gridLayout_5.setColumnStretch(3,1)
+                self.gridLayout_5.setColumnStretch(5,2)
                 self.gridLayout.addWidget(self.groupBoxServicos, 2, 1, 1, 1)
                 #valor
                 self.framevalor = QtWidgets.QFrame(self.framedados)
@@ -322,39 +255,29 @@ class TelaCadastroOrcamento(QtWidgets.QWidget):
                 self.hlayout4.addWidget(self.botaolimpar)
                 self.hlayout4.setContentsMargins(9,0,9,9)
                 self.vlayout6.addWidget(self.framebotoes)
-                #barra de menu             
-                MainWindow.setCentralWidget(self.mainwidget)
-                self.menubar = QtWidgets.QMenuBar(MainWindow)
-                self.menubar.setGeometry(QtCore.QRect(0, 0, 948, 21))
-                self.menubar.setDefaultUp(False)
-                self.menuFerramentas = QtWidgets.QMenu(self.menubar)
-                MainWindow.setMenuBar(self.menubar)
-                self.actionImportar_dados = QtGui.QAction(MainWindow)
-                self.actionExportar_dados = QtGui.QAction(MainWindow)
-                self.menuFerramentas.addAction(self.actionImportar_dados)
-                self.menuFerramentas.addAction(self.actionExportar_dados)
-                self.menubar.addAction(self.menuFerramentas.menuAction())
-                self.retranslateUi(MainWindow)
+           
+                self.setCentralWidget(self.main_frame)
+
+                self.completerPeca = QtWidgets.QCompleter([])
+                self.completerPeca.setCaseSensitivity(QtCore.Qt.CaseSensitivity.CaseInsensitive)
+                self.completerPeca.setCompletionMode(QtWidgets.QCompleter.CompletionMode.UnfilteredPopupCompletion)
+                self.lineEditNomePeca.setCompleter(self.completerPeca)
+                self.completerServico = QtWidgets.QCompleter([])
+                self.completerServico.setCaseSensitivity(QtCore.Qt.CaseSensitivity.CaseInsensitive)
+                self.completerServico.setCompletionMode(QtWidgets.QCompleter.CompletionMode.UnfilteredPopupCompletion)
+                self.lineEditNomeServico.setCompleter(self.completerServico)
+
+                self.retranslateUi()
 
 
-        def retranslateUi(self, MainWindow):
+        def retranslateUi(self):
                 _translate = QtCore.QCoreApplication.translate
-                MainWindow.setWindowTitle(_translate("MainWindow", "Mecânica Pasetto"))
-                self.botao_pecas.setText(_translate("MainWindow", "PEÇAS"))
-                self.botao_servicos.setText(_translate("MainWindow", "SERVIÇOS"))
-                self.botao_clientes.setText(_translate("MainWindow", "CLIENTES"))
-                self.botao_orcamentos.setText(_translate("MainWindow", "ORÇAMENTOS"))
-                self.botao_pecas_2.setText(_translate("MainWindow", "PEÇAS"))
-                self.botao_servicos_2.setText(_translate("MainWindow", "SERVIÇOS"))
-                self.botao_clientes_2.setText(_translate("MainWindow", "CLIENTES"))
-                self.botao_orcamentos_2.setText(_translate("MainWindow", "ORÇAMENTOS"))
-                self.botao_os.setText(_translate("MainWindow", "ORDENS DE SERVIÇO"))
+                self.setWindowTitle(_translate("MainWindow", "Mecânica Pasetto"))
+
                 self.botaoSalvareImprimir.setText(_translate("MainWindow", "Salvar e Imprimir"))
                 self.botaoSalvar.setText(_translate("MainWindow", "Salvar"))
                 self.botaolimpar.setText(_translate("MainWindow", "Limpar"))
-                self.menuFerramentas.setTitle(_translate("MainWindow", "Ferramentas"))
-                self.actionImportar_dados.setText(_translate("MainWindow", "Importar dados"))
-                self.actionExportar_dados.setText(_translate("MainWindow", "Exportar dados"))
+
                 self.labelTitulo.setText(_translate("MainWindow", "Orçamentos"))
                 self.groupBoxCliente.setTitle(_translate("MainWindow", "Dados do Cliente"))
                 self.botaobuscarcliente.setText(_translate("MainWindow", "Selecionar Cliente"))
@@ -385,20 +308,191 @@ class TelaCadastroOrcamento(QtWidgets.QWidget):
                 self.botaoAddServicos.setText(_translate("MainWindow", "+"))
                 self.labelValorServico.setText(_translate("MainWindow", "Valor"))
                 self.labelNomeServico.setText(_translate("MainWindow", "Serviço"))
+                self.labelQtdeS.setText(_translate("MainWindow", "Qtde"))
                 self.groupBoxObs.setTitle(_translate("MainWindow", "Observações (Max. 200 caracteres)"))
                 self.groupBoxPecas.setTitle(_translate("MainWindow", "Peças"))
+                self.labelQtde.setText(_translate("MainWindow", "Qtde"))
+                self.labelUn.setText(_translate("MainWindow", "Un"))
                 self.botaoAddPecas.setText(_translate("MainWindow", "+"))
                 self.labelNomePeca.setText(_translate("MainWindow", "Peça"))
                 self.labelValorPeca.setText(_translate("MainWindow", "Valor"))
+
+        def addLinhaPeca(self):
+                label1 = QtWidgets.QLabel(text="Peça")
+                lineedit1 = QtWidgets.QLineEdit()
+                label2 = QtWidgets.QLabel(text="Qtde")
+                lineedit2 = QtWidgets.QLineEdit()
+                label3 = QtWidgets.QLabel(text="Un")
+                comboBox = QtWidgets.QComboBox()
+                comboBox.addItems(UNIDADES)
+                comboBox.setCurrentIndex(15)
+                label4 = QtWidgets.QLabel(text="Valor")
+                lineedit4 = QtWidgets.QLineEdit()
+                self.gridLayout_2.addWidget(label1, len(self.linhasPeca), 0, 1, 1)
+                self.gridLayout_2.addWidget(lineedit1, len(self.linhasPeca), 1, 1, 1)
+                self.gridLayout_2.addWidget(label2, len(self.linhasPeca), 2, 1, 1)
+                self.gridLayout_2.addWidget(lineedit2, len(self.linhasPeca), 3, 1, 1)
+                self.gridLayout_2.addWidget(label3, len(self.linhasPeca), 4, 1, 1)
+                self.gridLayout_2.addWidget(comboBox, len(self.linhasPeca), 5, 1, 1)
+                self.gridLayout_2.addWidget(label4, len(self.linhasPeca), 6, 1, 1)
+                self.gridLayout_2.addWidget(lineedit4, len(self.linhasPeca), 7, 1, 1)
+                self.linhasPeca.append([lineedit1, lineedit2, comboBox, lineedit4])
+                self.gridLayout_2.addWidget(self.botaoAddPecas, len(self.linhasPeca)-1, 8, 1, 1)
+                self.gridLayout_2.removeItem(self.spacerpeca)
+                self.gridLayout_2.addItem(self.spacerpeca, len(self.linhasPeca), 0, 1, 1)
+
+
+        def addLinhaServico(self):
+                label1 = QtWidgets.QLabel(text="Serviço")
+                lineedit1 = QtWidgets.QLineEdit()
+                label2 = QtWidgets.QLabel(text="Qtde")
+                lineedit2 = QtWidgets.QLineEdit()
+                label3 = QtWidgets.QLabel(text="Valor")
+                lineedit3 = QtWidgets.QLineEdit()
+                self.gridLayout_5.addWidget(label1, len(self.linhasServicos), 0, 1, 1)
+                self.gridLayout_5.addWidget(lineedit1, len(self.linhasServicos), 1, 1, 1)
+                self.gridLayout_5.addWidget(label2, len(self.linhasServicos), 2, 1, 1)
+                self.gridLayout_5.addWidget(lineedit2, len(self.linhasServicos), 3, 1, 1)
+                self.gridLayout_5.addWidget(label3, len(self.linhasServicos), 4, 1, 1)
+                self.gridLayout_5.addWidget(lineedit3, len(self.linhasServicos), 5, 1, 1)
+                self.linhasServicos.append([lineedit1, lineedit2, lineedit3])
+                self.gridLayout_5.addWidget(self.botaoAddServicos, len(self.linhasServicos)-1, 6, 1, 1)
+                self.gridLayout_5.removeItem(self.spacerservico)
+                self.gridLayout_5.addItem(self.spacerservico, len(self.linhasServicos), 0, 1, 1)
+
+        def setCliente(self, nome, cpf=None, cnpj=None, cep=None, ender=None, num=None, bairro=None, cidade=None, uf=None, tel1=None, tel2=None):
+                self.lineEditNomeCliente.setText(nome)
+                self.lineEditCEP.setText(cep)
+                self.lineEditEnder.setText(ender)
+                self.lineEditNumero.setText(num)
+                self.lineEditBairro.setText(bairro)
+                if cpf:
+                        self.lineEditCPFJ.setText(cpf)
+                        self.labelcpfj.setText("CPF")
+                        self.comboBoxPessoa.setCurrentIndex(0)
+                elif cnpj:
+                        self.lineEditCPFJ.setText(cnpj)
+                        self.labelcpfj.setText("CNPJ")
+                        self.comboBoxPessoa.setCurrentIndex(1)
+                self.lineEditCidade.setText(cidade)
+                if uf:
+                        for index in range(self.comboBoxuf.count()):
+                                if(self.comboBoxuf.itemText(index)==uf):
+                                        self.comboBoxuf.setCurrentIndex(index)
+                                        break
+                self.lineEditFone1.setText(tel1)
+                self.lineEditFone2.setText(tel2)
+
+        def setClienteReadOnly(self, flag: bool):
+                if flag:
+                        self.comboBoxPessoa.setDisabled(True)                        
+                        self.lineEditCPFJ.setReadOnly(True)
+                        self.lineEditNomeCliente.setReadOnly(True)
+                        self.lineEditCEP.setReadOnly(True)
+                        self.lineEditEnder.setReadOnly(True)
+                        self.lineEditNumero.setReadOnly(True)
+                        self.lineEditBairro.setReadOnly(True)
+                        self.lineEditCidade.setReadOnly(True)
+                        self.comboBoxuf.setDisabled(True)
+                        self.lineEditFone1.setReadOnly(True)
+                        self.lineEditFone2.setReadOnly(True)
+                else:
+                        self.comboBoxPessoa.setDisabled(False)                        
+                        self.lineEditCPFJ.setReadOnly(False)
+                        self.lineEditNomeCliente.setReadOnly(False)
+                        self.lineEditCEP.setReadOnly(False)
+                        self.lineEditEnder.setReadOnly(False)
+                        self.lineEditNumero.setReadOnly(False)
+                        self.lineEditBairro.setReadOnly(False)
+                        self.lineEditCidade.setReadOnly(False)
+                        self.comboBoxuf.setDisabled(False)
+                        self.lineEditFone1.setReadOnly(False)
+                        self.lineEditFone2.setReadOnly(False)
+
+        def getDadosCliente(self):
+                dict = {}
+                if(self.lineEditCPFJ.text()):
+                    if(self.comboBoxPessoa.currentIndex()==0):
+                        dict['cpf'] = self.lineEditCPFJ.text()
+                    else:
+                        dict['cnpj'] = self.lineEditCPFJ.text()
+                if(self.lineEditNomeCliente.text()):
+                    dict['nome'] = self.lineEditNomeCliente.text()
+                if(self.lineEditCEP.text()):
+                    dict['cep'] = self.lineEditCEP.text()
+                if(self.lineEditEnder.text()):
+                    dict['endereco'] = self.lineEditEnder.text()
+                if(self.lineEditNumero.text()):
+                    dict['numero'] = self.lineEditNumero.text()
+                if(self.lineEditBairro.text()):
+                    dict['bairro'] = self.lineEditBairro.text()
+                if(self.lineEditCidade.text()):
+                    dict['cidade'] = self.lineEditCidade.text()
+                dict['estado'] = self.comboBoxuf.currentText()
+                return dict
+
+        def getFones(self):
+                fones = []
+                if(self.lineEditFone1.text()):
+                    fones.append(self.lineEditFone1.text())
+                if(self.lineEditFone2.text()):
+                    fones.append(self.lineEditFone2.text())
+                return fones
+
+        def setEndereco(self, cep=None, ender=None, num=None, bairro=None, cidade=None, uf=None):
+                self.lineEditCEP.setText(cep)
+                self.lineEditEnder.setText(ender)
+                self.lineEditNumero.setText(num)
+                self.lineEditBairro.setText(bairro)
+                self.lineEditCidade.setText(cidade)
+                if uf:
+                        for index in range(self.comboBoxuf.count()):
+                                if(self.comboBoxuf.itemText(index)==uf):
+                                        self.comboBoxuf.setCurrentIndex(index)
+                                        break
+
+
+        def setVeiculo(self, marca, modelo, placa, ano=None):
+                self.lineEditModelo.setText(modelo)
+                self.lineEditAno.setText(ano)
+                self.lineEditPlaca.setText(placa)
+                for index in range(self.comboBoxMarca.count()):
+                                if(self.comboBoxMarca.itemText(index)==marca):
+                                        self.comboBoxMarca.setCurrentIndex(index)
+                                        break
+
+        def setVeiculoReadOnly(self, flag: bool):
+                if flag:
+                        self.comboBoxMarca.setDisabled(True)                        
+                        self.lineEditModelo.setReadOnly(True)
+                        self.lineEditAno.setReadOnly(True)
+                        self.lineEditPlaca.setReadOnly(True)
+                else:
+                        self.comboBoxMarca.setDisabled(False)                        
+                        self.lineEditModelo.setReadOnly(False)
+                        self.lineEditAno.setReadOnly(False)
+                        self.lineEditPlaca.setReadOnly(False)
+
+        def getDadosVeiculo(self):
+                dict = {}
+                dict['marca'] = self.comboBoxMarca.currentText()
+                if(self.lineEditModelo.text()):
+                        dict['modelo'] = self.lineEditModelo.text()
+                if(self.lineEditPlaca.text()):
+                        dict['placa'] = self.lineEditPlaca.text()
+                if(self.lineEditAno.text()):
+                        dict['ano'] = self.lineEditAno.text()
+                if(self.lineEditEnder.text()):
+                        dict['endereco'] = self.lineEditEnder.text()
+                return dict
 
 
 if __name__ == "__main__":
     import sys
     app = QtWidgets.QApplication(sys.argv)
-    MainWindow = QtWidgets.QMainWindow()
-    ui = TelaCadastroOrcamento(MainWindow)
-    ui.setupUi(MainWindow)
-    MainWindow.show()
+    ui = TelaCadastroOrcamento()
+    ui.setupUi()
+    ui.show()
     style = open('./ui/styles.qss').read()
     app.setStyleSheet(style)
     sys.exit(app.exec())

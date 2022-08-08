@@ -1,13 +1,14 @@
 from PyQt6 import QtCore, QtGui, QtWidgets
 
-class TelaConsultaAux(QtWidgets.QWidget):
-    def __init__(self, MainWindow):
-        super(TelaConsultaAux, self).__init__()
-        self.setupUi(MainWindow)
+class TelaConsultaPecaServico(QtWidgets.QMainWindow):
+    def __init__(self):
+            super(TelaConsultaPecaServico, self).__init__()
+            self.setupUi()
 
-    def setupUi(self, MainWindow):
-        MainWindow.resize(600, 400)
-        self.mainwidget = QtWidgets.QWidget(MainWindow)
+
+    def setupUi(self):
+        self.resize(1280, 720)
+        self.mainwidget = QtWidgets.QWidget(self)       
         self.vlayout = QtWidgets.QVBoxLayout(self.mainwidget)
         self.frameBusca = QtWidgets.QFrame(self.mainwidget)
         self.vlayout.addWidget(self.frameBusca)
@@ -18,7 +19,7 @@ class TelaConsultaAux(QtWidgets.QWidget):
         self.lineEditBusca.setClearButtonEnabled(True)
         iconBusca = QtGui.QIcon("./resources/search-icon.png")
         self.lineEditBusca.addAction(iconBusca, QtWidgets.QLineEdit.ActionPosition.LeadingPosition)
-        self.vlayoutBusca.addWidget(self.lineEditBusca, 0, QtCore.Qt.AlignmentFlag.AlignHCenter|QtCore.Qt.AlignmentFlag.AlignVCenter)  
+        self.vlayoutBusca.addWidget(self.lineEditBusca, 0, QtCore.Qt.AlignmentFlag.AlignHCenter|QtCore.Qt.AlignmentFlag.AlignVCenter)     
         self.framedados = QtWidgets.QFrame(self.mainwidget)
         self.vlayout.addWidget(self.framedados)
         self.vlayoutdados = QtWidgets.QVBoxLayout(self.framedados)
@@ -33,23 +34,38 @@ class TelaConsultaAux(QtWidgets.QWidget):
         self.framebotoes = QtWidgets.QFrame(self.mainwidget)
         self.vlayout.addWidget(self.framebotoes, 0, QtCore.Qt.AlignmentFlag.AlignHCenter|QtCore.Qt.AlignmentFlag.AlignVCenter)
         self.hlayoutbotoes = QtWidgets.QHBoxLayout(self.framebotoes)
-        self.botaoSelecionar = QtWidgets.QPushButton(self.framebotoes)
-        self.botaoSelecionar.setFixedSize(100, 25)
-        self.hlayoutbotoes.addWidget(self.botaoSelecionar)
+        self.botaoEditar = QtWidgets.QPushButton(self.framebotoes)
+        self.botaoEditar.setFixedSize(120, 30)
+        self.hlayoutbotoes.addWidget(self.botaoEditar)
+        self.botaoExcluir = QtWidgets.QPushButton(self.framebotoes)
+        self.botaoExcluir.setObjectName("excluir")
+        self.botaoExcluir.setFixedSize(120, 30)
+        self.hlayoutbotoes.addWidget(self.botaoExcluir)      
         self.model = QtGui.QStandardItemModel()
+        listaHeader = ['ID','Descrição', 'Valor']
+        self.model.setHorizontalHeaderLabels(listaHeader)
         self.filter.setSourceModel(self.model)
         self.filter.setFilterKeyColumn(-1)
         self.lineEditBusca.textChanged.connect(self.filter.setFilterRegularExpression)
         self.tabela.setModel(self.filter)
+        self.header = self.tabela.horizontalHeader()
+        self.header.setSectionResizeMode(1, QtWidgets.QHeaderView.ResizeMode.Stretch)
+        self.header.setSectionResizeMode(0, QtWidgets.QHeaderView.ResizeMode.ResizeToContents)
+        self.setCentralWidget(self.mainwidget)
+        self.retranslateUi()
 
-        MainWindow.setCentralWidget(self.mainwidget)
-        self.retranslateUi(MainWindow)
 
-
-    def retranslateUi(self, MainWindow):
+    def retranslateUi(self):
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "Busca"))
-        self.botaoSelecionar.setText(_translate("MainWindow", "Selecionar"))
+        self.setWindowTitle(_translate("MainWindow", "Busca"))
+        self.botaoEditar.setText(_translate("MainWindow", "Editar"))
+        self.botaoExcluir.setText(_translate("MainWindow", "Excluir"))
+
+
+    def getLinha(self):
+        linha = self.viewBusca.tabela.selectionModel().selectedRows()[0]
+        id = self.viewBusca.tabela.model().index(linha.row(),0).data()
+        return id
 
 
 if __name__ == "__main__":
@@ -57,9 +73,9 @@ if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
 
     MainWindow = QtWidgets.QMainWindow()
-    ui = TelaConsultaAux(MainWindow)
-    ui.setupUi(MainWindow)
-    MainWindow.show()
+    ui = TelaConsultaPecaServico()
+    ui.setupUi()
+    ui.show()
 
     style = open('./ui/styles.qss').read()
     app.setStyleSheet(style)

@@ -28,5 +28,6 @@ if cursor.execute(f"SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SC
     cursor.execute(f"use {NOMEBANCODEDADOS}")
     create_tables(cursor)
 
+
 c = MainController()
 c.run()

@@ -7,16 +7,15 @@
 
 from PyQt6 import QtCore, QtGui, QtWidgets
 
-class TelaInicial(QtWidgets.QWidget):
+class TelaInicial(QtWidgets.QMainWindow):
 
-        def __init__(self, MainWindow):
+        def __init__(self, parent=None):
                 super(TelaInicial, self).__init__()
-                self.setupUi(MainWindow)
+                self.setupUi(self)
 
         def setupUi(self, MainWindow):
-                MainWindow.resize(1280, 720)
-                self.mainwidget = QtWidgets.QWidget(MainWindow)
-
+                self.resize(1280, 720)
+                self.mainwidget = QtWidgets.QWidget(self)
                 self.hlayout1 = QtWidgets.QHBoxLayout(self.mainwidget)
                 self.hlayout1.setContentsMargins(0, 0, 0, 0)
                 self.hlayout1.setSpacing(0)
@@ -44,11 +43,7 @@ class TelaInicial(QtWidgets.QWidget):
                 self.framemenu.setObjectName('framemenu')
                 self.vlayout3 = QtWidgets.QVBoxLayout(self.framemenu)
                 self.vlayout3.setContentsMargins(9, -1, -1, -1)
-                
-                ##########################################################################################################################
-
-                #frames do menu
-                
+                #frames do menu       
                 self.framemenu1 = QtWidgets.QFrame(self.framemenu)
                 self.vlayout3.addWidget(self.framemenu1)
                 self.framemenu2 = QtWidgets.QFrame(self.framemenu)
@@ -57,9 +52,7 @@ class TelaInicial(QtWidgets.QWidget):
                 self.vlayout3.addWidget(self.framemenu3)
                 self.framemenu4 = QtWidgets.QFrame(self.framemenu)
                 self.vlayout3.addWidget(self.framemenu4)
-        
                 #aba "cadastro"
-
                 self.labelcadastro = QtWidgets.QLabel(self.framemenu1)
                 self.labelcadastro.setText("CADASTRO")
                 self.labelcadastro.setFixedHeight(25)
@@ -70,9 +63,7 @@ class TelaInicial(QtWidgets.QWidget):
                 self.vlayout4 = QtWidgets.QVBoxLayout(self.framemenu2)
                 self.vlayout4.setSizeConstraint(QtWidgets.QLayout.SizeConstraint.SetDefaultConstraint)
                 self.vlayout4.setSpacing(10)
-        
                 #opçoes da aba
-
                 self.botao_pecas = QtWidgets.QPushButton(self.framemenu2)
                 self.vlayout4.addWidget(self.botao_pecas)
                 self.botao_servicos = QtWidgets.QPushButton(self.framemenu2)
@@ -81,9 +72,7 @@ class TelaInicial(QtWidgets.QWidget):
                 self.vlayout4.addWidget(self.botao_clientes)
                 self.botao_orcamentos = QtWidgets.QPushButton(self.framemenu2)
                 self.vlayout4.addWidget(self.botao_orcamentos)
-                
                 #aba "consulta"
-
                 self.labelconsulta = QtWidgets.QLabel(self.framemenu3)
                 self.labelconsulta.setText("CONSULTA")
                 self.labelconsulta.setFixedHeight(25)
@@ -93,7 +82,6 @@ class TelaInicial(QtWidgets.QWidget):
                 self.vlayoutlabel2.addWidget(self.labelconsulta)
                 self.vlayout5 = QtWidgets.QVBoxLayout(self.framemenu4)
                 self.vlayout5.setSpacing(9)
-
                 #opçoes da aba
                 self.botao_pecas_2 = QtWidgets.QPushButton(self.framemenu4)
                 self.vlayout5.addWidget(self.botao_pecas_2)
@@ -106,10 +94,7 @@ class TelaInicial(QtWidgets.QWidget):
                 self.botao_os = QtWidgets.QPushButton(self.framemenu4)
                 self.vlayout5.addWidget(self.botao_os)
                 spacerItem1 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding)
-                self.vlayout3.addItem(spacerItem1)
-
-                #####################################################################################
-                
+                self.vlayout3.addItem(spacerItem1) 
                 self.vlayout1.addWidget(self.framemenu)
                 self.hlayout1.addWidget(self.framelateral)
                 self.main_frame = QtWidgets.QFrame(self.mainwidget)
@@ -118,35 +103,31 @@ class TelaInicial(QtWidgets.QWidget):
                 self.vlayout6 = QtWidgets.QVBoxLayout(self.main_frame)
                 self.vlayout6.setContentsMargins(0, 0, 0, 0)
                 self.vlayout6.setSpacing(0)
-                
+                self.stackedWidget = QtWidgets.QStackedWidget(self.main_frame)
+                self.vlayout6.addWidget(self.stackedWidget)  
                 #página inicial
-
-                self.label_inicio = QtWidgets.QLabel(self.main_frame)
+                self.label_inicio = QtWidgets.QLabel(self.stackedWidget)
                 self.label_inicio.setObjectName("bemvindo")
                 self.label_inicio.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
-                self.vlayout6.addWidget(self.label_inicio)
-                
-                #barra de menu
-                
-                MainWindow.setCentralWidget(self.mainwidget)
-                self.menubar = QtWidgets.QMenuBar(MainWindow)
+                self.stackedWidget.addWidget(self.label_inicio)  
+                #barra de menu  
+                self.setCentralWidget(self.mainwidget)
+                self.menubar = QtWidgets.QMenuBar(self)
                 self.menubar.setGeometry(QtCore.QRect(0, 0, 948, 21))
                 self.menubar.setDefaultUp(False)
                 self.menuFerramentas = QtWidgets.QMenu(self.menubar)
-                MainWindow.setMenuBar(self.menubar)
-                self.actionImportar_dados = QtGui.QAction(MainWindow)
-                self.actionExportar_dados = QtGui.QAction(MainWindow)
+                self.setMenuBar(self.menubar)
+                self.actionImportar_dados = QtGui.QAction(self)
+                self.actionExportar_dados = QtGui.QAction(self)
                 self.menuFerramentas.addAction(self.actionImportar_dados)
                 self.menuFerramentas.addAction(self.actionExportar_dados)
                 self.menubar.addAction(self.menuFerramentas.menuAction())
-
-                self.retranslateUi(MainWindow)
+                self.retranslateUi()
 
                 
-
-        def retranslateUi(self, MainWindow):
+        def retranslateUi(self):
                 _translate = QtCore.QCoreApplication.translate
-                MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
+                self.setWindowTitle(_translate("MainWindow", "MainWindow"))
                 self.botao_pecas.setText(_translate("MainWindow", "PEÇAS"))
                 self.botao_servicos.setText(_translate("MainWindow", "SERVIÇOS"))
                 self.botao_clientes.setText(_translate("MainWindow", "CLIENTES"))
@@ -161,13 +142,12 @@ class TelaInicial(QtWidgets.QWidget):
                 self.actionImportar_dados.setText(_translate("MainWindow", "Importar dados"))
                 self.actionExportar_dados.setText(_translate("MainWindow", "Exportar dados"))
 
+
 if __name__ == "__main__":
     import sys
     app = QtWidgets.QApplication(sys.argv)
-    MainWindow = QtWidgets.QMainWindow()
-    ui = TelaInicial(MainWindow)
-    ui.setupUi(MainWindow)
-    MainWindow.show()
+    ui = TelaInicial()
+    ui.show()
     style = open('./ui/styles.qss').read()
     app.setStyleSheet(style)
     sys.exit(app.exec())

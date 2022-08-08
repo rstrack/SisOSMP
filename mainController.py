@@ -4,8 +4,14 @@ from controller.pecaController import PecaController
 from controller.orcamentoController import OrcamentoController
 from controller.clienteController import ClienteController
 from controller.servicoController import ServicoController
+from model.modelo import Peca
+from ui.telaCadastroCliente import TelaCadastroCliente
+from ui.telaCadastroOrcamento import TelaCadastroOrcamento
+from ui.telaCadastroPeca import TelaCadastroPeca
+from ui.telaCadastroServico import TelaCadastroServico
 
 from ui.telaInicial import TelaInicial
+from util.buscaCEP import BuscaCEP
 
 class MainController():
 
@@ -13,89 +19,79 @@ class MainController():
         self.app = QtWidgets.QApplication(sys.argv)
         style = open('./ui/styles.qss').read()
         self.app.setStyleSheet(style)
-        self.MainWindow = QtWidgets.QMainWindow()
-        self.telaInicio = TelaInicial(self.MainWindow)
-        self.telaInicio.setupUi(self.MainWindow)
+        
+        self.telaInicio = TelaInicial()
+
         self.cPec = PecaController()
         self.cSer = ServicoController()
         self.cCli = ClienteController()
         self.cOrc = OrcamentoController()
+        #self.stackedWidget.addWidget(self.telaInicio)
+        self.telaInicio.stackedWidget.addWidget(self.cPec.viewCadastro)
+        self.telaInicio.stackedWidget.addWidget(self.cSer.viewCadastro)
+        self.telaInicio.stackedWidget.addWidget(self.cCli.viewCadastro)
+        self.telaInicio.stackedWidget.addWidget(self.cOrc.viewCadastro)
+
         self.initConnections()
 
     def initConnections(self):
-        self.telaInicio.botao_pecas.clicked.connect(self.telaCadastroPeca)
-        self.telaInicio.botao_servicos.clicked.connect(self.telaCadastroServico)
-        self.telaInicio.botao_clientes.clicked.connect(self.telaCadastroCliente)
-        self.telaInicio.botao_orcamentos.clicked.connect(self.telaCadastroOrcamento)
+        #conectando botões do menu
+        self.telaInicio.botao_pecas.clicked.connect(self.swTelaCadastroPeca)
+        self.telaInicio.botao_servicos.clicked.connect(self.swTelaCadastroServico)
+        self.telaInicio.botao_clientes.clicked.connect(self.swTelaCadastroCliente)
+        self.telaInicio.botao_orcamentos.clicked.connect(self.swTelaCadastroOrcamento)
 
-        self.cPec.view.botao_servicos.clicked.connect(self.telaCadastroServico)
-        self.cPec.view.botao_clientes.clicked.connect(self.telaCadastroCliente)
-        self.cPec.view.botao_orcamentos.clicked.connect(self.telaCadastroOrcamento)
+        self.cCli.viewCadastro.lineEditCEP.returnPressed.connect(lambda: self.buscarDadosCEP(self.cCli.viewCadastro))
+        self.cOrc.viewCadastro.lineEditCEP.returnPressed.connect(lambda: self.buscarDadosCEP(self.cOrc.viewCadastro))
 
-        self.cSer.view.botao_pecas.clicked.connect(self.telaCadastroPeca)
-        self.cSer.view.botao_clientes.clicked.connect(self.telaCadastroCliente)
-        self.cSer.view.botao_orcamentos.clicked.connect(self.telaCadastroOrcamento)
+    def swTelaInicial(self):
+        self.telaInicio.stackedWidget.setCurrentWidget(self.telaInicio)
 
-        self.cCli.view.botao_pecas.clicked.connect(self.telaCadastroPeca)
-        self.cCli.view.botao_servicos.clicked.connect(self.telaCadastroServico)
-        self.cCli.view.botao_orcamentos.clicked.connect(self.telaCadastroOrcamento)
+    def swTelaCadastroPeca(self):
+        self.telaInicio.stackedWidget.setCurrentWidget(self.cPec.viewCadastro)
 
-        self.cOrc.view.botao_pecas.clicked.connect(self.telaCadastroPeca)
-        self.cOrc.view.botao_servicos.clicked.connect(self.telaCadastroServico)
-        self.cOrc.view.botao_clientes.clicked.connect(self.telaCadastroCliente)
+    def swTelaCadastroServico(self):
+        self.telaInicio.stackedWidget.setCurrentWidget(self.cSer.viewCadastro)
 
+    def swTelaCadastroCliente(self):
+        self.telaInicio.stackedWidget.setCurrentWidget(self.cCli.viewCadastro)
 
-    def telaInicial(self):
-        self.MainWindow.show()
+    def swTelaCadastroOrcamento(self):
+        self.telaInicio.stackedWidget.setCurrentWidget(self.cOrc.viewCadastro)
+        self.cOrc.atualizarCompleters()
 
+    def swTelaConsultaPeca(self):
+        self.telaInicio.stackedWidget.setCurrentWidget(self.cPec.viewConsulta)
 
-    def telaCadastroPeca(self):
-        window = self.app.activeWindow()
-        self.cPec.MainWindow.resize(window.size())
-        if window != None:
-            self.cPec.MainWindow.resize(window.size())
-            if(window.windowState()==QtCore.Qt.WindowState.WindowMaximized):
-                self.cPec.MainWindow.setWindowState(QtCore.Qt.WindowState.WindowMaximized)
-            self.cPec.MainWindow.move(window.pos())
-        self.cPec.run()
-        window.close()
+    def swTelaConsultaServico(self):
+        self.telaInicio.stackedWidget.setCurrentWidget(self.cSer.viewConsulta)
 
+    def swTelaConsultaCliente(self):
+        self.telaInicio.stackedWidget.setCurrentWidget(self.cCli.viewConsulta)
 
-    def telaCadastroServico(self):
-        window = self.app.activeWindow()
-        self.cSer.MainWindow.resize(window.size())
-        if window != None:
-            self.cSer.MainWindow.resize(window.size())
-            if(window.windowState()==QtCore.Qt.WindowState.WindowMaximized):
-                self.cSer.MainWindow.setWindowState(QtCore.Qt.WindowState.WindowMaximized)
-            self.cSer.MainWindow.move(window.pos())
-        self.cSer.run()
-        window.close()
+    def swTelaConsultaOrcamento(self):
+        self.telaInicio.stackedWidget.setCurrentWidget(self.cOrc.viewConsulta)
 
 
-    def telaCadastroCliente(self):
-        window = self.app.activeWindow()
-        self.cCli.MainWindow.resize(window.size())
-        self.cCli.MainWindow.resize(window.size())
-        if(window.windowState()==QtCore.Qt.WindowState.WindowMaximized):
-            self.cCli.MainWindow.setWindowState(QtCore.Qt.WindowState.WindowMaximized)
-        self.cCli.MainWindow.move(window.pos())
-        self.cCli.run()
-        window.close()
-
-
-    def telaCadastroOrcamento(self):
-        window = self.app.activeWindow()     
-        self.cOrc.MainWindow.resize(window.size())
-        if(window.windowState()==QtCore.Qt.WindowState.WindowMaximized):
-            self.cOrc.MainWindow.setWindowState(QtCore.Qt.WindowState.WindowMaximized)
-        self.cOrc.MainWindow.move(window.pos())
-        self.cOrc.run()
-        window.close() 
+    def buscarDadosCEP(self, view):
+        cep = view.lineEditCEP.text()
+        if len(cep) !=8:
+            return
+        dados = BuscaCEP.buscarCEP(view.lineEditCEP.text())
+        if 'erro' in dados:
+            return
+        view.lineEditEnder.setText(dados['logradouro'])
+        view.lineEditBairro.setText(dados['bairro'])
+        view.lineEditCidade.setText(dados['localidade'])
+        for index in range(view.comboBoxuf.count()):
+            if(view.comboBoxuf.itemText(index)==dados['uf']):
+                view.comboBoxuf.setCurrentIndex(index)
+                return
 
 
     def run(self):
-        self.telaInicial()
+        self.telaInicio.resize(1280,720)
+        self.telaInicio.show()
         sys.exit(self.app.exec())
 
 

@@ -1,32 +1,37 @@
+from ast import Not
+from operator import xor
 from PyQt6 import QtWidgets
 
-from model import *
+from model.modelo import *
 
 from ui.telaCadastroServico import TelaCadastroServico
 
 class ServicoController():
     def __init__(self):
-        self.MainWindow = QtWidgets.QMainWindow()
-        self.view = TelaCadastroServico(self.MainWindow)
-        self.linhasservico = [[self.view.lineEditnome, self.view.lineEditvalor]]
-        self.initConnections()
+        self.viewCadastro = TelaCadastroServico()
+        self.linhasservico = [[self.viewCadastro.lineEditnome, self.viewCadastro.lineEditvalor]]
 
-    def initConnections(self):
-        self.view.botaoadd.clicked.connect(self.addlinhaservico)
+    def salvarServicos(self):
+        with db.atomic() as transaction:
+            try:
+                if len(self.viewCadastro.linhasservico) == 1 and not (self.viewCadastro.lineEditnome.text() and self.viewCadastro.lineEditvalor.text()):
+                    raise Exception("Erro: campos vazios!")
+                for desc, valor in self.viewCadastro.linhasservico:
+                    if desc.text() and valor.text():
+                        aux = valor.text().replace(',','',1)
+                        if aux.isdigit():
+                            Servico.create(descricao=desc.text(), valor=valor.text().replace(',','.',1))
+                        else: raise Exception("Erro: digite apenas números no valor!")
+                    elif desc.text() or valor.text():
+                        raise Exception("Preencha todos os campos!")
+                msg =  QtWidgets.QMessageBox()
+                msg.setWindowTitle("Aviso")
+                msg.setText("Dados inseridos!")
+                msg.exec()
 
-    def run(self):
-        self.MainWindow.show()
-
-    def addlinhaservico(self):
-        label1 = QtWidgets.QLabel(text="Nome do Serviço")
-        lineedit1 = QtWidgets.QLineEdit()
-        label2 = QtWidgets.QLabel(text="Valor")
-        lineedit2 = QtWidgets.QLineEdit()
-        self.view.gridLayout.addWidget(label1, len(self.linhasservico), 0, 1, 1)
-        self.view.gridLayout.addWidget(lineedit1, len(self.linhasservico), 1, 1, 1)
-        self.view.gridLayout.addWidget(label2, len(self.linhasservico), 3, 1, 1)
-        self.view.gridLayout.addWidget(lineedit2, len(self.linhasservico), 4, 1, 1)
-        self.linhasservico.append([lineedit1, lineedit2])
-        self.view.gridLayout.addWidget(self.view.botaoadd, len(self.linhasservico)-1, 5, 1, 1)
-        self.view.gridLayout.removeItem(self.view.spacer)
-        self.view.gridLayout.addItem(self.view.spacer, len(self.linhasservico), 0, 1, 1)
+            except Exception as e:
+                transaction.rollback()
+                msg =  QtWidgets.QMessageBox()
+                msg.setWindowTitle("Erro")
+                msg.setText(str(e))
+                msg.exec()
