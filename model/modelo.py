@@ -84,7 +84,6 @@ class Orcamento(BaseModel):
     valorTotal = DoubleField(constraints=[Check('valorTotal>=0')],null=False)
     aprovado = BooleanField(constraints=[SQL('DEFAULT FALSE')])
     dataAprovacao = DateField(null=True)
-    dataPrevista = DateField()
     observacoes = CharField(max_length=200, null=True)
 
 

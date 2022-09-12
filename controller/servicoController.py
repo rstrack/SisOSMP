@@ -1,37 +1,48 @@
-from ast import Not
-from operator import xor
+from pickle import FALSE
 from PyQt6 import QtWidgets
 
 from model.modelo import *
 
-from ui.telaCadastroServico import TelaCadastroServico
-
 class ServicoController():
-    def __init__(self):
-        self.viewCadastro = TelaCadastroServico()
-        self.linhasservico = [[self.viewCadastro.lineEditnome, self.viewCadastro.lineEditvalor]]
+    def __init__(self, view):
+        self.view = view
+
+    def salvarServico(self, desc, valor):
+        qPeca = Peca.select().where(Peca.descricao==desc)
+        if not qPeca:
+            if valor.replace(',','',1).isdigit():
+                servico = Peca.create(descricao=desc, valor=valor.replace(',','.',1))
+            else: raise Exception("Erro: digite apenas números no valor!")
+        else: 
+            raise Exception(f"Peça {desc.text()} já existe!")
+        return servico
 
     def salvarServicos(self):
         with db.atomic() as transaction:
             try:
-                if len(self.viewCadastro.linhasservico) == 1 and not (self.viewCadastro.lineEditnome.text() and self.viewCadastro.lineEditvalor.text()):
-                    raise Exception("Erro: campos vazios!")
-                for desc, valor in self.viewCadastro.linhasservico:
+                qtde = 0
+                for desc, valor in self.view.linhasservico:
                     if desc.text() and valor.text():
-                        aux = valor.text().replace(',','',1)
-                        if aux.isdigit():
-                            Servico.create(descricao=desc.text(), valor=valor.text().replace(',','.',1))
-                        else: raise Exception("Erro: digite apenas números no valor!")
+                        qServico = Servico.select().where(Servico.descricao==desc.text())
+                        if not qServico:
+                            if valor.text().replace(',','',1).replace('.','',1).isdigit():
+                                Servico.create(descricao=desc.text(), valor=valor.text().replace(',','.',1))
+                                qtde=+1
+                            else: raise Exception("Erro: digite apenas números no valor!")
+                        else: raise Exception(f"Erro: Serviço {desc.text()} já existe!")
                     elif desc.text() or valor.text():
-                        raise Exception("Preencha todos os campos!")
+                        raise Exception("Erro: Preencha todos os campos!")
+                if(qtde==0):
+                    raise Exception("Erro: campos vazios!")
                 msg =  QtWidgets.QMessageBox()
                 msg.setWindowTitle("Aviso")
-                msg.setText("Dados inseridos!")
+                msg.setText(f"{qtde} serviço(s) cadastrado(s) com sucesso!")
                 msg.exec()
-
+                return True
             except Exception as e:
                 transaction.rollback()
                 msg =  QtWidgets.QMessageBox()
                 msg.setWindowTitle("Erro")
                 msg.setText(str(e))
                 msg.exec()
+                return False

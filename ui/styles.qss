@@ -1,5 +1,5 @@
 QWidget{
-
+    font-family:'Helvetica', sans-serif
 }
 
 QFrame{
@@ -18,12 +18,11 @@ QFrame#framemenu QLabel{
 }
 
 QFrame#main_frame QLabel{
-    padding-left: 2px;
     color: black;
 }
 
 QPushButton{
-    font-family: 'Lato', sans-serif;
+    font-family: 'Helvetica', sans-serif;
     font-size: 14px;
     font-weight: bold;
     width: 20px;
@@ -59,18 +58,15 @@ QPushButton#excluir:hover{
 }
 
 QLabel{
-    font-family: 'Lato', sans-serif;
     font-size:14px;
 }
 
 QLabel#titulo{
-    font-family: 'Lato', sans-serif;
     font-size:28px;
     font-weight: bold;
 }
 
 QLabel#bemvindo{
-    font-family: 'Lato', sans-serif;
     font-size:28px;
     font-weight: bold;
 }
@@ -87,6 +83,7 @@ QComboBox{
     border-radius: 2px;
     border:1px solid gray;
     background-color:white;
+    font-size: 14px;
 }
 
 QComboBox QAbstractItemView {
@@ -104,12 +101,8 @@ QDateEdit{
     font-size: 13px;
 }
 
-QGroupBox:title{
-    
-}
-
 QGroupBox{
-
+    font-size: 14px;
 }
 
 QScrollArea{
@@ -117,11 +110,10 @@ QScrollArea{
 }
 
 QTableView{
-
+    font-size: 13px;
 }
 
 QCheckBox{
-    font-family: 'Lato', sans-serif;
     font-size: 14px;
     font-weight: bold;
     height: 20px;

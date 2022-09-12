@@ -1,11 +1,14 @@
 from PyQt6 import QtCore, QtGui, QtWidgets
 
+from controller.clienteController import ClienteController
+
 SIGLAESTADOS = ['AC', 'AL', 'AP', 'AM', 'BA', 'CE', 'DF', 'ES', 'GO', 'MA', 'MT', 'MS', 'MG', 'PA', 'PB', 'PR', 'PE', 'PI', 'RJ', 'RN', 'RS', 'RO', 'RR', 'SC', 'SP', 'SE', 'TO']
 
 class TelaCadastroCliente(QtWidgets.QMainWindow):
 
         def __init__(self):
                 super(TelaCadastroCliente, self).__init__()
+                self.controller = ClienteController(self)
                 self.setupUi()
                 self.comboBoxPessoa.currentIndexChanged.connect(self.escolherPessoa)
 
@@ -25,7 +28,6 @@ class TelaCadastroCliente(QtWidgets.QMainWindow):
                 self.vlayout6.addWidget(self.labelTitulo)
                 self.framedados = QtWidgets.QFrame(self.main_frame)
                 self.glayoutp = QtWidgets.QGridLayout(self.framedados)
-                
                 #dados do cliente
                 self.groupBoxCliente = QtWidgets.QGroupBox(self.framedados)
                 self.groupBoxCliente.setTitle("Dados de Identificação")
@@ -79,6 +81,7 @@ class TelaCadastroCliente(QtWidgets.QMainWindow):
                 self.gridLayout2.addWidget(self.lineEditCidade, 3, 2, 1, 1)
                 self.comboBoxuf = QtWidgets.QComboBox(self.groupBoxEnder)
                 self.comboBoxuf.addItems(SIGLAESTADOS)
+                self.comboBoxuf.setCurrentText('PR')
                 self.gridLayout2.addWidget(self.comboBoxuf, 3, 3, 1, 1)
                 self.gridLayout2.setColumnStretch(1,2)
                 self.gridLayout2.setColumnStretch(2,5)
@@ -146,6 +149,10 @@ class TelaCadastroCliente(QtWidgets.QMainWindow):
 
                 self.setCentralWidget(self.main_frame)
                 self.retranslateUi()
+                self.setMarcas()
+
+                self.botaolimpar.clicked.connect(self.limparCampos)
+                self.botaoSalvar.clicked.connect(self.salvarCliente)
 
 
         def retranslateUi(self):
@@ -154,7 +161,7 @@ class TelaCadastroCliente(QtWidgets.QMainWindow):
                 self.labelTitulo.setText(_translate("MainWindow", "Cadastro de Clientes"))
                 self.labelPessoa.setText(_translate("MainWindow", "Pessoa"))
                 self.labelNomeCliente.setText(_translate("MainWindow", "Nome*"))
-                self.labelCPFJ.setText(_translate("MainWindow", "CPF/CNPJ"))
+                self.labelCPFJ.setText(_translate("MainWindow", "CPF"))
                 self.labelCidade.setText(_translate("MainWindow", "Cidade"))
                 self.labelcep.setText(_translate("MainWindow", "CEP"))
                 self.labelBairro.setText(_translate("MainWindow", "Bairro"))
@@ -169,6 +176,15 @@ class TelaCadastroCliente(QtWidgets.QMainWindow):
                 self.labelMarca.setText(_translate("MainWindow", "Marca"))
                 self.botaolimpar.setText(_translate("MainWindow", "Limpar"))
                 self.botaoSalvar.setText(_translate("MainWindow", "Salvar"))
+
+        def salvarCliente(self):
+                if(self.controller.salvarClienteVeiculo()):
+                        self.limparCampos()
+                        self.setMarcas()
+
+        def limparCampos(self):
+                for lineedit in self.framedados.findChildren(QtWidgets.QLineEdit):
+                        lineedit.clear()
 
         def getDadosCliente(self):
                 dict = {}
@@ -233,7 +249,11 @@ class TelaCadastroCliente(QtWidgets.QMainWindow):
                 elif (self.comboBoxPessoa.currentIndex() == 1):
                         self.labelCPFJ.setText('CNPJ')
 
-
+        def setMarcas(self):
+                marcas = self.controller.getMarcas()
+                for marca in marcas:
+                        self.comboBoxMarca.addItem(marca.marca)
+                self.comboBoxMarca.setCurrentIndex(-1)
 
 if __name__ == "__main__":
         import sys

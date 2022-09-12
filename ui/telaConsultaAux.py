@@ -1,5 +1,7 @@
 from PyQt6 import QtCore, QtGui, QtWidgets
 
+from controller.orcamentoController import OrcamentoController
+
 class TelaConsultaAux(QtWidgets.QWidget):
     def __init__(self, MainWindow):
         super(TelaConsultaAux, self).__init__()

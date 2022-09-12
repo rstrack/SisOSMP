@@ -1,6 +1,6 @@
 import pymysql as sql
 from mainController import MainController
-
+import cryptography
 from model.modelo import *
 
 """
