@@ -28,6 +28,19 @@ class OrcamentoController():
         modelServico.setStringList(servicos)
         return [modelPeca, modelServico]
 
+    def getOrcamentos(self):
+        orcamentos = Orcamento.select()
+        return orcamentos
+
+    def getClienteByID(self, id):
+        return Cliente.select().where(Cliente.idCliente==id).get()
+
+    def getVeiculoByID(self, id):
+        return Veiculo.select().where(Veiculo.idVeiculo==id).get()
+
+    def getOrcamentoByID(self, id):
+        return Orcamento.select().where(Orcamento.idOrcamento==id).get()
+
     def getMarcas(self):
         marcas = Marca.select(Marca.marca)
         return marcas

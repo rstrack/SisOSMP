@@ -63,6 +63,9 @@ class TelaConsultaOrcamento(QtWidgets.QMainWindow):
         self.tabela.setModel(self.filter)
         self.setCentralWidget(self.mainwidget)
         self.retranslateUi()
+        self.selectionModel = self.tabela.selectionModel()
+        self.selectionModel.selectionChanged.connect(self.mostrarDetalhes)
+        self.listarOrcamentos()
 
     def retranslateUi(self):
         _translate = QtCore.QCoreApplication.translate
@@ -70,36 +73,42 @@ class TelaConsultaOrcamento(QtWidgets.QMainWindow):
         self.botaoEditar.setText(_translate("MainWindow", "Editar"))
 
 
-    def mostrarDados(self):
-        dados = self.controller.getdados()
-        self.model.setRowCount(len(dados))
-        listaHeader = ['ID', 'Nome', 'CPF', 'CNPJ','Veículos']
+    def listarOrcamentos(self):
+        orcamentos = self.controller.getOrcamentos()
+        self.model.setRowCount(len(orcamentos))
+        listaHeader = ['ID', 'Data', 'Cliente','Veículo']
         self.model.setHorizontalHeaderLabels(listaHeader)
         row=0
-        for cliente in dados:
-            item = QtGui.QStandardItem(str(cliente.idCliente))
+        for orcamento in orcamentos:
+            item = QtGui.QStandardItem(str(orcamento.idOrcamento))
             item.setTextAlignment(QtCore.Qt.AlignmentFlag.AlignHCenter|QtCore.Qt.AlignmentFlag.AlignVCenter)
             self.model.setItem(row, 0, item)
-            item = QtGui.QStandardItem(cliente.nome)
+            item = QtGui.QStandardItem(str(orcamento.dataOrcamento))
             item.setTextAlignment(QtCore.Qt.AlignmentFlag.AlignHCenter|QtCore.Qt.AlignmentFlag.AlignVCenter)
             self.model.setItem(row, 1, item)
-            item = QtGui.QStandardItem(cliente.cpf)
+            cliente = self.controller.getClienteByID(orcamento.cliente)
+            item = QtGui.QStandardItem(cliente.nome)
             item.setTextAlignment(QtCore.Qt.AlignmentFlag.AlignHCenter|QtCore.Qt.AlignmentFlag.AlignVCenter)
-            self.model.setItem(row, 2, item)               
-            item = QtGui.QStandardItem(cliente.cnpj)
+            self.model.setItem(row, 2, item)
+            veiculo = self.controller.getVeiculoByID(orcamento.veiculo)               
+            item = QtGui.QStandardItem(veiculo.modelo)
             item.setTextAlignment(QtCore.Qt.AlignmentFlag.AlignHCenter|QtCore.Qt.AlignmentFlag.AlignVCenter)
             self.model.setItem(row, 3, item)
-            queryVeiculo = self.controller.getVeiculosByCliente(cliente)
-            nomes=[]
-            for veiculo in queryVeiculo:
-                    nomes.append(': '.join([veiculo.modelo, veiculo.placa]))
-            item = QtGui.QStandardItem(', '.join(nomes))
-            self.model.setItem(row, 4, item)
             row=row+1    
         header = self.tabela.horizontalHeader()
         header.setSectionResizeMode(QtWidgets.QHeaderView.ResizeMode.Interactive)
         header.setSectionResizeMode(0,QtWidgets.QHeaderView.ResizeMode.ResizeToContents)
         header.setStretchLastSection(True)
+
+    def mostrarDetalhes(self):
+        self.linha = self.tabela.selectionModel().selectedRows()
+        if self.linha:
+            id = self.tabela.model().index(self.linha[0].row(),0).data()
+            orcamento = self.controller.getOrcamentoByID(id)
+            self.labelDetalhesD.setText(
+f"""ID: {orcamento.idOrcamento}
+Data do orçamento: {str(orcamento.dataOrcamento)}        
+""")
 
 
 if __name__ == "__main__":

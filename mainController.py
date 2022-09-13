@@ -4,7 +4,7 @@ from ui.telaCadastroCliente import TelaCadastroCliente
 from ui.telaCadastroOrcamento import TelaCadastroOrcamento
 from ui.telaCadastroPeca import TelaCadastroPeca
 from ui.telaCadastroServico import TelaCadastroServico
-from ui.telaConsulta import TelaConsulta
+from ui.telaConsultaOrcamento import TelaConsultaOrcamento
 
 
 from ui.telaInicial import TelaInicial
@@ -25,7 +25,7 @@ class MainController():
         self.telaCadastroServico = TelaCadastroServico()
         self.telaCadastroCliente = TelaCadastroCliente()
         self.telaCadastroOrcamento = TelaCadastroOrcamento()
-        self.telaBuscaOrcamento = TelaConsulta()
+        self.telaBuscaOrcamento = TelaConsultaOrcamento()
 
         self.telaInicio.stackedWidget.addWidget(self.telaCadastroPeca)
         self.telaInicio.stackedWidget.addWidget(self.telaCadastroServico)
