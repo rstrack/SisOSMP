@@ -6,7 +6,7 @@ from reportlab.platypus import Table
 from reportlab.platypus import TableStyle
 from reportlab.lib import colors
 
-
+# Configurações para geração do pdf
 def GeneratePDF():
     pdf = canvas.Canvas('teste.pdf', pagesize=A4)
     pdf.drawInlineImage(
@@ -15,12 +15,14 @@ def GeneratePDF():
     pdf.setFont('Helvetica-Bold', 10)
     stylesheet = getSampleStyleSheet()
     pdf.normalStyle = stylesheet['Normal']
+# Cabeçalho padrão do pdf
     pdf.drawString(312, 810, 'Fone: (42) 3027-4990 / (42) 4141-1755')
     pdf.drawString(260, 800, 'Rua Barão do Bojuru, Nº 87 - Ronda - Ponta Grossa - PR')
     pdf.drawString(335, 790, 'CNPJ : 85.481.562/0001-57')
     pdf.drawString(315, 780, 'E-mail:mecanicapasetto@gmail.com ')
     pdf.rect(10, 750, 575, 2, fill=True, stroke=True)
     pdf.setFont('Helvetica-Bold', 12)
+# Informações do Cliente
     pdf.drawString(255, 713, 'Dados do Cliente')
     pdf.setFont('Helvetica', 10)
     pdf.rect(10, 710, 575, 15, fill=False, stroke=True)
@@ -61,6 +63,7 @@ def GeneratePDF():
     pdf.setFont('Helvetica-Bold', 12)
     pdf.drawString(275, 578, 'Orçamento')
     pdf.rect(10, 575, 575, 15, fill=False, stroke=True)
+# Tabelas de peças e serviços
     pecas = [
         ['Nome da Peça', 'Quantidade', 'Unidade', 'Valor'],
     ]
@@ -107,7 +110,7 @@ def GeneratePDF():
     width = 575
     height = 300
     pdf.setFont('Helvetica', 10)
-
+# Função para posicionar as tabelas de valores e o quadro de observações no pdf.
     def tabelas_pos(l, g):
         pdf.setFont('Helvetica', 10)
         pdf.drawString(395, l + 4, 'Valor Total das Peças:')
@@ -125,6 +128,7 @@ def GeneratePDF():
         aux = 0
         c = 123
         q = g - 11
+        # pular linha em observações(vai ser melhorado ainda)
         for x in range(5):
             pdf.drawString(30, q, obs[aux:c])
             aux = c + 1
@@ -132,7 +136,7 @@ def GeneratePDF():
             q = q - 15
         pdf.rect(10, g, 575, 15, fill=False, stroke=True)
         pdf.rect(10, g - 60, 575, 60, fill=False, stroke=True)
-
+# Formatação da primeira página (o máximo de linhas das tabelas que a primeira página pode suportar é 27)
     if len(pecas + servicos) >= 28:
         if len(pecas) >= 28:
             y = 7.9 * inch
@@ -166,6 +170,7 @@ def GeneratePDF():
             s.drawOn(pdf, 10, alturaser)
             tabelas_pos(l, g)
         else:
+        # Caso a tabela peças seja vazia
             if len(pecas) < 2:
                 y = 8.3 * inch
                 tamanho_ser = 28 - len(pecas)
