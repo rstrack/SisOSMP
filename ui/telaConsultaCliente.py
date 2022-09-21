@@ -1,19 +1,21 @@
 from PyQt6 import QtCore, QtGui, QtWidgets
 from routes import handleRoutes
 
-class TelaConsultaOrcamento(QtWidgets.QMainWindow):
+class TelaConsultaCliente(QtWidgets.QMainWindow):
     def __init__(self):
-        super(TelaConsultaOrcamento, self).__init__()
-        self.orcamentoCtrl = handleRoutes.getRoute('ORCAMENTO')
+        super(TelaConsultaCliente, self).__init__()
+        self.clienteCtrl = handleRoutes.getRoute('CLIENTE')
+        self.cidadeCtrl = handleRoutes.getRoute('CIDADE')
         self.setupUi()
 
     def setupUi(self):
         self.mainwidget = QtWidgets.QWidget(self)
         self.glayout = QtWidgets.QGridLayout(self.mainwidget)
         self.frameBusca = QtWidgets.QFrame(self.mainwidget)
-        self.glayout.addWidget(self.frameBusca, 0, 0, 1, -1)
+        self.glayout.addWidget(self.frameBusca, 0, 0, 1, 1)
         self.hlayoutBusca = QtWidgets.QHBoxLayout(self.frameBusca)
         self.lineEditBusca = QtWidgets.QLineEdit(self.frameBusca)
+        self.lineEditBusca.setFixedHeight(30)
         self.lineEditBusca.setPlaceholderText("Pesquisar")
         self.lineEditBusca.setClearButtonEnabled(True)
         iconBusca = QtGui.QIcon("./resources/search-icon.png")
@@ -21,9 +23,11 @@ class TelaConsultaOrcamento(QtWidgets.QMainWindow):
             iconBusca, QtWidgets.QLineEdit.ActionPosition.LeadingPosition)
         self.hlayoutBusca.addWidget(self.lineEditBusca)
         self.botaoRefresh = QtWidgets.QPushButton(self.frameBusca)
+        self.botaoRefresh.setFixedSize(30,30)
         self.botaoRefresh.setIcon(QtGui.QIcon("./resources/refresh-icon.png"))
         self.hlayoutBusca.addWidget(self.botaoRefresh)
         self.framedados = QtWidgets.QFrame(self.mainwidget)
+        self.framedados.setSizePolicy(QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Preferred)
         self.glayout.addWidget(self.framedados, 1, 0, 1, 1)
         self.vlayoutdados = QtWidgets.QVBoxLayout(self.framedados)
         self.tabela = QtWidgets.QTableView(self.framedados)
@@ -34,6 +38,7 @@ class TelaConsultaOrcamento(QtWidgets.QMainWindow):
             QtWidgets.QAbstractItemView.SelectionBehavior.SelectRows)
         self.tabela.setSelectionMode(
             QtWidgets.QAbstractItemView.SelectionMode.SingleSelection)
+        self.tabela.horizontalHeader().setHighlightSections(False)
         self.tabela.verticalHeader().setVisible(False)
         self.filter = QtCore.QSortFilterProxyModel()
         self.filter.setFilterCaseSensitivity(
@@ -41,20 +46,22 @@ class TelaConsultaOrcamento(QtWidgets.QMainWindow):
 
         self.framedetalhes = QtWidgets.QFrame(self.mainwidget)
         self.glayout.addWidget(self.framedetalhes, 1, 1, 1, 1)
-        self.glayout.setColumnStretch(0, 2)
-        self.glayout.setColumnStretch(1, 1)
+        self.glayout.setColumnStretch(0, 5)
 
         self.vlayoutdetalhes = QtWidgets.QVBoxLayout(self.framedetalhes)
         self.labelDetalhesT = QtWidgets.QLabel(self.framedetalhes)
+        self.labelDetalhesT.setFixedHeight(30)
         self.vlayoutdetalhes.addWidget(self.labelDetalhesT)
         self.labelDetalhesD = QtWidgets.QLabel(self.framedetalhes)
-        self.labelDetalhesD.setSizePolicy(
-            QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Expanding)
         self.vlayoutdetalhes.addWidget(self.labelDetalhesD)
         self.labelDetalhesT.setText("DETALHES")
+        spacer = QtWidgets.QSpacerItem(
+            20, 20, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding)
+        self.vlayoutdetalhes.addItem(spacer)
+        self.framedetalhes.hide()
 
         self.framebotoes = QtWidgets.QFrame(self.mainwidget)
-        self.glayout.addWidget(self.framebotoes, 2, 0, 1, -1)
+        self.glayout.addWidget(self.framebotoes, 2, 0, 1, 1)
         self.hlayoutbotoes = QtWidgets.QHBoxLayout(self.framebotoes)
         spacer = QtWidgets.QSpacerItem(
             20, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
@@ -71,66 +78,75 @@ class TelaConsultaOrcamento(QtWidgets.QMainWindow):
         self.setCentralWidget(self.mainwidget)
         self.retranslateUi()
         self.selectionModel = self.tabela.selectionModel()
+
+        self.listarClientes()
+
         self.selectionModel.selectionChanged.connect(self.mostrarDetalhes)
-        self.listarOrcamentos()
+        self.botaoRefresh.clicked.connect(self.listarClientes)
 
     def retranslateUi(self):
         _translate = QtCore.QCoreApplication.translate
         self.setWindowTitle(_translate("MainWindow", "Busca"))
         self.botaoEditar.setText(_translate("MainWindow", "Editar"))
 
-    def listarOrcamentos(self):
-        orcamentos = self.controller.getOrcamentos()
-        self.model.setRowCount(len(orcamentos))
-        listaHeader = ['ID', 'Data', 'Cliente', 'Veículo']
+    def listarClientes(self):
+        clientes = self.clienteCtrl.listarClientes()
+        self.model.setRowCount(len(clientes))
+        listaHeader = ['ID', 'Nome', 'Documento', 'Veículos']
         self.model.setHorizontalHeaderLabels(listaHeader)
         row = 0
-        for orcamento in orcamentos:
-            item = QtGui.QStandardItem(str(orcamento.idOrcamento))
+        for cliente in clientes:
+            item = QtGui.QStandardItem(str(cliente['idCliente']))
             item.setTextAlignment(
                 QtCore.Qt.AlignmentFlag.AlignHCenter | QtCore.Qt.AlignmentFlag.AlignVCenter)
             self.model.setItem(row, 0, item)
-            item = QtGui.QStandardItem(str(orcamento.dataOrcamento))
+            item = QtGui.QStandardItem(str(cliente['nome']))
             item.setTextAlignment(
                 QtCore.Qt.AlignmentFlag.AlignHCenter | QtCore.Qt.AlignmentFlag.AlignVCenter)
             self.model.setItem(row, 1, item)
-            cliente = self.controller.getClienteByID(orcamento.cliente)
-            item = QtGui.QStandardItem(cliente.nome)
+            queryVeiculo = self.clienteCtrl.listarVeiculos(cliente)
+            item = QtGui.QStandardItem(str(cliente['documento'] or ''))
             item.setTextAlignment(
                 QtCore.Qt.AlignmentFlag.AlignHCenter | QtCore.Qt.AlignmentFlag.AlignVCenter)
             self.model.setItem(row, 2, item)
-            veiculo = self.controller.getVeiculoByID(orcamento.veiculo)
-            item = QtGui.QStandardItem(veiculo.modelo)
-            item.setTextAlignment(
-                QtCore.Qt.AlignmentFlag.AlignHCenter | QtCore.Qt.AlignmentFlag.AlignVCenter)
-            self.model.setItem(row, 3, item)
+            nomes = []
+            if queryVeiculo:
+                for veiculo in queryVeiculo:
+                    nomes.append(': '.join([veiculo['modelo'], veiculo['placa']]))
+                item = QtGui.QStandardItem(', '.join(nomes))
+                self.model.setItem(row, 3, item)
             row = row+1
         header = self.tabela.horizontalHeader()
         header.setSectionResizeMode(
-            QtWidgets.QHeaderView.ResizeMode.Interactive)
-        header.setSectionResizeMode(
-            0, QtWidgets.QHeaderView.ResizeMode.ResizeToContents)
+            QtWidgets.QHeaderView.ResizeMode.ResizeToContents)
         header.setStretchLastSection(True)
 
     def mostrarDetalhes(self):
+        self.glayout.setColumnStretch(1, 2)
         self.linha = self.tabela.selectionModel().selectedRows()
         if self.linha:
+            self.framedetalhes.show()
             id = self.tabela.model().index(self.linha[0].row(), 0).data()
-            orcamento = self.controller.getOrcamentoByID(id)
-            cliente = self.controller.getClienteByID(orcamento.cliente)
-            veiculo = self.controller.getVeiculoByID(orcamento.veiculo)
-            marca = self.controller.getMarcaByID(veiculo.marca)
-            self.labelDetalhesD.setText(f"""Data do orçamento: {str(orcamento.dataOrcamento)}
-Cliente: {cliente.nome}
-Veiculo: {marca.marca} {veiculo.modelo}
+            cliente = self.clienteCtrl.getCliente(id)
+            if cliente['cidade'] != None:
+                cidade = cliente['cidade']['nome']
+            else: cidade = ''
+            self.labelDetalhesD.setText(f"""Cliente: {cliente['nome']}
+Documento: {cliente['documento'] or ''}
+Endereço: {cliente['endereco'] or ''} {cliente['numero'] or ''}
+Bairro: {cliente['bairro'] or ''}
+Cidade: {cidade}
 """)
+        else:
+            self.framedetalhes.hide()
+            self.glayout.setColumnStretch(1, -1)
 
 
 if __name__ == "__main__":
     import sys
     app = QtWidgets.QApplication(sys.argv)
 
-    ui = TelaConsultaOrcamento()
+    ui = TelaConsultaCliente()
     ui.setupUi()
     ui.show()
 

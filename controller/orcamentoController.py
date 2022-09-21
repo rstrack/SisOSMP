@@ -1,19 +1,38 @@
-from PyQt6 import QtWidgets, QtGui, QtCore
-from datetime import datetime
-from controller.clienteController import ClienteController
-from controller.pecaController import PecaController
-from controller.servicoController import ServicoController
-from model.modelo import *
+from model.modelo import db
+from repository.itemPecaRepository import ItemPecaRepository
+from repository.itemServicoRepository import ItemServicoRepository
+from repository.orcamentoRepository import OrcamentoRepository
+from repository.clienteRepository import ClienteRepository
+from repository.pecaRepository import PecaRepository
+from repository.servicoRepository import ServicoRepository
+from repository.veiculoRepository import VeiculoRepository
+from repository.veiculoClienteRepository import VeiculoClienteRepository
 
 class OrcamentoController():
-    def __init__(self, view):
+    def __init__(self):
         super(OrcamentoController, self).__init__()
-        self.view = view
-        self.clienteCtrl = ClienteController(self.view)
-        self.clienteSelecionado = None
-        self.veiculoSelecionado = None
+        self.orcamentoRep = OrcamentoRepository()
+        self.clienteRep = ClienteRepository()
+        self.veiculoRep = VeiculoRepository()
+        self.veiculoClienteRep = VeiculoClienteRepository()
+        self.pecaRep = PecaRepository()
+        self.itemPecaRep = ItemPecaRepository()
+        self.servicoRep = ServicoRepository()
+        self.itemServicoRep = ItemServicoRepository()
 
-    def atualizarCompleters(self):
+    def salvarOrcamento(self, orcamento:dict, pecas:list, servicos:list):
+
+        self.orcamentoRep.save(orcamento)
+        for peca in pecas:
+            qtde = peca.pop('qtde')
+            _peca = self.pecaRep.findByDescricao(peca['descricao'])
+            if not _peca:
+                _peca = self.pecaRep.save(peca)
+            
+
+
+
+    '''def atualizarCompleters(self):
         qPecas = Peca.select()
         pecas = []
         qServicos = Servico.select()
@@ -27,43 +46,6 @@ class OrcamentoController():
         modelServico = QtCore.QStringListModel()
         modelServico.setStringList(servicos)
         return [modelPeca, modelServico]
-
-    def getOrcamentos(self):
-        orcamentos = Orcamento.select()
-        return orcamentos
-
-    def getClienteByID(self, id):
-        return Cliente.select().where(Cliente.idCliente==id).get()
-
-    def getVeiculoByID(self, id):
-        return Veiculo.select().where(Veiculo.idVeiculo==id).get()
-
-    def getOrcamentoByID(self, id):
-        return Orcamento.select().where(Orcamento.idOrcamento==id).get()
-
-    def getMarcas(self):
-        marcas = Marca.select(Marca.marca)
-        return marcas
-
-    def getVeiculosByCliente(self, cliente):
-        queryVeiculo = Veiculo.select().join(Veiculo_Cliente).join(Cliente).where((Veiculo_Cliente.cliente == cliente))
-        return queryVeiculo
-
-    def getClientesByVeiculo(self, veiculo):
-        queryCliente = Cliente.select().join(Veiculo_Cliente).where(Veiculo_Cliente.veiculo==veiculo)
-        return queryCliente
-
-    def getClientes(self):
-        queryCliente = Cliente.select()
-        return queryCliente
-
-    def getVeiculos(self):
-        queryVeiculo = Veiculo.select()
-        return queryVeiculo
-
-    def getMarcaByID(self, id):
-        querymarca = Marca.select().join(Veiculo).where(Marca.idMarca==id)
-        return querymarca
 
     def setClienteSelecionado(self, id):
         if id == None:
@@ -88,18 +70,14 @@ class OrcamentoController():
         queryCidade = Cidade.select().join(Cliente).where(queryCliente.cidade_id==Cidade.idCidade)
         if queryCidade:
             cidade=queryCidade[0].nome
-            queryEstado = Estado.select().join(Cidade).where(queryCidade[0].estado_id==Estado.UF)
-            if queryEstado:
-                uf = queryEstado[0].UF
         else: 
             cidade = None
-            uf = None
         qTel = Fone.select().where(Fone.cliente==queryCliente)
         tel=[None, None]
         for i in range(len(qTel)):
             tel[i] = qTel[i].fone
         return [queryCliente.nome, cpf, cnpj, queryCliente.cep, queryCliente.endereco, queryCliente.numero,
-            queryCliente.bairro, cidade, uf, tel[0], tel[1]]
+            queryCliente.bairro, cidade, tel[0], tel[1]]
 
     def getValorTotal(self):
         valorTotal=0
@@ -211,7 +189,7 @@ class OrcamentoController():
 
     @db.atomic
     def salvareImprimir(self):
-        pass
+        pass'''
 
 if __name__ == "__main__":
     c = OrcamentoController()

@@ -1,11 +1,8 @@
 import sys
-from typing import Text
 from peewee import *
-
+from util import trigger
 import os
 sys.path.insert(0, os.getcwd())
-
-from util import trigger
 
 NOMEBANCODEDADOS="dbpasetto"
 
@@ -19,25 +16,21 @@ class BaseModel(Model):
         database = db
 
 
-class Estado(BaseModel):
-    UF = CharField(max_length=2, constraints=[Check(f"UF in ({SIGLAESTADOS})")], primary_key=True)
-
-
 class Cidade(BaseModel):
     idCidade = AutoField()
-    nome = CharField(max_length=50)
-    estado = ForeignKeyField(Estado, backref='estados')
+    nome = CharField(max_length=50, null=False)
+    uf = CharField(max_length=2, null=False, constraints=[Check(f"UF in ({SIGLAESTADOS})")])
     
 
 class Marca(BaseModel):
     idMarca = AutoField()
-    marca = CharField(max_length=50,null=False)
+    nome = CharField(max_length=50,null=False)
 
 
 class Veiculo(BaseModel):
     idVeiculo = AutoField()
     modelo = CharField(max_length=30,null=False)
-    ano = CharField(max_length=4, constraints=[Check('ano > 1900')],null=False)
+    ano = CharField(max_length=4, constraints=[Check('ano > 1900')],null=True)
     placa = CharField(max_length=7,unique=True, constraints=[Check('CHAR_LENGTH(placa)=7')],null=False)
     marca = ForeignKeyField(Marca, backref='marcas',null=False)
 
@@ -45,8 +38,7 @@ class Veiculo(BaseModel):
 class Cliente(BaseModel):
     idCliente = AutoField()
     nome = CharField(max_length=80,null=False)
-    cpf = CharField(max_length=11, null=True,unique=True, constraints=[Check('CHAR_LENGTH(cpf)=11')])
-    cnpj = CharField(max_length=14, null=True,unique=True, constraints=[Check('CHAR_LENGTH(cnpj)=14')])
+    documento = CharField(max_length=14, null=True,unique=True, constraints=[Check('CHAR_LENGTH(documento)=11 or CHAR_LENGTH(documento)=14')])
     cep = CharField(max_length=8, null=True,constraints=[Check('CHAR_LENGTH(cep)=8')])
     endereco = CharField(max_length=80,null=True)
     numero = CharField(max_length=6, null=True, constraints=[Check('numero>=0')])

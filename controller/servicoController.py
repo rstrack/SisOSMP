@@ -4,8 +4,8 @@ from PyQt6 import QtWidgets
 from model.modelo import *
 
 class ServicoController():
-    def __init__(self, view):
-        self.view = view
+    def __init__(self):
+        pass
 
     def salvarServico(self, desc, valor):
         qPeca = Peca.select().where(Peca.descricao==desc)

@@ -110,7 +110,8 @@ QScrollArea{
 }
 
 QTableView{
-    font-size: 13px;
+    font-size: 12px;
+    selection-background-color: #1276B9
 }
 
 QCheckBox{
@@ -121,4 +122,9 @@ QCheckBox{
     background-color: #3498DB;
     color:#FFFFFF;
     padding: 2px 5px 2px 5px;
+}
+
+QHeaderView::section{
+    background-color: #F8F8F8;
+    font-size: 13px;
 }

@@ -1,13 +1,162 @@
-from PyQt6 import QtWidgets, QtGui, QtCore
-from controller.veiculoController import VeiculoController
-from model.modelo import *
+from ui.messageBox import MessageBox
+from model.modelo import db
+from playhouse.shortcuts import model_to_dict
+from repository.clienteRepository import ClienteRepository
+from repository.cidadeRepository import CidadeRepository
+from repository.foneRepository import FoneRepository
+from repository.marcaRepository import MarcaRepository
+from repository.veiculoClienteRepository import VeiculoClienteRepository
+from repository.veiculoRepository import VeiculoRepository
 
 class ClienteController():
-    def __init__(self, view):
+    def __init__(self):
         super(ClienteController, self).__init__()
-        self.view = view
+        self.clienteRep = ClienteRepository()
+        self.cidadeRep = CidadeRepository()
+        self.foneRep = FoneRepository()
+        self.marcaRep = MarcaRepository()
+        self.veiculoRep = VeiculoRepository()
+        self.veiculoClienteRep = VeiculoClienteRepository()
 
-    def getMarcas(self):
+    def salvarCliente(self, dados:dict, fones:list):
+        with db.atomic() as transaction:
+            try:
+                if dados['nome'] == None:
+                    raise Exception("Campo 'Nome' obrigatório")
+                if dados['cidade'] != None:
+                    cidade = {}
+                    cidade['nome'] = dados.pop('cidade')
+                    cidade['uf'] = dados.pop('uf')
+                    qCidade = self.cidadeRep.findCidadeByNomeeUF(cidade['nome'], cidade['uf'])
+                    if qCidade: dados['cidade'] = qCidade
+                    else: dados['cidade'] = self.cidadeRep.save(cidade)
+                _cliente = self.clienteRep.save(dados)
+
+                _fones = []
+                for fone in fones:
+                    if fone != None:
+                        _fones.append(self.foneRep.save(_cliente, fone))
+                return [_cliente, _fones]
+
+            except Exception as e:
+                transaction.rollback()
+                return e
+
+    def salvarFones(self, cliente, fones:list):
+        with db.atomic() as transaction:
+            try:
+                _fones = []
+                for fone in fones:
+                    if fone != None:
+                        _fones.append(self.foneRep.save(cliente, fone))
+                return _fones
+            except Exception as e:
+                transaction.rollback()
+                return e
+
+    #salva dados do cliente, telefones, veiculo e vincula-os
+    def salvarClienteVeiculo(self, dadosCliente:dict, dadosFone:list, dadosVeiculo:dict):
+        with db.atomic() as transaction:
+            try:
+                cliente = self.salvarCliente(dadosCliente, dadosFone)
+                if isinstance(cliente, Exception):
+                    raise Exception(cliente)
+                marca = self.marcaRep.findByNome(dadosVeiculo['marca'])
+                if not marca:
+                    marca = self.marcaRep.save({'nome':dadosVeiculo['marca']})
+                dadosVeiculo['marca'] = marca
+                qVeiculo = self.veiculoRep.findByModeloAndPlaca(dadosVeiculo['modelo'], dadosVeiculo['placa'])
+                if qVeiculo:
+                    question = MessageBox.question(f'Veiculo {qVeiculo.modelo} placa {qVeiculo.placa} já registrado. ' \
+                    +f'Deseja utilizá-lo para o cliente {cliente.nome}? ')
+                    if question == 'sim':
+                        self.veiculoClienteRep.save(qVeiculo, cliente)
+                    else: raise Exception('Cadastro cancelado')
+                else:
+                    veiculo = self.salvarVeiculo(dadosVeiculo)
+                    if isinstance(veiculo, Exception):
+                        raise Exception(veiculo)
+                    self.veiculoClienteRep.save(veiculo, cliente)
+
+            except Exception as e:
+                transaction.rollback()
+                return e
+
+    def editarCliente(self, cliente:dict):
+        with db.atomic() as transaction:
+            try:
+                if 'cidade' in cliente:
+                    cidade = {}
+                    cidade['nome'] = cliente.pop('cidade')
+                    cidade['uf'] = cliente.pop('uf')
+                    qCidade = self.cidadeRep.findCidadeByNomeeUF(cidade['nome'], cidade['uf'])
+                    if qCidade: cliente['cidade'] = qCidade
+                    else: cliente['cidade'] = self.cidadeRep.save(cidade)
+                _cliente = self.clienteRep.update(cliente)
+                return _cliente
+
+            except Exception as e:
+                transaction.rollback()
+                return e
+    
+    #listar todos os clientes ou clientes vinculados a um veiculo
+    def listarClientes(self, veiculo=None):
+        if veiculo:
+            clientes = self.veiculoClienteRep.findClientesByVeiculoID(veiculo['idVeiculo'])
+            if clientes:
+                return clientes
+            else: return None
+        else:
+            clientes = self.clienteRep.findAll().dicts()
+            if clientes:
+                return clientes
+            else: return None
+
+    #listar cliente pelo id
+    def getCliente(self, id):
+        cliente = self.clienteRep.findByID(id)
+        if cliente: return model_to_dict(cliente)
+        else: return None
+
+
+    #salva somente um veiculo
+    def salvarVeiculo(self, veiculo):
+        with db.atomic() as transaction:
+            try:
+                qVeiculo = self.veiculoRep.findByPlaca(veiculo['placa'])
+                if qVeiculo:
+                    raise Exception(f'Placa {qVeiculo.placa} já registrada para o veículo ' \
+                    +f'{self.marcaRep.findByID(qVeiculo.marca).nome} {qVeiculo.modelo}')
+                marca = self.marcaRep.findByNome(veiculo['marca'])
+                if not marca:
+                    marca = self.marcaRep.save({'nome':veiculo['marca']})
+                veiculo['marca'] = marca
+                return self.veiculoRep.save(veiculo)
+            
+            except Exception as e:
+                transaction.rollback()
+                return e
+
+    def editarVeiculo(self, veiculo):
+        pass
+
+
+    def listarVeiculos(self, cliente:dict=None):
+        if cliente:
+            veiculos = self.veiculoClienteRep.findVeiculosByClienteID(cliente['idCliente'])
+            if veiculos:
+                return veiculos.dicts()
+            else: return None
+        else:
+            veiculos = self.veiculoRep.findAll()
+            if veiculos:
+                return veiculos.dicts()
+            else: return None
+
+    def deletarVeiculo(self, veiculo):
+        pass
+
+    '''def getMarcas(self):
         marcas = Marca.select(Marca.marca)
         return marcas
 
@@ -193,4 +342,4 @@ class ClienteController():
                 msg.exec()
 
     def limparCampos(self):
-        pass
+        pass'''

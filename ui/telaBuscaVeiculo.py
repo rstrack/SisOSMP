@@ -1,10 +1,8 @@
 from PyQt6 import QtCore, QtGui, QtWidgets
 
-from controller.orcamentoController import OrcamentoController
-
-class TelaConsultaAux(QtWidgets.QWidget):
+class TelaBuscaVeiculo(QtWidgets.QWidget):
     def __init__(self, MainWindow):
-        super(TelaConsultaAux, self).__init__()
+        super(TelaBuscaVeiculo, self).__init__()
         self.setupUi(MainWindow)
 
     def setupUi(self, MainWindow):
@@ -15,25 +13,32 @@ class TelaConsultaAux(QtWidgets.QWidget):
         self.vlayout.addWidget(self.frameBusca)
         self.vlayoutBusca = QtWidgets.QVBoxLayout(self.frameBusca)
         self.lineEditBusca = QtWidgets.QLineEdit(self.frameBusca)
-        self.lineEditBusca.setFixedSize(250,25)
+        self.lineEditBusca.setFixedSize(250, 25)
         self.lineEditBusca.setPlaceholderText("Pesquisar")
         self.lineEditBusca.setClearButtonEnabled(True)
         iconBusca = QtGui.QIcon("./resources/search-icon.png")
-        self.lineEditBusca.addAction(iconBusca, QtWidgets.QLineEdit.ActionPosition.LeadingPosition)
-        self.vlayoutBusca.addWidget(self.lineEditBusca, 0, QtCore.Qt.AlignmentFlag.AlignHCenter|QtCore.Qt.AlignmentFlag.AlignVCenter)  
+        self.lineEditBusca.addAction(
+            iconBusca, QtWidgets.QLineEdit.ActionPosition.LeadingPosition)
+        self.vlayoutBusca.addWidget(
+            self.lineEditBusca, 0, QtCore.Qt.AlignmentFlag.AlignHCenter | QtCore.Qt.AlignmentFlag.AlignVCenter)
         self.framedados = QtWidgets.QFrame(self.mainwidget)
         self.vlayout.addWidget(self.framedados)
         self.vlayoutdados = QtWidgets.QVBoxLayout(self.framedados)
         self.tabela = QtWidgets.QTableView(self.framedados)
         self.vlayoutdados.addWidget(self.tabela)
-        self.tabela.setEditTriggers(QtWidgets.QAbstractItemView.EditTrigger.NoEditTriggers)
-        self.tabela.setSelectionBehavior(QtWidgets.QAbstractItemView.SelectionBehavior.SelectRows)
-        self.tabela.setSelectionMode(QtWidgets.QAbstractItemView.SelectionMode.SingleSelection)
+        self.tabela.setEditTriggers(
+            QtWidgets.QAbstractItemView.EditTrigger.NoEditTriggers)
+        self.tabela.setSelectionBehavior(
+            QtWidgets.QAbstractItemView.SelectionBehavior.SelectRows)
+        self.tabela.setSelectionMode(
+            QtWidgets.QAbstractItemView.SelectionMode.SingleSelection)
         self.tabela.verticalHeader().setVisible(False)
         self.filter = QtCore.QSortFilterProxyModel()
-        self.filter.setFilterCaseSensitivity(QtCore.Qt.CaseSensitivity.CaseInsensitive)
+        self.filter.setFilterCaseSensitivity(
+            QtCore.Qt.CaseSensitivity.CaseInsensitive)
         self.framebotoes = QtWidgets.QFrame(self.mainwidget)
-        self.vlayout.addWidget(self.framebotoes, 0, QtCore.Qt.AlignmentFlag.AlignHCenter|QtCore.Qt.AlignmentFlag.AlignVCenter)
+        self.vlayout.addWidget(
+            self.framebotoes, 0, QtCore.Qt.AlignmentFlag.AlignHCenter | QtCore.Qt.AlignmentFlag.AlignVCenter)
         self.hlayoutbotoes = QtWidgets.QHBoxLayout(self.framebotoes)
         self.botaoSelecionar = QtWidgets.QPushButton(self.framebotoes)
         self.botaoSelecionar.setFixedSize(100, 25)
@@ -41,12 +46,12 @@ class TelaConsultaAux(QtWidgets.QWidget):
         self.model = QtGui.QStandardItemModel()
         self.filter.setSourceModel(self.model)
         self.filter.setFilterKeyColumn(-1)
-        self.lineEditBusca.textChanged.connect(self.filter.setFilterRegularExpression)
+        self.lineEditBusca.textChanged.connect(
+            self.filter.setFilterRegularExpression)
         self.tabela.setModel(self.filter)
 
         MainWindow.setCentralWidget(self.mainwidget)
         self.retranslateUi(MainWindow)
-
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
@@ -59,7 +64,7 @@ if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
 
     MainWindow = QtWidgets.QMainWindow()
-    ui = TelaConsultaAux(MainWindow)
+    ui = TelaBuscaVeiculo(MainWindow)
     ui.setupUi(MainWindow)
     MainWindow.show()
 
@@ -67,4 +72,3 @@ if __name__ == "__main__":
     app.setStyleSheet(style)
 
     sys.exit(app.exec())
-
