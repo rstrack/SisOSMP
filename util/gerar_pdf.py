@@ -10,7 +10,7 @@ from reportlab.lib import colors
 def GeneratePDF():
     pdf = canvas.Canvas('teste.pdf', pagesize=A4)
     pdf.drawInlineImage(
-        'logo3.png', 0, 740, 200, 100
+        './resources/logo.png', 0, 740, 200, 100
     )
     pdf.setFont('Helvetica-Bold', 10)
     stylesheet = getSampleStyleSheet()
