@@ -18,7 +18,7 @@ class ItemPecaRepository():
     def findAll(self):
         return ItemPeca.select()
 
+    def findByOrcamentoAndPeca(self, orcamento, peca):
+        return ItemPeca.select().where(ItemPeca.orcamento==orcamento and ItemPeca.peca==peca).get()
 
-    #Analisar finds necessarios
-    def findByOrcamentoID(self, id):
-        return ItemPeca.select().where()
+    

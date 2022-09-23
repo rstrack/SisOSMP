@@ -18,7 +18,5 @@ class ItemServicoRepository():
     def findAll(self):
         return ItemServico.select()
 
-
-    #Analisar finds necessarios
-    def findByOrcamentoID(self, id):
-        return ItemServico.select().where()
+    def findByOrcamentoAndServico(self, orcamento, servico):
+        return ItemServico.select().where(ItemServico.orcamento==orcamento and ItemServico.peca==servico).get()

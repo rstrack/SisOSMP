@@ -1,18 +1,34 @@
-from PyQt6 import QtWidgets
-
-from model.modelo import *
+from model.modelo import db
+from playhouse.shortcuts import model_to_dict
+from repository.pecaRepository import PecaRepository
 
 class PecaController():
-    def __init__(self, view=None):
-        self.view = view
+    def __init__(self):
+        self.pecaRep = PecaRepository()
 
-    def salvarPeca(self, desc, un, valor):
-        if valor.replace(',','',1).isdigit():
-            peca = Peca.create(descricao=desc, un=un, valor=valor.replace(',','.',1))
-        else: raise Exception("Erro: digite apenas números no valor!")
-        return peca
+    def salvarPeca(self, peca:dict):
+        with db.atomic() as transaction:
+            try:
+                qPeca = self.pecaRep.findByDescricao(peca['descricao'])
+                if qPeca:
+                    return qPeca
+                else: return self.pecaRep.save(peca)
+            except Exception as e:
+                transaction.rollback()
+                return e
 
-    def salvarPecas(self):
+    def editarPeca(self, peca:dict):
+        with db.atomic() as transaction:
+            try:
+                pass
+
+
+            except Exception as e:
+                transaction.rollback()
+                return e
+
+
+    '''def salvarPecas(self):
         with db.atomic() as transaction:
             try:
                 qtde = 0
@@ -41,7 +57,16 @@ class PecaController():
                 msg.setWindowTitle("Erro")
                 msg.setText(str(e))
                 msg.exec()
-                return False
+                return False'''
+
+    def getPeca(self, desc):
+        peca = self.pecaRep.findByDescricao(desc)
+        if peca:
+            return model_to_dict(peca)
+        else: return None
 
     def listarPecas(self):
-        pass
+        pecas = self.pecaRep.findAll()
+        if pecas:
+            return pecas.dicts()
+        else: return None

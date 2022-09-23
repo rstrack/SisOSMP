@@ -22,4 +22,7 @@ class ServicoRepository():
         return Servico.select().where(Servico.idServico==id).get()
 
     def findByDescricao(self, desc):
-        return Servico.select().where(Servico.descricao==desc).get()
+        servico = Servico.select().where(Servico.descricao==desc)
+        if servico:
+            return servico.get()
+        else: return None

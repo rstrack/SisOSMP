@@ -1,7 +1,10 @@
 from PyQt6 import QtCore, QtGui, QtWidgets
 from routes import handleRoutes
 
+from datetime import datetime
+
 from ui.telaBuscaCliente import TelaBuscaCliente
+from ui.telaBuscaVeiculo import TelaBuscaVeiculo
 
 SIGLAESTADOS = ['AC', 'AL', 'AP', 'AM', 'BA', 'CE', 'DF', 'ES', 'GO', 'MA', 'MT', 'MS',
                 'MG', 'PA', 'PB', 'PR', 'PE', 'PI', 'RJ', 'RN', 'RS', 'RO', 'RR', 'SC', 'SP', 'SE', 'TO']
@@ -14,6 +17,13 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
     def __init__(self):
         super(TelaCadastroOrcamento, self).__init__()
         self.orcamentoCtrl = handleRoutes.getRoute('ORCAMENTO')
+        self.clienteCtrl = handleRoutes.getRoute('CLIENTE')
+        self.pecaCtrl = handleRoutes.getRoute('PECA')
+        self.servicoCtrl = handleRoutes.getRoute('SERVICO')
+        self.marcaCtrl = handleRoutes.getRoute('MARCA')
+        self.clienteSelected = None
+        self.veiculoSelected = None
+        self.valorTotal = 0
         self.setupUi()
 
     def setupUi(self):
@@ -51,11 +61,10 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
         self.checkboxNovoCliente.setChecked(True)
         self.hlayout1.addWidget(self.checkboxNovoCliente)
         self.hlayout1.setAlignment(QtCore.Qt.AlignmentFlag.AlignLeft)
-
         self.labelPessoa = QtWidgets.QLabel(self.groupBoxCliente)
         self.gridLayoutCliente.addWidget(self.labelPessoa, 1, 0, 1, 1)
-        self.labelcpfj = QtWidgets.QLabel(self.groupBoxCliente)
-        self.gridLayoutCliente.addWidget(self.labelcpfj, 1, 1, 1, 1)
+        self.labelDocumento = QtWidgets.QLabel(self.groupBoxCliente)
+        self.gridLayoutCliente.addWidget(self.labelDocumento, 1, 1, 1, 1)
         self.labelNome = QtWidgets.QLabel(self.groupBoxCliente)
         self.gridLayoutCliente.addWidget(self.labelNome, 1, 2, 1, 1)
         self.labelFone1 = QtWidgets.QLabel(self.groupBoxCliente)
@@ -63,10 +72,10 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
         self.labelFone2 = QtWidgets.QLabel(self.groupBoxCliente)
         self.gridLayoutCliente.addWidget(self.labelFone2, 1, 5, 1, 1)
         self.comboBoxPessoa = QtWidgets.QComboBox(self.groupBoxCliente)
-        self.comboBoxPessoa.addItems(["FÍSICA", "JURÍDICA"])
+        self.comboBoxPessoa.addItems(["PESSOA FÍSICA", "PESSOA JURÍDICA", "ESTRANGEIRO"])
         self.gridLayoutCliente.addWidget(self.comboBoxPessoa, 2, 0, 1, 1)
-        self.lineEditCPFJ = QtWidgets.QLineEdit(self.groupBoxCliente)
-        self.gridLayoutCliente.addWidget(self.lineEditCPFJ, 2, 1, 1, 1)
+        self.lineEditDocumento = QtWidgets.QLineEdit(self.groupBoxCliente)
+        self.gridLayoutCliente.addWidget(self.lineEditDocumento, 2, 1, 1, 1)
         self.lineEditNomeCliente = QtWidgets.QLineEdit(self.groupBoxCliente)
         self.gridLayoutCliente.addWidget(self.lineEditNomeCliente, 2, 2, 1, 2)
         self.lineEditFone1 = QtWidgets.QLineEdit(self.groupBoxCliente)
@@ -105,7 +114,6 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
         self.gridLayoutCliente.setColumnStretch(4, 6)
         self.gridLayoutCliente.setColumnStretch(5, 6)
         self.gridLayoutCliente.setColumnStretch(6, 2)
-
         self.gridLayout.addWidget(self.groupBoxCliente, 0, 0, 1, -1)
         # dados do veiculo
         self.groupBoxVeiculo = QtWidgets.QGroupBox(self.framedados)
@@ -133,7 +141,6 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
         self.gridLayoutVeiculo.addWidget(self.labelAno, 1, 3, 1, 1)
         self.labelKm = QtWidgets.QLabel(self.groupBoxVeiculo)
         self.gridLayoutVeiculo.addWidget(self.labelKm, 1, 4, 1, 1)
-
         self.comboBoxMarca = QtWidgets.QComboBox(self.groupBoxVeiculo)
         self.comboBoxMarca.setEditable(True)
         self.gridLayoutVeiculo.addWidget(self.comboBoxMarca, 2, 0, 1, 1)
@@ -145,14 +152,12 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
         self.gridLayoutVeiculo.addWidget(self.lineEditAno, 2, 3, 1, 1)
         self.lineEditKm = QtWidgets.QLineEdit(self.groupBoxVeiculo)
         self.gridLayoutVeiculo.addWidget(self.lineEditKm, 2, 4, 1, 1)
-
         self.gridLayout.addWidget(self.groupBoxVeiculo, 1, 0, 1, -1)
         self.gridLayoutVeiculo.setColumnStretch(0, 3)
         self.gridLayoutVeiculo.setColumnStretch(1, 5)
         self.gridLayoutVeiculo.setColumnStretch(2, 1)
         self.gridLayoutVeiculo.setColumnStretch(3, 1)
         self.gridLayoutVeiculo.setColumnStretch(4, 1)
-
         # peças
         self.groupBoxPecas = QtWidgets.QGroupBox(self.framedados)
         self.vlayoutgpecas = QtWidgets.QVBoxLayout(self.groupBoxPecas)
@@ -167,7 +172,6 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
             QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Expanding)
         self.scrollarea1.setWidget(self.framegroupboxpecas)
         self.gridLayout_2 = QtWidgets.QGridLayout(self.framegroupboxpecas)
-
         self.labelNomePeca = QtWidgets.QLabel(self.framegroupboxpecas)
         self.gridLayout_2.addWidget(self.labelNomePeca, 0, 0, 1, 1)
         self.labelQtde = QtWidgets.QLabel(self.framegroupboxpecas)
@@ -198,7 +202,6 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
         self.gridLayout_2.setColumnStretch(0, 6)
         self.gridLayout_2.setColumnStretch(1, 1)
         self.gridLayout_2.setColumnStretch(3, 1)
-
         # serviços
         self.groupBoxServicos = QtWidgets.QGroupBox(self.framedados)
         self.vlayoutgservicos = QtWidgets.QVBoxLayout(self.groupBoxServicos)
@@ -213,14 +216,12 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
             QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Expanding)
         self.scrollarea2.setWidget(self.framegroupboxservicos)
         self.gridLayout_5 = QtWidgets.QGridLayout(self.framegroupboxservicos)
-
         self.labelNomeServico = QtWidgets.QLabel(self.framegroupboxservicos)
         self.gridLayout_5.addWidget(self.labelNomeServico, 0, 0, 1, 1)
         self.labelQtdeS = QtWidgets.QLabel(self.framegroupboxservicos)
         self.gridLayout_5.addWidget(self.labelQtdeS, 0, 1, 1, 1)
         self.labelValorServico = QtWidgets.QLabel(self.framegroupboxservicos)
         self.gridLayout_5.addWidget(self.labelValorServico, 0, 2, 1, 1)
-
         self.lineEditNomeServico = QtWidgets.QLineEdit(
             self.framegroupboxservicos)
         self.gridLayout_5.addWidget(self.lineEditNomeServico, 1, 0, 1, 1)
@@ -243,7 +244,6 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
         self.gridLayout_5.setColumnStretch(0, 6)
         self.gridLayout_5.setColumnStretch(1, 1)
         self.gridLayout_5.setColumnStretch(2, 1)
-
         # frame
         self.framevalor = QtWidgets.QFrame(self.framedados)
         self.hlayoutvalor = QtWidgets.QHBoxLayout(self.framevalor)
@@ -274,7 +274,6 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
 
         self.frameobs = QtWidgets.QFrame(self.framedados)
         self.gridLayout.addWidget(self.frameobs, 4, 0, 1, -1)
-
         # campo de observações
         self.groupBoxObs = QtWidgets.QGroupBox(self.frameobs)
         self.vlayout2 = QtWidgets.QVBoxLayout(self.groupBoxObs)
@@ -283,7 +282,6 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
         self.vlayout2.addWidget(self.textEdit)
         self.gridLayout.addWidget(self.groupBoxObs, 5, 0, 1, -1)
         # botoes
-
         self.framebotoes = QtWidgets.QFrame(self.main_frame)
         self.hlayout4 = QtWidgets.QHBoxLayout(self.framebotoes)
         self.labelLegenda = QtWidgets.QLabel(self.framevalor)
@@ -303,9 +301,7 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
         self.hlayout4.addWidget(self.botaolimpar)
         self.hlayout4.setContentsMargins(9, 0, 9, 9)
         self.vlayout1.addWidget(self.framebotoes)
-
         self.setCentralWidget(self.main_frame)
-
         self.completerPeca = QtWidgets.QCompleter([])
         self.completerPeca.setCaseSensitivity(
             QtCore.Qt.CaseSensitivity.CaseInsensitive)
@@ -318,22 +314,21 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
         self.completerServico.setCompletionMode(
             QtWidgets.QCompleter.CompletionMode.UnfilteredPopupCompletion)
         self.lineEditNomeServico.setCompleter(self.completerServico)
-
+ 
         self.retranslateUi()
         self.setMarcas()
-        self.setModelCompleters()
-
+        self.setCompleters()
         self.botaoAddPecas.clicked.connect(self.addLinhaPeca)
         self.botaoAddServicos.clicked.connect(self.addLinhaServico)
         self.botaobuscarCliente.clicked.connect(self.telaBuscaCliente)
-        self.botaobuscarveiculo.clicked.connect(self.telaBuscaVeiculo)
+        #self.botaobuscarveiculo.clicked.connect(self.telaBuscaVeiculo)
         self.botaolimpar.clicked.connect(self.limparCampos)
         self.botaoSalvar.clicked.connect(self.salvarOrcamento)
         self.botaoSalvareImprimir.clicked.connect(self.salvarImprimirOrcamento)
-
-        self.lineEditNomePeca.editingFinished.connect(lambda: self.controller.buscarPeca(self.lineEditNomePeca,
+        self.comboBoxPessoa.currentIndexChanged.connect(self.escolherTipoPessoa)
+        self.lineEditNomePeca.editingFinished.connect(lambda: self.buscarPeca(self.lineEditNomePeca,
                                                                                          self.comboBoxUn, self.lineEditValorPeca))
-        self.lineEditNomeServico.editingFinished.connect(lambda: self.controller.buscarServico(self.lineEditNomeServico,
+        self.lineEditNomeServico.editingFinished.connect(lambda: self.buscarServico(self.lineEditNomeServico,
                                                                                                self.lineEditValorServico))
         self.lineEditNomePeca.editingFinished.connect(self.setValor)
         self.lineEditNomeServico.editingFinished.connect(self.setValor)
@@ -342,9 +337,9 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
         self.lineEditValorPeca.editingFinished.connect(self.setValor)
         self.lineEditValorServico.editingFinished.connect(self.setValor)
         self.checkboxNovoCliente.stateChanged.connect(
-            self.habilitarCamposCliente)
+            self.limparDadosCliente)
         self.checkboxNovoVeiculo.stateChanged.connect(
-            self.habilitarCamposVeiculo)
+            self.limparDadosVeiculo)
 
     ##############################################################################################################################
                                                             #FUNÇÕES
@@ -368,7 +363,7 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
         self.labelNome.setText(_translate("MainWindow", "Nome*"))
         self.labelCEP.setText(_translate("MainWindow", "CEP"))
         self.labelPessoa.setText(_translate("MainWindow", "Pessoa"))
-        self.labelcpfj.setText(_translate("MainWindow", "CPF"))
+        self.labelDocumento.setText(_translate("MainWindow", "CPF"))
         self.labelUF.setText(_translate("MainWindow", "UF"))
         self.labelCidade.setText(_translate("MainWindow", "Cidade"))
         self.labelEnder.setText(_translate("MainWindow", "Endereço"))
@@ -419,7 +414,7 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
         lineedit2.editingFinished.connect(self.setValor)
         lineedit4.editingFinished.connect(self.setValor)
         lineedit1.editingFinished.connect(
-            lambda: self.controller.buscarPeca(lineedit1, comboBox, lineedit4))
+            lambda: self.buscarPeca(lineedit1, comboBox, lineedit4))
         self.gridLayout_2.addWidget(label1, len(self.linhasPeca)*2, 0, 1, 1)
         self.gridLayout_2.addWidget(label2, len(self.linhasPeca)*2, 1, 1, 1)
         self.gridLayout_2.addWidget(label3, len(self.linhasPeca)*2, 2, 1, 1)
@@ -451,7 +446,7 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
         lineedit2.editingFinished.connect(self.setValor)
         lineedit3.editingFinished.connect(self.setValor)
         lineedit1.editingFinished.connect(
-            lambda: self.controller.buscarServico(lineedit1, lineedit3))
+            lambda: self.buscarServico(lineedit1, lineedit3))
         self.gridLayout_5.addWidget(label1, len(self.linhasServico)*2, 0, 1, 1)
         self.gridLayout_5.addWidget(label2, len(self.linhasServico)*2, 1, 1, 1)
         self.gridLayout_5.addWidget(label3, len(self.linhasServico)*2, 2, 1, 1)
@@ -470,7 +465,7 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
 
     def limparDadosCliente(self):
         self.lineEditNomeCliente.clear()
-        self.lineEditCPFJ.clear()
+        self.lineEditDocumento.clear()
         self.lineEditCEP.clear()
         self.lineEditEnder.clear()
         self.lineEditNumero.clear()
@@ -486,16 +481,26 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
         self.lineEditPlaca.clear()
         self.lineEditKm.clear()
 
-    def setCliente(self, nome, cpf=None, cnpj=None, tel1=None, tel2=None):
+    def escolherTipoPessoa(self):
+        if (self.comboBoxPessoa.currentIndex() == 0):
+            self.labelDocumento.setText('CPF')
+        elif (self.comboBoxPessoa.currentIndex() == 1):
+            self.labelDocumento.setText('CNPJ')
+        else: self.labelDocumento.setText('Documento')
+
+    def setCliente(self, tipo, nome, documento=None, tel1=None, tel2=None):
         self.lineEditNomeCliente.setText(nome)
-        if cpf:
-            self.lineEditCPFJ.setText(cpf)
-            self.labelcpfj.setText("CPF")
-            self.comboBoxPessoa.setCurrentIndex(0)
-        elif cnpj:
-            self.lineEditCPFJ.setText(cnpj)
-            self.labelcpfj.setText("CNPJ")
-            self.comboBoxPessoa.setCurrentIndex(1)
+        if documento:
+            self.lineEditDocumento.setText(documento)
+            if tipo == 0:
+                self.labelDocumento.setText("CPF")
+                self.comboBoxPessoa.setCurrentIndex(0)
+            if tipo == 1:
+                self.labelDocumento.setText("CNPJ")
+                self.comboBoxPessoa.setCurrentIndex(1)
+            if tipo == 1:
+                self.labelDocumento.setText("Documento")
+                self.comboBoxPessoa.setCurrentIndex(2)
         self.lineEditFone1.setText(tel1)
         self.lineEditFone2.setText(tel2)
 
@@ -517,88 +522,263 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
             self.comboBoxMarca.findText(marca, QtCore.Qt.MatchFlag.MatchExactly))
 
     def setMarcas(self):
-        marcas = self.controller.getMarcas()
+        self.comboBoxMarca.clear()
+        marcas = self.marcaCtrl.listarMarcas()
         for marca in marcas:
-            self.comboBoxMarca.addItem(marca.marca)
+            self.comboBoxMarca.addItem(marca['nome'])
         self.comboBoxMarca.setCurrentIndex(-1)
 
-    def setModelCompleters(self):
-        list = self.controller.atualizarCompleters()
-        self.completerPeca.setModel(list[0])
-        self.completerServico.setModel(list[1])
+    def setCompleters(self):
+        pecas = self.pecaCtrl.listarPecas()
+        servicos = self.servicoCtrl.listarServicos()
+        listaPecas = []
+        listaServicos = []
+        if pecas:
+            for peca in pecas:
+                listaPecas.append(peca['descricao'])
+        if servicos:
+            for servico in servicos:
+                listaServicos.append(servico['descricao'])
+        modelPecas = QtCore.QStringListModel()
+        modelPecas.setStringList(listaPecas)
+        self.completerPeca.setModel(modelPecas)
+        modelServicos = QtCore.QStringListModel()
+        modelServicos.setStringList(listaServicos)
+        self.completerServico.setModel(modelServicos)
 
     def getDadosCliente(self):
         dict = {}
-        if (self.lineEditCPFJ.text()):
-            if (self.comboBoxPessoa.currentIndex() == 0):
-                dict['cpf'] = self.lineEditCPFJ.text()
-            else:
-                dict['cnpj'] = self.lineEditCPFJ.text()
+        dict['tipo'] = self.comboBoxPessoa.currentIndex()
+        if (self.lineEditDocumento.text()):
+            if dict['tipo'] == 0:
+                documento = 'CPF'
+                if len(self.lineEditDocumento.text()) != 11:
+                    raise Exception('CPF inválido')
+            elif dict['tipo'] == 1:
+                documento = 'CNPJ'
+                if len(self.lineEditDocumento.text()) != 14:
+                    raise Exception('CNPJ inválido')
+            else: documento = 'Documento'
+            if not self.lineEditDocumento.text().isnumeric():
+                raise Exception(f'Digite apenas números no campo {documento}')
+            dict['documento'] = self.lineEditDocumento.text()
+        else:
+            dict['documento'] = None
         if (self.lineEditNomeCliente.text()):
-            dict['nome'] = self.lineEditNomeCliente.text()
+            dict['nome'] = self.lineEditNomeCliente.text().title()
+        else:
+            raise Exception("Nome do cliente obrigatório")
         if (self.lineEditCEP.text()):
+            if len(self.lineEditCEP.text()) != 8:
+                raise Exception("CEP inválido")
             dict['cep'] = self.lineEditCEP.text()
+        else:
+            dict['cep'] = None
         if (self.lineEditEnder.text()):
             dict['endereco'] = self.lineEditEnder.text()
+        else:
+            dict['endereco'] = None
         if (self.lineEditNumero.text()):
             dict['numero'] = self.lineEditNumero.text()
+        else:
+            dict['numero'] = None
         if (self.lineEditBairro.text()):
             dict['bairro'] = self.lineEditBairro.text()
+        else:
+            dict['bairro'] = None
         if (self.lineEditCidade.text()):
-            dict['cidade'] = self.lineEditCidade.text()
-        dict['estado'] = self.comboBoxuf.currentText()
+            dict['cidade'] = self.lineEditCidade.text().title()
+        else:
+            dict['cidade'] = None
+        dict['uf'] = self.comboBoxuf.currentText()
         return dict
 
-    # getFodase(self)
-
     def getFones(self):
-        fones = []
+        listaFones = []
+        fones = 0
         if (self.lineEditFone1.text()):
-            fones.append(self.lineEditFone1.text())
+            listaFones.append(self.lineEditFone1.text())
+            fones+=1
         else:
-            fones.append(None)
+            listaFones.append(None)
         if (self.lineEditFone2.text()):
-            fones.append(self.lineEditFone2.text())
+            listaFones.append(self.lineEditFone2.text())
+            fones+=1
         else:
-            fones.append(None)
-        return fones
+            listaFones.append(None)
+        if fones==0:
+            raise Exception("Fone obrigatório!")
+        return listaFones
 
     def getDadosVeiculo(self):
         dict = {}
-        dict['marca'] = self.comboBoxMarca.currentText()
+        if self.comboBoxMarca.currentText():
+            dict['marca'] = self.comboBoxMarca.currentText()
+        else: raise Exception("Campo 'Marca' obrigatório!")
         if (self.lineEditModelo.text()):
             dict['modelo'] = self.lineEditModelo.text()
+        else: raise Exception("Campo 'Modelo' obrigatório!")
         if (self.lineEditPlaca.text()):
             dict['placa'] = self.lineEditPlaca.text()
+        else: raise Exception("Campo 'Placa' obrigatório!")
         if (self.lineEditAno.text()):
             dict['ano'] = self.lineEditAno.text()
+        else: dict['ano'] = None
         return dict
 
-    def limparCampos(self):
-        for lineedit in self.framedados.findChildren(QtWidgets.QLineEdit):
-            lineedit.clear()
+    def getPecas(self):
+        pecas = []
+        for desc, qtde, un, valor in self.linhasPeca:
+            if desc.text() and valor.text():
+                dict = {}
+                dict['descricao'] = desc.text()
+                if not qtde.text(): dict['qtde'] = 1
+                else:
+                    if not qtde.text().replace(',','').replace('.','').isdigit():
+                        raise Exception("Campo 'qtde' deve possuir apenas números!")
+                    dict['qtde'] = qtde.text().replace(',','.',1)
+                dict['un'] = un.currentText()
+                if not valor.text().replace(',','').replace('.','').isdigit():
+                    print(valor.text())
+                    raise Exception("Campo 'valor' deve possuir apenas números!")
+                dict['valor'] = valor.text().replace(',','.',1)
+                pecas.append(dict)
+            elif desc.text() or valor.text():
+                raise Exception('Preencha todos os campos de cada peça!')
+        return pecas
 
+    def getServicos(self):
+        servicos = []
+        linhasValidas = 0
+        for desc, qtde, valor in self.linhasServico:
+            if desc.text() and valor.text():
+                linhasValidas+=1
+                dict = {}
+                dict['descricao'] = desc.text()
+                if not qtde.text(): dict['qtde'] = 1
+                else: 
+                    if not qtde.text().replace(',','').replace('.','').isdigit():
+                        raise Exception("Campo 'qtde' deve possuir apenas números!")
+                    dict['qtde'] = qtde.text().replace(',','.',1)
+                if not valor.text().replace(',','').replace('.','').isdigit():
+                    raise Exception("Campo 'valor' deve possuir apenas números!")
+                dict['valor'] = valor.text().replace(',','.',1)
+                servicos.append(dict)
+            elif desc.text() or valor.text():
+                raise Exception('Preencha todos os campos de cada serviço!')
+        if linhasValidas==0:
+            raise Exception('O orçamento precisa de pelo menos um serviço realizado!')
+        return servicos
+
+    def getDadosOrcamento(self):
+        orcamento = {}
+        self.lineEditKm.text()
+        data = datetime.strptime(self.lineEditData.text(), "%d/%m/%Y")
+        data = data.strftime("%Y-%m-%d")
+
+        orcamento['dataOrcamento'] = data
+        orcamento['km'] = self.lineEditKm.text()
+        orcamento['observacoes']=self.textEdit.toPlainText()
+
+        return orcamento
+
+    #MODIFICAR
     def setValor(self):
-        valor = self.controller.getValorTotal()
-        self.labelValorTotal2.setText(str(valor))
+        
+        valorTotal=0
+        for _,qtde,_,valor in self.linhasPeca:
+            if valor.text():
+                if qtde.text():
+                    valorTotal+=float(valor.text().replace(',','.',1))*float(qtde.text().replace(',','.',1))
+                else: valorTotal+=float(valor.text().replace(',','.',1))
+        for _,qtde,valor in self.linhasServico:
+            if valor.text():
+                if qtde.text():
+                    valorTotal+=float(valor.text().replace(',','.',1))*float(qtde.text().replace(',','.',1))
+                else: valorTotal+=float(valor.text().replace(',','.',1))
+        self.valorTotal = valorTotal
+        self.labelValorTotal2.setText(str(self.valorTotal))
+
+    def buscarPeca(self, lineEditDesc, comboBoxUn, lineEditValor):
+        qPeca = self.pecaCtrl.getPeca(lineEditDesc.text())
+        if qPeca:
+            comboBoxUn.setCurrentText(qPeca['un'])
+            lineEditValor.setText(str(qPeca['valor']).replace('.',',',1))
+            self.setValor()
+
+    def buscarServico(self, lineEditDesc, lineEditValor):
+        qServico = self.servicoCtrl.getServico(lineEditDesc.text())
+        if qServico:
+            lineEditValor.setText(str(qServico['valor']).replace('.',',',1))
+            self.setValor()
 
     def salvarOrcamento(self):
-        if not self.controller.salvarOrcamento():
-            pass
-        else:
-            self.controller.salvarOrcamento()
+        try:
+            cliente = self.getDadosCliente()
+            veiculo = self.getDadosVeiculo()
+            pecas = self.getPecas()
+            servicos  = self.getServicos()
+            orcamento = self.getDadosOrcamento()
+            orcamento['valorTotal'] = self.valorTotal
+
+
+            print(f'''
+cliente: {cliente}
+veiculo: {veiculo}
+pecas: {pecas}
+servicos: {servicos}
+orcamento: {orcamento}            
+''')
+
+            #cliente:dict, clienteSel, veiculo:dict, veiculoSel, orcamento:dict, pecas:list, servicos:list
+            r = self.orcamentoCtrl.salvarOrcamento(cliente, self.clienteSelected, veiculo, self.veiculoSelected, orcamento, pecas, servicos)
+            if isinstance(r, Exception):
+                raise Exception(r)
+            msg = QtWidgets.QMessageBox()
+            msg.setWindowTitle("Aviso")
+            msg.setText("Orçamento criado com sucesso!")
+            msg.exec()
             self.setMarcas()
-            self.setModelCompleters()
+            self.setCompleters()
+        except Exception as e:
+            msg = QtWidgets.QMessageBox()
+            msg.setWindowTitle("Aviso")
+            msg.setText(str(e))
+            msg.exec()
 
     def salvarImprimirOrcamento(self):
         self.setMarcas()
-        self.setModelCompleters()
+        self.setCompleters()
         pass
 
     def telaBuscaCliente(self):
-        window = QtWidgets.QMainWindow()
-        tela = TelaBuscaCliente(window)
-        tela.botaoSelecionar.connect()
+        self.windowCliente = QtWidgets.QMainWindow()
+        self.telaCliente = TelaBuscaCliente(self.windowCliente)
+        self.telaCliente.botaoSelecionar.clicked.connect(self.retornarDadosCliente)
+        self.windowCliente.show()
+
+    def retornarDadosCliente(self):
+        linha = self.telaCliente.tabela.selectionModel().selectedRows()
+        if linha:
+            id = self.telaCliente.tabela.model().index(linha[0].row(), 0).data()
+        cliente = self.clienteCtrl.getCliente(id)
+        listaFones = [None, None]
+        fones = self.clienteCtrl.listarFones(cliente)
+        for x in range(len(fones)):
+            listaFones[x] = fones[x]['fone']
+        if cliente['cidade'] != None:
+            cidade = cliente['cidade']['nome']
+            uf = cliente['cidade']['uf']
+        else:
+            cidade = None
+            uf = None
+        self.setCliente(cliente['tipo'], cliente['nome'], cliente['documento'], listaFones[0], listaFones[1])
+        self.setEndereco(cliente['cep'], cliente['endereco'], cliente['numero'], cliente['bairro'], cidade, uf)
+        self.clienteSelected = id
+        self.checkboxNovoCliente.setChecked(False)
+        self.windowCliente.close()
+
+
 
     '''def telaBuscaVeiculo(self):
         self.window = QtWidgets.QMainWindow()
@@ -606,7 +786,7 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
         listaHeader = ['ID', 'Marca', 'Modelo',
                        'Ano', 'Placa', 'Clientes Vinculados']
         self.buscaVeiculo.model.setHorizontalHeaderLabels(listaHeader)
-        queryVeiculo = self.controller.getVeiculos()
+        queryVeiculo = self.orcamentoCtrl.getVeiculos()
         self.buscaVeiculo.model.setRowCount(len(queryVeiculo))
         row = 0
         for veiculo in queryVeiculo:
@@ -614,7 +794,7 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
             item.setTextAlignment(
                 QtCore.Qt.AlignmentFlag.AlignHCenter | QtCore.Qt.AlignmentFlag.AlignVCenter)
             self.buscaVeiculo.model.setItem(row, 0, item)
-            querymarca = self.controller.getMarcaByID(veiculo.marca_id)
+            querymarca = self.orcamentoCtrl.getMarcaByID(veiculo.marca_id)
             item.setTextAlignment(
                 QtCore.Qt.AlignmentFlag.AlignHCenter | QtCore.Qt.AlignmentFlag.AlignVCenter)
             item = QtGui.QStandardItem(querymarca[0].marca)
@@ -633,7 +813,7 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
             item.setTextAlignment(
                 QtCore.Qt.AlignmentFlag.AlignHCenter | QtCore.Qt.AlignmentFlag.AlignVCenter)
             self.buscaVeiculo.model.setItem(row, 4, item)
-            queryCliente = self.controller.getClientesByVeiculo(veiculo)
+            queryCliente = self.orcamentoCtrl.getClientesByVeiculo(veiculo)
             nomes = []
             for cliente in queryCliente:
                 nomes.append(cliente.nome)
@@ -661,10 +841,10 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
         self.linha = self.buscaVeiculo.tabela.selectionModel().selectedRows()[
             0]
         id = self.buscaVeiculo.tabela.model().index(self.linha.row(), 0).data()
-        [marca, modelo, placa, ano] = self.controller.getDadosVeiculo(id)
+        [marca, modelo, placa, ano] = self.orcamentoCtrl.getDadosVeiculo(id)
         self.setVeiculo(marca, modelo, placa, ano)
         self.checkboxNovoVeiculo.setChecked(False)
-        self.controller.setVeiculoSelecionado(id)
+        self.orcamentoCtrl.setVeiculoSelecionado(id)
         self.window.close()'''
 
     def limparCampos(self):

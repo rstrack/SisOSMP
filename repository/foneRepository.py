@@ -6,3 +6,9 @@ class FoneRepository():
 
     def save(self, cliente, fone):
         return Fone.create(cliente=cliente, fone=fone)
+
+    def update(self, dados):
+        pass
+
+    def findByClienteID(self, id):
+        return Fone.select().where(Fone.cliente==id)

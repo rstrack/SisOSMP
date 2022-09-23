@@ -5,10 +5,10 @@ SIGLAESTADOS = ['AC', 'AL', 'AP', 'AM', 'BA', 'CE', 'DF', 'ES', 'GO', 'MA', 'MT'
                 'MG', 'PA', 'PB', 'PR', 'PE', 'PI', 'RJ', 'RN', 'RS', 'RO', 'RR', 'SC', 'SP', 'SE', 'TO']
 
 
-class TelaCadastroCliente(QtWidgets.QMainWindow):
+class TelaEditarCliente(QtWidgets.QMainWindow):
 
     def __init__(self):
-        super(TelaCadastroCliente, self).__init__()
+        super(TelaEditarCliente, self).__init__()
         self.clienteCtrl = handleRoutes.getRoute('CLIENTE')
         self.marcaCtrl = handleRoutes.getRoute('MARCA')
         self.setupUi()
@@ -141,10 +141,10 @@ class TelaCadastroCliente(QtWidgets.QMainWindow):
         spacerItem5 = QtWidgets.QSpacerItem(
             40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
         self.hlayout4.addItem(spacerItem5)
-        self.botaoSalvar = QtWidgets.QPushButton(self.framebotoes)
-        self.botaoSalvar.setMinimumSize(QtCore.QSize(120, 35))
-        self.botaoSalvar.setObjectName('botaoprincipal')
-        self.hlayout4.addWidget(self.botaoSalvar)
+        self.botaoEditar = QtWidgets.QPushButton(self.framebotoes)
+        self.botaoEditar.setMinimumSize(QtCore.QSize(120, 35))
+        self.botaoEditar.setObjectName('botaoprincipal')
+        self.hlayout4.addWidget(self.botaoEditar)
         self.botaolimpar = QtWidgets.QPushButton(self.framebotoes)
         self.botaolimpar.setMinimumSize(QtCore.QSize(100, 30))
         self.hlayout4.addWidget(self.botaolimpar)
@@ -158,13 +158,13 @@ class TelaCadastroCliente(QtWidgets.QMainWindow):
         self.setMarcas()
 
         self.botaolimpar.clicked.connect(self.limparCampos)
-        self.botaoSalvar.clicked.connect(self.salvar)
+        self.botaoEditar.clicked.connect(self.salvar)
         self.comboBoxPessoa.currentIndexChanged.connect(self.escolherTipoPessoa)
 
     def retranslateUi(self):
         _translate = QtCore.QCoreApplication.translate
         self.setWindowTitle(_translate("MainWindow", "Mecânica Pasetto"))
-        self.labelTitulo.setText(_translate("MainWindow", "Cadastro de Clientes"))
+        self.labelTitulo.setText(_translate("MainWindow", "Editar Cliente"))
         self.labelTipo.setText(_translate("MainWindow", "Tipo"))
         self.labelNomeCliente.setText(_translate("MainWindow", "Nome*"))
         self.labelDocumento.setText(_translate("MainWindow", "CPF"))
@@ -180,16 +180,17 @@ class TelaCadastroCliente(QtWidgets.QMainWindow):
         self.labelPlaca.setText(_translate("MainWindow", "Placa"))
         self.labelModelo.setText(_translate("MainWindow", "Modelo"))
         self.labelMarca.setText(_translate("MainWindow", "Marca"))
-        self.botaolimpar.setText(_translate("MainWindow", "Limpar"))
-        self.botaoSalvar.setText(_translate("MainWindow", "Salvar"))
+        self.botaolimpar.setText(_translate("MainWindow", "Cancelar"))
+        self.botaoEditar.setText(_translate("MainWindow", "Editar"))
 
-
-    def salvar(self):
+    #################### REFORMULAR TODA A FUNÇÃO! ########################
+    
+    def editar(self):
         try:
             cliente = self.getDadosCliente()
             veiculo = self.getDadosVeiculo()
             
-            #se tem valores escritos nos campos de cliente e veiculo, tenta salvar os dois
+            #se tem valores escritos nos campos de cliente e veiculo, tenta editar os dois
             if cliente and veiculo:
                 fones = self.getFones()
                 r = self.clienteCtrl.salvarClienteVeiculo(cliente, fones, veiculo)
@@ -355,12 +356,10 @@ class TelaCadastroCliente(QtWidgets.QMainWindow):
         self.lineEditDocumento.setText(cliente['documento'])
         #...continuar
 
-
-
 if __name__ == "__main__":
     import sys
     app = QtWidgets.QApplication(sys.argv)
-    ui = TelaCadastroCliente()
+    ui = TelaEditarCliente()
 
     ui.show()
 

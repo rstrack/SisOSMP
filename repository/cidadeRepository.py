@@ -21,7 +21,7 @@ class CidadeRepository():
     def findByID(seld, id):
         return Cidade.select().where(Cidade.idCidade==id).get()
 
-    def findCidadeByNomeeUF(self, nome, uf):
+    def findCidadeByNomeAndUF(self, nome, uf):
         cidade = Cidade.select().where(Cidade.nome==nome and  Cidade.uf==uf)
         if cidade: return cidade.get()
         else: return None 

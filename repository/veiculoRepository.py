@@ -27,7 +27,7 @@ class VeiculoRepository():
             return veiculo.get()
         else: return None
 
-    def findByModeloAndPlaca(self, modelo, placa):
+    def findByModeloAndPlaca(self, modelo, placa) -> Veiculo | None:
         veiculo = Veiculo.select().where(Veiculo.modelo==modelo and Veiculo.placa==placa)
         if veiculo:
             return veiculo.get()

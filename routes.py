@@ -8,4 +8,5 @@ class Routes():
     def getRoute(self, flag:str):
         return self.routes[flag]
 
+
 handleRoutes = Routes()

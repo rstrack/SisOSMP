@@ -1,4 +1,6 @@
-from model.modelo import db
+from model.modelo import  db
+from playhouse.shortcuts import model_to_dict
+from repository.cidadeRepository import CidadeRepository
 from repository.itemPecaRepository import ItemPecaRepository
 from repository.itemServicoRepository import ItemServicoRepository
 from repository.orcamentoRepository import OrcamentoRepository
@@ -7,12 +9,15 @@ from repository.pecaRepository import PecaRepository
 from repository.servicoRepository import ServicoRepository
 from repository.veiculoRepository import VeiculoRepository
 from repository.veiculoClienteRepository import VeiculoClienteRepository
+from repository.marcaRepository import MarcaRepository
 
 class OrcamentoController():
     def __init__(self):
         super(OrcamentoController, self).__init__()
         self.orcamentoRep = OrcamentoRepository()
+        self.cidadeRep = CidadeRepository()
         self.clienteRep = ClienteRepository()
+        self.marcaRep = MarcaRepository()
         self.veiculoRep = VeiculoRepository()
         self.veiculoClienteRep = VeiculoClienteRepository()
         self.pecaRep = PecaRepository()
@@ -20,17 +25,119 @@ class OrcamentoController():
         self.servicoRep = ServicoRepository()
         self.itemServicoRep = ItemServicoRepository()
 
-    def salvarOrcamento(self, orcamento:dict, pecas:list, servicos:list):
 
-        self.orcamentoRep.save(orcamento)
-        for peca in pecas:
-            qtde = peca.pop('qtde')
-            _peca = self.pecaRep.findByDescricao(peca['descricao'])
-            if not _peca:
-                _peca = self.pecaRep.save(peca)
+    #salva um orçamento e dependencias caso necessário. Para maior praticidade, também atualiza campos de clientes e veiculos selecionados
+    def salvarOrcamento(self, cliente:dict, clienteSel, veiculo:dict, veiculoSel, orcamento:dict, pecas:list, servicos:list):
+        with db.atomic() as transaction:
+            try:
+                cidade = self.cidadeRep.findCidadeByNomeAndUF(cliente['cidade'], cliente['uf'])
+                if cidade: cliente['cidade'] = cidade
+                else: cliente['cidade'] = self.cidadeRep.save({'nome':cliente['cidade'], 'uf':cliente['uf']})
+                if clienteSel:
+                    cliente['idCliente'] = clienteSel
+                    _cliente = self.clienteRep.update(cliente)
+                else: _cliente = self.clienteRep.save(cliente)
+                marca = self.marcaRep.findByNome(veiculo['marca'])
+                if marca:
+                    veiculo['marca'] = marca
+                else: veiculo['marca'] = self.marcaRep.save({'nome':veiculo['marca']})
+                if veiculoSel:
+                    veiculo['idVeiculo'] = veiculoSel
+                    _veiculo = self.veiculoRep.update(veiculo)
+                else: 
+                    _veiculo = self.veiculoRep.save(veiculo)
+                veiculoCliente = self.veiculoClienteRep.findByVeiculoAndCliente(_veiculo, _cliente)
+                if not veiculoCliente:
+                    self.veiculoClienteRep.save(_veiculo, _cliente)
+                orcamento['cliente'] = _cliente
+                orcamento['veiculo'] = _veiculo
+                _orcamento = self.orcamentoRep.save(orcamento)
+                for peca in pecas:
+                    if peca['descricao'] != None:
+                        qtde = peca.pop('qtde')
+                        _peca = self.pecaRep.findByDescricao(peca['descricao'])
+                        if not _peca:
+                            _peca = self.pecaRep.save(peca)
+                        peca['qtde'] = qtde
+                        peca['peca'] = _peca
+                        peca['orcamento'] = _orcamento
+                        print(peca)
+                        self.itemPecaRep.save(peca)
+
+                for servico in servicos:
+                    if servico['descricao'] != None:
+                        qtde = servico.pop('qtde')
+                        _servico = self.servicoRep.findByDescricao(servico['descricao'])
+                        if not _servico:
+                            _servico = self.servicoRep.save(servico)
+                        servico['qtde'] = qtde
+                        servico['servico'] = _servico
+                        servico['orcamento'] = _orcamento
+                        self.itemServicoRep.save(servico)
+
+            except Exception as e:
+                transaction.rollback()
+                return e    
             
+    #editar orçamento -> edições como data, valor das peças e servicos e valor total, adição e remoção de peças e servicos
+    #edições em cliente e veículo deverão ser feitas no cadastro do orçamento ao selecionar dados ja existentes ou em telas de edição
+    def editarOrcamento(self, id, orcamento:dict, pecas:list, servicos:list):
+        with db.atomic() as transaction:
+            try:
+                orcamento['idOrcamento'] = id
+                _orcamento = self.orcamentoRep.update(orcamento)
+                for peca in pecas:
+                    if peca['descricao'] != None:
+                        _peca = self.pecaRep.findByDescricao(peca['descricao'])
+                        if _peca:
+                            _itemPeca = self.itemPecaRep.findByOrcamentoAndPeca(_orcamento, _peca)
+                            if _itemPeca:
+                                self.itemPecaRep.update({'orcamento':_orcamento, 'peca': _peca, 'qtde':peca['qtde'], 'valor': peca['valor']})
+                            else:
+                                self.itemPecaRep.save({'orcamento':_orcamento, 'peca': _peca, 'qtde':peca['qtde'], 'valor': peca['valor']})
+                        else:
+                            _peca = self.pecaRep.save({'descricao': peca['descricao'], 'un': peca['un'], 'valor':peca['valor']})
+                            self.itemPecaRep.save({'orcamento':_orcamento, 'peca': _peca, 'qtde':peca['qtde'], 'valor': peca['valor']})
+
+                for servico in servicos:
+                    if servico['descricao'] != None:
+                        _servico = self.servicoRep.findByDescricao(servico['descricao'])
+                        if _servico:
+                            _itemServico = self.itemServicoRep.findByOrcamentoAndServico(_orcamento, _servico)
+                            if _itemServico:
+                                self.itemServicoRep.update({'orcamento':_orcamento, 'servico': _servico, 'qtde':servico['qtde'], 'valor': servico['valor']})
+                            else:
+                                self.itemServicoRep.save({'orcamento':_orcamento, 'servico': _servico, 'qtde':servico['qtde'], 'valor': servico['valor']})
+                        else:
+                            _servico = self.servicoRep.save({'descricao': servico['descricao'], 'un': servico['un'], 'valor':servico['valor']})
+                            self.itemServicoRep.save({'orcamento':_orcamento, 'servico': _servico, 'qtde':servico['qtde'], 'valor': servico['valor']})
+            
+            except Exception as e:
+                transaction.rollback()
+                return e    
 
 
+    #se linha preenchida -> ver se existe no banco
+    # se existe -> pegar
+        # ver se item existe no banco
+        # se sim -> editar
+        # se não -> criar
+    # se nao existe -> salvar
+        # obviamente nao vai existir o item -> entao criar
+
+
+    def listarOrcamentos(self):
+        orcamentos = self.orcamentoRep.findAll()
+        if orcamentos:
+            return orcamentos.dicts()
+        else: return None
+
+
+    def getOrcamento(self, id):
+        orcamento = self.orcamentoRep.findByID(id)
+        if orcamento:
+            return model_to_dict(orcamento)
+        else: return None
 
     '''def atualizarCompleters(self):
         qPecas = Peca.select()

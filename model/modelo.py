@@ -38,12 +38,16 @@ class Veiculo(BaseModel):
 class Cliente(BaseModel):
     idCliente = AutoField()
     nome = CharField(max_length=80,null=False)
-    documento = CharField(max_length=14, null=True,unique=True, constraints=[Check('CHAR_LENGTH(documento)=11 or CHAR_LENGTH(documento)=14')])
+    tipo = CharField(max_length=1, null=False, constraints=[Check("tipo in ('0','1','2')")])
+    documento = CharField(max_length=14, null=True,unique=True)
     cep = CharField(max_length=8, null=True,constraints=[Check('CHAR_LENGTH(cep)=8')])
     endereco = CharField(max_length=80,null=True)
     numero = CharField(max_length=6, null=True, constraints=[Check('numero>=0')])
     bairro = CharField(max_length=50, null=True)
     cidade = ForeignKeyField(Cidade, backref='cidades', null=True)
+    class Meta:
+        constraints = \
+        [Check("CHAR_LENGTH(documento)=11 and tipo='0' or CHAR_LENGTH(documento)=14 and tipo='1' or tipo='2'")]
 
 
 class Veiculo_Cliente(BaseModel):
@@ -99,7 +103,7 @@ class ItemServico(BaseModel):
 
 class Fone(BaseModel):
     cliente = ForeignKeyField(Cliente, backref='clientes',null=False)
-    fone = CharField(max_length=14,null=False)
+    fone = CharField(max_length=14,null=False, unique=True)
     class Meta:
         primary_key = CompositeKey('cliente', 'fone')
 

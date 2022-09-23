@@ -35,18 +35,20 @@ class MainController():
         self.telaCadastroPeca = TelaCadastroPeca()
         self.telaCadastroServico = TelaCadastroServico()
         self.telaCadastroCliente = TelaCadastroCliente()
-        #self.telaCadastroOrcamento = TelaCadastroOrcamento()
+        self.telaCadastroOrcamento = TelaCadastroOrcamento()
 
+        #self.telaConsultaPeca = TelaConsultaPeca()
+        #self.telaConsultaServico = TelaConsultaServico()
         self.telaConsultaCliente = TelaConsultaCliente()
-        #self.telaConsultaOrcamento = TelaConsultaOrcamento()
+        self.telaConsultaOrcamento = TelaConsultaOrcamento()
 
         self.telaInicio.stackedWidget.addWidget(self.telaCadastroPeca)
         self.telaInicio.stackedWidget.addWidget(self.telaCadastroServico)
         self.telaInicio.stackedWidget.addWidget(self.telaCadastroCliente)
-        #self.telaInicio.stackedWidget.addWidget(self.telaCadastroOrcamento)
-
+        self.telaInicio.stackedWidget.addWidget(self.telaCadastroOrcamento)
+        
         self.telaInicio.stackedWidget.addWidget(self.telaConsultaCliente)
-        #self.telaInicio.stackedWidget.addWidget(self.telaConsultaOrcamento)
+        self.telaInicio.stackedWidget.addWidget(self.telaConsultaOrcamento)
         self.initConnections()
 
     #função que instancia uma unica vez cada controller, que podem ser acessados onde necessário
@@ -69,12 +71,18 @@ class MainController():
         self.telaInicio.botao_pecas.clicked.connect(lambda: self.telaInicio.stackedWidget.setCurrentWidget(self.telaCadastroPeca))
         self.telaInicio.botao_servicos.clicked.connect(lambda: self.telaInicio.stackedWidget.setCurrentWidget(self.telaCadastroServico))
         self.telaInicio.botao_clientes.clicked.connect(lambda: self.telaInicio.stackedWidget.setCurrentWidget(self.telaCadastroCliente))
-        #self.telaInicio.botao_orcamentos.clicked.connect(lambda: self.telaInicio.stackedWidget.setCurrentWidget(self.telaCadastroOrcamento))
+        self.telaInicio.botao_orcamentos.clicked.connect(lambda: self.telaInicio.stackedWidget.setCurrentWidget(self.telaCadastroOrcamento))
 
         self.telaInicio.botao_clientes_2.clicked.connect(lambda: self.telaInicio.stackedWidget.setCurrentWidget(self.telaConsultaCliente))
-        #self.telaInicio.botao_orcamentos_2.clicked.connect(lambda: self.telaInicio.stackedWidget.setCurrentWidget(self.telaConsultaOrcamento))
+        self.telaInicio.botao_orcamentos_2.clicked.connect(lambda: self.telaInicio.stackedWidget.setCurrentWidget(self.telaConsultaOrcamento))
         self.telaCadastroCliente.lineEditCEP.editingFinished.connect(lambda: self.buscarDadosCEP(self.telaCadastroCliente))
-        #self.telaCadastroOrcamento.lineEditCEP.editingFinished.connect(lambda: self.buscarDadosCEP(self.telaCadastroOrcamento))
+        self.telaCadastroOrcamento.lineEditCEP.editingFinished.connect(lambda: self.buscarDadosCEP(self.telaCadastroOrcamento))
+
+        #self.telaConsultaCliente.botaoEditar.clicked.connect(lambda: self.trocaPagina(self.telaCadastroCliente, self.telaCadastroCliente.renderEditar, self.telaConsultaCliente.editarCliente))
+
+    def trocaPagina(self, pagina, render, param):
+        render(param())
+        self.telaInicio.stackedWidget.setCurrentWidget(pagina)
 
     def buscarDadosCEP(self, view):
         cep = view.lineEditCEP.text()

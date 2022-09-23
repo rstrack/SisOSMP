@@ -7,8 +7,8 @@ from controller.clienteController import ClienteController
 class TelaBuscaCliente(QtWidgets.QWidget):
     def __init__(self, MainWindow):
         super(TelaBuscaCliente, self).__init__()
-        self.setupUi(MainWindow)
         self.clienteCtrl = handleRoutes.getRoute('CLIENTE')
+        self.setupUi(MainWindow)
 
     def setupUi(self, MainWindow):
         MainWindow.resize(600, 400)
@@ -59,6 +59,7 @@ class TelaBuscaCliente(QtWidgets.QWidget):
 
         MainWindow.setCentralWidget(self.mainwidget)
         self.retranslateUi(MainWindow)
+        self.listarClientes()
 
 
     def retranslateUi(self, MainWindow):
@@ -100,21 +101,12 @@ class TelaBuscaCliente(QtWidgets.QWidget):
             0, QtWidgets.QHeaderView.ResizeMode.ResizeToContents)
         header.setStretchLastSection(True)
 
-    def usarCliente(self):
-        self.linha = self.tabela.selectionModel().selectedRows()
-        if self.linha:
-            id = self.tabela.model().index(self.linha[0].row(), 0).data()
-            cliente = self.clienteCtrl.getCliente(id)
-        self.window.close()
-        return cliente
-
 if __name__ == "__main__":
     import sys
     app = QtWidgets.QApplication(sys.argv)
 
     MainWindow = QtWidgets.QMainWindow()
     ui = TelaBuscaCliente(MainWindow)
-    ui.listarClientes()
     MainWindow.show()
 
     style = open('./resources/styles.qss').read()

@@ -44,7 +44,7 @@ class CidadeController():
         with db.atomic() as transaction:
             try:
                 cidade = self.cidadeRep.findByID(id)
-                if cidade: return cidade
+                if cidade: return model_to_dict(cidade)
                 else: return None
             except Exception as e:
                 transaction.rollback()

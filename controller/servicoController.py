@@ -1,11 +1,11 @@
-from pickle import FALSE
 from PyQt6 import QtWidgets
-
+from playhouse.shortcuts import model_to_dict
 from model.modelo import *
+from repository.servicoRepository import ServicoRepository
 
 class ServicoController():
     def __init__(self):
-        pass
+        self.servicoRep = ServicoRepository()
 
     def salvarServico(self, desc, valor):
         qPeca = Peca.select().where(Peca.descricao==desc)
@@ -46,3 +46,15 @@ class ServicoController():
                 msg.setText(str(e))
                 msg.exec()
                 return False
+
+    def listarServicos(self):
+        servicos = self.servicoRep.findAll()
+        if servicos:
+            return servicos.dicts()
+        else: return None
+
+    def getServico(self, desc):
+        servico = self.servicoRep.findByDescricao(desc)
+        if servico:
+            return model_to_dict(servico)
+        else: return None

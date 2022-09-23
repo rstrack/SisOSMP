@@ -124,7 +124,7 @@ class TelaInicial(QtWidgets.QMainWindow):
 
     def retranslateUi(self):
         _translate = QtCore.QCoreApplication.translate
-        self.setWindowTitle(_translate("MainWindow", "MainWindow"))
+        self.setWindowTitle(_translate("MainWindow", "Mecânica Pasetto"))
         self.botao_pecas.setText(_translate("MainWindow", "PEÇAS"))
         self.botao_servicos.setText(_translate("MainWindow", "SERVIÇOS"))
         self.botao_clientes.setText(_translate("MainWindow", "CLIENTES"))

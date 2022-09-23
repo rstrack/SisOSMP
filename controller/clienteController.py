@@ -31,13 +31,11 @@ class ClienteController():
                     if qCidade: dados['cidade'] = qCidade
                     else: dados['cidade'] = self.cidadeRep.save(cidade)
                 _cliente = self.clienteRep.save(dados)
-
                 _fones = []
                 for fone in fones:
                     if fone != None:
                         _fones.append(self.foneRep.save(_cliente, fone))
                 return [_cliente, _fones]
-
             except Exception as e:
                 transaction.rollback()
                 return e
@@ -58,7 +56,7 @@ class ClienteController():
     def salvarClienteVeiculo(self, dadosCliente:dict, dadosFone:list, dadosVeiculo:dict):
         with db.atomic() as transaction:
             try:
-                cliente = self.salvarCliente(dadosCliente, dadosFone)
+                [cliente, _] = self.salvarCliente(dadosCliente, dadosFone)
                 if isinstance(cliente, Exception):
                     raise Exception(cliente)
                 marca = self.marcaRep.findByNome(dadosVeiculo['marca'])
@@ -77,7 +75,7 @@ class ClienteController():
                     if isinstance(veiculo, Exception):
                         raise Exception(veiculo)
                     self.veiculoClienteRep.save(veiculo, cliente)
-
+                return True
             except Exception as e:
                 transaction.rollback()
                 return e
@@ -94,7 +92,6 @@ class ClienteController():
                     else: cliente['cidade'] = self.cidadeRep.save(cidade)
                 _cliente = self.clienteRep.update(cliente)
                 return _cliente
-
             except Exception as e:
                 transaction.rollback()
                 return e
@@ -104,18 +101,26 @@ class ClienteController():
         if veiculo:
             clientes = self.veiculoClienteRep.findClientesByVeiculoID(veiculo['idVeiculo'])
             if clientes:
-                return clientes
+                return clientes.dicts()
             else: return None
         else:
-            clientes = self.clienteRep.findAll().dicts()
+            clientes = self.clienteRep.findAll()
             if clientes:
-                return clientes
+                return clientes.dicts()
             else: return None
+
 
     #listar cliente pelo id
     def getCliente(self, id):
         cliente = self.clienteRep.findByID(id)
         if cliente: return model_to_dict(cliente)
+        else: return None
+
+    #listar fones dado um cliente
+    def listarFones(self, cliente:dict):
+        fones =  self.foneRep.findByClienteID(cliente['idCliente'])
+        if fones:
+            return fones.dicts()
         else: return None
 
 
@@ -137,10 +142,12 @@ class ClienteController():
                 transaction.rollback()
                 return e
 
+
     def editarVeiculo(self, veiculo):
         pass
 
 
+    #listar todos os veiculos ou veiculos vinculados a um cliente
     def listarVeiculos(self, cliente:dict=None):
         if cliente:
             veiculos = self.veiculoClienteRep.findVeiculosByClienteID(cliente['idCliente'])
@@ -153,8 +160,15 @@ class ClienteController():
                 return veiculos.dicts()
             else: return None
 
+    def getVeiculo(self, id):
+        veiculo = self.veiculoRep.findByID(id)
+        if veiculo: return model_to_dict(veiculo)
+        else: return None
+
+
     def deletarVeiculo(self, veiculo):
         pass
+
 
     '''def getMarcas(self):
         marcas = Marca.select(Marca.marca)
