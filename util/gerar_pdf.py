@@ -5,64 +5,78 @@ from reportlab.lib.pagesizes import A4
 from reportlab.platypus import Table
 from reportlab.platypus import TableStyle
 from reportlab.lib import colors
+import os
+
+lista1 = [['Daniel Pasetto', 'CNPJ', '85.481.562/0001-57', "12345678910", "12345678910", "Rua Barão do Bojuru", "Ronda",
+           "84070-310", "87", "Ponta Grossa", "PR", "Volkswagen", "9999", "Saveiro-Kombi", "999999"],
+          [['Carburador', '5', 'Unidade', 'R$ 50.00'], ['Pneu', '3', 'Unidade', 'R$ 50.00']],
+          [['Troca de Peça', '5', 'R$ 50.00']]]
+
 
 # Configurações para geração do pdf
-def GeneratePDF():
+
+
+def GeneratePDF(listainfos):
     pdf = canvas.Canvas('teste.pdf', pagesize=A4)
+<<<<<<< HEAD
     pdf.drawInlineImage('/resources/logo.png', 0, 740, 200, 100
+=======
+    pdf.drawInlineImage(
+         "../resources/logo2.png", 0, 740, 200, 100
+>>>>>>> 203fcf1f346e5f2028139d4df8379053d93846d7
     )
     pdf.setFont('Helvetica-Bold', 10)
     stylesheet = getSampleStyleSheet()
     pdf.normalStyle = stylesheet['Normal']
-# Cabeçalho padrão do pdf
+    # Cabeçalho padrão do pdf
     pdf.drawString(312, 810, 'Fone: (42) 3027-4990 / (42) 4141-1755')
     pdf.drawString(260, 800, 'Rua Barão do Bojuru, Nº 87 - Ronda - Ponta Grossa - PR')
     pdf.drawString(335, 790, 'CNPJ : 85.481.562/0001-57')
     pdf.drawString(315, 780, 'E-mail:mecanicapasetto@gmail.com ')
     pdf.rect(10, 750, 575, 2, fill=True, stroke=True)
     pdf.setFont('Helvetica-Bold', 12)
-# Informações do Cliente
+    # Informações do Cliente
     pdf.drawString(255, 713, 'Dados do Cliente')
     pdf.setFont('Helvetica', 10)
     pdf.rect(10, 710, 575, 15, fill=False, stroke=True)
-    pdf.drawString(20, 699, 'Nome:Daniel Pasetto')
+    pdf.drawString(20, 699, 'Nome:{}'.format(listainfos[0][0]))
     pdf.rect(10, 695, 575, 15, fill=False, stroke=True)
-    pdf.drawString(20, 684, "CPF/CNPJ: 85.481.562/0001-57")
+    pdf.drawString(20, 684, "{}:{}".format(listainfos[0][1], listainfos[0][2]))
     pdf.rect(10, 680, 235, 15, fill=False, stroke=True)
-    pdf.drawString(250, 684, "Fone:12345678910")
+    pdf.drawString(250, 684, "Fone:{}".format(listainfos[0][3]))
     pdf.rect(245, 680, 200, 15, fill=False, stroke=True)
-    pdf.drawString(450, 684, "Fone:12345678910")
+    pdf.drawString(450, 684, "Fone:{}".format(listainfos[0][4]))
     pdf.rect(445, 680, 140, 15, fill=False, stroke=True)
-    pdf.drawString(20, 669, "Endereço:Rua Barão do Bojuru")
+    pdf.drawString(20, 669, "Endereço:{}".format(listainfos[0][5]))
     pdf.rect(10, 665, 575, 15, fill=False, stroke=True)
-    pdf.drawString(20, 654, "Bairro:Ronda")
+    pdf.drawString(20, 654, "Bairro:{}".format(listainfos[0][6]))
     pdf.rect(10, 650, 375, 15, fill=False, stroke=True)
-    pdf.drawString(390, 654, "CEP:84070-310")
+    pdf.drawString(390, 654, "CEP:{}".format(listainfos[0][7]))
     pdf.rect(385, 650, 95, 15, fill=False, stroke=True)
-    pdf.drawString(485, 654, "Nº:87")
+    pdf.drawString(485, 654, "Nº:{}".format(listainfos[0][8]))
     pdf.rect(480, 650, 105, 15, fill=False, stroke=True)
-    pdf.drawString(20, 639, "Cidade:Ponta Grossa")
+    pdf.drawString(20, 639, "Cidade:{}".format(listainfos[0][9]))
     pdf.rect(10, 635, 375, 15, fill=False, stroke=True)
-    pdf.drawString(390, 639, "UF:PR")
+    pdf.drawString(390, 639, "UF:{}".format(listainfos[0][10]))
     pdf.rect(385, 635, 200, 15, fill=False, stroke=True)
     pdf.rect(10, 620, 575, 15, fill=False, stroke=True)
     pdf.setFont('Helvetica-Bold', 12)
     pdf.drawString(253, 623, 'Dados do Veículo')
     pdf.setFont('Helvetica', 10)
-    pdf.drawString(20, 609, 'Marca:Volkswagen')
+    pdf.drawString(20, 609, 'Marca:{}'.format(listainfos[0][11]))
     pdf.rect(10, 605, 360, 15, fill=False, stroke=True)
-    pdf.drawString(375, 609, 'Ano:9999')
+    pdf.drawString(375, 609, 'Ano:{}'.format(listainfos[0][12]))
     pdf.rect(370, 605, 55, 15, fill=False, stroke=True)
     pdf.drawString(430, 609, 'Placa:')
     pdf.rect(425, 605, 160, 15, fill=False, stroke=True)
-    pdf.drawString(20, 594, 'Modelo:Saveiro-Kombi')
+    pdf.drawString(20, 594, 'Modelo:{}'.format(listainfos[0][13]))
     pdf.rect(10, 590, 360, 15, fill=False, stroke=True)
-    pdf.drawString(375, 594, 'KM:999999')
+    pdf.drawString(375, 594, 'KM:{}'.format(listainfos[0][14]))
     pdf.rect(370, 590, 215, 15, fill=False, stroke=True)
     pdf.setFont('Helvetica-Bold', 12)
     pdf.drawString(275, 578, 'Orçamento')
     pdf.rect(10, 575, 575, 15, fill=False, stroke=True)
-# Tabelas de peças e serviços
+    # Tabelas de peças e serviços
     pecas = [
         ['Nome da Peça', 'Quantidade', 'Unidade', 'Valor'],
     ]
@@ -75,41 +89,26 @@ def GeneratePDF():
         ('INNERGRID', (0, 0), (-1, -1), 1, colors.black),
         ('BOX', (0, 0), (-1, -1), 1, colors.black),
     ])
-    lista = ['Carburador', '5', 'Unidade', 'R$ 150.00']
-    lista2 = ['Troca de Peça', '5', 'R$ 50.00']
 
-    pecas.append(lista)
-    pecas.append(lista)
-    pecas.append(lista)
-    pecas.append(lista)
-    pecas.append(lista)
-    pecas.append(lista)
-    pecas.append(lista)
-    pecas.append(lista)
-    pecas.append(lista)
-    servicos.append(lista2)
-    servicos.append(lista2)
-    servicos.append(lista2)
-    servicos.append(lista2)
-    servicos.append(lista2)
-    servicos.append(lista2)
-    servicos.append(lista2)
-    servicos.append(lista2)
-    servicos.append(lista2)
-    servicos.append(lista2)
-    servicos.append(lista2)
-    servicos.append(lista2)
-    servicos.append(lista2)
-    servicos.append(lista2)
-    servicos.append(lista2)
-    servicos.append(lista2)
+    pecasitem = 0
+    num_elementos_listapecas = len(listainfos[1])
+    while pecasitem < num_elementos_listapecas:
+        pecas.append(listainfos[1][pecasitem])
+        pecasitem += 1
+    servicositem = 0
+    num_elementos_listaservicos = len(listainfos[2])
+    while servicositem < num_elementos_listaservicos:
+        servicos.append(listainfos[2][servicositem])
+        servicositem += 1
 
     y = 7.9 * inch
     print(len(pecas + servicos))
     width = 575
     height = 300
     pdf.setFont('Helvetica', 10)
-# Função para posicionar as tabelas de valores e o quadro de observações no pdf.
+
+    # Função para posicionar as tabelas de valores e o quadro de observações no pdf.
+
     def tabelas_pos(l, g):
         pdf.setFont('Helvetica', 10)
         pdf.drawString(395, l + 4, 'Valor Total das Peças:')
@@ -135,7 +134,8 @@ def GeneratePDF():
             q = q - 15
         pdf.rect(10, g, 575, 15, fill=False, stroke=True)
         pdf.rect(10, g - 60, 575, 60, fill=False, stroke=True)
-# Formatação da primeira página (o máximo de linhas das tabelas que a primeira página pode suportar é 27)
+
+    # Formatação da primeira página (o máximo de linhas das tabelas que a primeira página pode suportar é 27)
     if len(pecas + servicos) >= 28:
         if len(pecas) >= 28:
             y = 7.9 * inch
@@ -169,7 +169,7 @@ def GeneratePDF():
             s.drawOn(pdf, 10, alturaser)
             tabelas_pos(l, g)
         else:
-        # Caso a tabela peças seja vazia
+            # Caso a tabela peças seja vazia
             if len(pecas) < 2:
                 y = 8.3 * inch
                 tamanho_ser = 28 - len(pecas)
@@ -259,9 +259,9 @@ def GeneratePDF():
             f.wrapOn(pdf, width, height)
             f.drawOn(pdf, 10, y)
             s.drawOn(pdf, 10, z)
-
     pdf.save()
+    os.startfile('teste.pdf')
     print('teste.pdf criado com sucesso!')
 
 
-GeneratePDF()
+GeneratePDF(lista1)
