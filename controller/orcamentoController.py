@@ -74,7 +74,6 @@ class OrcamentoController():
                         servico['servico'] = _servico
                         servico['orcamento'] = _orcamento
                         self.itemServicoRep.save(servico)
-
             except Exception as e:
                 transaction.rollback()
                 return e    
@@ -115,15 +114,6 @@ class OrcamentoController():
             except Exception as e:
                 transaction.rollback()
                 return e    
-
-
-    #se linha preenchida -> ver se existe no banco
-    # se existe -> pegar
-        # ver se item existe no banco
-        # se sim -> editar
-        # se não -> criar
-    # se nao existe -> salvar
-        # obviamente nao vai existir o item -> entao criar
 
 
     def listarOrcamentos(self):

@@ -193,6 +193,8 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
         self.gridLayout_2.addWidget(self.lineEditValorPeca, 1, 3, 1, 1)
         self.botaoAddPecas = QtWidgets.QPushButton(self.framegroupboxpecas)
         self.gridLayout_2.addWidget(self.botaoAddPecas, 1, 4, 1, 1)
+        self.botaoRemoverPecas = QtWidgets.QPushButton(self.framegroupboxpecas)
+        self.gridLayout_2.addWidget(self.botaoRemoverPecas, 1, 5, 1, 1)
         self.linhasPeca = [
             [self.lineEditNomePeca, self.lineEditQtdeP, self.comboBoxUn, self.lineEditValorPeca]]
         self.spacerpeca = QtWidgets.QSpacerItem(
@@ -395,6 +397,7 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
         self.labelQtde.setText(_translate("MainWindow", "Qtde*"))
         self.labelUn.setText(_translate("MainWindow", "Un*"))
         self.botaoAddPecas.setText(_translate("MainWindow", "+"))
+        self.botaoRemoverPecas.setText(_translate("MainWindow", "-"))
         self.labelNomePeca.setText(_translate("MainWindow", "Peça*"))
         self.labelValorPeca.setText(_translate("MainWindow", "Valor*"))
 
@@ -433,6 +436,9 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
         self.gridLayout_2.removeItem(self.spacerpeca)
         self.gridLayout_2.addItem(
             self.spacerpeca, len(self.linhasPeca)*2, 0, 1, 1)
+
+    def removerLinhaPeca(self, linha):
+        pass
 
     def addLinhaServico(self):
         label1 = QtWidgets.QLabel(text="Serviço*")

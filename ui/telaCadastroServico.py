@@ -5,7 +5,7 @@ class TelaCadastroServico(QtWidgets.QMainWindow):
 
     def __init__(self):
         super(TelaCadastroServico, self).__init__()
-        self.pecaCtrl = handleRoutes.getRoute('SERVICO')
+        self.servicoCtrl = handleRoutes.getRoute('SERVICO')
         self.setupUi()
 
     def setupUi(self):
@@ -87,42 +87,46 @@ class TelaCadastroServico(QtWidgets.QMainWindow):
         label2 = QtWidgets.QLabel(text="Valor")
         lineedit1 = QtWidgets.QLineEdit()
         lineedit2 = QtWidgets.QLineEdit()
+        botaoRemoverLinha = QtWidgets.QPushButton()
+        botaoRemoverLinha.setFixedSize(QtCore.QSize(26, 26))
+        botaoRemoverLinha.setText("-")
+        botaoRemoverLinha.clicked.connect(lambda: self.removerLinha(self.gridLayout.getItemPosition(self.gridLayout.indexOf(botaoRemoverLinha))[0]))
+        #print(self.gridLayout.)
         self.gridLayout.addWidget(label1, len(self.linhasservico)*2, 0, 1, 1)
         self.gridLayout.addWidget(label2, len(self.linhasservico)*2, 1, 1, 1)
         self.gridLayout.addWidget(lineedit1, len(
             self.linhasservico)*2+1, 0, 1, 1)
         self.gridLayout.addWidget(lineedit2, len(
             self.linhasservico)*2+1, 1, 1, 1)
+        self.gridLayout.addWidget(botaoRemoverLinha, len(
+            self.linhasservico)*2+1, 2, 1, 1)
         self.linhasservico.append([lineedit1, lineedit2])
-        self.gridLayout.addWidget(self.botaoadd, len(
-            self.linhasservico)*2-1, 2, 1, 1)
         self.gridLayout.removeItem(self.spacer)
         self.gridLayout.addItem(self.spacer, len(
             self.linhasservico)*2, 0, 1, 1)
 
+    def removerLinha(self, linha):
+        for x in range(2):
+            self.gridLayout.itemAtPosition(linha-1, x).widget().setParent(None)
+            self.gridLayout.itemAtPosition(linha, x).widget().setParent(None)
+        self.gridLayout.itemAtPosition(linha, 2).widget().setParent(None)
+        
+        for x in range(self.gridLayout.rowCount()):
+            if x > linha:
+                for y in range(3):
+                    if self.gridLayout.itemAtPosition(x, y) != None:
+                        self.gridLayout.addWidget(self.gridLayout.itemAtPosition(x, y).widget(), x-2, y, 1, 1)
+        
+        del self.linhasservico[int((linha-1)/2)]
+        self.gridLayout.addItem(self.spacer, len(
+        self.linhasservico)*2, 0, 1, 1)
+        print(self.linhasservico)
+
     def resetarTela(self):
-        for widget in self.framedados.findChildren((QtWidgets.QLabel, QtWidgets.QLineEdit, QtWidgets.QComboBox, QtWidgets.QPushButton)):
-            self.gridLayout.removeWidget(widget)
-            widget.deleteLater()
-        self.linhasservico.clear()
-        self.labelnome = QtWidgets.QLabel(
-            self.framedados, text="Descrição do serviço:")
-        self.gridLayout.addWidget(self.labelnome, 0, 0, 1, 1)
-        self.labelvalor = QtWidgets.QLabel(self.framedados, text="Valor:")
-        self.gridLayout.addWidget(self.labelvalor, 0, 1, 1, 1)
-        self.lineEditNome = QtWidgets.QLineEdit(self.framedados)
-        self.gridLayout.addWidget(self.lineEditNome, 1, 0, 1, 1)
-        self.lineEditValor = QtWidgets.QLineEdit(self.framedados)
-        self.gridLayout.addWidget(self.lineEditValor, 1, 1, 1, 1)
-        self.linhasservico.append([self.lineEditNome, self.lineEditValor])
-        self.botaoadd = QtWidgets.QPushButton(self.framedados, text="+")
-        self.botaoadd.setFixedSize(QtCore.QSize(26, 26))
-        self.gridLayout.addWidget(self.botaoadd, 1, 2, 1, 1)
-        self.gridLayout.addItem(self.spacer, 2, 0, 1, 1)
-        self.botaoadd.clicked.connect(self.addlinhaservico)
+        self.setupUi()
 
     def salvarServicos(self):
-        if (self.controller.salvarServicos()):
+        if (self.servicoCtrl.salvarServicos()):
             self.resetarTela()
 
     def limparCampos(self):

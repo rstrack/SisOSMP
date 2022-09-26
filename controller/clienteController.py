@@ -27,7 +27,7 @@ class ClienteController():
                     cidade = {}
                     cidade['nome'] = dados.pop('cidade')
                     cidade['uf'] = dados.pop('uf')
-                    qCidade = self.cidadeRep.findCidadeByNomeeUF(cidade['nome'], cidade['uf'])
+                    qCidade = self.cidadeRep.findCidadeByNomeAndUF(cidade['nome'], cidade['uf'])
                     if qCidade: dados['cidade'] = qCidade
                     else: dados['cidade'] = self.cidadeRep.save(cidade)
                 _cliente = self.clienteRep.save(dados)
@@ -54,31 +54,32 @@ class ClienteController():
 
     #salva dados do cliente, telefones, veiculo e vincula-os
     def salvarClienteVeiculo(self, dadosCliente:dict, dadosFone:list, dadosVeiculo:dict):
-        with db.atomic() as transaction:
-            try:
-                [cliente, _] = self.salvarCliente(dadosCliente, dadosFone)
-                if isinstance(cliente, Exception):
-                    raise Exception(cliente)
-                marca = self.marcaRep.findByNome(dadosVeiculo['marca'])
-                if not marca:
-                    marca = self.marcaRep.save({'nome':dadosVeiculo['marca']})
-                dadosVeiculo['marca'] = marca
-                qVeiculo = self.veiculoRep.findByModeloAndPlaca(dadosVeiculo['modelo'], dadosVeiculo['placa'])
-                if qVeiculo:
-                    question = MessageBox.question(f'Veiculo {qVeiculo.modelo} placa {qVeiculo.placa} já registrado. ' \
-                    +f'Deseja utilizá-lo para o cliente {cliente.nome}? ')
-                    if question == 'sim':
-                        self.veiculoClienteRep.save(qVeiculo, cliente)
-                    else: raise Exception('Cadastro cancelado')
-                else:
-                    veiculo = self.salvarVeiculo(dadosVeiculo)
-                    if isinstance(veiculo, Exception):
-                        raise Exception(veiculo)
-                    self.veiculoClienteRep.save(veiculo, cliente)
-                return True
-            except Exception as e:
-                transaction.rollback()
-                return e
+        '''with db.atomic() as transaction:
+            try:'''
+        clienteAndFones = self.salvarCliente(dadosCliente, dadosFone)
+        if isinstance(clienteAndFones, Exception):
+            raise Exception(clienteAndFones)
+        [cliente, _] = clienteAndFones
+        marca = self.marcaRep.findByNome(dadosVeiculo['marca'])
+        if not marca:
+            marca = self.marcaRep.save({'nome':dadosVeiculo['marca']})
+        dadosVeiculo['marca'] = marca
+        qVeiculo = self.veiculoRep.findByModeloAndPlaca(dadosVeiculo['modelo'], dadosVeiculo['placa'])
+        if qVeiculo:
+            question = MessageBox.question(f'Veiculo {qVeiculo.modelo} placa {qVeiculo.placa} já registrado. ' \
+            +f'Deseja utilizá-lo para o cliente {cliente.nome}? ')
+            if question == 'sim':
+                self.veiculoClienteRep.save(qVeiculo, cliente)
+            else: raise Exception('Cadastro cancelado')
+        else:
+            veiculo = self.salvarVeiculo(dadosVeiculo)
+            if isinstance(veiculo, Exception):
+                raise Exception(veiculo)
+            self.veiculoClienteRep.save(veiculo, cliente)
+        return True
+        '''except Exception as e:
+            transaction.rollback()
+            return e'''
 
     def editarCliente(self, cliente:dict):
         with db.atomic() as transaction:
@@ -87,7 +88,7 @@ class ClienteController():
                     cidade = {}
                     cidade['nome'] = cliente.pop('cidade')
                     cidade['uf'] = cliente.pop('uf')
-                    qCidade = self.cidadeRep.findCidadeByNomeeUF(cidade['nome'], cidade['uf'])
+                    qCidade = self.cidadeRep.findCidadeByNomeAndUF(cidade['nome'], cidade['uf'])
                     if qCidade: cliente['cidade'] = qCidade
                     else: cliente['cidade'] = self.cidadeRep.save(cidade)
                 _cliente = self.clienteRep.update(cliente)

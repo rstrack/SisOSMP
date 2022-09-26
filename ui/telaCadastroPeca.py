@@ -77,7 +77,7 @@ class TelaCadastroPeca(QtWidgets.QMainWindow):
         # conexoes
         self.botaoadd.clicked.connect(self.addLinhaPeca)
         self.botaolimpar.clicked.connect(self.limparCampos)
-        self.botaosalvar.clicked.connect(self.salvarPecas)
+        self.botaosalvar.clicked.connect(self.resetarTela)
 
     def retranslateUi(self):
         _translate = QtCore.QCoreApplication.translate
@@ -107,41 +107,14 @@ class TelaCadastroPeca(QtWidgets.QMainWindow):
         self.gridLayout.addWidget(comboBox, len(self.linhasPeca)*2+1, 1, 1, 1)
         self.gridLayout.addWidget(lineedit2, len(self.linhasPeca)*2+1, 2, 1, 1)
         self.linhasPeca.append([lineedit1, comboBox, lineedit2])
-        self.gridLayout.addWidget(
-            self.botaoadd, len(self.linhasPeca)*2-1, 3, 1, 1)
         self.gridLayout.removeItem(self.spacer)
         self.gridLayout.addItem(self.spacer, len(self.linhasPeca)*2+1, 0, 1, 1)
 
     def resetarTela(self):
-        for widget in self.framedados.findChildren((QtWidgets.QLabel, QtWidgets.QLineEdit, QtWidgets.QComboBox, QtWidgets.QPushButton)):
-            self.gridLayout.removeWidget(widget)
-            widget.deleteLater()
-        self.linhasPeca.clear()
-        self.labelnome = QtWidgets.QLabel(
-            self.framedados, text="Nome da peça:")
-        self.gridLayout.addWidget(self.labelnome, 0, 0, 1, 1)
-        self.lineEditNomePeca = QtWidgets.QLineEdit(self.framedados)
-        self.gridLayout.addWidget(self.lineEditNomePeca, 1, 0, 1, 1)
-        self.labelUn = QtWidgets.QLabel(self.framedados, text="Un:")
-        self.gridLayout.addWidget(self.labelUn, 0, 1, 1, 1)
-        self.comboboxun = QtWidgets.QComboBox(self.framedados)
-        self.comboboxun.addItems(UNIDADES)
-        self.comboboxun.setCurrentIndex(15)
-        self.gridLayout.addWidget(self.comboboxun, 1, 1, 1, 1)
-        self.labelvalor = QtWidgets.QLabel(self.framedados, text="Valor:")
-        self.gridLayout.addWidget(self.labelvalor, 0, 2, 1, 1)
-        self.lineEditValorPeca = QtWidgets.QLineEdit(self.framedados)
-        self.gridLayout.addWidget(self.lineEditValorPeca, 1, 2, 1, 1)
-        self.linhasPeca.append(
-            [self.lineEditNomePeca, self.comboboxun, self.lineEditValorPeca])
-        self.botaoadd = QtWidgets.QPushButton(self.framedados, text="+")
-        self.botaoadd.setFixedSize(QtCore.QSize(26, 26))
-        self.gridLayout.addWidget(self.botaoadd, 1, 3, 1, 1)
-        self.gridLayout.addItem(self.spacer, 2, 0, 1, 1)
-        self.botaoadd.clicked.connect(self.addLinhaPeca)
+        self.setupUi()
 
     def salvarPecas(self):
-        if (self.controller.salvarPecas()):
+        if (self.pecaCtrl.salvarPecas()):
             self.resetarTela()
 
     def limparCampos(self):

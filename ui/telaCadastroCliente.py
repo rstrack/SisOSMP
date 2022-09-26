@@ -342,6 +342,7 @@ class TelaCadastroCliente(QtWidgets.QMainWindow):
         else: self.labelDocumento.setText('Documento')
 
     def setMarcas(self):
+        self.comboBoxMarca.clear()
         marcas = self.marcaCtrl.listarMarcas()
         for marca in marcas:
             self.comboBoxMarca.addItem(marca['nome'])
