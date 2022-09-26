@@ -18,12 +18,8 @@ lista1 = [['Daniel Pasetto', 'CNPJ', '85.481.562/0001-57', "12345678910", "12345
 
 def GeneratePDF(listainfos):
     pdf = canvas.Canvas('teste.pdf', pagesize=A4)
-<<<<<<< HEAD
-    pdf.drawInlineImage('/resources/logo.png', 0, 740, 200, 100
-=======
     pdf.drawInlineImage(
-         "../resources/logo2.png", 0, 740, 200, 100
->>>>>>> 203fcf1f346e5f2028139d4df8379053d93846d7
+         "./resources/logo2.png", 0, 740, 200, 100
     )
     pdf.setFont('Helvetica-Bold', 10)
     stylesheet = getSampleStyleSheet()

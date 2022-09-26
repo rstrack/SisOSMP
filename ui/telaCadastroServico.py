@@ -90,6 +90,7 @@ class TelaCadastroServico(QtWidgets.QMainWindow):
         botaoRemoverLinha = QtWidgets.QPushButton()
         botaoRemoverLinha.setFixedSize(QtCore.QSize(26, 26))
         botaoRemoverLinha.setText("-")
+        botaoRemoverLinha.setObjectName('excluir')
         botaoRemoverLinha.clicked.connect(lambda: self.removerLinha(self.gridLayout.getItemPosition(self.gridLayout.indexOf(botaoRemoverLinha))[0]))
         #print(self.gridLayout.)
         self.gridLayout.addWidget(label1, len(self.linhasservico)*2, 0, 1, 1)
@@ -106,6 +107,7 @@ class TelaCadastroServico(QtWidgets.QMainWindow):
             self.linhasservico)*2, 0, 1, 1)
 
     def removerLinha(self, linha):
+        print(linha)
         for x in range(2):
             self.gridLayout.itemAtPosition(linha-1, x).widget().setParent(None)
             self.gridLayout.itemAtPosition(linha, x).widget().setParent(None)
@@ -114,13 +116,11 @@ class TelaCadastroServico(QtWidgets.QMainWindow):
         for x in range(self.gridLayout.rowCount()):
             if x > linha:
                 for y in range(3):
-                    if self.gridLayout.itemAtPosition(x, y) != None:
+                    if not isinstance(self.gridLayout.itemAtPosition(x, y), QtWidgets.QSpacerItem) and self.gridLayout.itemAtPosition(x, y) != None:
                         self.gridLayout.addWidget(self.gridLayout.itemAtPosition(x, y).widget(), x-2, y, 1, 1)
         
         del self.linhasservico[int((linha-1)/2)]
-        self.gridLayout.addItem(self.spacer, len(
-        self.linhasservico)*2, 0, 1, 1)
-        print(self.linhasservico)
+        self.gridLayout.addItem(self.spacer, len(self.linhasservico)*2, 0, 1, 1)
 
     def resetarTela(self):
         self.setupUi()
