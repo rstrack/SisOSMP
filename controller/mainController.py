@@ -36,7 +36,7 @@ class MainController():
         self.setRoutes()
 
         self.telaInicio = TelaInicial()
-        self.telaInicio.setStyle(QtWidgets.QApplication.setStyle('fusion'))
+        self.telaInicio.setStyle(QtWidgets.QApplication.setStyle('Fusion'))
         self.telaInicio.setStyleSheet(style)
         self.telaInicio.setFont(font)
         self.telaCadastroPeca = TelaCadastroPeca()

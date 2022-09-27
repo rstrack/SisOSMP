@@ -80,31 +80,26 @@ QLineEdit{
     font-size: 13px;
 }
 
-QComboBox:!editable{
-    border-radius: 2px;
-    border:1px solid gray;
-    background-color:white;
-    font-size: 14px;
+QComboBox{
+    font-size: 13px;
 }
 
-QComboBox:!editable{
-    border-radius: 2px;
-    border:1px solid gray;
-    background-color:white;
-    font-size: 14px;
+QComboBox QAbstractItemView{
+    font-size: 13px;
 }
 
-QComboBox:editable{
-    border-radius: 2px;
-    border:1px solid gray;
-    background-color:white;
-    font-size: 14px;
-}
 
-QComboBox QAbstractItemView {
+/*
+QComboBox:editable QAbstractItemView {
     selection-background-color: #3498DB;
     color:black;
 }
+
+QComboBox:!editable QAbstractItemView {
+    selection-background-color: #3498DB;
+    color:black;
+}
+*/
 
 QTextEdit{
     font-size: 13px;

@@ -110,7 +110,7 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
         self.comboBoxuf.setCurrentIndex(15)
         self.gridLayoutCliente.addWidget(self.comboBoxuf, 4, 6, 1, 1)
         self.gridLayoutCliente.setColumnStretch(0, 3)
-        self.gridLayoutCliente.setColumnStretch(1, 3)
+        self.gridLayoutCliente.setColumnStretch(1, 4)
         self.gridLayoutCliente.setColumnStretch(2, 8)
         self.gridLayoutCliente.setColumnStretch(4, 6)
         self.gridLayoutCliente.setColumnStretch(5, 6)
