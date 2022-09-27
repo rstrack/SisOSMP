@@ -80,7 +80,21 @@ QLineEdit{
     font-size: 13px;
 }
 
-QComboBox{
+QComboBox:!editable{
+    border-radius: 2px;
+    border:1px solid gray;
+    background-color:white;
+    font-size: 14px;
+}
+
+QComboBox:!editable{
+    border-radius: 2px;
+    border:1px solid gray;
+    background-color:white;
+    font-size: 14px;
+}
+
+QComboBox:editable{
     border-radius: 2px;
     border:1px solid gray;
     background-color:white;
@@ -127,19 +141,12 @@ QCheckBox{
     padding: 2px 5px 2px 5px;
 }
 
+QCheckBox::indicator{
+    width: 16px;
+    height: 16px; 
+}
+
 QHeaderView::section{
     background-color: #F8F8F8;
     font-size: 13px;
-}
-
-QComboBox:focus{
-    background-color: #3498DB
-}
-
-QComboBox[urgent = true]{
-    background-color: red;
-}
-
-QComboBox[urgent = false]{
-    background-color: green;
 }

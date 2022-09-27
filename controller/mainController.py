@@ -27,7 +27,7 @@ class MainController():
 
     def __init__(self):
         self.app = QtWidgets.QApplication(sys.argv)
-        #self.app.setStyle('Fusion')
+        self.app.setStyle('Fusion')
         style = open('./resources/styles.qss').read()
         self.app.setStyleSheet(style)
         QtGui.QFontDatabase.addApplicationFont("./resources/Helvetica.ttf")
@@ -36,6 +36,9 @@ class MainController():
         self.setRoutes()
 
         self.telaInicio = TelaInicial()
+        self.telaInicio.setStyle(QtWidgets.QApplication.setStyle('fusion'))
+        self.telaInicio.setStyleSheet(style)
+        self.telaInicio.setFont(font)
         self.telaCadastroPeca = TelaCadastroPeca()
         self.telaCadastroServico = TelaCadastroServico()
         self.telaCadastroCliente = TelaCadastroCliente()
