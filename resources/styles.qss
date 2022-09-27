@@ -1,3 +1,4 @@
+
 QWidget{
     font-family:'Helvetica', sans-serif
 }
@@ -87,7 +88,8 @@ QComboBox{
 }
 
 QComboBox QAbstractItemView {
-    selection-background-color: lightgray;
+    selection-background-color: #3498DB;
+    color:black;
 }
 
 QTextEdit{
@@ -103,6 +105,7 @@ QDateEdit{
 
 QGroupBox{
     font-size: 14px;
+    
 }
 
 QScrollArea{
@@ -127,4 +130,16 @@ QCheckBox{
 QHeaderView::section{
     background-color: #F8F8F8;
     font-size: 13px;
+}
+
+QComboBox:focus{
+    background-color: #3498DB
+}
+
+QComboBox[urgent = true]{
+    background-color: red;
+}
+
+QComboBox[urgent = false]{
+    background-color: green;
 }

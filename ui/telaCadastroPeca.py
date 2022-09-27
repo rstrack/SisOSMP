@@ -33,25 +33,26 @@ class TelaCadastroPeca(QtWidgets.QMainWindow):
         self.framedados = QtWidgets.QFrame(self.scrollarea)
         self.scrollarea.setWidget(self.framedados)
         self.gridLayout = QtWidgets.QGridLayout(self.framedados)
-
         self.labelnome = QtWidgets.QLabel(self.framedados)
         self.gridLayout.addWidget(self.labelnome, 0, 0, 1, 1)
         self.labelUn = QtWidgets.QLabel(self.framedados)
         self.gridLayout.addWidget(self.labelUn, 0, 1, 1, 1)
         self.labelvalor = QtWidgets.QLabel(self.framedados)
         self.gridLayout.addWidget(self.labelvalor, 0, 2, 1, 1)
-
         self.lineEditNomePeca = QtWidgets.QLineEdit(self.framedados)
+        self.lineEditNomePeca.setMaximumWidth(200)
+        self.lineEditNomePeca.setMaximumWidth(600)
         self.gridLayout.addWidget(self.lineEditNomePeca, 1, 0, 1, 1)
         self.comboboxun = QtWidgets.QComboBox(self.framedados)
         self.comboboxun.addItems(UNIDADES)
         self.comboboxun.setCurrentIndex(15)
         self.gridLayout.addWidget(self.comboboxun, 1, 1, 1, 1)
         self.lineEditValorPeca = QtWidgets.QLineEdit(self.framedados)
+        self.lineEditValorPeca.setFixedWidth(80)
         self.gridLayout.addWidget(self.lineEditValorPeca, 1, 2, 1, 1)
-
-        self.gridLayout.setColumnStretch(0, 8)
-        self.gridLayout.setColumnStretch(2, 1)
+        self.gridLayout.setColumnStretch(0, 6)
+        self.gridLayout.setColumnStretch(2, 2)
+        self.gridLayout.setColumnStretch(4, 1)
         self.linhasPeca.append(
             [self.lineEditNomePeca, self.comboboxun, self.lineEditValorPeca])
         self.botaoadd = QtWidgets.QPushButton(self.framedados)
@@ -94,21 +95,46 @@ class TelaCadastroPeca(QtWidgets.QMainWindow):
     def addLinhaPeca(self):
         label1 = QtWidgets.QLabel(text="Nome da peça")
         lineedit1 = QtWidgets.QLineEdit()
+        lineedit1.setMaximumWidth(200)
+        lineedit1.setMaximumWidth(600)
         labelcb = QtWidgets.QLabel(text="Un")
         comboBox = QtWidgets.QComboBox()
         comboBox.addItems(UNIDADES)
         comboBox.setCurrentIndex(15)
         label2 = QtWidgets.QLabel(text="Valor")
         lineedit2 = QtWidgets.QLineEdit()
+        lineedit2.setFixedWidth(80)
+        botaoRemoverLinha = QtWidgets.QPushButton()
+        botaoRemoverLinha.setFixedSize(QtCore.QSize(26, 26))
+        botaoRemoverLinha.setText("-")
+        botaoRemoverLinha.setObjectName('excluir')
+        botaoRemoverLinha.clicked.connect(lambda: self.removerLinha(self.gridLayout.getItemPosition(self.gridLayout.indexOf(botaoRemoverLinha))[0]))
         self.gridLayout.addWidget(label1, len(self.linhasPeca)*2, 0, 1, 1)
         self.gridLayout.addWidget(labelcb, len(self.linhasPeca)*2, 1, 1, 1)
         self.gridLayout.addWidget(label2, len(self.linhasPeca)*2, 2, 1, 1)
         self.gridLayout.addWidget(lineedit1, len(self.linhasPeca)*2+1, 0, 1, 1)
         self.gridLayout.addWidget(comboBox, len(self.linhasPeca)*2+1, 1, 1, 1)
         self.gridLayout.addWidget(lineedit2, len(self.linhasPeca)*2+1, 2, 1, 1)
+        self.gridLayout.addWidget(botaoRemoverLinha, len(
+            self.linhasPeca)*2+1, 3, 1, 1)
         self.linhasPeca.append([lineedit1, comboBox, lineedit2])
         self.gridLayout.removeItem(self.spacer)
         self.gridLayout.addItem(self.spacer, len(self.linhasPeca)*2+1, 0, 1, 1)
+
+    def removerLinha(self, linha):
+        for x in range(3):
+            self.gridLayout.itemAtPosition(linha-1, x).widget().setParent(None)
+            self.gridLayout.itemAtPosition(linha, x).widget().setParent(None)
+        self.gridLayout.itemAtPosition(linha, 3).widget().setParent(None)
+        
+        for x in range(self.gridLayout.rowCount()):
+            if x > linha:
+                for y in range(4):
+                    if not isinstance(self.gridLayout.itemAtPosition(x, y), QtWidgets.QSpacerItem) and self.gridLayout.itemAtPosition(x, y) != None:
+                        self.gridLayout.addWidget(self.gridLayout.itemAtPosition(x, y).widget(), x-2, y, 1, 1)
+        
+        del self.linhasPeca[int((linha-1)/2)]
+        self.gridLayout.addItem(self.spacer, len(self.linhasPeca)*2, 0, 1, 1)
 
     def resetarTela(self):
         self.setupUi()

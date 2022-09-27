@@ -3,6 +3,7 @@ from PyQt6 import QtWidgets, QtGui
 
 from routes import handleRoutes
 from ui.telaConsultaCliente import TelaConsultaCliente
+from ui.telaConsultaVeiculo import TelaConsultaVeiculo
 
 from util.buscaCEP import BuscaCEP
 
@@ -26,6 +27,7 @@ class MainController():
 
     def __init__(self):
         self.app = QtWidgets.QApplication(sys.argv)
+        #self.app.setStyle('Fusion')
         style = open('./resources/styles.qss').read()
         self.app.setStyleSheet(style)
         QtGui.QFontDatabase.addApplicationFont("./resources/Helvetica.ttf")
@@ -42,6 +44,7 @@ class MainController():
         self.telaConsultaPeca = TelaConsultaPeca()
         self.telaConsultaServico = TelaConsultaServico()
         self.telaConsultaCliente = TelaConsultaCliente()
+        self.telaConsultaVeiculo = TelaConsultaVeiculo()
         self.telaConsultaOrcamento = TelaConsultaOrcamento()
 
         self.telaInicio.stackedWidget.addWidget(self.telaCadastroPeca)
@@ -52,6 +55,7 @@ class MainController():
         self.telaInicio.stackedWidget.addWidget(self.telaConsultaPeca)
         self.telaInicio.stackedWidget.addWidget(self.telaConsultaServico)
         self.telaInicio.stackedWidget.addWidget(self.telaConsultaCliente)
+        self.telaInicio.stackedWidget.addWidget(self.telaConsultaVeiculo)
         self.telaInicio.stackedWidget.addWidget(self.telaConsultaOrcamento)
         self.initConnections()
 
@@ -83,6 +87,7 @@ class MainController():
         self.telaInicio.botao_pecas_2.clicked.connect(lambda: self.telaInicio.stackedWidget.setCurrentWidget(self.telaConsultaPeca))
         self.telaInicio.botao_servicos_2.clicked.connect(lambda: self.telaInicio.stackedWidget.setCurrentWidget(self.telaConsultaServico))
         self.telaInicio.botao_clientes_2.clicked.connect(lambda: self.telaInicio.stackedWidget.setCurrentWidget(self.telaConsultaCliente))
+        self.telaInicio.botao_veiculos.clicked.connect(lambda: self.telaInicio.stackedWidget.setCurrentWidget(self.telaConsultaVeiculo))
         self.telaInicio.botao_orcamentos_2.clicked.connect(lambda: self.telaInicio.stackedWidget.setCurrentWidget(self.telaConsultaOrcamento))
         '''self.telaCadastroCliente.lineEditCEP.editingFinished.connect(lambda: self.buscarDadosCEP(self.telaCadastroCliente))
         self.telaCadastroOrcamento.lineEditCEP.editingFinished.connect(lambda: self.buscarDadosCEP(self.telaCadastroOrcamento))'''

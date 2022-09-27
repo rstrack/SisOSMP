@@ -112,15 +112,18 @@ class TelaConsultaOrcamento(QtWidgets.QMainWindow):
             item.setTextAlignment(
                 QtCore.Qt.AlignmentFlag.AlignHCenter | QtCore.Qt.AlignmentFlag.AlignVCenter)
             self.model.setItem(row, 5, item)
-            item = QtGui.QStandardItem(str(orcamento['valorTotal'] or ''))
+            item = QtGui.QStandardItem('R$ {:.2f}'.format(orcamento['valorTotal']))
             item.setTextAlignment(
                 QtCore.Qt.AlignmentFlag.AlignHCenter | QtCore.Qt.AlignmentFlag.AlignVCenter)
             self.model.setItem(row, 6, item)
             row = row+1
         header = self.tabela.horizontalHeader()
         header.setSectionResizeMode(
+            QtWidgets.QHeaderView.ResizeMode.Interactive)
+        header.setSectionResizeMode(1, 
             QtWidgets.QHeaderView.ResizeMode.ResizeToContents)
-        header.setStretchLastSection(True)
+        header.setSectionResizeMode(2, 
+            QtWidgets.QHeaderView.ResizeMode.Stretch)
 
 
 if __name__ == "__main__":
@@ -131,7 +134,7 @@ if __name__ == "__main__":
     ui.setupUi()
     ui.show()
 
-    style = open('./ui/styles.qss').read()
+    style = open('./resources/styles.qss').read()
     app.setStyleSheet(style)
 
     sys.exit(app.exec())

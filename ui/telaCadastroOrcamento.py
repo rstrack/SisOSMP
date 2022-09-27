@@ -513,15 +513,14 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
         self.lineEditNomeCliente.setText(nome)
         if documento:
             self.lineEditDocumento.setText(documento)
-            if tipo == 0:
+            if tipo == '0':
                 self.labelDocumento.setText("CPF")
-                self.comboBoxPessoa.setCurrentIndex(0)
-            if tipo == 1:
+            if tipo == '1':
                 self.labelDocumento.setText("CNPJ")
-                self.comboBoxPessoa.setCurrentIndex(1)
-            if tipo == 1:
+            if tipo == '1':
                 self.labelDocumento.setText("Documento")
-                self.comboBoxPessoa.setCurrentIndex(2)
+            self.comboBoxPessoa.setCurrentIndex(int(tipo))
+        else: self.lineEditDocumento.setText('')
         self.lineEditFone1.setText(tel1)
         self.lineEditFone2.setText(tel2)
 
