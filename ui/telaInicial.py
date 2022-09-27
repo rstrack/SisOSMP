@@ -8,7 +8,7 @@ class TelaInicial(QtWidgets.QMainWindow):
         self.setupUi()
 
     def setupUi(self):
-        self.resize(1280, 720)
+        self.resize(1280, 900)
         self.mainwidget = QtWidgets.QWidget(self)
         self.hlayout1 = QtWidgets.QHBoxLayout(self.mainwidget)
         self.hlayout1.setContentsMargins(0, 0, 0, 0)
@@ -127,7 +127,7 @@ class TelaInicial(QtWidgets.QMainWindow):
         self.setWindowTitle(_translate("MainWindow", "Mecânica Pasetto"))
         self.botao_pecas.setText(_translate("MainWindow", "PEÇAS"))
         self.botao_servicos.setText(_translate("MainWindow", "SERVIÇOS"))
-        self.botao_clientes.setText(_translate("MainWindow", "CLIENTES"))
+        self.botao_clientes.setText(_translate("MainWindow", "CLIENTES / VEÍCULOS"))
         self.botao_orcamentos.setText(_translate("MainWindow", "ORÇAMENTOS"))
         self.botao_pecas_2.setText(_translate("MainWindow", "PEÇAS"))
         self.botao_servicos_2.setText(_translate("MainWindow", "SERVIÇOS"))

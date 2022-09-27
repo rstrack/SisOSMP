@@ -19,6 +19,6 @@ class ItemPecaRepository():
         return ItemPeca.select()
 
     def findByOrcamentoAndPeca(self, orcamento, peca):
-        return ItemPeca.select().where(ItemPeca.orcamento==orcamento and ItemPeca.peca==peca).get()
+        return ItemPeca.select().where((ItemPeca.orcamento==orcamento) & (ItemPeca.peca==peca)).get()
 
     

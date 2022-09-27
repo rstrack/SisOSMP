@@ -9,8 +9,8 @@ class TelaCadastroCliente(QtWidgets.QMainWindow):
 
     def __init__(self):
         super(TelaCadastroCliente, self).__init__()
-        self.clienteCtrl = handleRoutes.getRoute('CLIENTE')
-        self.marcaCtrl = handleRoutes.getRoute('MARCA')
+        self.clienteCtrl = handleRoutes.getRoute('CLIENTECTRL')
+        self.marcaCtrl = handleRoutes.getRoute('MARCACTRL')
         self.setupUi()
 
     def setupUi(self):

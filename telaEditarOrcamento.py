@@ -3,9 +3,6 @@ from routes import handleRoutes
 
 from datetime import datetime
 
-from ui.telaBuscaCliente import TelaBuscaCliente
-from ui.telaBuscaVeiculo import TelaBuscaVeiculo
-
 SIGLAESTADOS = ['AC', 'AL', 'AP', 'AM', 'BA', 'CE', 'DF', 'ES', 'GO', 'MA', 'MT', 'MS',
                 'MG', 'PA', 'PB', 'PR', 'PE', 'PI', 'RJ', 'RN', 'RS', 'RO', 'RR', 'SC', 'SP', 'SE', 'TO']
 UNIDADES = ['CM', 'CM2', 'CM3', 'CX', 'DZ', 'G', 'KG',
@@ -16,7 +13,7 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
 
     def __init__(self):
         super(TelaCadastroOrcamento, self).__init__()
-        self.orcamentoCtrl = handleRoutes.getRoute('ORCAMENTOCTRL')
+        '''self.orcamentoCtrl = handleRoutes.getRoute('ORCAMENTOCTRL')
         self.clienteCtrl = handleRoutes.getRoute('CLIENTECTRL')
         self.pecaCtrl = handleRoutes.getRoute('PECACTRL')
         self.servicoCtrl = handleRoutes.getRoute('SERVICOCTRL')
@@ -24,7 +21,7 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
         self.buscaCEP = handleRoutes.getRoute('CEP')
         self.clienteSelected = None
         self.veiculoSelected = None
-        self.valorTotal = 0
+        self.valorTotal = 0'''
         self.setupUi()
 
     def setupUi(self):
@@ -49,66 +46,53 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
         # dados do cliente
         self.groupBoxCliente = QtWidgets.QGroupBox(self.framedados)
         self.gridLayoutCliente = QtWidgets.QGridLayout(self.groupBoxCliente)
-        self.framebotoesCliente = QtWidgets.QFrame(self.groupBoxCliente)
-        self.gridLayoutCliente.addWidget(self.framebotoesCliente, 0, 0, 1, -1)
-        self.hlayout1 = QtWidgets.QHBoxLayout(self.framebotoesCliente)
-        self.hlayout1.setContentsMargins(0, 0, 0, 0)
-        self.botaobuscarCliente = QtWidgets.QPushButton(
-            self.framebotoesCliente)
-        self.botaobuscarCliente.setFixedWidth(200)
-        self.hlayout1.addWidget(self.botaobuscarCliente)
-        self.checkboxNovoCliente = QtWidgets.QCheckBox(self.framebotoesCliente)
-        self.checkboxNovoCliente.setFixedWidth(150)
-        self.checkboxNovoCliente.setChecked(True)
-        self.hlayout1.addWidget(self.checkboxNovoCliente)
-        self.hlayout1.setAlignment(QtCore.Qt.AlignmentFlag.AlignLeft)
         self.labelPessoa = QtWidgets.QLabel(self.groupBoxCliente)
-        self.gridLayoutCliente.addWidget(self.labelPessoa, 1, 0, 1, 1)
+        self.gridLayoutCliente.addWidget(self.labelPessoa, 0, 0, 1, 1)
         self.labelDocumento = QtWidgets.QLabel(self.groupBoxCliente)
-        self.gridLayoutCliente.addWidget(self.labelDocumento, 1, 1, 1, 1)
+        self.gridLayoutCliente.addWidget(self.labelDocumento, 0, 1, 1, 1)
         self.labelNome = QtWidgets.QLabel(self.groupBoxCliente)
-        self.gridLayoutCliente.addWidget(self.labelNome, 1, 2, 1, 1)
+        self.gridLayoutCliente.addWidget(self.labelNome, 0, 2, 1, 1)
         self.labelFone1 = QtWidgets.QLabel(self.groupBoxCliente)
-        self.gridLayoutCliente.addWidget(self.labelFone1, 1, 4, 1, 1)
+        self.gridLayoutCliente.addWidget(self.labelFone1, 0, 4, 1, 1)
         self.labelFone2 = QtWidgets.QLabel(self.groupBoxCliente)
-        self.gridLayoutCliente.addWidget(self.labelFone2, 1, 5, 1, 1)
+        self.gridLayoutCliente.addWidget(self.labelFone2, 0, 5, 1, 1)
         self.comboBoxPessoa = QtWidgets.QComboBox(self.groupBoxCliente)
         self.comboBoxPessoa.addItems(["PESSOA FÍSICA", "PESSOA JURÍDICA", "ESTRANGEIRO"])
-        self.gridLayoutCliente.addWidget(self.comboBoxPessoa, 2, 0, 1, 1)
+        self.gridLayoutCliente.addWidget(self.comboBoxPessoa, 1, 0, 1, 1)
         self.lineEditDocumento = QtWidgets.QLineEdit(self.groupBoxCliente)
-        self.gridLayoutCliente.addWidget(self.lineEditDocumento, 2, 1, 1, 1)
+        self.gridLayoutCliente.addWidget(self.lineEditDocumento, 1, 1, 1, 1)
         self.lineEditNomeCliente = QtWidgets.QLineEdit(self.groupBoxCliente)
-        self.gridLayoutCliente.addWidget(self.lineEditNomeCliente, 2, 2, 1, 2)
+        self.gridLayoutCliente.addWidget(self.lineEditNomeCliente, 1, 2, 1, 2)
         self.lineEditFone1 = QtWidgets.QLineEdit(self.groupBoxCliente)
-        self.gridLayoutCliente.addWidget(self.lineEditFone1, 2, 4, 1, 1)
+        self.gridLayoutCliente.addWidget(self.lineEditFone1, 1, 4, 1, 1)
         self.lineEditFone2 = QtWidgets.QLineEdit(self.groupBoxCliente)
-        self.gridLayoutCliente.addWidget(self.lineEditFone2, 2, 5, 1, 1)
+        self.gridLayoutCliente.addWidget(self.lineEditFone2, 1, 5, 1, 1)
         self.labelCEP = QtWidgets.QLabel(self.groupBoxCliente)
-        self.gridLayoutCliente.addWidget(self.labelCEP, 3, 0, 1, 1)
+        self.gridLayoutCliente.addWidget(self.labelCEP, 2, 0, 1, 1)
         self.labelEnder = QtWidgets.QLabel(self.groupBoxCliente)
-        self.gridLayoutCliente.addWidget(self.labelEnder, 3, 1, 1, 1)
+        self.gridLayoutCliente.addWidget(self.labelEnder, 2, 1, 1, 1)
         self.labelNumero = QtWidgets.QLabel(self.groupBoxCliente)
-        self.gridLayoutCliente.addWidget(self.labelNumero, 3, 3, 1, 1)
+        self.gridLayoutCliente.addWidget(self.labelNumero, 2, 3, 1, 1)
         self.labelBairro = QtWidgets.QLabel(self.groupBoxCliente)
-        self.gridLayoutCliente.addWidget(self.labelBairro, 3, 4, 1, 1)
+        self.gridLayoutCliente.addWidget(self.labelBairro, 2, 4, 1, 1)
         self.labelCidade = QtWidgets.QLabel(self.groupBoxCliente)
-        self.gridLayoutCliente.addWidget(self.labelCidade, 3, 5, 1, 1)
+        self.gridLayoutCliente.addWidget(self.labelCidade, 2, 5, 1, 1)
         self.labelUF = QtWidgets.QLabel(self.groupBoxCliente)
-        self.gridLayoutCliente.addWidget(self.labelUF, 3, 6, 1, 1)
+        self.gridLayoutCliente.addWidget(self.labelUF, 2, 6, 1, 1)
         self.lineEditCEP = QtWidgets.QLineEdit(self.groupBoxCliente)
-        self.gridLayoutCliente.addWidget(self.lineEditCEP, 4, 0, 1, 1)
+        self.gridLayoutCliente.addWidget(self.lineEditCEP, 3, 0, 1, 1)
         self.lineEditEnder = QtWidgets.QLineEdit(self.groupBoxCliente)
-        self.gridLayoutCliente.addWidget(self.lineEditEnder, 4, 1, 1, 2)
+        self.gridLayoutCliente.addWidget(self.lineEditEnder, 3, 1, 1, 2)
         self.lineEditNumero = QtWidgets.QLineEdit(self.groupBoxCliente)
-        self.gridLayoutCliente.addWidget(self.lineEditNumero, 4, 3, 1, 1)
+        self.gridLayoutCliente.addWidget(self.lineEditNumero, 3, 3, 1, 1)
         self.lineEditBairro = QtWidgets.QLineEdit(self.groupBoxCliente)
-        self.gridLayoutCliente.addWidget(self.lineEditBairro, 4, 4, 1, 1)
+        self.gridLayoutCliente.addWidget(self.lineEditBairro, 3, 4, 1, 1)
         self.lineEditCidade = QtWidgets.QLineEdit(self.groupBoxCliente)
-        self.gridLayoutCliente.addWidget(self.lineEditCidade, 4, 5, 1, 1)
+        self.gridLayoutCliente.addWidget(self.lineEditCidade, 3, 5, 1, 1)
         self.comboBoxuf = QtWidgets.QComboBox(self.groupBoxCliente)
         self.comboBoxuf.addItems(SIGLAESTADOS)
         self.comboBoxuf.setCurrentIndex(15)
-        self.gridLayoutCliente.addWidget(self.comboBoxuf, 4, 6, 1, 1)
+        self.gridLayoutCliente.addWidget(self.comboBoxuf, 3, 6, 1, 1)
         self.gridLayoutCliente.setColumnStretch(0, 3)
         self.gridLayoutCliente.setColumnStretch(1, 3)
         self.gridLayoutCliente.setColumnStretch(2, 8)
@@ -119,40 +103,27 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
         # dados do veiculo
         self.groupBoxVeiculo = QtWidgets.QGroupBox(self.framedados)
         self.gridLayoutVeiculo = QtWidgets.QGridLayout(self.groupBoxVeiculo)
-        self.framebotoesVeiculo = QtWidgets.QFrame(self.groupBoxCliente)
-        self.gridLayoutVeiculo.addWidget(self.framebotoesVeiculo, 0, 0, 1, -1)
-        self.hlayout2 = QtWidgets.QHBoxLayout(self.framebotoesVeiculo)
-        self.hlayout2.setContentsMargins(0, 0, 0, 0)
-        self.botaobuscarveiculo = QtWidgets.QPushButton(
-            self.framebotoesVeiculo)
-        self.botaobuscarveiculo.setFixedWidth(200)
-        self.hlayout2.addWidget(self.botaobuscarveiculo)
-        self.checkboxNovoVeiculo = QtWidgets.QCheckBox(self.framebotoesVeiculo)
-        self.checkboxNovoVeiculo.setFixedWidth(150)
-        self.checkboxNovoVeiculo.setChecked(True)
-        self.hlayout2.addWidget(self.checkboxNovoVeiculo)
-        self.hlayout2.setAlignment(QtCore.Qt.AlignmentFlag.AlignLeft)
         self.labelMarca = QtWidgets.QLabel(self.groupBoxVeiculo)
-        self.gridLayoutVeiculo.addWidget(self.labelMarca, 1, 0, 1, 1)
+        self.gridLayoutVeiculo.addWidget(self.labelMarca, 0, 0, 1, 1)
         self.labelModelo = QtWidgets.QLabel(self.groupBoxVeiculo)
-        self.gridLayoutVeiculo.addWidget(self.labelModelo, 1, 1, 1, 1)
+        self.gridLayoutVeiculo.addWidget(self.labelModelo, 0, 1, 1, 1)
         self.labelPlaca = QtWidgets.QLabel(self.groupBoxVeiculo)
-        self.gridLayoutVeiculo.addWidget(self.labelPlaca, 1, 2, 1, 1)
+        self.gridLayoutVeiculo.addWidget(self.labelPlaca, 0, 2, 1, 1)
         self.labelAno = QtWidgets.QLabel(self.groupBoxVeiculo)
-        self.gridLayoutVeiculo.addWidget(self.labelAno, 1, 3, 1, 1)
+        self.gridLayoutVeiculo.addWidget(self.labelAno, 0, 3, 1, 1)
         self.labelKm = QtWidgets.QLabel(self.groupBoxVeiculo)
-        self.gridLayoutVeiculo.addWidget(self.labelKm, 1, 4, 1, 1)
+        self.gridLayoutVeiculo.addWidget(self.labelKm, 0, 4, 1, 1)
         self.comboBoxMarca = QtWidgets.QComboBox(self.groupBoxVeiculo)
         self.comboBoxMarca.setEditable(True)
-        self.gridLayoutVeiculo.addWidget(self.comboBoxMarca, 2, 0, 1, 1)
+        self.gridLayoutVeiculo.addWidget(self.comboBoxMarca, 1, 0, 1, 1)
         self.lineEditModelo = QtWidgets.QLineEdit(self.groupBoxVeiculo)
-        self.gridLayoutVeiculo.addWidget(self.lineEditModelo, 2, 1, 1, 1)
+        self.gridLayoutVeiculo.addWidget(self.lineEditModelo, 1, 1, 1, 1)
         self.lineEditPlaca = QtWidgets.QLineEdit(self.groupBoxVeiculo)
-        self.gridLayoutVeiculo.addWidget(self.lineEditPlaca, 2, 2, 1, 1)
+        self.gridLayoutVeiculo.addWidget(self.lineEditPlaca, 1, 2, 1, 1)
         self.lineEditAno = QtWidgets.QLineEdit(self.groupBoxVeiculo)
-        self.gridLayoutVeiculo.addWidget(self.lineEditAno, 2, 3, 1, 1)
+        self.gridLayoutVeiculo.addWidget(self.lineEditAno, 1, 3, 1, 1)
         self.lineEditKm = QtWidgets.QLineEdit(self.groupBoxVeiculo)
-        self.gridLayoutVeiculo.addWidget(self.lineEditKm, 2, 4, 1, 1)
+        self.gridLayoutVeiculo.addWidget(self.lineEditKm, 1, 4, 1, 1)
         self.gridLayoutGeral.addWidget(self.groupBoxVeiculo, 1, 0, 1, -1)
         self.gridLayoutVeiculo.setColumnStretch(0, 3)
         self.gridLayoutVeiculo.setColumnStretch(1, 5)
@@ -192,8 +163,11 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
         self.gridLayoutPecas.addWidget(self.comboBoxUn, 1, 2, 1, 1)
         self.lineEditValorPeca = QtWidgets.QLineEdit(self.framegroupboxpecas)
         self.gridLayoutPecas.addWidget(self.lineEditValorPeca, 1, 3, 1, 1)
+        self.botaoRemoverPeca = QtWidgets.QPushButton(self.framegroupboxpecas)
+        self.gridLayoutPecas.addWidget(self.botaoRemoverPeca, 1, 4, 1, 1)
+        self.botaoRemoverPeca.setObjectName('excluir')
         self.botaoAddPecas = QtWidgets.QPushButton(self.framegroupboxpecas)
-        self.gridLayoutPecas.addWidget(self.botaoAddPecas, 1, 4, 1, 1)
+        self.gridLayoutPecas.addWidget(self.botaoAddPecas, 1, 5, 1, 1)
         self.linhasPeca = [
             [self.lineEditNomePeca, self.lineEditQtdeP, self.comboBoxUn, self.lineEditValorPeca]]
         self.spacerpeca = QtWidgets.QSpacerItem(
@@ -223,22 +197,19 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
         self.gridLayoutServicos.addWidget(self.labelQtdeS, 0, 1, 1, 1)
         self.labelValorServico = QtWidgets.QLabel(self.framegroupboxservicos)
         self.gridLayoutServicos.addWidget(self.labelValorServico, 0, 2, 1, 1)
-        self.lineEditNomeServico = QtWidgets.QLineEdit(
-            self.framegroupboxservicos)
+        self.lineEditNomeServico = QtWidgets.QLineEdit(self.framegroupboxservicos)
         self.gridLayoutServicos.addWidget(self.lineEditNomeServico, 1, 0, 1, 1)
         self.lineEditQtdeS = QtWidgets.QLineEdit(self.framegroupboxservicos)
         self.gridLayoutServicos.addWidget(self.lineEditQtdeS, 1, 1, 1, 1)
-        self.lineEditValorServico = QtWidgets.QLineEdit(
-            self.framegroupboxservicos)
+        self.lineEditValorServico = QtWidgets.QLineEdit(self.framegroupboxservicos)
         self.gridLayoutServicos.addWidget(self.lineEditValorServico, 1, 2, 1, 1)
-        self.botaoAddServicos = QtWidgets.QPushButton(
-            self.framegroupboxservicos)
-        self.gridLayoutServicos.addWidget(self.botaoAddServicos, 1, 3, 1, 1)
-
-        self.linhasServico = [[self.lineEditNomeServico,
-                               self.lineEditQtdeS, self.lineEditValorServico]]
-        self.spacerservico = QtWidgets.QSpacerItem(
-            20, 40, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding)
+        self.botaoRemoverServico = QtWidgets.QPushButton(self.framegroupboxservicos)
+        self.botaoRemoverServico.setObjectName('excluir')
+        self.gridLayoutServicos.addWidget(self.botaoRemoverServico, 1, 3, 1, 1)
+        self.botaoAddServicos = QtWidgets.QPushButton(self.framegroupboxservicos)
+        self.gridLayoutServicos.addWidget(self.botaoAddServicos, 1, 4, 1, 1)
+        self.linhasServico = [[self.lineEditNomeServico,self.lineEditQtdeS, self.lineEditValorServico]]
+        self.spacerservico = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding)
         self.gridLayoutServicos.addItem(self.spacerservico, 2, 0, 1, 1)
         self.gridLayoutGeral.addWidget(self.groupBoxServicos, 2, 1, 1, 1)
 
@@ -290,10 +261,16 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
         spacerItem5 = QtWidgets.QSpacerItem(
             40, 10, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
         self.hlayout4.addItem(spacerItem5)
+        self.botaoAprovar = QtWidgets.QPushButton(self.framebotoes)
+        self.botaoAprovar.setMinimumSize(QtCore.QSize(100, 30))
+        self.hlayout4.addWidget(self.botaoAprovar)
+
         self.botaoSalvareImprimir = QtWidgets.QPushButton(self.framebotoes)
-        self.botaoSalvareImprimir.setMinimumSize(QtCore.QSize(150, 35))
-        self.botaoSalvareImprimir.setObjectName('botaoprincipal')
+        self.botaoSalvareImprimir.setMinimumSize(QtCore.QSize(100, 30))
+        '''self.botaoSalvareImprimir.setMinimumSize(QtCore.QSize(150, 35))
+        self.botaoSalvareImprimir.setObjectName('botaoprincipal')'''
         self.hlayout4.addWidget(self.botaoSalvareImprimir)
+
         self.botaoSalvar = QtWidgets.QPushButton(self.framebotoes)
         self.botaoSalvar.setMinimumSize(QtCore.QSize(100, 30))
         self.hlayout4.addWidget(self.botaoSalvar)
@@ -317,12 +294,14 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
         self.lineEditNomeServico.setCompleter(self.completerServico)
  
         self.retranslateUi()
-        self.setMarcas()
+        self.botaoAddPecas.clicked.connect(self.addLinhaPeca)
+        self.botaoAddServicos.clicked.connect(self.addLinhaServico)
+        self.botaoRemoverPeca.clicked.connect(lambda: self.removerLinhaPeca(1))
+        self.botaoRemoverServico.clicked.connect(lambda: self.removerLinhaServico(1))
+        '''self.setMarcas()
         self.setCompleters()
         self.botaoAddPecas.clicked.connect(self.addLinhaPeca)
         self.botaoAddServicos.clicked.connect(self.addLinhaServico)
-        self.botaobuscarCliente.clicked.connect(self.telaBuscaCliente)
-        #self.botaobuscarveiculo.clicked.connect(self.telaBuscaVeiculo)
         self.botaolimpar.clicked.connect(self.limparCampos)
         self.botaoSalvar.clicked.connect(self.salvarOrcamento)
         self.botaoSalvareImprimir.clicked.connect(self.salvarImprimirOrcamento)
@@ -334,9 +313,7 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
         self.lineEditQtdeP.textChanged.connect(self.setValor)
         self.lineEditQtdeS.textChanged.connect(self.setValor)
         self.lineEditValorPeca.textChanged.connect(self.setValor)
-        self.lineEditValorServico.textChanged.connect(self.setValor)
-        self.checkboxNovoCliente.stateChanged.connect(self.verificarCamposCliente)
-        self.checkboxNovoVeiculo.stateChanged.connect(self.verificarCamposVeiculo)
+        self.lineEditValorServico.textChanged.connect(self.setValor)'''
 
     ##############################################################################################################################
                                                             #FUNÇÕES
@@ -345,14 +322,13 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
     def retranslateUi(self):
         _translate = QtCore.QCoreApplication.translate
         self.setWindowTitle(_translate("MainWindow", "Mecânica Pasetto"))
-        self.botaoSalvareImprimir.setText(_translate("MainWindow", "Salvar e Imprimir"))
+        self.botaoAprovar.setText(_translate("MainWindow", "Aprovar"))
+        self.botaoSalvareImprimir.setText(_translate("MainWindow", "Imprimir"))
         self.botaoSalvar.setText(_translate("MainWindow", "Salvar"))
-        self.botaolimpar.setText(_translate("MainWindow", "Limpar"))
-        self.labelTitulo.setText(_translate("MainWindow", "Orçamentos"))
+        self.botaolimpar.setText(_translate("MainWindow", "Cancelar"))
+        self.labelTitulo.setText(_translate("MainWindow", "Editar Orçamento"))
         self.labelData.setText(_translate("MainWindow", "Data do Orçamento"))
         self.groupBoxCliente.setTitle(_translate("MainWindow", "Dados do Cliente"))
-        self.botaobuscarCliente.setText(_translate("MainWindow", "Selecionar Cliente"))
-        self.checkboxNovoCliente.setText(_translate("MainWindow", "Novo Cliente"))
         self.labelNome.setText(_translate("MainWindow", "Nome*"))
         self.labelCEP.setText(_translate("MainWindow", "CEP"))
         self.labelPessoa.setText(_translate("MainWindow", "Pessoa"))
@@ -365,8 +341,6 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
         self.labelFone1.setText(_translate("MainWindow", "Fone 1"))
         self.labelFone2.setText(_translate("MainWindow", "Fone 2"))
         self.groupBoxVeiculo.setTitle(_translate("MainWindow", "Dados do veículo"))
-        self.botaobuscarveiculo.setText(_translate("MainWindow", "Selecionar Veículo"))
-        self.checkboxNovoVeiculo.setText(_translate("MainWindow", "Novo Veículo"))
         self.labelMarca.setText(_translate("MainWindow", "Marca*"))
         self.labelPlaca.setText(_translate("MainWindow", "Placa*"))
         self.labelAno.setText(_translate("MainWindow", "Ano*"))
@@ -374,6 +348,7 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
         self.labelKm.setText(_translate("MainWindow", "Km*"))
         self.groupBoxServicos.setTitle(_translate("MainWindow", "Serviços"))
         self.botaoAddServicos.setText(_translate("MainWindow", "+"))
+        self.botaoRemoverServico.setText(_translate("MainWindow", "-"))
         self.labelValorServico.setText(_translate("MainWindow", "Valor*"))
         self.labelNomeServico.setText(_translate("MainWindow", "Serviço*"))
         self.labelQtdeS.setText(_translate("MainWindow", "Qtde*"))
@@ -383,6 +358,7 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
         self.labelQtde.setText(_translate("MainWindow", "Qtde*"))
         self.labelUn.setText(_translate("MainWindow", "Un*"))
         self.botaoAddPecas.setText(_translate("MainWindow", "+"))
+        self.botaoRemoverPeca.setText(_translate("MainWindow", "-"))
         self.labelNomePeca.setText(_translate("MainWindow", "Peça*"))
         self.labelValorPeca.setText(_translate("MainWindow", "Valor*"))
 
@@ -413,10 +389,10 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
         self.linhasPeca.append([lineedit1, lineedit2, comboBox, lineedit4])
         self.gridLayoutPecas.removeItem(self.spacerpeca)
         self.gridLayoutPecas.addItem(self.spacerpeca, len(self.linhasPeca)*2, 0, 1, 1)
-        lineedit1.textChanged.connect(self.setValor)
+        '''lineedit1.textChanged.connect(self.setValor)
         lineedit2.textChanged.connect(self.setValor)
         lineedit4.textChanged.connect(self.setValor)
-        lineedit1.textChanged.connect(lambda: self.buscarPeca(lineedit1, comboBox, lineedit4))
+        lineedit1.textChanged.connect(lambda: self.buscarPeca(lineedit1, comboBox, lineedit4))'''
         botaoRemoverLinha.clicked.connect(lambda: self.removerLinhaPeca(self.gridLayoutPecas.getItemPosition(self.gridLayoutPecas.indexOf(botaoRemoverLinha))[0]))
 
     def removerLinhaPeca(self, linha):
@@ -454,10 +430,10 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
         self.linhasServico.append([lineedit1, lineedit2, lineedit3])
         self.gridLayoutServicos.removeItem(self.spacerservico)
         self.gridLayoutServicos.addItem(self.spacerservico, len(self.linhasServico)*2, 0, 1, 1)
-        lineedit1.textChanged.connect(self.setValor)
+        '''lineedit1.textChanged.connect(self.setValor)
         lineedit2.textChanged.connect(self.setValor)
         lineedit3.textChanged.connect(self.setValor)
-        lineedit1.textChanged.connect(lambda: self.buscarServico(lineedit1, lineedit3))
+        lineedit1.textChanged.connect(lambda: self.buscarServico(lineedit1, lineedit3))'''
         botaoRemoverLinha.clicked.connect(lambda: self.removerLinhaServico(self.gridLayoutServicos.getItemPosition(self.gridLayoutServicos.indexOf(botaoRemoverLinha))[0]))
 
     def removerLinhaServico(self, linha):
@@ -542,7 +518,7 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
         self.comboBoxMarca.setCurrentIndex(
             self.comboBoxMarca.findText(marca, QtCore.Qt.MatchFlag.MatchExactly))
 
-    def setMarcas(self):
+    '''def setMarcas(self):
         self.comboBoxMarca.clear()
         marcas = self.marcaCtrl.listarMarcas()
         for marca in marcas:
@@ -756,111 +732,7 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
     def salvarImprimirOrcamento(self):
         self.setMarcas()
         self.setCompleters()
-        pass
-
-    def telaBuscaCliente(self):
-        self.windowCliente = QtWidgets.QMainWindow()
-        self.telaCliente = TelaBuscaCliente(self.windowCliente)
-        self.telaCliente.botaoSelecionar.clicked.connect(self.retornarDadosCliente)
-        self.windowCliente.show()
-
-    def retornarDadosCliente(self):
-        linha = self.telaCliente.tabela.selectionModel().selectedRows()
-        if linha:
-            id = self.telaCliente.tabela.model().index(linha[0].row(), 0).data()
-        cliente = self.clienteCtrl.getCliente(id)
-        listaFones = [None, None]
-        fones = self.clienteCtrl.listarFones(cliente)
-        for x in range(len(fones)):
-            listaFones[x] = fones[x]['fone']
-        if cliente['cidade'] != None:
-            cidade = cliente['cidade']['nome']
-            uf = cliente['cidade']['uf']
-        else:
-            cidade = None
-            uf = None
-        self.setCliente(cliente['tipo'], cliente['nome'], cliente['documento'], listaFones[0], listaFones[1])
-        self.setEndereco(cliente['cep'], cliente['endereco'], cliente['numero'], cliente['bairro'], cidade, uf)
-        self.clienteSelected = id
-        self.checkboxNovoCliente.setChecked(False)
-        self.windowCliente.close()
-
-    
-
-
-
-    '''def telaBuscaVeiculo(self):
-        self.window = QtWidgets.QMainWindow()
-        self.buscaVeiculo = TelaConsultaAux(self.window)
-        listaHeader = ['ID', 'Marca', 'Modelo',
-                       'Ano', 'Placa', 'Clientes Vinculados']
-        self.buscaVeiculo.model.setHorizontalHeaderLabels(listaHeader)
-        queryVeiculo = self.orcamentoCtrl.getVeiculos()
-        self.buscaVeiculo.model.setRowCount(len(queryVeiculo))
-        row = 0
-        for veiculo in queryVeiculo:
-            item = QtGui.QStandardItem(str(veiculo.idVeiculo))
-            item.setTextAlignment(
-                QtCore.Qt.AlignmentFlag.AlignHCenter | QtCore.Qt.AlignmentFlag.AlignVCenter)
-            self.buscaVeiculo.model.setItem(row, 0, item)
-            querymarca = self.orcamentoCtrl.getMarcaByID(veiculo.marca_id)
-            item.setTextAlignment(
-                QtCore.Qt.AlignmentFlag.AlignHCenter | QtCore.Qt.AlignmentFlag.AlignVCenter)
-            item = QtGui.QStandardItem(querymarca[0].marca)
-            item.setTextAlignment(
-                QtCore.Qt.AlignmentFlag.AlignHCenter | QtCore.Qt.AlignmentFlag.AlignVCenter)
-            self.buscaVeiculo.model.setItem(row, 1, item)
-            item = QtGui.QStandardItem(veiculo.modelo)
-            item.setTextAlignment(
-                QtCore.Qt.AlignmentFlag.AlignHCenter | QtCore.Qt.AlignmentFlag.AlignVCenter)
-            self.buscaVeiculo.model.setItem(row, 2, item)
-            item = QtGui.QStandardItem(veiculo.ano)
-            item.setTextAlignment(
-                QtCore.Qt.AlignmentFlag.AlignHCenter | QtCore.Qt.AlignmentFlag.AlignVCenter)
-            self.buscaVeiculo.model.setItem(row, 3, item)
-            item = QtGui.QStandardItem(veiculo.placa)
-            item.setTextAlignment(
-                QtCore.Qt.AlignmentFlag.AlignHCenter | QtCore.Qt.AlignmentFlag.AlignVCenter)
-            self.buscaVeiculo.model.setItem(row, 4, item)
-            queryCliente = self.orcamentoCtrl.getClientesByVeiculo(veiculo)
-            nomes = []
-            for cliente in queryCliente:
-                nomes.append(cliente.nome)
-            item = QtGui.QStandardItem(', '.join(nomes))
-            self.buscaVeiculo.model.setItem(row, 5, item)
-            row = row+1
-        self.buscaVeiculo.filter.setSourceModel(self.buscaVeiculo.model)
-        header = self.buscaVeiculo.tabela.horizontalHeader()
-        header.setSectionResizeMode(
-            QtWidgets.QHeaderView.ResizeMode.Interactive)
-        header.setSectionResizeMode(
-            0, QtWidgets.QHeaderView.ResizeMode.ResizeToContents)
-        header.setSectionResizeMode(
-            3, QtWidgets.QHeaderView.ResizeMode.ResizeToContents)
-        header.setStretchLastSection(True)
-        self.buscaVeiculo.botaoSelecionar.clicked.connect(self.usarVeiculo)
-        botaoVinculo = QtWidgets.QPushButton(self.buscaVeiculo.framebotoes)
-        botaoVinculo.setText("Desvincular")
-        botaoVinculo.setFixedSize(100, 25)
-        self.buscaVeiculo.hlayoutbotoes.addWidget(botaoVinculo)
-        self.veiculo = queryVeiculo
-        self.window.show()
-
-    def usarVeiculo(self):
-        self.linha = self.buscaVeiculo.tabela.selectionModel().selectedRows()[
-            0]
-        id = self.buscaVeiculo.tabela.model().index(self.linha.row(), 0).data()
-        [marca, modelo, placa, ano] = self.orcamentoCtrl.getDadosVeiculo(id)
-        self.setVeiculo(marca, modelo, placa, ano)
-        self.checkboxNovoVeiculo.setChecked(False)
-        self.orcamentoCtrl.setVeiculoSelecionado(id)
-        self.window.close()'''
-
-    def limparCampos(self):
-        for lineedit in self.framedados.findChildren(QtWidgets.QLineEdit):
-            lineedit.clear()
-        self.checkboxNovoCliente.setChecked(True)
-        self.checkboxNovoVeiculo.setChecked(True)
+        pass'''
 
 
 if __name__ == "__main__":
@@ -869,6 +741,6 @@ if __name__ == "__main__":
     ui = TelaCadastroOrcamento()
     ui.setupUi()
     ui.show()
-    style = open('./ui/styles.qss').read()
+    style = open('./resources/styles.qss').read()
     app.setStyleSheet(style)
     sys.exit(app.exec())

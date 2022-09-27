@@ -1,12 +1,11 @@
 from PyQt6 import QtCore, QtGui, QtWidgets
 from routes import handleRoutes
-from ui.telaCadastroCliente import TelaCadastroCliente
+from ui.telaCadastroServico import TelaCadastroServico
 
-class TelaConsultaCliente(QtWidgets.QMainWindow):
+class TelaConsultaServico(QtWidgets.QMainWindow):
     def __init__(self):
-        super(TelaConsultaCliente, self).__init__()
-        self.clienteCtrl = handleRoutes.getRoute('CLIENTECTRL')
-        self.cidadeCtrl = handleRoutes.getRoute('CIDADECTRL')
+        super(TelaConsultaServico, self).__init__()
+        self.servicoCtrl = handleRoutes.getRoute('SERVICOCTRL')
         self.setupUi()
 
     def setupUi(self):
@@ -62,110 +61,61 @@ class TelaConsultaCliente(QtWidgets.QMainWindow):
         self.lineEditBusca.textChanged.connect(
             self.filter.setFilterRegularExpression)
         self.tabela.setModel(self.filter)
-        listaHeader = ['ID', 'Tipo', 'Nome', 'Documento', 'Endereço', 'Nº', 'Bairro', 'Cidade', 'UF', 'Telefones', 'Veículos']
+        listaHeader = ['ID', 'Descrição da peça', 'Valor']
         self.model.setHorizontalHeaderLabels(listaHeader)
         self.setCentralWidget(self.mainwidget)
         self.retranslateUi()
         self.selectionModel = self.tabela.selectionModel()
 
-        self.listarClientes()
+        self.listarServicos()
 
         #self.selectionModel.selectionChanged.connect(self.mostrarDetalhes)
-        self.botaoRefresh.clicked.connect(self.listarClientes)
-        self.botaoEditar.clicked.connect(self.editarCliente2)
+        self.botaoRefresh.clicked.connect(self.listarServicos)
+        self.botaoEditar.clicked.connect(self.editarServico)
 
     def retranslateUi(self):
         _translate = QtCore.QCoreApplication.translate
         self.setWindowTitle(_translate("MainWindow", "Busca"))
         self.botaoEditar.setText(_translate("MainWindow", "Editar"))
 
-    def listarClientes(self):
-        clientes = self.clienteCtrl.listarClientes()
-        if not clientes:
+    def listarServicos(self):
+        servicos = self.servicoCtrl.listarServicos()
+        if not servicos:
             return
-        self.model.setRowCount(len(clientes))
+        self.model.setRowCount(len(servicos))
         row = 0
-        for cliente in clientes:
-            #item = QtGui.QStandardItem(str(cliente['idCliente']))
+        for servico in servicos:
             item = QtGui.QStandardItem()
-            item.setData(cliente['idCliente'], QtCore.Qt.ItemDataRole.DisplayRole)
+            item.setData(servico['idServico'], QtCore.Qt.ItemDataRole.DisplayRole)
             item.setTextAlignment(
                 QtCore.Qt.AlignmentFlag.AlignHCenter | QtCore.Qt.AlignmentFlag.AlignVCenter)
             self.model.setItem(row, 0, item)
-            if cliente['tipo']=='0': tipo = 'PESSOA FÍSICA'
-            elif cliente['tipo']=='1': tipo = 'PESSOA JURIDICA'
-            elif cliente['tipo']=='2': tipo = 'ESTRANGEIRO'
-            else: tipo = ''
             item = QtGui.QStandardItem()
-            item.setData(tipo, QtCore.Qt.ItemDataRole.DisplayRole)
+            item.setData(servico['descricao'], QtCore.Qt.ItemDataRole.DisplayRole)
             item.setTextAlignment(
                 QtCore.Qt.AlignmentFlag.AlignHCenter | QtCore.Qt.AlignmentFlag.AlignVCenter)
             self.model.setItem(row, 1, item)
-            item = QtGui.QStandardItem()
-            item.setData(cliente['nome'], QtCore.Qt.ItemDataRole.DisplayRole)
+            item = QtGui.QStandardItem("R$ {:.2f}".format(servico['valor']).replace('.',',',1))
             item.setTextAlignment(
                 QtCore.Qt.AlignmentFlag.AlignHCenter | QtCore.Qt.AlignmentFlag.AlignVCenter)
             self.model.setItem(row, 2, item)
-            item = QtGui.QStandardItem()
-            item.setData(cliente['documento'], QtCore.Qt.ItemDataRole.DisplayRole)
-            item.setTextAlignment(
-                QtCore.Qt.AlignmentFlag.AlignHCenter | QtCore.Qt.AlignmentFlag.AlignVCenter)
-            self.model.setItem(row, 3, item)
-            item = QtGui.QStandardItem(str(cliente['endereco'] or ''))
-            item.setTextAlignment(
-                QtCore.Qt.AlignmentFlag.AlignHCenter | QtCore.Qt.AlignmentFlag.AlignVCenter)
-            self.model.setItem(row, 4, item)
-            item = QtGui.QStandardItem(str(cliente['numero'] or ''))
-            item.setTextAlignment(
-                QtCore.Qt.AlignmentFlag.AlignHCenter | QtCore.Qt.AlignmentFlag.AlignVCenter)
-            self.model.setItem(row, 5, item)
-            item = QtGui.QStandardItem(str(cliente['bairro'] or ''))
-            item.setTextAlignment(
-                QtCore.Qt.AlignmentFlag.AlignHCenter | QtCore.Qt.AlignmentFlag.AlignVCenter)
-            self.model.setItem(row, 6, item)
-            if cliente['cidade'] != None:
-                cidade = self.cidadeCtrl.getCidade(cliente['cidade'])
-                item = QtGui.QStandardItem(str(cidade['nome'] or ''))
-                item.setTextAlignment(
-                    QtCore.Qt.AlignmentFlag.AlignHCenter | QtCore.Qt.AlignmentFlag.AlignVCenter)
-                self.model.setItem(row, 7, item)
-                item = QtGui.QStandardItem(str(cidade['uf'] or ''))
-                item.setTextAlignment(
-                    QtCore.Qt.AlignmentFlag.AlignHCenter | QtCore.Qt.AlignmentFlag.AlignVCenter)
-                self.model.setItem(row, 8, item)
-            queryFones = self.clienteCtrl.listarFones(cliente)
-            if queryFones:
-                fones = []
-                for fone in queryFones:
-                    fones.append(fone['fone'])
-                item = QtGui.QStandardItem(', '.join(fones))
-                self.model.setItem(row, 9, item)
-            queryVeiculo = self.clienteCtrl.listarVeiculos(cliente)
-            if queryVeiculo:
-                nomes = []
-                for veiculo in queryVeiculo:
-                    nomes.append(': '.join([veiculo['modelo'], veiculo['placa']]))
-                item = QtGui.QStandardItem(', '.join(nomes))
-                self.model.setItem(row, 10, item)
             row = row+1
         header = self.tabela.horizontalHeader()
         header.setSectionResizeMode(
-            QtWidgets.QHeaderView.ResizeMode.Interactive)
-        header.setSectionResizeMode(10, 
-            QtWidgets.QHeaderView.ResizeMode.Interactive)
-        header.setSectionResizeMode(9, 
-            QtWidgets.QHeaderView.ResizeMode.Interactive)
+            QtWidgets.QHeaderView.ResizeMode.ResizeToContents)
+        header.setSectionResizeMode(1, 
+            QtWidgets.QHeaderView.ResizeMode.Stretch)
 
-    def editarCliente(self):
+    def editarServico(self):
         self.linha = self.tabela.selectionModel().selectedRows()
         if self.linha:
             return self.tabela.model().index(self.linha[0].row(), 0).data()
 
-    def editarCliente2(self):
+    def editarServico2(self):
         self.linha = self.tabela.selectionModel().selectedRows()
         if self.linha:
             id =  self.tabela.model().index(self.linha[0].row(), 0).data()
-        self.telaEditar = TelaCadastroCliente()
+        self.telaEditar = TelaCadastroServico()
         self.telaEditar.renderEditar(id)
         self.telaEditar.show()
       
@@ -174,7 +124,7 @@ if __name__ == "__main__":
     import sys
     app = QtWidgets.QApplication(sys.argv)
 
-    ui = TelaConsultaCliente()
+    ui = TelaConsultaServico()
     ui.setupUi()
     ui.show()
 

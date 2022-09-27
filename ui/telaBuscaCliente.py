@@ -1,13 +1,10 @@
 from PyQt6 import QtCore, QtGui, QtWidgets
 from routes import handleRoutes
 
-from controller.clienteController import ClienteController
-
-
 class TelaBuscaCliente(QtWidgets.QWidget):
     def __init__(self, MainWindow):
         super(TelaBuscaCliente, self).__init__()
-        self.clienteCtrl = handleRoutes.getRoute('CLIENTE')
+        self.clienteCtrl = handleRoutes.getRoute('CLIENTECTRL')
         self.setupUi(MainWindow)
 
     def setupUi(self, MainWindow):
@@ -104,12 +101,9 @@ class TelaBuscaCliente(QtWidgets.QWidget):
 if __name__ == "__main__":
     import sys
     app = QtWidgets.QApplication(sys.argv)
-
     MainWindow = QtWidgets.QMainWindow()
     ui = TelaBuscaCliente(MainWindow)
     MainWindow.show()
-
     style = open('./resources/styles.qss').read()
     app.setStyleSheet(style)
-
     sys.exit(app.exec())

@@ -4,8 +4,8 @@ from datetime import datetime
 class TelaConsultaOrcamento(QtWidgets.QMainWindow):
     def __init__(self):
         super(TelaConsultaOrcamento, self).__init__()
-        self.orcamentoCtrl = handleRoutes.getRoute('ORCAMENTO')
-        self.clienteCtrl = handleRoutes.getRoute('CLIENTE')
+        self.orcamentoCtrl = handleRoutes.getRoute('ORCAMENTOCTRL')
+        self.clienteCtrl = handleRoutes.getRoute('CLIENTECTRL')
         self.setupUi()
 
     def setupUi(self):

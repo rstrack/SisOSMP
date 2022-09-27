@@ -5,7 +5,7 @@ class TelaCadastroServico(QtWidgets.QMainWindow):
 
     def __init__(self):
         super(TelaCadastroServico, self).__init__()
-        self.servicoCtrl = handleRoutes.getRoute('SERVICO')
+        self.servicoCtrl = handleRoutes.getRoute('SERVICOCTRL')
         self.setupUi()
 
     def setupUi(self):
@@ -92,7 +92,6 @@ class TelaCadastroServico(QtWidgets.QMainWindow):
         botaoRemoverLinha.setText("-")
         botaoRemoverLinha.setObjectName('excluir')
         botaoRemoverLinha.clicked.connect(lambda: self.removerLinha(self.gridLayout.getItemPosition(self.gridLayout.indexOf(botaoRemoverLinha))[0]))
-        #print(self.gridLayout.)
         self.gridLayout.addWidget(label1, len(self.linhasservico)*2, 0, 1, 1)
         self.gridLayout.addWidget(label2, len(self.linhasservico)*2, 1, 1, 1)
         self.gridLayout.addWidget(lineedit1, len(
@@ -107,7 +106,6 @@ class TelaCadastroServico(QtWidgets.QMainWindow):
             self.linhasservico)*2, 0, 1, 1)
 
     def removerLinha(self, linha):
-        print(linha)
         for x in range(2):
             self.gridLayout.itemAtPosition(linha-1, x).widget().setParent(None)
             self.gridLayout.itemAtPosition(linha, x).widget().setParent(None)

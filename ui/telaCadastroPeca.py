@@ -8,7 +8,7 @@ class TelaCadastroPeca(QtWidgets.QMainWindow):
 
     def __init__(self):
         super(TelaCadastroPeca, self).__init__()
-        self.pecaCtrl = handleRoutes.getRoute('PECA')
+        self.pecaCtrl = handleRoutes.getRoute('PECACTRL')
         self.setupUi()
 
     def setupUi(self):

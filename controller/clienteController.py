@@ -149,7 +149,7 @@ class ClienteController():
 
 
     #listar todos os veiculos ou veiculos vinculados a um cliente
-    def listarVeiculos(self, cliente:dict=None):
+    def listarVeiculos(self, cliente=None):
         if cliente:
             veiculos = self.veiculoClienteRep.findVeiculosByClienteID(cliente['idCliente'])
             if veiculos:

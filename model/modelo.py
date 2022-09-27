@@ -51,7 +51,7 @@ class Cliente(BaseModel):
 
 
 class Veiculo_Cliente(BaseModel):
-    veiculo = ForeignKeyField(Veiculo, backref='Veiculos',null=False)
+    veiculo = ForeignKeyField(Veiculo, backref='veiculos',null=False)
     cliente = ForeignKeyField(Cliente, backref='clientes',null=False)
     habilitado = BooleanField(constraints=[SQL('DEFAULT TRUE')])
     class Meta:
@@ -75,7 +75,7 @@ class Orcamento(BaseModel):
     idOrcamento = AutoField()
     dataOrcamento = DateField(constraints=[SQL('DEFAULT (CURRENT_DATE)')], null=False)
     cliente = ForeignKeyField(Cliente, backref='clientes',null=False)
-    veiculo = ForeignKeyField(Veiculo, backref='Veiculos',null=False)
+    veiculo = ForeignKeyField(Veiculo, backref='veiculos',null=False)
     km = CharField(max_length=6,null=False)
     valorTotal = DoubleField(constraints=[Check('valorTotal>=0')],null=False)
     aprovado = BooleanField(constraints=[SQL('DEFAULT FALSE')])
@@ -85,7 +85,7 @@ class Orcamento(BaseModel):
 
 class ItemPeca(BaseModel):
     peca = ForeignKeyField(Peca, backref='pecas')
-    orcamento = ForeignKeyField(Orcamento, backref='Orcamentos')
+    orcamento = ForeignKeyField(Orcamento, backref='orcamentos')
     qtde = IntegerField()
     valor = DoubleField(constraints=[Check('valor>=0')],null=False)
     class Meta:
@@ -94,7 +94,7 @@ class ItemPeca(BaseModel):
 
 class ItemServico(BaseModel):
     servico = ForeignKeyField(Servico, backref='servicos',null=False)
-    orcamento = ForeignKeyField(Orcamento, backref='Orcamentos',null=False)
+    orcamento = ForeignKeyField(Orcamento, backref='orcamentos',null=False)
     qtde = IntegerField()
     valor = DoubleField(constraints=[Check('valor>=0')], null=False)
     class Meta:

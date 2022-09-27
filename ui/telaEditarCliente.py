@@ -9,8 +9,8 @@ class TelaEditarCliente(QtWidgets.QMainWindow):
 
     def __init__(self):
         super(TelaEditarCliente, self).__init__()
-        self.clienteCtrl = handleRoutes.getRoute('CLIENTE')
-        self.marcaCtrl = handleRoutes.getRoute('MARCA')
+        self.clienteCtrl = handleRoutes.getRoute('CLIENTECTRL')
+        self.marcaCtrl = handleRoutes.getRoute('MARCACTRL')
         self.setupUi()
 
     def setupUi(self):
@@ -129,8 +129,7 @@ class TelaEditarCliente(QtWidgets.QMainWindow):
         self.gridLayout4.setColumnStretch(1, 2)
         self.gridLayout4.setColumnStretch(2, 1)
         self.glayoutp.addWidget(self.groupBoxVeiculo, 2, 0, 1, -1)
-        spacerItem4 = QtWidgets.QSpacerItem(
-            20, 10, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Maximum)
+        spacerItem4 = QtWidgets.QSpacerItem(20, 10, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Maximum)
         self.glayoutp.addItem(spacerItem4)
         self.vlayout6.addWidget(self.framedados)
         self.glayoutp.setColumnStretch(0, 3)
@@ -138,8 +137,7 @@ class TelaEditarCliente(QtWidgets.QMainWindow):
         # botoes
         self.framebotoes = QtWidgets.QFrame(self.main_frame)
         self.hlayout4 = QtWidgets.QHBoxLayout(self.framebotoes)
-        spacerItem5 = QtWidgets.QSpacerItem(
-            40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
+        spacerItem5 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
         self.hlayout4.addItem(spacerItem5)
         self.botaoEditar = QtWidgets.QPushButton(self.framebotoes)
         self.botaoEditar.setMinimumSize(QtCore.QSize(120, 35))
@@ -149,8 +147,7 @@ class TelaEditarCliente(QtWidgets.QMainWindow):
         self.botaolimpar.setMinimumSize(QtCore.QSize(100, 30))
         self.hlayout4.addWidget(self.botaolimpar)
         self.vlayout6.addWidget(self.framebotoes)
-        spacerItem6 = QtWidgets.QSpacerItem(
-            40, 20, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding)
+        spacerItem6 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding)
         self.glayoutp.addItem(spacerItem6)
         self.setCentralWidget(self.main_frame)
 

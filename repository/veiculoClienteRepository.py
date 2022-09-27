@@ -13,7 +13,7 @@ class VeiculoClienteRepository():
         return Veiculo_Cliente.delete()
 
     def findByVeiculoAndCliente(self, veiculo, cliente):
-        veiculoCliente = Veiculo_Cliente.select().where(Veiculo_Cliente.veiculo==veiculo and Veiculo_Cliente.cliente==cliente)
+        veiculoCliente = Veiculo_Cliente.select().where((Veiculo_Cliente.veiculo==veiculo) & (Veiculo_Cliente.cliente==cliente))
         if veiculoCliente:
             return veiculoCliente.get()
         else: return None

@@ -1,5 +1,5 @@
 import sys
-from PyQt6 import QtWidgets, QtCore, QtGui
+from PyQt6 import QtWidgets, QtGui
 
 from routes import handleRoutes
 from ui.telaConsultaCliente import TelaConsultaCliente
@@ -7,10 +7,12 @@ from ui.telaConsultaCliente import TelaConsultaCliente
 from util.buscaCEP import BuscaCEP
 
 from ui.telaInicial import TelaInicial
-from ui.telaCadastroCliente import TelaCadastroCliente
-from ui.telaCadastroOrcamento import TelaCadastroOrcamento
 from ui.telaCadastroPeca import TelaCadastroPeca
 from ui.telaCadastroServico import TelaCadastroServico
+from ui.telaCadastroCliente import TelaCadastroCliente
+from ui.telaCadastroOrcamento import TelaCadastroOrcamento
+from ui.telaConsultaPeca import TelaConsultaPeca
+from ui.telaConsultaServico import TelaConsultaServico
 from ui.telaConsultaOrcamento import TelaConsultaOrcamento
 
 from controller.marcaController import MarcaController
@@ -37,8 +39,8 @@ class MainController():
         self.telaCadastroCliente = TelaCadastroCliente()
         self.telaCadastroOrcamento = TelaCadastroOrcamento()
 
-        #self.telaConsultaPeca = TelaConsultaPeca()
-        #self.telaConsultaServico = TelaConsultaServico()
+        self.telaConsultaPeca = TelaConsultaPeca()
+        self.telaConsultaServico = TelaConsultaServico()
         self.telaConsultaCliente = TelaConsultaCliente()
         self.telaConsultaOrcamento = TelaConsultaOrcamento()
 
@@ -47,6 +49,8 @@ class MainController():
         self.telaInicio.stackedWidget.addWidget(self.telaCadastroCliente)
         self.telaInicio.stackedWidget.addWidget(self.telaCadastroOrcamento)
         
+        self.telaInicio.stackedWidget.addWidget(self.telaConsultaPeca)
+        self.telaInicio.stackedWidget.addWidget(self.telaConsultaServico)
         self.telaInicio.stackedWidget.addWidget(self.telaConsultaCliente)
         self.telaInicio.stackedWidget.addWidget(self.telaConsultaOrcamento)
         self.initConnections()
@@ -54,17 +58,20 @@ class MainController():
     #função que instancia uma unica vez cada controller, que podem ser acessados onde necessário
     def setRoutes(self):
         pecaController = PecaController()
-        handleRoutes.setRoute('PECA', pecaController)
+        handleRoutes.setRoute('PECACTRL', pecaController)
         servicoController = ServicoController()
-        handleRoutes.setRoute('SERVICO', servicoController)
+        handleRoutes.setRoute('SERVICOCTRL', servicoController)
         clienteController = ClienteController()
-        handleRoutes.setRoute('CLIENTE', clienteController)
+        handleRoutes.setRoute('CLIENTECTRL', clienteController)
         orcamentoController = OrcamentoController()
-        handleRoutes.setRoute('ORCAMENTO', orcamentoController)
+        handleRoutes.setRoute('ORCAMENTOCTRL', orcamentoController)
         marcaController = MarcaController()
-        handleRoutes.setRoute('MARCA', marcaController)
+        handleRoutes.setRoute('MARCACTRL', marcaController)
         cidadeController = CidadeController()
-        handleRoutes.setRoute('CIDADE', cidadeController)
+        handleRoutes.setRoute('CIDADECTRL', cidadeController)
+        buscaCEP = BuscaCEP()
+        handleRoutes.setRoute('CEP', buscaCEP)
+
 
     def initConnections(self):
         #conectando botões do menu
@@ -73,10 +80,12 @@ class MainController():
         self.telaInicio.botao_clientes.clicked.connect(lambda: self.telaInicio.stackedWidget.setCurrentWidget(self.telaCadastroCliente))
         self.telaInicio.botao_orcamentos.clicked.connect(lambda: self.telaInicio.stackedWidget.setCurrentWidget(self.telaCadastroOrcamento))
 
+        self.telaInicio.botao_pecas_2.clicked.connect(lambda: self.telaInicio.stackedWidget.setCurrentWidget(self.telaConsultaPeca))
+        self.telaInicio.botao_servicos_2.clicked.connect(lambda: self.telaInicio.stackedWidget.setCurrentWidget(self.telaConsultaServico))
         self.telaInicio.botao_clientes_2.clicked.connect(lambda: self.telaInicio.stackedWidget.setCurrentWidget(self.telaConsultaCliente))
         self.telaInicio.botao_orcamentos_2.clicked.connect(lambda: self.telaInicio.stackedWidget.setCurrentWidget(self.telaConsultaOrcamento))
-        self.telaCadastroCliente.lineEditCEP.editingFinished.connect(lambda: self.buscarDadosCEP(self.telaCadastroCliente))
-        self.telaCadastroOrcamento.lineEditCEP.editingFinished.connect(lambda: self.buscarDadosCEP(self.telaCadastroOrcamento))
+        '''self.telaCadastroCliente.lineEditCEP.editingFinished.connect(lambda: self.buscarDadosCEP(self.telaCadastroCliente))
+        self.telaCadastroOrcamento.lineEditCEP.editingFinished.connect(lambda: self.buscarDadosCEP(self.telaCadastroOrcamento))'''
 
         #self.telaConsultaCliente.botaoEditar.clicked.connect(lambda: self.trocaPagina(self.telaCadastroCliente, self.telaCadastroCliente.renderEditar, self.telaConsultaCliente.editarCliente))
 
@@ -84,11 +93,11 @@ class MainController():
         render(param())
         self.telaInicio.stackedWidget.setCurrentWidget(pagina)
 
-    def buscarDadosCEP(self, view):
+    '''def buscarDadosCEP(self, view):
         cep = view.lineEditCEP.text()
         if len(cep) !=8:
             return
-        dados = BuscaCEP.buscarCEP(view.lineEditCEP.text())
+        dados = self.buscaCEP.buscarCEP(view.lineEditCEP.text())
         if 'erro' in dados:
             return
         view.lineEditEnder.setText(dados['logradouro'])
@@ -97,10 +106,10 @@ class MainController():
         for index in range(view.comboBoxuf.count()):
             if(view.comboBoxuf.itemText(index)==dados['uf']):
                 view.comboBoxuf.setCurrentIndex(index)
-                return
+                return'''
 
     def run(self):
-        self.telaInicio.resize(1280,720)
+        self.telaInicio.resize(1280,800)
         self.telaInicio.show()
         sys.exit(self.app.exec())
 

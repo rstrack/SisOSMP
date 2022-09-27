@@ -47,7 +47,7 @@ class OrcamentoController():
                 else: 
                     _veiculo = self.veiculoRep.save(veiculo)
                 veiculoCliente = self.veiculoClienteRep.findByVeiculoAndCliente(_veiculo, _cliente)
-                if not veiculoCliente:
+                if veiculoCliente == None:
                     self.veiculoClienteRep.save(_veiculo, _cliente)
                 orcamento['cliente'] = _cliente
                 orcamento['veiculo'] = _veiculo
@@ -61,7 +61,6 @@ class OrcamentoController():
                         peca['qtde'] = qtde
                         peca['peca'] = _peca
                         peca['orcamento'] = _orcamento
-                        print(peca)
                         self.itemPecaRep.save(peca)
 
                 for servico in servicos:
