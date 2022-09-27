@@ -86,6 +86,7 @@ QComboBox{
 
 QComboBox QAbstractItemView{
     font-size: 13px;
+    selection-background-color: #3498DB
 }
 
 
