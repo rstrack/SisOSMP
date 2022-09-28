@@ -30,7 +30,9 @@ class MainController():
         self.app.setStyle('Fusion')
         style = open('./resources/styles.qss').read()
         self.app.setStyleSheet(style)
-        QtGui.QFontDatabase.addApplicationFont("./resources/Helvetica.ttf")
+        fontID = QtGui.QFontDatabase.addApplicationFont("./resources/Helvetica.ttf")
+        if fontID < 0:
+            raise Exception('Fonte não carregada')
         font = QtGui.QFont('Helvetica')
         self.app.setFont(font)
         self.setRoutes()
@@ -38,7 +40,8 @@ class MainController():
         self.telaInicio = TelaInicial()
         self.telaInicio.setStyle(QtWidgets.QApplication.setStyle('Fusion'))
         self.telaInicio.setStyleSheet(style)
-        self.telaInicio.setFont(font)
+        '''self.telaInicio.setFont(font)'''
+        self.app.setFont(QtGui.QFont('Times', 12))
         self.telaCadastroPeca = TelaCadastroPeca()
         self.telaCadastroServico = TelaCadastroServico()
         self.telaCadastroCliente = TelaCadastroCliente()

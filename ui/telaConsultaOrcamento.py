@@ -19,8 +19,7 @@ class TelaConsultaOrcamento(QtWidgets.QMainWindow):
         self.lineEditBusca.setPlaceholderText("Pesquisar")
         self.lineEditBusca.setClearButtonEnabled(True)
         iconBusca = QtGui.QIcon("./resources/search-icon.png")
-        self.lineEditBusca.addAction(
-            iconBusca, QtWidgets.QLineEdit.ActionPosition.LeadingPosition)
+        self.lineEditBusca.addAction(iconBusca, QtWidgets.QLineEdit.ActionPosition.LeadingPosition)
         self.hlayoutBusca.addWidget(self.lineEditBusca)
         self.botaoRefresh = QtWidgets.QPushButton(self.frameBusca)
         self.botaoRefresh.setFixedSize(30,30)
@@ -32,25 +31,18 @@ class TelaConsultaOrcamento(QtWidgets.QMainWindow):
         self.vlayoutdados = QtWidgets.QVBoxLayout(self.framedados)
         self.tabela = QtWidgets.QTableView(self.framedados)
         self.vlayoutdados.addWidget(self.tabela)
-        self.tabela.setEditTriggers(
-            QtWidgets.QAbstractItemView.EditTrigger.NoEditTriggers)
-        self.tabela.setSelectionBehavior(
-            QtWidgets.QAbstractItemView.SelectionBehavior.SelectRows)
-        self.tabela.setSelectionMode(
-            QtWidgets.QAbstractItemView.SelectionMode.SingleSelection)
+        self.tabela.setEditTriggers(QtWidgets.QAbstractItemView.EditTrigger.NoEditTriggers)
+        self.tabela.setSelectionBehavior(QtWidgets.QAbstractItemView.SelectionBehavior.SelectRows)
+        self.tabela.setSelectionMode(QtWidgets.QAbstractItemView.SelectionMode.SingleSelection)
         self.tabela.horizontalHeader().setHighlightSections(False)
         self.tabela.verticalHeader().setVisible(False)
         self.filter = QtCore.QSortFilterProxyModel()
-        self.filter.setFilterCaseSensitivity(
-            QtCore.Qt.CaseSensitivity.CaseInsensitive)
-
+        self.filter.setFilterCaseSensitivity(QtCore.Qt.CaseSensitivity.CaseInsensitive)
         self.tabela.setSortingEnabled(True)
-
         self.framebotoes = QtWidgets.QFrame(self.mainwidget)
         self.glayout.addWidget(self.framebotoes, 2, 0, 1, 1)
         self.hlayoutbotoes = QtWidgets.QHBoxLayout(self.framebotoes)
-        spacer = QtWidgets.QSpacerItem(
-            20, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
+        spacer = QtWidgets.QSpacerItem(20, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
         self.hlayoutbotoes.addItem(spacer)
         self.botaoEditar = QtWidgets.QPushButton(self.framebotoes)
         self.botaoEditar.setFixedSize(100, 25)
@@ -58,15 +50,14 @@ class TelaConsultaOrcamento(QtWidgets.QMainWindow):
         self.model = QtGui.QStandardItemModel()
         self.filter.setSourceModel(self.model)
         self.filter.setFilterKeyColumn(-1)
-        self.lineEditBusca.textChanged.connect(
-            self.filter.setFilterRegularExpression)
+        self.lineEditBusca.textChanged.connect(self.filter.setFilterRegularExpression)
         self.tabela.setModel(self.filter)
         listaHeader = ['ID', 'Data do Orçamento', 'Cliente', 'Marca', 'Modelo', 'Placa', 'Valor Total']
         self.model.setHorizontalHeaderLabels(listaHeader)
         self.setCentralWidget(self.mainwidget)
         self.retranslateUi()
         self.selectionModel = self.tabela.selectionModel()
-
+        self.botaoRefresh.clicked.connect(self.listarOrcamentos)
         self.listarOrcamentos()
 
     def retranslateUi(self):
@@ -129,12 +120,45 @@ class TelaConsultaOrcamento(QtWidgets.QMainWindow):
 if __name__ == "__main__":
     import sys
     app = QtWidgets.QApplication(sys.argv)
-
     ui = TelaConsultaOrcamento()
     ui.setupUi()
     ui.show()
-
     style = open('./resources/styles.qss').read()
     app.setStyleSheet(style)
-
     sys.exit(app.exec())
+
+
+'''
+fonesTela
+fonesBanco
+
+for fone in fonesTela:
+    _fone = foneRep.findByFone(fone)
+    if _fone and not _fone.cliente == cliente:
+        raise Exception(f'Fone {_fone.fone} utilizado por outro cliente')
+    elif not _fone:
+
+
+
+
+for fone in fonesBanco:
+    if not fone['fone'] in fonesTela:
+        rep.delete(fone)
+
+for fone in fonesTela:
+    if not fone['fone'] in fonesBanco:
+        _fone = foneRep.findByFone(fone)
+        if _fone and _fone.cliente != cliente:
+            raise Exception(f'Fone {_fone.fone} utilizado por outro cliente')
+        rep.save(fone)
+
+
+
+
+
+
+
+
+
+
+'''

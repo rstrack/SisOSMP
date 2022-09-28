@@ -12,3 +12,6 @@ class FoneRepository():
 
     def findByClienteID(self, id):
         return Fone.select().where(Fone.cliente==id)
+
+    def delete(self, cliente, fone):
+        return Fone.delete().where((Fone.cliente==cliente) & (Fone.fone==fone)).execute()

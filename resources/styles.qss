@@ -89,19 +89,6 @@ QComboBox QAbstractItemView{
     selection-background-color: #3498DB
 }
 
-
-/*
-QComboBox:editable QAbstractItemView {
-    selection-background-color: #3498DB;
-    color:black;
-}
-
-QComboBox:!editable QAbstractItemView {
-    selection-background-color: #3498DB;
-    color:black;
-}
-*/
-
 QTextEdit{
     font-size: 13px;
 }
@@ -115,7 +102,6 @@ QDateEdit{
 
 QGroupBox{
     font-size: 14px;
-    
 }
 
 QScrollArea{

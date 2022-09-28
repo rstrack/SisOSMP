@@ -112,19 +112,6 @@ class TelaConsultaVeiculo(QtWidgets.QMainWindow):
         header = self.tabela.horizontalHeader()
         header.setSectionResizeMode(
             QtWidgets.QHeaderView.ResizeMode.Interactive)
-
-    '''def editarVeiculo(self):
-        self.linha = self.tabela.selectionModel().selectedRows()
-        if self.linha:
-            return self.tabela.model().index(self.linha[0].row(), 0).data()
-
-    def editarVeiculo2(self):
-        self.linha = self.tabela.selectionModel().selectedRows()
-        if self.linha:
-            id =  self.tabela.model().index(self.linha[0].row(), 0).data()
-        self.telaEditar = TelaCadastroVeiculo()
-        self.telaEditar.renderEditar(id)
-        self.telaEditar.show()'''
       
 
 if __name__ == "__main__":

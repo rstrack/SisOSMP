@@ -322,7 +322,7 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
         self.botaoAddPecas.clicked.connect(self.addLinhaPeca)
         self.botaoAddServicos.clicked.connect(self.addLinhaServico)
         self.botaobuscarCliente.clicked.connect(self.telaBuscaCliente)
-        #self.botaobuscarveiculo.clicked.connect(self.telaBuscaVeiculo)
+        self.botaobuscarveiculo.clicked.connect(self.telaBuscaVeiculo)
         self.botaolimpar.clicked.connect(self.limparCampos)
         self.botaoSalvar.clicked.connect(self.salvarOrcamento)
         self.botaoSalvareImprimir.clicked.connect(self.salvarImprimirOrcamento)
@@ -727,30 +727,31 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
             self.setValor()
 
     def salvarOrcamento(self):
-        try:
-            cliente = self.getDadosCliente()
-            veiculo = self.getDadosVeiculo()
-            pecas = self.getPecas()
-            servicos  = self.getServicos()
-            orcamento = self.getDadosOrcamento()
-            orcamento['valorTotal'] = self.valorTotal
-            r = self.orcamentoCtrl.salvarOrcamento(cliente, self.clienteSelected, veiculo, self.veiculoSelected, orcamento, pecas, servicos)
-            if isinstance(r, Exception):
-                raise Exception(r)
-            msg = QtWidgets.QMessageBox()
-            msg.setWindowTitle("Aviso")
-            msg.setText("Orçamento criado com sucesso!")
-            msg.exec()
-            #RESETA DADOS DA TELA
-            self.clienteSelected = None
-            self.veiculoSelected = None
-            self.valorTotal = 0
-            self.setupUi()
-        except Exception as e:
+        '''try:'''
+        cliente = self.getDadosCliente()
+        fones = self.getFones()
+        veiculo = self.getDadosVeiculo()
+        pecas = self.getPecas()
+        servicos  = self.getServicos()
+        orcamento = self.getDadosOrcamento()
+        orcamento['valorTotal'] = self.valorTotal
+        r = self.orcamentoCtrl.salvarOrcamento(cliente, fones, self.clienteSelected, veiculo, self.veiculoSelected, orcamento, pecas, servicos)
+        if isinstance(r, Exception):
+            raise Exception(r)
+        msg = QtWidgets.QMessageBox()
+        msg.setWindowTitle("Aviso")
+        msg.setText("Orçamento criado com sucesso!")
+        msg.exec()
+        #RESETA DADOS DA TELA
+        self.clienteSelected = None
+        self.veiculoSelected = None
+        self.valorTotal = 0
+        self.setupUi()
+        '''except Exception as e:
             msg = QtWidgets.QMessageBox()
             msg.setWindowTitle("Aviso")
             msg.setText(str(e))
-            msg.exec()
+            msg.exec()'''
 
     def salvarImprimirOrcamento(self):
         self.setMarcas()
@@ -767,24 +768,38 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
         linha = self.telaCliente.tabela.selectionModel().selectedRows()
         if linha:
             id = self.telaCliente.tabela.model().index(linha[0].row(), 0).data()
-        cliente = self.clienteCtrl.getCliente(id)
-        listaFones = [None, None]
-        fones = self.clienteCtrl.listarFones(cliente)
-        for x in range(len(fones)):
-            listaFones[x] = fones[x]['fone']
-        if cliente['cidade'] != None:
-            cidade = cliente['cidade']['nome']
-            uf = cliente['cidade']['uf']
-        else:
-            cidade = None
-            uf = None
-        self.setCliente(cliente['tipo'], cliente['nome'], cliente['documento'], listaFones[0], listaFones[1])
-        self.setEndereco(cliente['cep'], cliente['endereco'], cliente['numero'], cliente['bairro'], cidade, uf)
-        self.clienteSelected = id
-        self.checkboxNovoCliente.setChecked(False)
-        self.windowCliente.close()
+            cliente = self.clienteCtrl.getCliente(id)
+            listaFones = [None, None]
+            fones = self.clienteCtrl.listarFones(cliente)
+            for x in range(len(fones)):
+                listaFones[x] = fones[x]['fone']
+            if cliente['cidade'] != None:
+                cidade = cliente['cidade']['nome']
+                uf = cliente['cidade']['uf']
+            else:
+                cidade = None
+                uf = None
+            self.setCliente(cliente['tipo'], cliente['nome'], cliente['documento'], listaFones[0], listaFones[1])
+            self.setEndereco(cliente['cep'], cliente['endereco'], cliente['numero'], cliente['bairro'], cidade, uf)
+            self.clienteSelected = id
+            self.checkboxNovoCliente.setChecked(False)
+            self.windowCliente.close()
 
-    
+    def telaBuscaVeiculo(self):
+        self.windowVeiculo = QtWidgets.QMainWindow()
+        self.telaVeiculo = TelaBuscaVeiculo(self.windowVeiculo)
+        self.telaVeiculo.botaoSelecionar.clicked.connect(self.retornarDadosVeiculo)
+        self.windowVeiculo.show()
+
+    def retornarDadosVeiculo(self):
+        linha = self.telaVeiculo.tabela.selectionModel().selectedRows()
+        if linha:
+            id = self.telaVeiculo.tabela.model().index(linha[0].row(), 0).data()
+            veiculo = self.clienteCtrl.getVeiculo(id)
+            self.setVeiculo(veiculo['marca']['nome'], veiculo['modelo'], veiculo['placa'], veiculo['ano'])
+            self.veiculoSelected = id
+            self.checkboxNovoVeiculo.setChecked(False)
+            self.windowVeiculo.close()
 
 
 

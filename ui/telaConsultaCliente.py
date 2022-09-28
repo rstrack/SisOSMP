@@ -67,9 +67,7 @@ class TelaConsultaCliente(QtWidgets.QMainWindow):
         self.setCentralWidget(self.mainwidget)
         self.retranslateUi()
         self.selectionModel = self.tabela.selectionModel()
-
         self.listarClientes()
-
         #self.selectionModel.selectionChanged.connect(self.mostrarDetalhes)
         self.botaoRefresh.clicked.connect(self.listarClientes)
         self.botaoEditar.clicked.connect(self.editarCliente2)
@@ -85,7 +83,7 @@ class TelaConsultaCliente(QtWidgets.QMainWindow):
             return
         self.model.setRowCount(len(clientes))
         row = 0
-        for cliente in clientes:
+        for cliente in reversed(clientes):
             #item = QtGui.QStandardItem(str(cliente['idCliente']))
             item = QtGui.QStandardItem()
             item.setData(cliente['idCliente'], QtCore.Qt.ItemDataRole.DisplayRole)
