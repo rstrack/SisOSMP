@@ -1,4 +1,4 @@
-from PyQt6 import QtCore, QtWidgets
+from PyQt6 import QtCore, QtWidgets, QtGui
 from routes import handleRoutes
 
 from datetime import datetime
@@ -727,31 +727,34 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
             self.setValor()
 
     def salvarOrcamento(self):
-        '''try:'''
-        cliente = self.getDadosCliente()
-        fones = self.getFones()
-        veiculo = self.getDadosVeiculo()
-        pecas = self.getPecas()
-        servicos  = self.getServicos()
-        orcamento = self.getDadosOrcamento()
-        orcamento['valorTotal'] = self.valorTotal
-        r = self.orcamentoCtrl.salvarOrcamento(cliente, fones, self.clienteSelected, veiculo, self.veiculoSelected, orcamento, pecas, servicos)
-        if isinstance(r, Exception):
-            raise Exception(r)
-        msg = QtWidgets.QMessageBox()
-        msg.setWindowTitle("Aviso")
-        msg.setText("Orçamento criado com sucesso!")
-        msg.exec()
-        #RESETA DADOS DA TELA
-        self.clienteSelected = None
-        self.veiculoSelected = None
-        self.valorTotal = 0
-        self.setupUi()
-        '''except Exception as e:
+        try:
+            cliente = self.getDadosCliente()
+            fones = self.getFones()
+            veiculo = self.getDadosVeiculo()
+            pecas = self.getPecas()
+            servicos  = self.getServicos()
+            orcamento = self.getDadosOrcamento()
+            orcamento['valorTotal'] = self.valorTotal
+            r = self.orcamentoCtrl.salvarOrcamento(cliente, fones, self.clienteSelected, veiculo, self.veiculoSelected, orcamento, pecas, servicos)
+            if isinstance(r, Exception):
+                raise Exception(r)
             msg = QtWidgets.QMessageBox()
             msg.setWindowTitle("Aviso")
+            msg.setIcon(QtWidgets.QMessageBox.Icon.Information)
+            msg.setText("Orçamento criado com sucesso!")
+            msg.exec()
+            #RESETA DADOS DA TELA
+            self.clienteSelected = None
+            self.veiculoSelected = None
+            self.valorTotal = 0
+            self.setupUi()
+        except Exception as e:
+            msg = QtWidgets.QMessageBox()
+            msg.setWindowIcon(QtGui.QIcon('./resources/logo-icon.png'))
+            msg.setIcon(QtWidgets.QMessageBox.Icon.Critical)
+            msg.setWindowTitle("Erro")
             msg.setText(str(e))
-            msg.exec()'''
+            msg.exec()
 
     def salvarImprimirOrcamento(self):
         self.setMarcas()

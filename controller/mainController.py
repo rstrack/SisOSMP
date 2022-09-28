@@ -28,6 +28,8 @@ class MainController():
     def __init__(self):
         self.app = QtWidgets.QApplication(sys.argv)
         self.app.setStyle('Fusion')
+        self.splash = QtWidgets.QSplashScreen(QtGui.QPixmap('./resources/logo.png').scaled(300,150))
+        self.splash.show()
         style = open('./resources/styles.qss').read()
         self.app.setStyleSheet(style)
         fontID = QtGui.QFontDatabase.addApplicationFont("./resources/Helvetica.ttf")
@@ -35,13 +37,15 @@ class MainController():
             raise Exception('Fonte não carregada')
         font = QtGui.QFont('Helvetica')
         self.app.setFont(font)
+        self.app.setWindowIcon(QtGui.QIcon('./resources/logo-icon.png'))
         self.setRoutes()
 
         self.telaInicio = TelaInicial()
         self.telaInicio.setStyle(QtWidgets.QApplication.setStyle('Fusion'))
         self.telaInicio.setStyleSheet(style)
-        '''self.telaInicio.setFont(font)'''
-        self.app.setFont(QtGui.QFont('Times', 12))
+        self.telaInicio.setFont(font)
+
+
         self.telaCadastroPeca = TelaCadastroPeca()
         self.telaCadastroServico = TelaCadastroServico()
         self.telaCadastroCliente = TelaCadastroCliente()
@@ -122,6 +126,7 @@ class MainController():
     def run(self):
         self.telaInicio.resize(1280,800)
         self.telaInicio.show()
+        self.splash.finish(self.telaInicio)
         sys.exit(self.app.exec())
 
 

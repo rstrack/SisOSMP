@@ -55,7 +55,7 @@ QPushButton#excluir{
 }
 
 QPushButton#excluir:hover{
-    background-color: #AA0000;
+    background-color: #AA1919;
 }
 
 QLabel{
@@ -129,6 +129,6 @@ QCheckBox::indicator{
 }
 
 QHeaderView::section{
-    background-color: #F8F8F8;
+    background-color: #F1f1f1;
     font-size: 13px;
 }
