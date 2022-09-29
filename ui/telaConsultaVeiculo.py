@@ -87,31 +87,38 @@ class TelaConsultaVeiculo(QtWidgets.QMainWindow):
             item = QtGui.QStandardItem()
             item.setData(veiculo['idVeiculo'], QtCore.Qt.ItemDataRole.DisplayRole)
             item.setTextAlignment(
-                QtCore.Qt.AlignmentFlag.AlignHCenter | QtCore.Qt.AlignmentFlag.AlignVCenter)
+                QtCore.Qt.AlignmentFlag.AlignRight | QtCore.Qt.AlignmentFlag.AlignVCenter)
             self.model.setItem(row, 0, item)
             marca = self.marcaCtrl.getMarca(veiculo['marca'])
             item = QtGui.QStandardItem()
             item.setData(marca['nome'], QtCore.Qt.ItemDataRole.DisplayRole)
             item.setTextAlignment(
-                QtCore.Qt.AlignmentFlag.AlignHCenter | QtCore.Qt.AlignmentFlag.AlignVCenter)
+                QtCore.Qt.AlignmentFlag.AlignLeft | QtCore.Qt.AlignmentFlag.AlignVCenter)
             self.model.setItem(row, 1, item)
             item = QtGui.QStandardItem()
             item.setData(veiculo['modelo'], QtCore.Qt.ItemDataRole.DisplayRole)
             item.setTextAlignment(
-                QtCore.Qt.AlignmentFlag.AlignHCenter | QtCore.Qt.AlignmentFlag.AlignVCenter)
+                QtCore.Qt.AlignmentFlag.AlignLeft | QtCore.Qt.AlignmentFlag.AlignVCenter)
             self.model.setItem(row, 2, item)
             item = QtGui.QStandardItem(str(veiculo['placa'] or ''))
             item.setTextAlignment(
-                QtCore.Qt.AlignmentFlag.AlignHCenter | QtCore.Qt.AlignmentFlag.AlignVCenter)
+                QtCore.Qt.AlignmentFlag.AlignLeft | QtCore.Qt.AlignmentFlag.AlignVCenter)
             self.model.setItem(row, 3, item)
             item = QtGui.QStandardItem(str(veiculo['ano'] or ''))
             item.setTextAlignment(
-                QtCore.Qt.AlignmentFlag.AlignHCenter | QtCore.Qt.AlignmentFlag.AlignVCenter)
+                QtCore.Qt.AlignmentFlag.AlignRight | QtCore.Qt.AlignmentFlag.AlignVCenter)
             self.model.setItem(row, 4, item)
+            clientes = self.clienteCtrl.listarClientes(veiculo)
+            if clientes:
+                nomes = []
+                for cliente in clientes:
+                    nomes.append(cliente['nome'])
+                item = QtGui.QStandardItem(', '.join(nomes))
+                self.model.setItem(row, 5, item)
             row = row+1
         header = self.tabela.horizontalHeader()
-        header.setSectionResizeMode(
-            QtWidgets.QHeaderView.ResizeMode.Interactive)
+        header.setSectionResizeMode(QtWidgets.QHeaderView.ResizeMode.Interactive)
+        header.setStretchLastSection(True)
       
 
 if __name__ == "__main__":

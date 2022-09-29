@@ -59,8 +59,14 @@ class PecaController():
                 msg.exec()
                 return False'''
 
-    def getPeca(self, desc):
+    def getPecaByDescricao(self, desc):
         peca = self.pecaRep.findByDescricao(desc)
+        if peca:
+            return model_to_dict(peca)
+        else: return None
+
+    def getPeca(self, id):
+        peca = self.pecaRep.findByID(id)
         if peca:
             return model_to_dict(peca)
         else: return None

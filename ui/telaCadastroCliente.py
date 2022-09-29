@@ -11,6 +11,7 @@ class TelaCadastroCliente(QtWidgets.QMainWindow):
         super(TelaCadastroCliente, self).__init__()
         self.clienteCtrl = handleRoutes.getRoute('CLIENTECTRL')
         self.marcaCtrl = handleRoutes.getRoute('MARCACTRL')
+        self.buscaCEP = handleRoutes.getRoute('CEP')
         self.setupUi()
 
     def setupUi(self):
@@ -160,6 +161,7 @@ class TelaCadastroCliente(QtWidgets.QMainWindow):
         self.botaolimpar.clicked.connect(self.limparCampos)
         self.botaoSalvar.clicked.connect(self.salvar)
         self.comboBoxPessoa.currentIndexChanged.connect(self.escolherTipoPessoa)
+        self.lineEditCEP.editingFinished.connect(self.buscarDadosCEP)
 
     def retranslateUi(self):
         _translate = QtCore.QCoreApplication.translate
@@ -348,15 +350,18 @@ class TelaCadastroCliente(QtWidgets.QMainWindow):
             self.comboBoxMarca.addItem(marca['nome'])
         self.comboBoxMarca.setCurrentIndex(-1)
 
-    def renderEditar(self, id):
-        self.labelTitulo.setText('Editar Cliente')
-        cliente = self.clienteCtrl.getCliente(id)
-        self.comboBoxPessoa.setCurrentIndex(int(cliente['tipo']))
-        self.lineEditNomeCliente.setText(cliente['nome'])
-        self.lineEditDocumento.setText(cliente['documento'])
-        #...continuar
-
-
+    def buscarDadosCEP(self):
+        cep = self.lineEditCEP.text()
+        if len(cep) !=8:
+            return
+        dados = self.buscaCEP.buscarCEP(cep)
+        if 'erro' in dados:
+            return
+        self.lineEditEnder.setText(dados['logradouro'])
+        self.lineEditBairro.setText(dados['bairro'])
+        self.lineEditCidade.setText(dados['localidade'])
+        self.comboBoxuf.setCurrentIndex(self.comboBoxuf.findText(dados['uf'], QtCore.Qt.MatchFlag.MatchExactly))
+        return
 
 if __name__ == "__main__":
     import sys

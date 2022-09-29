@@ -1,6 +1,5 @@
 from PyQt6 import QtCore, QtGui, QtWidgets
 from routes import handleRoutes
-from ui.telaCadastroCliente import TelaCadastroCliente
 
 class TelaConsultaCliente(QtWidgets.QMainWindow):
     def __init__(self):
@@ -68,9 +67,7 @@ class TelaConsultaCliente(QtWidgets.QMainWindow):
         self.retranslateUi()
         self.selectionModel = self.tabela.selectionModel()
         self.listarClientes()
-        #self.selectionModel.selectionChanged.connect(self.mostrarDetalhes)
         self.botaoRefresh.clicked.connect(self.listarClientes)
-        self.botaoEditar.clicked.connect(self.editarCliente2)
 
     def retranslateUi(self):
         _translate = QtCore.QCoreApplication.translate
@@ -162,13 +159,13 @@ class TelaConsultaCliente(QtWidgets.QMainWindow):
         if self.linha:
             return self.tabela.model().index(self.linha[0].row(), 0).data()
 
-    def editarCliente2(self):
+    '''def editarCliente2(self):
         self.linha = self.tabela.selectionModel().selectedRows()
         if self.linha:
             id =  self.tabela.model().index(self.linha[0].row(), 0).data()
         self.telaEditar = TelaCadastroCliente()
         self.telaEditar.renderEditar(id)
-        self.telaEditar.show()
+        self.telaEditar.show()'''
       
 
 if __name__ == "__main__":

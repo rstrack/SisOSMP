@@ -4,7 +4,7 @@ class BuscaCEP():
     def __init__(self) -> None:
         pass
 
-    def buscarCEP(cep):
+    def buscarCEP(self, cep):
         request = requests.get('https://viacep.com.br/ws/{}/json/'.format(cep))
         return request.json()
 

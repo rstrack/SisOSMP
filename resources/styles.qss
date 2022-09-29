@@ -1,6 +1,6 @@
 
-QWidget{
-    font-family:'Helvetica', sans-serif
+*{
+    font-family:'Helvetica'
 }
 
 QFrame{
@@ -23,7 +23,6 @@ QFrame#main_frame QLabel{
 }
 
 QPushButton{
-    font-family: 'Helvetica', sans-serif;
     font-size: 14px;
     font-weight: bold;
     width: 20px;
@@ -82,11 +81,16 @@ QLineEdit{
 
 QComboBox{
     font-size: 13px;
+    combobox-popup: 0;
 }
 
 QComboBox QAbstractItemView{
     font-size: 13px;
-    selection-background-color: #3498DB
+    selection-background-color: #3498DB;
+}
+
+QComboBox QAbstractItemView::item{
+    height: 20px;
 }
 
 QTextEdit{

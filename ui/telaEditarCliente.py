@@ -155,7 +155,7 @@ class TelaEditarCliente(QtWidgets.QMainWindow):
         self.setMarcas()
 
         self.botaolimpar.clicked.connect(self.limparCampos)
-        self.botaoEditar.clicked.connect(self.salvar)
+        self.botaoEditar.clicked.connect(self.editar)
         self.comboBoxPessoa.currentIndexChanged.connect(self.escolherTipoPessoa)
 
     def retranslateUi(self):

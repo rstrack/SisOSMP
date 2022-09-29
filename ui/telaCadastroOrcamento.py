@@ -323,6 +323,7 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
         self.botaoAddServicos.clicked.connect(self.addLinhaServico)
         self.botaobuscarCliente.clicked.connect(self.telaBuscaCliente)
         self.botaobuscarveiculo.clicked.connect(self.telaBuscaVeiculo)
+        self.lineEditCEP.editingFinished.connect(self.buscarDadosCEP)
         self.botaolimpar.clicked.connect(self.limparCampos)
         self.botaoSalvar.clicked.connect(self.salvarOrcamento)
         self.botaoSalvareImprimir.clicked.connect(self.salvarImprimirOrcamento)
@@ -714,14 +715,14 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
         self.labelValorTotal2.setText('{:.2f}'.format(self.valorTotal))
 
     def buscarPeca(self, lineEditDesc, comboBoxUn, lineEditValor):
-        qPeca = self.pecaCtrl.getPeca(lineEditDesc.text())
+        qPeca = self.pecaCtrl.getPecaByDescricao(lineEditDesc.text())
         if qPeca:
             comboBoxUn.setCurrentText(qPeca['un'])
             lineEditValor.setText('{:.2f}'.format(qPeca['valor']).replace('.',',',1))
             self.setValor()
 
     def buscarServico(self, lineEditDesc, lineEditValor):
-        qServico = self.servicoCtrl.getServico(lineEditDesc.text())
+        qServico = self.servicoCtrl.getServicoByDescricao(lineEditDesc.text())
         if qServico:
             lineEditValor.setText('{:.2f}'.format(qServico['valor']).replace('.',',',1))
             self.setValor()
@@ -748,6 +749,7 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
             self.veiculoSelected = None
             self.valorTotal = 0
             self.setupUi()
+            return r
         except Exception as e:
             msg = QtWidgets.QMessageBox()
             msg.setWindowIcon(QtGui.QIcon('./resources/logo-icon.png'))
@@ -757,12 +759,21 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
             msg.exec()
 
     def salvarImprimirOrcamento(self):
-        self.setMarcas()
-        self.setCompleters()
-        pass
+        orcamento = self.salvarOrcamento()
+        fones = self.clienteCtrl.listarFones(orcamento['cliente'])
+        if fones: fones = list(fones)
+        itemPecas = self.orcamentoCtrl.listarItemPecas(orcamento['idOrcamento'])
+        if itemPecas: itemPecas = list(itemPecas)
+        itemServicos = self.orcamentoCtrl.listarItemServicos(orcamento['idOrcamento'])
+        if itemServicos: itemServicos = list(itemServicos)
+        print(orcamento)
+        print(fones)
+        print(itemPecas)
+        print(itemServicos)
 
     def telaBuscaCliente(self):
         self.windowCliente = QtWidgets.QMainWindow()
+        self.windowCliente.setWindowIcon(QtGui.QIcon('./resources/logo-icon.png'))
         self.telaCliente = TelaBuscaCliente(self.windowCliente)
         self.telaCliente.botaoSelecionar.clicked.connect(self.retornarDadosCliente)
         self.windowCliente.show()
@@ -790,6 +801,7 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
 
     def telaBuscaVeiculo(self):
         self.windowVeiculo = QtWidgets.QMainWindow()
+        self.windowVeiculo.setWindowIcon(QtGui.QIcon('./resources/logo-icon.png'))
         self.telaVeiculo = TelaBuscaVeiculo(self.windowVeiculo)
         self.telaVeiculo.botaoSelecionar.clicked.connect(self.retornarDadosVeiculo)
         self.windowVeiculo.show()
@@ -804,74 +816,18 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
             self.checkboxNovoVeiculo.setChecked(False)
             self.windowVeiculo.close()
 
-
-
-    '''def telaBuscaVeiculo(self):
-        self.window = QtWidgets.QMainWindow()
-        self.buscaVeiculo = TelaConsultaAux(self.window)
-        listaHeader = ['ID', 'Marca', 'Modelo',
-                       'Ano', 'Placa', 'Clientes Vinculados']
-        self.buscaVeiculo.model.setHorizontalHeaderLabels(listaHeader)
-        queryVeiculo = self.orcamentoCtrl.getVeiculos()
-        self.buscaVeiculo.model.setRowCount(len(queryVeiculo))
-        row = 0
-        for veiculo in queryVeiculo:
-            item = QtGui.QStandardItem(str(veiculo.idVeiculo))
-            item.setTextAlignment(
-                QtCore.Qt.AlignmentFlag.AlignHCenter | QtCore.Qt.AlignmentFlag.AlignVCenter)
-            self.buscaVeiculo.model.setItem(row, 0, item)
-            querymarca = self.orcamentoCtrl.getMarcaByID(veiculo.marca_id)
-            item.setTextAlignment(
-                QtCore.Qt.AlignmentFlag.AlignHCenter | QtCore.Qt.AlignmentFlag.AlignVCenter)
-            item = QtGui.QStandardItem(querymarca[0].marca)
-            item.setTextAlignment(
-                QtCore.Qt.AlignmentFlag.AlignHCenter | QtCore.Qt.AlignmentFlag.AlignVCenter)
-            self.buscaVeiculo.model.setItem(row, 1, item)
-            item = QtGui.QStandardItem(veiculo.modelo)
-            item.setTextAlignment(
-                QtCore.Qt.AlignmentFlag.AlignHCenter | QtCore.Qt.AlignmentFlag.AlignVCenter)
-            self.buscaVeiculo.model.setItem(row, 2, item)
-            item = QtGui.QStandardItem(veiculo.ano)
-            item.setTextAlignment(
-                QtCore.Qt.AlignmentFlag.AlignHCenter | QtCore.Qt.AlignmentFlag.AlignVCenter)
-            self.buscaVeiculo.model.setItem(row, 3, item)
-            item = QtGui.QStandardItem(veiculo.placa)
-            item.setTextAlignment(
-                QtCore.Qt.AlignmentFlag.AlignHCenter | QtCore.Qt.AlignmentFlag.AlignVCenter)
-            self.buscaVeiculo.model.setItem(row, 4, item)
-            queryCliente = self.orcamentoCtrl.getClientesByVeiculo(veiculo)
-            nomes = []
-            for cliente in queryCliente:
-                nomes.append(cliente.nome)
-            item = QtGui.QStandardItem(', '.join(nomes))
-            self.buscaVeiculo.model.setItem(row, 5, item)
-            row = row+1
-        self.buscaVeiculo.filter.setSourceModel(self.buscaVeiculo.model)
-        header = self.buscaVeiculo.tabela.horizontalHeader()
-        header.setSectionResizeMode(
-            QtWidgets.QHeaderView.ResizeMode.Interactive)
-        header.setSectionResizeMode(
-            0, QtWidgets.QHeaderView.ResizeMode.ResizeToContents)
-        header.setSectionResizeMode(
-            3, QtWidgets.QHeaderView.ResizeMode.ResizeToContents)
-        header.setStretchLastSection(True)
-        self.buscaVeiculo.botaoSelecionar.clicked.connect(self.usarVeiculo)
-        botaoVinculo = QtWidgets.QPushButton(self.buscaVeiculo.framebotoes)
-        botaoVinculo.setText("Desvincular")
-        botaoVinculo.setFixedSize(100, 25)
-        self.buscaVeiculo.hlayoutbotoes.addWidget(botaoVinculo)
-        self.veiculo = queryVeiculo
-        self.window.show()
-
-    def usarVeiculo(self):
-        self.linha = self.buscaVeiculo.tabela.selectionModel().selectedRows()[
-            0]
-        id = self.buscaVeiculo.tabela.model().index(self.linha.row(), 0).data()
-        [marca, modelo, placa, ano] = self.orcamentoCtrl.getDadosVeiculo(id)
-        self.setVeiculo(marca, modelo, placa, ano)
-        self.checkboxNovoVeiculo.setChecked(False)
-        self.orcamentoCtrl.setVeiculoSelecionado(id)
-        self.window.close()'''
+    def buscarDadosCEP(self):
+        cep = self.lineEditCEP.text()
+        if len(cep) !=8:
+            return
+        dados = self.buscaCEP.buscarCEP(cep)
+        if 'erro' in dados:
+            return
+        self.lineEditEnder.setText(dados['logradouro'])
+        self.lineEditBairro.setText(dados['bairro'])
+        self.lineEditCidade.setText(dados['localidade'])
+        self.comboBoxuf.setCurrentIndex(self.comboBoxuf.findText(dados['uf'], QtCore.Qt.MatchFlag.MatchExactly))
+        return
 
     def limparCampos(self):
         for lineedit in self.framedados.findChildren(QtWidgets.QLineEdit):

@@ -53,7 +53,6 @@ class Cliente(BaseModel):
 class Veiculo_Cliente(BaseModel):
     veiculo = ForeignKeyField(Veiculo, backref='veiculos',null=False)
     cliente = ForeignKeyField(Cliente, backref='clientes',null=False)
-    habilitado = BooleanField(constraints=[SQL('DEFAULT TRUE')])
     class Meta:
         primary_key = CompositeKey('veiculo', 'cliente')
 
@@ -78,7 +77,7 @@ class Orcamento(BaseModel):
     veiculo = ForeignKeyField(Veiculo, backref='veiculos',null=False)
     km = CharField(max_length=6,null=False)
     valorTotal = DoubleField(constraints=[Check('valorTotal>=0')],null=False)
-    aprovado = BooleanField(constraints=[SQL('DEFAULT FALSE')])
+    aprovado = BooleanField(constraints=[SQL('DEFAULT FALSE')], null=False)
     dataAprovacao = DateField(null=True)
     observacoes = CharField(max_length=200, null=True)
 

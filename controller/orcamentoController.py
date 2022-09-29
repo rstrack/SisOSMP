@@ -42,8 +42,6 @@ class OrcamentoController():
                 fonesBanco = self.foneRep.findByClienteID(_cliente)
                 if fonesBanco != None:
                     fonesBanco = list(fonesBanco.dicts())
-                    print(fonesBanco)
-                    print(fonesTela)
                     for fone in fonesBanco:
                         if not fone['fone'] in fonesTela:
                             self.foneRep.delete(_cliente, fone['fone'])
@@ -88,6 +86,7 @@ class OrcamentoController():
                         servico['servico'] = _servico
                         servico['orcamento'] = _orcamento
                         self.itemServicoRep.save(servico)
+                return model_to_dict(_orcamento)
             except Exception as e:
                 transaction.rollback()
                 return e
@@ -122,7 +121,7 @@ class OrcamentoController():
                             else:
                                 self.itemServicoRep.save({'orcamento':_orcamento, 'servico': _servico, 'qtde':servico['qtde'], 'valor': servico['valor']})
                         else:
-                            _servico = self.servicoRep.save({'descricao': servico['descricao'], 'un': servico['un'], 'valor':servico['valor']})
+                            _servico = self.servicoRep.save({'descricao': servico['descricao'], 'valor':servico['valor']})
                             self.itemServicoRep.save({'orcamento':_orcamento, 'servico': _servico, 'qtde':servico['qtde'], 'valor': servico['valor']})
             
             except Exception as e:
@@ -136,11 +135,20 @@ class OrcamentoController():
             return orcamentos.dicts()
         else: return None
 
-
-    def getOrcamento(self, id):
-        orcamento = self.orcamentoRep.findByID(id)
+    def getOrcamento(self, idOrcamento):
+        orcamento = self.orcamentoRep.findByID(idOrcamento)
         if orcamento:
             return model_to_dict(orcamento)
+        else: return None
+
+    def listarItemPecas(self, idOrcamento):
+        itemPecas = self.itemPecaRep.findByOrcamento(idOrcamento)
+        if itemPecas: return itemPecas.dicts()
+        else: return None
+
+    def listarItemServicos(self, idOrcamento):
+        itemServicos = self.itemServicoRep.findByOrcamento(idOrcamento)
+        if itemServicos: return itemServicos.dicts()
         else: return None
 
     '''def atualizarCompleters(self):

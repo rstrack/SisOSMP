@@ -53,7 +53,13 @@ class ServicoController():
             return servicos.dicts()
         else: return None
 
-    def getServico(self, desc):
+    def getServico(self, id):
+        servico = self.servicoRep.findByID(id)
+        if servico:
+            return model_to_dict(servico)
+        else: return None
+
+    def getServicoByDescricao(self, desc):
         servico = self.servicoRep.findByDescricao(desc)
         if servico:
             return model_to_dict(servico)

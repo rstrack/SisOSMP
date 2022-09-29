@@ -18,6 +18,12 @@ class ItemServicoRepository():
     def findAll(self):
         return ItemServico.select()
 
+    def findByOrcamento(self, orcamento):
+        itemServicos = ItemServico.select().where(ItemServico.orcamento==orcamento)
+        if itemServicos:
+            return itemServicos
+        else: return None
+
     def findByOrcamentoAndServico(self, orcamento, servico):
         _itemServico = ItemServico.select().where((ItemServico.orcamento==orcamento) & (ItemServico.servico==servico))
         if _itemServico:

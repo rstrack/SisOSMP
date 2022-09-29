@@ -75,37 +75,37 @@ class TelaConsultaOrcamento(QtWidgets.QMainWindow):
             item = QtGui.QStandardItem()
             item.setData(orcamento['idOrcamento'], QtCore.Qt.ItemDataRole.DisplayRole)
             item.setTextAlignment(
-                QtCore.Qt.AlignmentFlag.AlignHCenter | QtCore.Qt.AlignmentFlag.AlignVCenter)
+                QtCore.Qt.AlignmentFlag.AlignRight | QtCore.Qt.AlignmentFlag.AlignVCenter)
             self.model.setItem(row, 0, item)
             item = QtGui.QStandardItem()
             dataOrcamento = orcamento['dataOrcamento'].strftime("%d/%m/%Y")
             item.setData(dataOrcamento, QtCore.Qt.ItemDataRole.DisplayRole)
             item.setTextAlignment(
-                QtCore.Qt.AlignmentFlag.AlignHCenter | QtCore.Qt.AlignmentFlag.AlignVCenter)
+                QtCore.Qt.AlignmentFlag.AlignRight | QtCore.Qt.AlignmentFlag.AlignVCenter)
             self.model.setItem(row, 1, item)
             cliente = self.clienteCtrl.getCliente(orcamento['cliente'])
             item = QtGui.QStandardItem()
             item.setData(cliente['nome'], QtCore.Qt.ItemDataRole.DisplayRole)
             item.setTextAlignment(
-                QtCore.Qt.AlignmentFlag.AlignHCenter | QtCore.Qt.AlignmentFlag.AlignVCenter)
+                QtCore.Qt.AlignmentFlag.AlignLeft | QtCore.Qt.AlignmentFlag.AlignVCenter)
             self.model.setItem(row, 2, item)
             #VEICULO
             veiculo = self.clienteCtrl.getVeiculo(orcamento['veiculo'])
             item = QtGui.QStandardItem(str(veiculo['marca']['nome']))
             item.setTextAlignment(
-                QtCore.Qt.AlignmentFlag.AlignHCenter | QtCore.Qt.AlignmentFlag.AlignVCenter)
+                QtCore.Qt.AlignmentFlag.AlignLeft | QtCore.Qt.AlignmentFlag.AlignVCenter)
             self.model.setItem(row, 3, item)
             item = QtGui.QStandardItem(str(veiculo['modelo']))
             item.setTextAlignment(
-                QtCore.Qt.AlignmentFlag.AlignHCenter | QtCore.Qt.AlignmentFlag.AlignVCenter)
+                QtCore.Qt.AlignmentFlag.AlignLeft | QtCore.Qt.AlignmentFlag.AlignVCenter)
             self.model.setItem(row, 4, item)
             item = QtGui.QStandardItem(str(veiculo['placa'] or ''))
             item.setTextAlignment(
-                QtCore.Qt.AlignmentFlag.AlignHCenter | QtCore.Qt.AlignmentFlag.AlignVCenter)
+                QtCore.Qt.AlignmentFlag.AlignLeft | QtCore.Qt.AlignmentFlag.AlignVCenter)
             self.model.setItem(row, 5, item)
             item = QtGui.QStandardItem('R$ {:.2f}'.format(orcamento['valorTotal']))
             item.setTextAlignment(
-                QtCore.Qt.AlignmentFlag.AlignHCenter | QtCore.Qt.AlignmentFlag.AlignVCenter)
+                QtCore.Qt.AlignmentFlag.AlignRight | QtCore.Qt.AlignmentFlag.AlignVCenter)
             self.model.setItem(row, 6, item)
             row = row+1
         header = self.tabela.horizontalHeader()
@@ -115,6 +115,11 @@ class TelaConsultaOrcamento(QtWidgets.QMainWindow):
             QtWidgets.QHeaderView.ResizeMode.ResizeToContents)
         header.setSectionResizeMode(2, 
             QtWidgets.QHeaderView.ResizeMode.Stretch)
+
+    def editarOrcamento(self):
+        self.linha = self.tabela.selectionModel().selectedRows()
+        if self.linha:
+            return self.tabela.model().index(self.linha[0].row(), 0).data()
 
 
 if __name__ == "__main__":
