@@ -3,7 +3,9 @@ from PyQt6 import QtWidgets, QtGui, QtCore
 
 from routes import handleRoutes
 from ui.telaConsultaCliente import TelaConsultaCliente
+from ui.telaConsultaOS import TelaConsultaOS
 from ui.telaConsultaVeiculo import TelaConsultaVeiculo
+from ui.telaEditarOS import TelaEditarOS
 
 from util.buscaCEP import BuscaCEP
 
@@ -56,23 +58,27 @@ class MainController():
         self.telaConsultaCliente = TelaConsultaCliente()
         self.telaConsultaVeiculo = TelaConsultaVeiculo()
         self.telaConsultaOrcamento = TelaConsultaOrcamento()
+        self.telaConsultaOS = TelaConsultaOS()
 
         self.telaEditarCliente = TelaEditarCliente()
         self.telaEditarOrcamento = TelaEditarOrcamento()
+        self.telaEditarOS = TelaEditarOS()
 
         self.telaInicio.stackedWidget.addWidget(self.telaCadastroPeca)
         self.telaInicio.stackedWidget.addWidget(self.telaCadastroServico)
         self.telaInicio.stackedWidget.addWidget(self.telaCadastroCliente)
         self.telaInicio.stackedWidget.addWidget(self.telaCadastroOrcamento)
+
         self.telaInicio.stackedWidget.addWidget(self.telaConsultaPeca)
         self.telaInicio.stackedWidget.addWidget(self.telaConsultaServico)
         self.telaInicio.stackedWidget.addWidget(self.telaConsultaCliente)
         self.telaInicio.stackedWidget.addWidget(self.telaConsultaVeiculo)
+        self.telaInicio.stackedWidget.addWidget(self.telaConsultaOrcamento)
+        self.telaInicio.stackedWidget.addWidget(self.telaConsultaOS)
 
         self.telaInicio.stackedWidget.addWidget(self.telaEditarCliente)
-
-        self.telaInicio.stackedWidget.addWidget(self.telaConsultaOrcamento)
         self.telaInicio.stackedWidget.addWidget(self.telaEditarOrcamento)
+        self.telaInicio.stackedWidget.addWidget(self.telaEditarOS)
         self.initConnections()
 
     #função que instancia uma unica vez cada controller, que podem ser acessados onde necessário
@@ -104,18 +110,25 @@ class MainController():
         self.telaInicio.botao_clientes_2.clicked.connect(lambda: self.telaInicio.stackedWidget.setCurrentWidget(self.telaConsultaCliente))
         self.telaInicio.botao_veiculos.clicked.connect(lambda: self.telaInicio.stackedWidget.setCurrentWidget(self.telaConsultaVeiculo))
         self.telaInicio.botao_orcamentos_2.clicked.connect(lambda: self.telaInicio.stackedWidget.setCurrentWidget(self.telaConsultaOrcamento))
-        '''self.telaCadastroCliente.lineEditCEP.editingFinished.connect(lambda: self.buscarDadosCEP(self.telaCadastroCliente))
-        self.telaCadastroOrcamento.lineEditCEP.editingFinished.connect(lambda: self.buscarDadosCEP(self.telaCadastroOrcamento))'''
+        self.telaInicio.botao_os.clicked.connect(lambda: self.telaInicio.stackedWidget.setCurrentWidget(self.telaConsultaOS))
+        # conectando atualizações de janelas
+        self.telaInicio.botao_clientes.clicked.connect(self.telaCadastroCliente.setMarcas)
+        self.telaInicio.botao_orcamentos.clicked.connect(self.telaCadastroOrcamento.setMarcas)
+        self.telaInicio.botao_orcamentos.clicked.connect(self.telaCadastroOrcamento.setCompleters)
 
-        # self.telaConsultaCliente.botaoEditar.clicked.connect(lambda: self.telaEditarCliente.renderEditar(self.telaConsultaCliente.editarCliente()))
-
+        # conectando seleção de edição com respectivas telas de edição
         self.telaConsultaCliente.botaoEditar.clicked.connect(
             lambda: self.trocaPagina(self.telaEditarCliente, self.telaEditarCliente.renderEditar, self.telaConsultaCliente.editarCliente))
         self.telaConsultaOrcamento.botaoEditar.clicked.connect(
             lambda: self.trocaPagina(self.telaEditarOrcamento, self.telaEditarOrcamento.renderEditar, self.telaConsultaOrcamento.editarOrcamento))
+        self.telaConsultaOS.botaoEditar.clicked.connect(
+            lambda: self.trocaPagina(self.telaEditarOS, self.telaEditarOS.renderEditar, self.telaConsultaOS.editarOS))
 
     def trocaPagina(self, pagina, render, param):
-        render(param())
+        p = param()
+        if p == None:
+            return
+        render(p)
         self.telaInicio.stackedWidget.setCurrentWidget(pagina)
 
     def run(self):

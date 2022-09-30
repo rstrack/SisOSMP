@@ -9,10 +9,10 @@ UNIDADES = ['CM', 'CM2', 'CM3', 'CX', 'DZ', 'G', 'KG',
             'L', 'M', 'M2', 'M3', 'ML', 'PAR', 'PCT', 'ROLO', 'UN']
 
 
-class TelaEditarOrcamento(QtWidgets.QMainWindow):
+class TelaEditarOS(QtWidgets.QMainWindow):
 
     def __init__(self):
-        super(TelaEditarOrcamento, self).__init__()
+        super(TelaEditarOS, self).__init__()
         self.orcamentoCtrl = handleRoutes.getRoute('ORCAMENTOCTRL')
         self.clienteCtrl = handleRoutes.getRoute('CLIENTECTRL')
         self.pecaCtrl = handleRoutes.getRoute('PECACTRL')
@@ -183,14 +183,21 @@ class TelaEditarOrcamento(QtWidgets.QMainWindow):
         self.hlayoutvalor.setContentsMargins(0, 0, 0, 0)
         # data do orçamento
         self.framedata = QtWidgets.QFrame(self.framevalor)
-        self.vlayoutdata = QtWidgets.QVBoxLayout(self.framedata)
+        self.gridLayoutData = QtWidgets.QGridLayout(self.framedata)
         self.labelData = QtWidgets.QLabel(self.framedata)
         self.lineEditData = QtWidgets.QDateEdit(self.framedata)
         self.lineEditData.setFixedWidth(125)
         self.lineEditData.setCalendarPopup(True)
         self.lineEditData.setDateTime(QtCore.QDateTime.currentDateTime())
-        self.vlayoutdata.addWidget(self.labelData)
-        self.vlayoutdata.addWidget(self.lineEditData)
+        self.labelDataAprovacao = QtWidgets.QLabel(self.framedata)
+        self.lineEditDataAprovacao = QtWidgets.QDateEdit(self.framedata)
+        self.lineEditDataAprovacao.setFixedWidth(125)
+        self.lineEditDataAprovacao.setCalendarPopup(True)
+        self.lineEditDataAprovacao.setDateTime(QtCore.QDateTime.currentDateTime())
+        self.gridLayoutData.addWidget(self.labelData, 0, 0, 1, 1)
+        self.gridLayoutData.addWidget(self.lineEditData, 1, 0, 1, 1)
+        self.gridLayoutData.addWidget(self.labelDataAprovacao, 0, 1, 1, 1)
+        self.gridLayoutData.addWidget(self.lineEditDataAprovacao, 1, 1, 1, 1)
         self.hlayoutvalor.addWidget(self.framedata)
         # valor
         self.labelValorTotal1 = QtWidgets.QLabel(self.framevalor)
@@ -223,10 +230,6 @@ class TelaEditarOrcamento(QtWidgets.QMainWindow):
         spacerItem5 = QtWidgets.QSpacerItem(
             40, 10, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
         self.hlayout4.addItem(spacerItem5)
-        self.botaoAprovar = QtWidgets.QPushButton(self.framebotoes)
-        self.botaoAprovar.setMinimumSize(QtCore.QSize(100, 30))
-        self.hlayout4.addWidget(self.botaoAprovar)
-
         self.botaoSalvar = QtWidgets.QPushButton(self.framebotoes)
         self.botaoSalvar.setMinimumSize(QtCore.QSize(100, 30))
         self.hlayout4.addWidget(self.botaoSalvar)
@@ -255,7 +258,6 @@ class TelaEditarOrcamento(QtWidgets.QMainWindow):
         self.setMarcas()
         self.setCompleters()
         self.botaoSalvar.clicked.connect(self.editarOrcamento)
-        self.botaoAprovar.clicked.connect(self.aprovarOrcamento)
 
     ##############################################################################################################################
                                                             #FUNÇÕES
@@ -264,12 +266,12 @@ class TelaEditarOrcamento(QtWidgets.QMainWindow):
     def retranslateUi(self):
         _translate = QtCore.QCoreApplication.translate
         self.setWindowTitle(_translate("MainWindow", "Mecânica Pasetto"))
-        self.botaoAprovar.setText(_translate("MainWindow", "Aprovar"))
         self.botaoSalvar.setText(_translate("MainWindow", "Salvar"))
-        self.labelTitulo.setText(_translate("MainWindow", "Editar Orçamento"))
-        self.labelData.setText(_translate("MainWindow", "Data do Orçamento"))
+        self.labelTitulo.setText(_translate("MainWindow", "Editar Ordem de Serviço"))
+        self.labelData.setText(_translate("MainWindow", "Data da O.S."))
+        self.labelDataAprovacao.setText(_translate("MainWindow", "Data de Aprovação"))
         self.groupBoxCliente.setTitle(_translate("MainWindow", "Dados do Cliente"))
-        self.labelNome.setText(_translate("MainWindow", "Nome*"))
+        self.labelNome.setText(_translate("MainWindow", "Nome"))
         self.labelCEP.setText(_translate("MainWindow", "CEP"))
         self.labelPessoa.setText(_translate("MainWindow", "Pessoa"))
         self.labelDocumento.setText(_translate("MainWindow", "CPF"))
@@ -278,13 +280,13 @@ class TelaEditarOrcamento(QtWidgets.QMainWindow):
         self.labelEnder.setText(_translate("MainWindow", "Endereço"))
         self.labelNumero.setText(_translate("MainWindow", "Número"))
         self.labelBairro.setText(_translate("MainWindow", "Bairro"))
-        self.labelFone1.setText(_translate("MainWindow", "Fone 1*"))
+        self.labelFone1.setText(_translate("MainWindow", "Fone 1"))
         self.labelFone2.setText(_translate("MainWindow", "Fone 2"))
         self.groupBoxVeiculo.setTitle(_translate("MainWindow", "Dados do veículo"))
-        self.labelMarca.setText(_translate("MainWindow", "Marca*"))
-        self.labelPlaca.setText(_translate("MainWindow", "Placa*"))
+        self.labelMarca.setText(_translate("MainWindow", "Marca"))
+        self.labelPlaca.setText(_translate("MainWindow", "Placa"))
         self.labelAno.setText(_translate("MainWindow", "Ano"))
-        self.labelModelo.setText(_translate("MainWindow", "Modelo*"))
+        self.labelModelo.setText(_translate("MainWindow", "Modelo"))
         self.labelKm.setText(_translate("MainWindow", "Km*"))
         self.groupBoxServicos.setTitle(_translate("MainWindow", "Serviços"))
         self.botaoAddServicos.setText(_translate("MainWindow", "+"))
@@ -343,7 +345,7 @@ class TelaEditarOrcamento(QtWidgets.QMainWindow):
     def addLinhaServico(self):
         label1 = QtWidgets.QLabel(text="Serviço*")
         label2 = QtWidgets.QLabel(text="Qtde*")
-        label3 = QtWidgets.QLabel(text="Valor un*")
+        label3 = QtWidgets.QLabel(text="Valor*")
         lineedit1 = QtWidgets.QLineEdit()
         lineedit1.setCompleter(self.completerServico)
         lineedit2 = QtWidgets.QLineEdit()
@@ -505,9 +507,7 @@ class TelaEditarOrcamento(QtWidgets.QMainWindow):
         data = datetime.strptime(self.lineEditData.text(), "%d/%m/%Y")
         data = data.strftime("%Y-%m-%d")
         orcamento['dataOrcamento'] = data
-        if self.lineEditKm.text():
-            orcamento['km'] = self.lineEditKm.text()
-        else: raise Exception("Quilometragem do veículo obrigatória!")
+        orcamento['km'] = self.lineEditKm.text()
         orcamento['observacoes']=self.textEdit.toPlainText()
         return orcamento
 
@@ -574,6 +574,7 @@ class TelaEditarOrcamento(QtWidgets.QMainWindow):
         self.lineEditKm.setText(orcamento['km'])
         self.lineEditData.setDate(orcamento['dataOrcamento'])
         self.textEdit.setText(orcamento['observacoes'])
+        self.lineEditDataAprovacao.setDate(orcamento['dataAprovacao'])
 
     # def editarOrcamento(self, id, orcamento:dict, pecas:list, servicos:list):
     def editarOrcamento(self):
@@ -600,21 +601,6 @@ class TelaEditarOrcamento(QtWidgets.QMainWindow):
             msg.setText(str(e))
             msg.exec()
 
-    def aprovarOrcamento(self):
-        try:
-            r = self.orcamentoCtrl.aprovarOrcamento(self.orcamentoID)
-            if isinstance(r, Exception):
-                raise Exception(r)
-            msg = QtWidgets.QMessageBox()
-            msg.setWindowTitle("Aviso")
-            msg.setText("Orçamento aprovado com sucesso!")
-            msg.exec()
-        except Exception as e:
-            msg = QtWidgets.QMessageBox()
-            msg.setWindowTitle("Aviso")
-            msg.setText(str(e))
-            msg.exec()
-
     def limparCampos(self):
         for lineedit in self.framedados.findChildren(QtWidgets.QLineEdit):
             lineedit.clear()
@@ -629,7 +615,7 @@ class TelaEditarOrcamento(QtWidgets.QMainWindow):
 if __name__ == "__main__":
     import sys
     app = QtWidgets.QApplication(sys.argv)
-    ui = TelaEditarOrcamento()
+    ui = TelaEditarOS()
     ui.setupUi()
     ui.show()
     style = open('./resources/styles.qss').read()

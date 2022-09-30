@@ -20,3 +20,6 @@ class OrcamentoRepository():
 
     def findByID(self, id):
         return Orcamento.select().where(Orcamento.idOrcamento==id).get()
+
+    def findByAprovado(self, aprovado):
+        return Orcamento.select().where(Orcamento.aprovado==aprovado)

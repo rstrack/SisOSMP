@@ -38,12 +38,12 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
         self.labelTitulo = QtWidgets.QLabel(self.frame_titulo)
         self.labelTitulo.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
         self.labelTitulo.setObjectName("titulo")
-        self.vlayout1.setContentsMargins(9, 9, 9, 9)
+        self.vlayout1.setContentsMargins(18, 18, 18, 18)
         self.vlayout1.setSpacing(18)
         self.vlayout1.addWidget(self.labelTitulo)
         self.framedados = QtWidgets.QFrame(self.main_frame)
         self.gridLayoutGeral = QtWidgets.QGridLayout(self.framedados)
-        self.gridLayoutGeral.setVerticalSpacing(9)
+        self.gridLayoutGeral.setVerticalSpacing(0)
         self.gridLayoutGeral.setHorizontalSpacing(9)
         self.vlayout1.addWidget(self.framedados)
         # dados do cliente
@@ -250,8 +250,10 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
         self.hlayoutvalor = QtWidgets.QHBoxLayout(self.framevalor)
         self.hlayoutvalor.setContentsMargins(0, 0, 0, 0)
         # data do orçamento
+
         self.framedata = QtWidgets.QFrame(self.framevalor)
         self.vlayoutdata = QtWidgets.QVBoxLayout(self.framedata)
+        self.vlayoutdata.setContentsMargins(4,4,4,4)
         self.labelData = QtWidgets.QLabel(self.framedata)
         self.lineEditData = QtWidgets.QDateEdit(self.framedata)
         self.lineEditData.setFixedWidth(125)
@@ -260,28 +262,31 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
         self.vlayoutdata.addWidget(self.labelData)
         self.vlayoutdata.addWidget(self.lineEditData)
         self.hlayoutvalor.addWidget(self.framedata)
+
         # valor
         self.labelValorTotal1 = QtWidgets.QLabel(self.framevalor)
         self.labelValorTotal1.setText("VALOR TOTAL: R$")
+        self.labelValorTotal1.setObjectName('boldText')
         self.labelValorTotal2 = QtWidgets.QLabel(self.framevalor)
+        self.labelValorTotal2.setObjectName('boldText')
         spacerItem = QtWidgets.QSpacerItem(
             10, 10, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
         self.hlayoutvalor.addItem(spacerItem)
         self.hlayoutvalor.addWidget(self.labelValorTotal1)
         self.hlayoutvalor.addWidget(self.labelValorTotal2)
+        self.hlayoutvalor.setSpacing(0)
         self.gridLayoutGeral.addWidget(self.framevalor, 3, 0, 1, -1)
         self.gridLayoutGeral.setRowStretch(2, 10)
         self.gridLayoutGeral.setRowStretch(3, 0)
-
-        self.frameobs = QtWidgets.QFrame(self.framedados)
-        self.gridLayoutGeral.addWidget(self.frameobs, 4, 0, 1, -1)
         # campo de observações
-        self.groupBoxObs = QtWidgets.QGroupBox(self.frameobs)
+        self.groupBoxObs = QtWidgets.QGroupBox(self.framedados)
         self.vlayout2 = QtWidgets.QVBoxLayout(self.groupBoxObs)
         self.textEdit = QtWidgets.QTextEdit(self.groupBoxObs)
         self.groupBoxObs.setMaximumHeight(80)
         self.vlayout2.addWidget(self.textEdit)
-        self.gridLayoutGeral.addWidget(self.groupBoxObs, 5, 0, 1, -1)
+        self.gridLayoutGeral.addWidget(self.groupBoxObs, 4, 0, 1, -1)
+        self.gridLayoutGeral.setColumnStretch(0,1)
+        self.gridLayoutGeral.setColumnStretch(1,1)
         # botoes
         self.framebotoes = QtWidgets.QFrame(self.main_frame)
         self.hlayout4 = QtWidgets.QHBoxLayout(self.framebotoes)
@@ -304,16 +309,18 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
         self.vlayout1.addWidget(self.framebotoes)
         self.setCentralWidget(self.main_frame)
         self.completerPeca = QtWidgets.QCompleter([])
+        self.completerPeca.setMaxVisibleItems(5)
         self.completerPeca.setCaseSensitivity(
             QtCore.Qt.CaseSensitivity.CaseInsensitive)
         self.completerPeca.setCompletionMode(
-            QtWidgets.QCompleter.CompletionMode.UnfilteredPopupCompletion)
+            QtWidgets.QCompleter.CompletionMode.PopupCompletion)
         self.lineEditNomePeca.setCompleter(self.completerPeca)
         self.completerServico = QtWidgets.QCompleter([])
+        self.completerServico.setMaxVisibleItems(5)
         self.completerServico.setCaseSensitivity(
             QtCore.Qt.CaseSensitivity.CaseInsensitive)
         self.completerServico.setCompletionMode(
-            QtWidgets.QCompleter.CompletionMode.UnfilteredPopupCompletion)
+            QtWidgets.QCompleter.CompletionMode.PopupCompletion)
         self.lineEditNomeServico.setCompleter(self.completerServico)
  
         self.retranslateUi()
@@ -324,7 +331,7 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
         self.botaobuscarCliente.clicked.connect(self.telaBuscaCliente)
         self.botaobuscarveiculo.clicked.connect(self.telaBuscaVeiculo)
         self.lineEditCEP.editingFinished.connect(self.buscarDadosCEP)
-        self.botaolimpar.clicked.connect(self.limparCampos)
+        self.botaolimpar.clicked.connect(self.resetarTela)
         self.botaoSalvar.clicked.connect(self.salvarOrcamento)
         self.botaoSalvareImprimir.clicked.connect(self.salvarImprimirOrcamento)
         self.comboBoxPessoa.currentIndexChanged.connect(self.escolherTipoPessoa)
@@ -350,7 +357,7 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
         self.botaoSalvar.setText(_translate("MainWindow", "Salvar"))
         self.botaolimpar.setText(_translate("MainWindow", "Limpar"))
         self.labelTitulo.setText(_translate("MainWindow", "Orçamentos"))
-        self.labelData.setText(_translate("MainWindow", "Data do Orçamento"))
+        #self.labelData.setText(_translate("MainWindow", "Data do Orçamento"))
         self.groupBoxCliente.setTitle(_translate("MainWindow", "Dados do Cliente"))
         self.botaobuscarCliente.setText(_translate("MainWindow", "Selecionar Cliente"))
         self.checkboxNovoCliente.setText(_translate("MainWindow", "Novo Cliente"))
@@ -363,14 +370,14 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
         self.labelEnder.setText(_translate("MainWindow", "Endereço"))
         self.labelNumero.setText(_translate("MainWindow", "Número"))
         self.labelBairro.setText(_translate("MainWindow", "Bairro"))
-        self.labelFone1.setText(_translate("MainWindow", "Fone 1"))
+        self.labelFone1.setText(_translate("MainWindow", "Fone 1*"))
         self.labelFone2.setText(_translate("MainWindow", "Fone 2"))
         self.groupBoxVeiculo.setTitle(_translate("MainWindow", "Dados do veículo"))
         self.botaobuscarveiculo.setText(_translate("MainWindow", "Selecionar Veículo"))
         self.checkboxNovoVeiculo.setText(_translate("MainWindow", "Novo Veículo"))
         self.labelMarca.setText(_translate("MainWindow", "Marca*"))
         self.labelPlaca.setText(_translate("MainWindow", "Placa*"))
-        self.labelAno.setText(_translate("MainWindow", "Ano*"))
+        self.labelAno.setText(_translate("MainWindow", "Ano"))
         self.labelModelo.setText(_translate("MainWindow", "Modelo*"))
         self.labelKm.setText(_translate("MainWindow", "Km*"))
         self.groupBoxServicos.setTitle(_translate("MainWindow", "Serviços"))
@@ -421,17 +428,26 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
         botaoRemoverLinha.clicked.connect(lambda: self.removerLinhaPeca(self.gridLayoutPecas.getItemPosition(self.gridLayoutPecas.indexOf(botaoRemoverLinha))[0]))
 
     def removerLinhaPeca(self, linha):
-        for x in range(5):
-            if self.gridLayoutPecas.itemAtPosition(linha-1, x) != None:
-                self.gridLayoutPecas.itemAtPosition(linha-1, x).widget().setParent(None)
-            if self.gridLayoutPecas.itemAtPosition(linha, x) != None:
-                self.gridLayoutPecas.itemAtPosition(linha, x).widget().setParent(None)
+        for x in range(4):
+            w1 = self.gridLayoutPecas.itemAtPosition(linha-1, x).widget()
+            w1.hide()
+            w1.setParent(None)
+            w1.deleteLater()
+            w2 = self.gridLayoutPecas.itemAtPosition(linha, x).widget()
+            w2.hide()
+            w2.setParent(None)
+            w2.deleteLater()
+        w = self.gridLayoutPecas.itemAtPosition(linha, 4).widget()
+        w.hide()
+        w.setParent(None)
+        w.deleteLater()
         for x in range(self.gridLayoutPecas.rowCount()):
             if x > linha:
                 for y in range(5):
                     if not isinstance(self.gridLayoutPecas.itemAtPosition(x, y), QtWidgets.QSpacerItem) and self.gridLayoutPecas.itemAtPosition(x, y) != None:
                         self.gridLayoutPecas.addWidget(self.gridLayoutPecas.itemAtPosition(x, y).widget(), x-2, y, 1, 1)
         del self.linhasPeca[int((linha-1)/2)]
+        self.gridLayoutPecas.removeItem(self.spacerpeca)
         self.gridLayoutPecas.addItem(self.spacerpeca, len(self.linhasPeca)*2, 0, 1, 1)
 
     def addLinhaServico(self):
@@ -462,17 +478,26 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
         botaoRemoverLinha.clicked.connect(lambda: self.removerLinhaServico(self.gridLayoutServicos.getItemPosition(self.gridLayoutServicos.indexOf(botaoRemoverLinha))[0]))
 
     def removerLinhaServico(self, linha):
-        for x in range(4):
-            if self.gridLayoutServicos.itemAtPosition(linha-1, x) != None:
-                self.gridLayoutServicos.itemAtPosition(linha-1, x).widget().setParent(None)
-            if self.gridLayoutServicos.itemAtPosition(linha, x) != None:
-                self.gridLayoutServicos.itemAtPosition(linha, x).widget().setParent(None)
+        for x in range(3):
+            w1 = self.gridLayoutServicos.itemAtPosition(linha-1, x).widget()
+            w1.hide()
+            w1.setParent(None)
+            w1.deleteLater()
+            w2 = self.gridLayoutServicos.itemAtPosition(linha, x).widget()
+            w2.hide()
+            w2.setParent(None)
+            w2.deleteLater()
+        w = self.gridLayoutServicos.itemAtPosition(linha, 3).widget()
+        w.hide()
+        w.setParent(None)
+        w.deleteLater()
         for x in range(self.gridLayoutServicos.rowCount()):
             if x > linha:
                 for y in range(4):
                     if not isinstance(self.gridLayoutServicos.itemAtPosition(x, y), QtWidgets.QSpacerItem) and self.gridLayoutServicos.itemAtPosition(x, y) != None:
                         self.gridLayoutServicos.addWidget(self.gridLayoutServicos.itemAtPosition(x, y).widget(), x-2, y, 1, 1)
         del self.linhasServico[int((linha-1)/2)]
+        self.gridLayoutServicos.removeItem(self.spacerservico)
         self.gridLayoutServicos.addItem(self.spacerservico, len(self.linhasServico)*2, 0, 1, 1)
 
     def limparDadosCliente(self):
@@ -696,7 +721,9 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
         data = datetime.strptime(self.lineEditData.text(), "%d/%m/%Y")
         data = data.strftime("%Y-%m-%d")
         orcamento['dataOrcamento'] = data
-        orcamento['km'] = self.lineEditKm.text()
+        if self.lineEditKm.text():
+            orcamento['km'] = self.lineEditKm.text()
+        else: raise Exception("Quilometragem do veículo obrigatória!")
         orcamento['observacoes']=self.textEdit.toPlainText()
         return orcamento
 
@@ -834,6 +861,13 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
             lineedit.clear()
         self.checkboxNovoCliente.setChecked(True)
         self.checkboxNovoVeiculo.setChecked(True)
+
+    def resetarTela(self):
+        while len(self.linhasPeca)>1:
+            self.removerLinhaPeca(3)
+        while len(self.linhasServico)>1:
+            self.removerLinhaServico(3)
+        self.limparCampos()
 
 
 if __name__ == "__main__":

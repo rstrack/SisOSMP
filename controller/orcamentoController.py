@@ -126,11 +126,19 @@ class OrcamentoController():
             
             except Exception as e:
                 transaction.rollback()
-                return e    
+                return e
+    
+    def aprovarOrcamento(self, idOrcamento):
+        with db.atomic() as transaction:
+            try:
+                r = self.orcamentoRep.update({'idOrcamento':idOrcamento, 'aprovado': True})
+                return r
+            except Exception as e:
+                transaction.rollback()
+                return e
 
-
-    def listarOrcamentos(self):
-        orcamentos = self.orcamentoRep.findAll()
+    def listarOrcamentos(self, aprovado):
+        orcamentos = self.orcamentoRep.findByAprovado(aprovado)
         if orcamentos:
             return orcamentos.dicts()
         else: return None

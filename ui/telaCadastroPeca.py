@@ -1,5 +1,4 @@
-from ctypes import alignment
-from PyQt6 import QtCore, QtWidgets
+from PyQt6 import QtCore, QtWidgets, QtGui
 from routes import handleRoutes
 from ui.telaCadastroOrcamento import UNIDADES
 
@@ -22,7 +21,7 @@ class TelaCadastroPeca(QtWidgets.QMainWindow):
         self.labelTitulo = QtWidgets.QLabel(self.frame_titulo)
         self.labelTitulo.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
         self.labelTitulo.setObjectName("titulo")
-        self.vlayout6.setContentsMargins(36, 18, 36, 18)
+        self.vlayout6.setContentsMargins(18, 18, 18, 18)
         self.vlayout6.setSpacing(36)
         self.vlayout6.addWidget(self.labelTitulo)
         self.scrollarea = QtWidgets.QScrollArea(self.main_frame)
@@ -77,23 +76,23 @@ class TelaCadastroPeca(QtWidgets.QMainWindow):
         self.retranslateUi()
         # conexoes
         self.botaoadd.clicked.connect(self.addLinhaPeca)
-        self.botaolimpar.clicked.connect(self.limparCampos)
-        self.botaosalvar.clicked.connect(self.resetarTela)
+        self.botaolimpar.clicked.connect(self.resetarTela)
+        self.botaosalvar.clicked.connect(self.salvarPecas)
 
     def retranslateUi(self):
         _translate = QtCore.QCoreApplication.translate
         self.setWindowTitle(_translate("MainWindow", "MainWindow"))
 
         self.labelTitulo.setText(_translate("MainWindow", "Cadastro de peças"))
-        self.labelnome.setText(_translate("MainWindow", "Nome da peça"))
+        self.labelnome.setText(_translate("MainWindow", "Nome da peça*"))
         self.labelUn.setText(_translate("MainWindow", "Un"))
-        self.labelvalor.setText(_translate("MainWindow", "Valor"))
+        self.labelvalor.setText(_translate("MainWindow", "Valor un*"))
         self.botaoadd.setText(_translate("MainWindow", "+"))
         self.botaolimpar.setText(_translate("MainWindow", "Limpar"))
         self.botaosalvar.setText(_translate("MainWindow", "Salvar"))
 
     def addLinhaPeca(self):
-        label1 = QtWidgets.QLabel(text="Nome da peça")
+        label1 = QtWidgets.QLabel(text="Nome da peça*")
         lineedit1 = QtWidgets.QLineEdit()
         lineedit1.setMaximumWidth(200)
         lineedit1.setMaximumWidth(600)
@@ -101,7 +100,7 @@ class TelaCadastroPeca(QtWidgets.QMainWindow):
         comboBox = QtWidgets.QComboBox()
         comboBox.addItems(UNIDADES)
         comboBox.setCurrentIndex(15)
-        label2 = QtWidgets.QLabel(text="Valor")
+        label2 = QtWidgets.QLabel(text="Valor un*")
         lineedit2 = QtWidgets.QLineEdit()
         lineedit2.setFixedWidth(80)
         botaoRemoverLinha = QtWidgets.QPushButton()
@@ -123,26 +122,69 @@ class TelaCadastroPeca(QtWidgets.QMainWindow):
 
     def removerLinha(self, linha):
         for x in range(3):
-            self.gridLayout.itemAtPosition(linha-1, x).widget().setParent(None)
-            self.gridLayout.itemAtPosition(linha, x).widget().setParent(None)
-        self.gridLayout.itemAtPosition(linha, 3).widget().setParent(None)
-        
+            w1 = self.gridLayout.itemAtPosition(linha-1, x).widget()
+            w1.hide()
+            w1.setParent(None)
+            w1.deleteLater()
+            w2 = self.gridLayout.itemAtPosition(linha, x).widget()
+            w2.hide()
+            w2.setParent(None)
+            w2.deleteLater()
+        w = self.gridLayout.itemAtPosition(linha, 3).widget()
+        w.hide()
+        w.setParent(None)
+        w.deleteLater()
         for x in range(self.gridLayout.rowCount()):
             if x > linha:
                 for y in range(4):
                     if not isinstance(self.gridLayout.itemAtPosition(x, y), QtWidgets.QSpacerItem) and self.gridLayout.itemAtPosition(x, y) != None:
                         self.gridLayout.addWidget(self.gridLayout.itemAtPosition(x, y).widget(), x-2, y, 1, 1)
-        
         del self.linhasPeca[int((linha-1)/2)]
+        self.gridLayout.removeItem(self.spacer)
         self.gridLayout.addItem(self.spacer, len(self.linhasPeca)*2, 0, 1, 1)
 
     def resetarTela(self):
-        #NAO DEVEMOS FAZER ISSO!
-        self.setupUi()
+        while len(self.linhasPeca)>1:
+            self.removerLinha(3)
+        self.limparCampos()
+        
+
+    def getPecas(self):
+        pecas = []
+        for desc, un, valor in self.linhasPeca:
+            if desc.text() and valor.text():
+                dict = {}
+                dict['descricao'] = desc.text()
+                dict['un'] = un.currentText()
+                if not valor.text().replace(',','',1).replace('.','',1).isdigit():
+                    raise Exception("Campo 'valor' deve possuir apenas números!")
+                dict['valor'] = valor.text().replace(',','.',1)
+                pecas.append(dict)
+            elif desc.text() or valor.text():
+                raise Exception('Preencha todos os campos de cada peça!')
+        return pecas
 
     def salvarPecas(self):
-        if (self.pecaCtrl.salvarPecas()):
+        try:
+            pecas = self.getPecas()
+            r = self.pecaCtrl.salvarPecas(pecas)
+            if isinstance(r, Exception):
+                raise Exception(r)
+            msg = QtWidgets.QMessageBox()
+            msg.setWindowTitle("Aviso")
+            msg.setIcon(QtWidgets.QMessageBox.Icon.Information)
+            s = 's' if len(pecas)>1 else ''
+            msg.setText(f"Peça{s} cadastrada{s} com sucesso!")
+            msg.exec()
             self.resetarTela()
+
+        except Exception as e:
+            msg = QtWidgets.QMessageBox()
+            msg.setWindowIcon(QtGui.QIcon('./resources/logo-icon.png'))
+            msg.setIcon(QtWidgets.QMessageBox.Icon.Critical)
+            msg.setWindowTitle("Erro")
+            msg.setText(str(e))
+            msg.exec()
 
     def limparCampos(self):
         for lineedit in self.framedados.findChildren(QtWidgets.QLineEdit):

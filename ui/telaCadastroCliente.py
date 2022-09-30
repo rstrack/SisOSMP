@@ -25,7 +25,7 @@ class TelaCadastroCliente(QtWidgets.QMainWindow):
         self.labelTitulo = QtWidgets.QLabel(self.frame_titulo)
         self.labelTitulo.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
         self.labelTitulo.setObjectName("titulo")
-        self.vlayout6.setContentsMargins(36, 18, 36, 18)
+        self.vlayout6.setContentsMargins(18, 18, 18, 18)
         self.vlayout6.setSpacing(36)
         self.vlayout6.addWidget(self.labelTitulo)
         self.framedados = QtWidgets.QFrame(self.main_frame)
@@ -158,7 +158,7 @@ class TelaCadastroCliente(QtWidgets.QMainWindow):
         self.retranslateUi()
         self.setMarcas()
 
-        self.botaolimpar.clicked.connect(self.limparCampos)
+        self.botaolimpar.clicked.connect(self.resetarTela)
         self.botaoSalvar.clicked.connect(self.salvar)
         self.comboBoxPessoa.currentIndexChanged.connect(self.escolherTipoPessoa)
         self.lineEditCEP.editingFinished.connect(self.buscarDadosCEP)
@@ -176,7 +176,7 @@ class TelaCadastroCliente(QtWidgets.QMainWindow):
         self.labelender.setText(_translate("MainWindow", "Endereço"))
         self.labelnumero.setText(_translate("MainWindow", "Nº"))
         self.labelUF.setText(_translate("MainWindow", "UF"))
-        self.labelTel1.setText(_translate("MainWindow", "Fone 1"))
+        self.labelTel1.setText(_translate("MainWindow", "Fone 1*"))
         self.labelTel2.setText(_translate("MainWindow", "Fone 2"))
         self.labelAno.setText(_translate("MainWindow", "Ano"))
         self.labelPlaca.setText(_translate("MainWindow", "Placa"))
@@ -223,6 +223,10 @@ class TelaCadastroCliente(QtWidgets.QMainWindow):
     def limparCampos(self):
         for lineedit in self.framedados.findChildren(QtWidgets.QLineEdit):
             lineedit.clear()
+
+    def resetarTela(self):
+        self.limparCampos()
+        self.setMarcas()
 
     def getDadosCliente(self):
         lista = list()
@@ -280,14 +284,14 @@ class TelaCadastroCliente(QtWidgets.QMainWindow):
         fones = []
         cont = 0
         if (self.lineEditTel1.text()):
-            if not self.lineEditTel1.text().isnumeric():
+            if not self.lineEditTel1.text().isnumeric() or len(self.lineEditTel1.text())<9:
                 raise Exception('Fone 1 inválido')
             fones.append(self.lineEditTel1.text())
             cont += 1
         else:
             fones.append(None)
         if (self.lineEditTel2.text()):
-            if not self.lineEditTel2.text().isnumeric():
+            if not self.lineEditTel2.text().isnumeric() or len(self.lineEditTel2.text())<9:
                 raise Exception('Fone 2 inválido')
             fones.append(self.lineEditTel2.text())
             cont += 1

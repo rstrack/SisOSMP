@@ -1,9 +1,9 @@
 from PyQt6 import QtCore, QtGui, QtWidgets
 from routes import handleRoutes
-from datetime import datetime
-class TelaConsultaOrcamento(QtWidgets.QMainWindow):
+
+class TelaConsultaOS(QtWidgets.QMainWindow):
     def __init__(self):
-        super(TelaConsultaOrcamento, self).__init__()
+        super(TelaConsultaOS, self).__init__()
         self.orcamentoCtrl = handleRoutes.getRoute('ORCAMENTOCTRL')
         self.clienteCtrl = handleRoutes.getRoute('CLIENTECTRL')
         self.setupUi()
@@ -52,7 +52,7 @@ class TelaConsultaOrcamento(QtWidgets.QMainWindow):
         self.filter.setFilterKeyColumn(-1)
         self.lineEditBusca.textChanged.connect(self.filter.setFilterRegularExpression)
         self.tabela.setModel(self.filter)
-        listaHeader = ['ID', 'Data', 'Cliente', 'Marca', 'Modelo', 'Placa', 'Valor Total']
+        listaHeader = ['ID', 'Data do Orçamento', 'Data de aprovação', 'Cliente', 'Marca', 'Modelo', 'Placa', 'Valor Total']
         self.model.setHorizontalHeaderLabels(listaHeader)
         self.setCentralWidget(self.mainwidget)
         self.retranslateUi()
@@ -66,7 +66,7 @@ class TelaConsultaOrcamento(QtWidgets.QMainWindow):
         self.botaoEditar.setText(_translate("MainWindow", "Editar"))
 
     def listarOrcamentos(self):
-        orcamentos = self.orcamentoCtrl.listarOrcamentos(False)
+        orcamentos = self.orcamentoCtrl.listarOrcamentos(True)
         if not orcamentos:
             return
         self.model.setRowCount(len(orcamentos))
@@ -83,40 +83,50 @@ class TelaConsultaOrcamento(QtWidgets.QMainWindow):
             item.setTextAlignment(
                 QtCore.Qt.AlignmentFlag.AlignRight | QtCore.Qt.AlignmentFlag.AlignVCenter)
             self.model.setItem(row, 1, item)
+            item = QtGui.QStandardItem()
+            dataAprovacao = orcamento['dataAprovacao'].strftime("%d/%m/%Y")
+            item.setData(dataAprovacao, QtCore.Qt.ItemDataRole.DisplayRole)
+            item.setTextAlignment(
+                QtCore.Qt.AlignmentFlag.AlignRight | QtCore.Qt.AlignmentFlag.AlignVCenter)
+            self.model.setItem(row, 2, item)
             cliente = self.clienteCtrl.getCliente(orcamento['cliente'])
             item = QtGui.QStandardItem()
             item.setData(cliente['nome'], QtCore.Qt.ItemDataRole.DisplayRole)
             item.setTextAlignment(
                 QtCore.Qt.AlignmentFlag.AlignLeft | QtCore.Qt.AlignmentFlag.AlignVCenter)
-            self.model.setItem(row, 2, item)
+            self.model.setItem(row, 3, item)
             #VEICULO
             veiculo = self.clienteCtrl.getVeiculo(orcamento['veiculo'])
             item = QtGui.QStandardItem(str(veiculo['marca']['nome']))
             item.setTextAlignment(
                 QtCore.Qt.AlignmentFlag.AlignLeft | QtCore.Qt.AlignmentFlag.AlignVCenter)
-            self.model.setItem(row, 3, item)
+            self.model.setItem(row, 4, item)
             item = QtGui.QStandardItem(str(veiculo['modelo']))
             item.setTextAlignment(
                 QtCore.Qt.AlignmentFlag.AlignLeft | QtCore.Qt.AlignmentFlag.AlignVCenter)
-            self.model.setItem(row, 4, item)
+            self.model.setItem(row, 5, item)
             item = QtGui.QStandardItem(str(veiculo['placa'] or ''))
             item.setTextAlignment(
                 QtCore.Qt.AlignmentFlag.AlignLeft | QtCore.Qt.AlignmentFlag.AlignVCenter)
-            self.model.setItem(row, 5, item)
+            self.model.setItem(row, 6, item)
             item = QtGui.QStandardItem('R$ {:.2f}'.format(orcamento['valorTotal']))
             item.setTextAlignment(
                 QtCore.Qt.AlignmentFlag.AlignRight | QtCore.Qt.AlignmentFlag.AlignVCenter)
-            self.model.setItem(row, 6, item)
+            self.model.setItem(row, 7, item)
             row = row+1
         header = self.tabela.horizontalHeader()
         header.setSectionResizeMode(
             QtWidgets.QHeaderView.ResizeMode.Interactive)
+        header.setSectionResizeMode(0, 
+            QtWidgets.QHeaderView.ResizeMode.ResizeToContents)    
         header.setSectionResizeMode(1, 
             QtWidgets.QHeaderView.ResizeMode.ResizeToContents)
         header.setSectionResizeMode(2, 
+            QtWidgets.QHeaderView.ResizeMode.ResizeToContents)
+        header.setSectionResizeMode(3, 
             QtWidgets.QHeaderView.ResizeMode.Stretch)
 
-    def editarOrcamento(self):
+    def editarOS(self):
         self.linha = self.tabela.selectionModel().selectedRows()
         if self.linha:
             return self.tabela.model().index(self.linha[0].row(), 0).data()
@@ -125,7 +135,7 @@ class TelaConsultaOrcamento(QtWidgets.QMainWindow):
 if __name__ == "__main__":
     import sys
     app = QtWidgets.QApplication(sys.argv)
-    ui = TelaConsultaOrcamento()
+    ui = TelaConsultaOS()
     ui.setupUi()
     ui.show()
     style = open('./resources/styles.qss').read()

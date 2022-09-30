@@ -15,7 +15,7 @@ if cursor.execute(f"SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SC
 
 def excepthook(type_, value, traceback_):
     sys.__excepthook__(type_, value, traceback_)
-    QtCore.qFatal('ta foda')
+    QtCore.qFatal('FATAL ERROR: CAPTURED')
 sys.excepthook = excepthook
 
 c = MainController()
