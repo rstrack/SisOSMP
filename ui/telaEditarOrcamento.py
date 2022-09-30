@@ -19,13 +19,13 @@ class TelaEditarOrcamento(QtWidgets.QMainWindow):
         self.servicoCtrl = handleRoutes.getRoute('SERVICOCTRL')
         self.marcaCtrl = handleRoutes.getRoute('MARCACTRL')
         self.buscaCEP = handleRoutes.getRoute('CEP')
-        self.valorTotal = 0
-        self.orcamentoID = None
-        self.pecasRemovidas = []
-        self.servicosRemovidos = []
         self.setupUi()
 
     def setupUi(self):
+        self.valorTotal = 0
+        self.orcamentoID = None
+        self.linhasPeca = []
+        self.linhasServico = []
         self.resize(1280, 760)
         self.main_frame = QtWidgets.QFrame(self)
         self.main_frame.setObjectName("main_frame")
@@ -145,32 +145,8 @@ class TelaEditarOrcamento(QtWidgets.QMainWindow):
             QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Expanding)
         self.scrollarea1.setWidget(self.framegroupboxpecas)
         self.gridLayoutPecas = QtWidgets.QGridLayout(self.framegroupboxpecas)
-        self.labelNomePeca = QtWidgets.QLabel(self.framegroupboxpecas)
-        self.gridLayoutPecas.addWidget(self.labelNomePeca, 0, 0, 1, 1)
-        self.labelQtde = QtWidgets.QLabel(self.framegroupboxpecas)
-        self.gridLayoutPecas.addWidget(self.labelQtde, 0, 1, 1, 1)
-        self.labelUn = QtWidgets.QLabel(self.framegroupboxpecas)
-        self.gridLayoutPecas.addWidget(self.labelUn, 0, 2, 1, 1)
-        self.labelValorPeca = QtWidgets.QLabel(self.framegroupboxpecas)
-        self.gridLayoutPecas.addWidget(self.labelValorPeca, 0, 3, 1, 1)
-        self.lineEditNomePeca = QtWidgets.QLineEdit(self.framegroupboxpecas)
-        self.gridLayoutPecas.addWidget(self.lineEditNomePeca, 1, 0, 1, 1)
-        self.lineEditQtdeP = QtWidgets.QLineEdit(self.framegroupboxpecas)
-        self.gridLayoutPecas.addWidget(self.lineEditQtdeP, 1, 1, 1, 1)
-        self.comboBoxUn = QtWidgets.QComboBox(self.framegroupboxpecas)
-        self.comboBoxUn.addItems(UNIDADES)
-        self.comboBoxUn.setMinimumWidth(50)
-        self.comboBoxUn.setCurrentIndex(15)
-        self.gridLayoutPecas.addWidget(self.comboBoxUn, 1, 2, 1, 1)
-        self.lineEditValorPeca = QtWidgets.QLineEdit(self.framegroupboxpecas)
-        self.gridLayoutPecas.addWidget(self.lineEditValorPeca, 1, 3, 1, 1)
-        self.botaoRemoverPeca = QtWidgets.QPushButton(self.framegroupboxpecas)
-        self.gridLayoutPecas.addWidget(self.botaoRemoverPeca, 1, 4, 1, 1)
-        self.botaoRemoverPeca.setObjectName('excluir')
         self.botaoAddPecas = QtWidgets.QPushButton(self.framegroupboxpecas)
         self.gridLayoutPecas.addWidget(self.botaoAddPecas, 1, 5, 1, 1)
-        self.linhasPeca = [
-            [self.lineEditNomePeca, self.lineEditQtdeP, self.comboBoxUn, self.lineEditValorPeca]]
         self.spacerpeca = QtWidgets.QSpacerItem(
             40, 20, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding)
         self.gridLayoutPecas.addItem(self.spacerpeca, 2, 0, 1, 1)
@@ -192,24 +168,8 @@ class TelaEditarOrcamento(QtWidgets.QMainWindow):
             QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Expanding)
         self.scrollarea2.setWidget(self.framegroupboxservicos)
         self.gridLayoutServicos = QtWidgets.QGridLayout(self.framegroupboxservicos)
-        self.labelNomeServico = QtWidgets.QLabel(self.framegroupboxservicos)
-        self.gridLayoutServicos.addWidget(self.labelNomeServico, 0, 0, 1, 1)
-        self.labelQtdeS = QtWidgets.QLabel(self.framegroupboxservicos)
-        self.gridLayoutServicos.addWidget(self.labelQtdeS, 0, 1, 1, 1)
-        self.labelValorServico = QtWidgets.QLabel(self.framegroupboxservicos)
-        self.gridLayoutServicos.addWidget(self.labelValorServico, 0, 2, 1, 1)
-        self.lineEditNomeServico = QtWidgets.QLineEdit(self.framegroupboxservicos)
-        self.gridLayoutServicos.addWidget(self.lineEditNomeServico, 1, 0, 1, 1)
-        self.lineEditQtdeS = QtWidgets.QLineEdit(self.framegroupboxservicos)
-        self.gridLayoutServicos.addWidget(self.lineEditQtdeS, 1, 1, 1, 1)
-        self.lineEditValorServico = QtWidgets.QLineEdit(self.framegroupboxservicos)
-        self.gridLayoutServicos.addWidget(self.lineEditValorServico, 1, 2, 1, 1)
-        self.botaoRemoverServico = QtWidgets.QPushButton(self.framegroupboxservicos)
-        self.botaoRemoverServico.setObjectName('excluir')
-        self.gridLayoutServicos.addWidget(self.botaoRemoverServico, 1, 3, 1, 1)
         self.botaoAddServicos = QtWidgets.QPushButton(self.framegroupboxservicos)
         self.gridLayoutServicos.addWidget(self.botaoAddServicos, 1, 4, 1, 1)
-        self.linhasServico = [[self.lineEditNomeServico,self.lineEditQtdeS, self.lineEditValorServico]]
         self.spacerservico = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding)
         self.gridLayoutServicos.addItem(self.spacerservico, 2, 0, 1, 1)
         self.gridLayoutGeral.addWidget(self.groupBoxServicos, 2, 1, 1, 1)
@@ -277,13 +237,11 @@ class TelaEditarOrcamento(QtWidgets.QMainWindow):
             QtCore.Qt.CaseSensitivity.CaseInsensitive)
         self.completerPeca.setCompletionMode(
             QtWidgets.QCompleter.CompletionMode.UnfilteredPopupCompletion)
-        self.lineEditNomePeca.setCompleter(self.completerPeca)
         self.completerServico = QtWidgets.QCompleter([])
         self.completerServico.setCaseSensitivity(
             QtCore.Qt.CaseSensitivity.CaseInsensitive)
         self.completerServico.setCompletionMode(
             QtWidgets.QCompleter.CompletionMode.UnfilteredPopupCompletion)
-        self.lineEditNomeServico.setCompleter(self.completerServico)
         for lineedit in self.groupBoxCliente.findChildren((QtWidgets.QLineEdit, QtWidgets.QComboBox)):
             lineedit.setEnabled(False)
         for lineedit in self.groupBoxVeiculo.findChildren((QtWidgets.QLineEdit, QtWidgets.QComboBox)):
@@ -293,19 +251,9 @@ class TelaEditarOrcamento(QtWidgets.QMainWindow):
         self.retranslateUi()
         self.botaoAddPecas.clicked.connect(self.addLinhaPeca)
         self.botaoAddServicos.clicked.connect(self.addLinhaServico)
-        self.botaoRemoverPeca.clicked.connect(lambda: self.removerLinhaPeca(1))
-        self.botaoRemoverServico.clicked.connect(lambda: self.removerLinhaServico(1))
         self.setMarcas()
         self.setCompleters()
         self.botaoSalvar.clicked.connect(self.editarOrcamento)
-        self.lineEditNomePeca.textChanged.connect(lambda: self.buscarPeca(self.lineEditNomePeca,self.comboBoxUn, self.lineEditValorPeca))
-        self.lineEditNomeServico.textChanged.connect(lambda: self.buscarServico(self.lineEditNomeServico,self.lineEditValorServico))
-        self.lineEditNomePeca.textChanged.connect(self.setValor)
-        self.lineEditNomeServico.textChanged.connect(self.setValor)
-        self.lineEditQtdeP.textChanged.connect(self.setValor)
-        self.lineEditQtdeS.textChanged.connect(self.setValor)
-        self.lineEditValorPeca.textChanged.connect(self.setValor)
-        self.lineEditValorServico.textChanged.connect(self.setValor)
 
     ##############################################################################################################################
                                                             #FUNÇÕES
@@ -338,19 +286,10 @@ class TelaEditarOrcamento(QtWidgets.QMainWindow):
         self.labelKm.setText(_translate("MainWindow", "Km*"))
         self.groupBoxServicos.setTitle(_translate("MainWindow", "Serviços"))
         self.botaoAddServicos.setText(_translate("MainWindow", "+"))
-        self.botaoRemoverServico.setText(_translate("MainWindow", "-"))
-        self.labelValorServico.setText(_translate("MainWindow", "Valor*"))
-        self.labelNomeServico.setText(_translate("MainWindow", "Serviço*"))
-        self.labelQtdeS.setText(_translate("MainWindow", "Qtde*"))
         self.labelLegenda.setText(_translate("MainWindow", "* Campos Obrigatórios"))
         self.groupBoxObs.setTitle(_translate("MainWindow", "Observações (Max. 200 caracteres)"))
         self.groupBoxPecas.setTitle(_translate("MainWindow", "Peças"))
-        self.labelQtde.setText(_translate("MainWindow", "Qtde*"))
-        self.labelUn.setText(_translate("MainWindow", "Un*"))
         self.botaoAddPecas.setText(_translate("MainWindow", "+"))
-        self.botaoRemoverPeca.setText(_translate("MainWindow", "-"))
-        self.labelNomePeca.setText(_translate("MainWindow", "Peça*"))
-        self.labelValorPeca.setText(_translate("MainWindow", "Valor*"))
 
     def addLinhaPeca(self):
         label1 = QtWidgets.QLabel(text="Peça*")
@@ -474,7 +413,7 @@ class TelaEditarOrcamento(QtWidgets.QMainWindow):
             self.comboBoxMarca.findText(marca, QtCore.Qt.MatchFlag.MatchExactly))
     
     def setPecas(self, listaPecas:list):
-        for _ in range(len(listaPecas)-1):
+        for _ in range(len(listaPecas)):
             self.addLinhaPeca()
         for linha in self.linhasPeca:
             linha[0].setText(listaPecas[self.linhasPeca.index(linha)]['descricao'])
@@ -483,7 +422,7 @@ class TelaEditarOrcamento(QtWidgets.QMainWindow):
             linha[3].setText('{:.2f}'.format(listaPecas[self.linhasPeca.index(linha)]['valor']))
 
     def setServicos(self, listaServicos:list):
-        for _ in range(len(listaServicos)-1):
+        for _ in range(len(listaServicos)):
             self.addLinhaServico()
         for linha in self.linhasServico:
             linha[0].setText(listaServicos[self.linhasServico.index(linha)]['descricao'])
@@ -596,6 +535,7 @@ class TelaEditarOrcamento(QtWidgets.QMainWindow):
             self.setValor()
 
     def renderEditar(self, id):
+        self.setupUi()
         self.orcamentoID = id
         orcamento = self.orcamentoCtrl.getOrcamento(id)
         fones = self.clienteCtrl.listarFones(orcamento['cliente'])
@@ -603,13 +543,11 @@ class TelaEditarOrcamento(QtWidgets.QMainWindow):
         itemServicos = self.orcamentoCtrl.listarItemServicos(orcamento['idOrcamento'])
         if itemPecas:
             for item in itemPecas:
-                print(f'peca: {item}')
                 peca = self.pecaCtrl.getPeca(item['peca'])
                 item['descricao'] = peca['descricao']
                 item['un'] = peca['un']
         if itemServicos:
             for item in itemServicos:
-                print(f'servico: {item}')
                 servico = self.servicoCtrl.getServico(item['servico'])
                 item['descricao'] = servico['descricao']
         listaFones = [None, None]
@@ -626,7 +564,8 @@ class TelaEditarOrcamento(QtWidgets.QMainWindow):
         self.setEndereco(orcamento['cliente']['cep'], orcamento['cliente']['endereco'], orcamento['cliente']['numero'], orcamento['cliente']['bairro'],
             cidade, uf)
         self.setVeiculo(orcamento['veiculo']['marca']['nome'], orcamento['veiculo']['modelo'], orcamento['veiculo']['placa'], orcamento['veiculo']['ano'])
-        self.setPecas(list(itemPecas))
+        if itemPecas:
+            self.setPecas(list(itemPecas))
         self.setServicos(list(itemServicos))
         self.lineEditKm.setText(orcamento['km'])
         self.lineEditData.setDate(orcamento['dataOrcamento'])
@@ -634,30 +573,28 @@ class TelaEditarOrcamento(QtWidgets.QMainWindow):
 
     # def editarOrcamento(self, id, orcamento:dict, pecas:list, servicos:list):
     def editarOrcamento(self):
-        try:
-            pecas = self.getPecas()
-            servicos  = self.getServicos()
-            orcamento = self.getDadosOrcamento()
-            orcamento['valorTotal'] = self.valorTotal
-            r = self.orcamentoCtrl.editarOrcamento(self.orcamentoID, orcamento, pecas, servicos)
-            if isinstance(r, Exception):
-                raise Exception(r)
-            msg = QtWidgets.QMessageBox()
-            msg.setWindowTitle("Aviso")
-            msg.setText("Orçamento editado com sucesso!")
-            msg.exec()
-            #RESETA DADOS DA TELA
-            self.clienteSelected = None
-            self.veiculoSelected = None
-            self.valorTotal = 0
-            self.orcamentoID = None
-            self.setupUi()
-        except Exception as e:
+        '''try:'''
+        pecas = self.getPecas()
+        servicos  = self.getServicos()
+        orcamento = self.getDadosOrcamento()
+        orcamento['valorTotal'] = self.valorTotal
+        r = self.orcamentoCtrl.editarOrcamento(self.orcamentoID, orcamento, pecas, servicos)
+        if isinstance(r, Exception):
+            raise Exception(r)
+        msg = QtWidgets.QMessageBox()
+        msg.setWindowTitle("Aviso")
+        msg.setText("Orçamento editado com sucesso!")
+        msg.exec()
+        #RESETA DADOS DA TELA
+        self.clienteSelected = None
+        self.veiculoSelected = None
+        self.valorTotal = 0
+        self.orcamentoID = None
+        '''except Exception as e:
             msg = QtWidgets.QMessageBox()
             msg.setWindowTitle("Aviso")
             msg.setText(str(e))
-            msg.exec()
-
+            msg.exec()'''
 
 if __name__ == "__main__":
     import sys

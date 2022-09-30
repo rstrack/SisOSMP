@@ -17,7 +17,7 @@ lista1 = [['Daniel Pasetto', 'CNPJ', '85.481.562/0001-57', "12345678910", "12345
 
 
 def GeneratePDF(listainfos):
-    pdf = canvas.Canvas('teste.pdf', pagesize=A4)
+    pdf = canvas.Canvas(f"{os.path.expandvars('%LOCALAPPDATA%')}\Temp\\teste.pdf", pagesize=A4)
     pdf.drawInlineImage(
          "./resources/logo2.png", 0, 740, 200, 100
     )
@@ -256,7 +256,7 @@ def GeneratePDF(listainfos):
             f.drawOn(pdf, 10, y)
             s.drawOn(pdf, 10, z)
     pdf.save()
-    os.startfile('teste.pdf')
+    os.startfile(f"{os.path.expandvars('%LOCALAPPDATA%')}\Temp\\teste.pdf")
     print('teste.pdf criado com sucesso!')
 
 

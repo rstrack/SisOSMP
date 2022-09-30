@@ -1,6 +1,8 @@
 import pymysql as sql
 from controller.mainController import MainController
 from model.modelo import *
+import sys
+from PyQt6 import QtCore
 
 driver = sql.connect(user='root', password='admin', host='localhost', port=3306)
 cursor = driver.cursor()
@@ -10,6 +12,11 @@ if cursor.execute(f"SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SC
     cursor.execute(f"CREATE DATABASE {NOMEBANCODEDADOS}")
     cursor.execute(f"use {NOMEBANCODEDADOS}")
     create_tables(cursor)
+
+def excepthook(type_, value, traceback_):
+    sys.__excepthook__(type_, value, traceback_)
+    QtCore.qFatal('ta foda')
+sys.excepthook = excepthook
 
 c = MainController()
 c.run()

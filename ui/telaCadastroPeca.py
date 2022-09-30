@@ -137,6 +137,7 @@ class TelaCadastroPeca(QtWidgets.QMainWindow):
         self.gridLayout.addItem(self.spacer, len(self.linhasPeca)*2, 0, 1, 1)
 
     def resetarTela(self):
+        #NAO DEVEMOS FAZER ISSO!
         self.setupUi()
 
     def salvarPecas(self):

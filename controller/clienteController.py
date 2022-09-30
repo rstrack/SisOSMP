@@ -124,7 +124,6 @@ class ClienteController():
             return fones.dicts()
         else: return None
 
-
     #salva somente um veiculo
     def salvarVeiculo(self, veiculo):
         with db.atomic() as transaction:
