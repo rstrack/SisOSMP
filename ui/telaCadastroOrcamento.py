@@ -43,7 +43,7 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
         self.vlayout1.addWidget(self.labelTitulo)
         self.framedados = QtWidgets.QFrame(self.main_frame)
         self.gridLayoutGeral = QtWidgets.QGridLayout(self.framedados)
-        self.gridLayoutGeral.setVerticalSpacing(0)
+        self.gridLayoutGeral.setVerticalSpacing(6)
         self.gridLayoutGeral.setHorizontalSpacing(9)
         self.vlayout1.addWidget(self.framedados)
         # dados do cliente
@@ -246,14 +246,26 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
         self.gridLayoutServicos.setColumnStretch(1, 1)
         self.gridLayoutServicos.setColumnStretch(2, 1)
         # frame
-        self.framevalor = QtWidgets.QFrame(self.framedados)
-        self.hlayoutvalor = QtWidgets.QHBoxLayout(self.framevalor)
-        self.hlayoutvalor.setContentsMargins(0, 0, 0, 0)
+        self.frameObs = QtWidgets.QFrame(self.framedados)
+        self.hlayoutObs = QtWidgets.QHBoxLayout(self.frameObs)
+        self.hlayoutObs.setContentsMargins(0,0,0,0)
+        self.hlayoutObs.setSpacing(4)
+
+        # campo de observações
+        self.groupBoxObs = QtWidgets.QGroupBox(self.frameObs)
+        self.vlayout2 = QtWidgets.QVBoxLayout(self.groupBoxObs)
+        self.textEdit = QtWidgets.QTextEdit(self.groupBoxObs)
+        self.groupBoxObs.setMaximumHeight(90)
+        self.vlayout2.addWidget(self.textEdit)
+        self.gridLayoutGeral.setColumnStretch(0,1)
+        self.gridLayoutGeral.setColumnStretch(1,1)
+
+        self.hlayoutObs.addWidget(self.groupBoxObs)
+
         # data do orçamento
 
-        self.framedata = QtWidgets.QFrame(self.framevalor)
+        self.framedata = QtWidgets.QFrame(self.frameObs)
         self.vlayoutdata = QtWidgets.QVBoxLayout(self.framedata)
-        self.vlayoutdata.setContentsMargins(4,4,4,4)
         self.labelData = QtWidgets.QLabel(self.framedata)
         self.lineEditData = QtWidgets.QDateEdit(self.framedata)
         self.lineEditData.setFixedWidth(125)
@@ -261,36 +273,26 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
         self.lineEditData.setDateTime(QtCore.QDateTime.currentDateTime())
         self.vlayoutdata.addWidget(self.labelData)
         self.vlayoutdata.addWidget(self.lineEditData)
-        self.hlayoutvalor.addWidget(self.framedata)
+        self.hlayoutObs.addWidget(self.framedata)
 
         # valor
-        self.labelValorTotal1 = QtWidgets.QLabel(self.framevalor)
+        self.labelValorTotal1 = QtWidgets.QLabel(self.frameObs)
+        self.labelValorTotal1.setAlignment(QtCore.Qt.AlignmentFlag.AlignRight | QtCore.Qt.AlignmentFlag.AlignVCenter)
         self.labelValorTotal1.setText("VALOR TOTAL: R$")
         self.labelValorTotal1.setObjectName('boldText')
-        self.labelValorTotal2 = QtWidgets.QLabel(self.framevalor)
+        self.labelValorTotal2 = QtWidgets.QLabel(self.frameObs)
+        self.labelValorTotal2.setAlignment(QtCore.Qt.AlignmentFlag.AlignLeft | QtCore.Qt.AlignmentFlag.AlignVCenter)
         self.labelValorTotal2.setObjectName('boldText')
-        spacerItem = QtWidgets.QSpacerItem(
-            10, 10, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
-        self.hlayoutvalor.addItem(spacerItem)
-        self.hlayoutvalor.addWidget(self.labelValorTotal1)
-        self.hlayoutvalor.addWidget(self.labelValorTotal2)
-        self.hlayoutvalor.setSpacing(0)
-        self.gridLayoutGeral.addWidget(self.framevalor, 3, 0, 1, -1)
+        self.hlayoutObs.addWidget(self.labelValorTotal1)
+        self.hlayoutObs.addWidget(self.labelValorTotal2)
+        self.gridLayoutGeral.addWidget(self.frameObs, 3, 0, 1, -1)
         self.gridLayoutGeral.setRowStretch(2, 10)
         self.gridLayoutGeral.setRowStretch(3, 0)
-        # campo de observações
-        self.groupBoxObs = QtWidgets.QGroupBox(self.framedados)
-        self.vlayout2 = QtWidgets.QVBoxLayout(self.groupBoxObs)
-        self.textEdit = QtWidgets.QTextEdit(self.groupBoxObs)
-        self.groupBoxObs.setMaximumHeight(80)
-        self.vlayout2.addWidget(self.textEdit)
-        self.gridLayoutGeral.addWidget(self.groupBoxObs, 4, 0, 1, -1)
-        self.gridLayoutGeral.setColumnStretch(0,1)
-        self.gridLayoutGeral.setColumnStretch(1,1)
+        
         # botoes
         self.framebotoes = QtWidgets.QFrame(self.main_frame)
         self.hlayout4 = QtWidgets.QHBoxLayout(self.framebotoes)
-        self.labelLegenda = QtWidgets.QLabel(self.framevalor)
+        self.labelLegenda = QtWidgets.QLabel(self.framebotoes)
         self.hlayout4.addWidget(self.labelLegenda)
         spacerItem5 = QtWidgets.QSpacerItem(
             40, 10, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
@@ -305,7 +307,7 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
         self.botaolimpar = QtWidgets.QPushButton(self.framebotoes)
         self.botaolimpar.setMinimumSize(QtCore.QSize(100, 30))
         self.hlayout4.addWidget(self.botaolimpar)
-        self.hlayout4.setContentsMargins(9, 0, 9, 9)
+        self.hlayout4.setContentsMargins(9, 9, 9, 9)
         self.vlayout1.addWidget(self.framebotoes)
         self.setCentralWidget(self.main_frame)
         self.completerPeca = QtWidgets.QCompleter([])

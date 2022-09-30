@@ -5,18 +5,53 @@ from reportlab.lib.pagesizes import A4
 from reportlab.platypus import Table
 from reportlab.platypus import TableStyle
 from reportlab.lib import colors
+import textwrap
 import os
 
-lista1 = [['Daniel Pasetto', 'CNPJ', '85.481.562/0001-57', "12345678910", "12345678910", "Rua Barão do Bojuru", "Ronda",
-           "84070-310", "87", "Ponta Grossa", "PR", "Volkswagen", "9999", "Saveiro-Kombi", "999999"],
-          [['Carburador', '5', 'Unidade', 'R$ 50.00'], ['Pneu', '3', 'Unidade', 'R$ 50.00']],
-          [['Troca de Peça', '5', 'R$ 50.00']]]
+# DICT DO ORÇAMENTO GERADO AO SALVAR/EDITAR
 
+{'idOrcamento': 12, 
+'dataOrcamento': '2022-09-29', 
+'cliente': {
+    'idCliente': '3', 
+    'nome': 'Gabriel Julek', 
+    'tipo': 0, 
+    'documento': None, #pode ser None
+    'cep': None, #pode ser None
+    'endereco': None, #pode ser None
+    'numero': None, #pode ser None
+    'bairro': None, #pode ser None
+    'cidade': None #pode ser None
+    # se tiver cidade:
+    # 'cidade': {
+    #     'idCidade': 1, 
+    #     'nome': 'Ponta Grossa', 
+    #     'uf': 'PR'}
+    }, 
+'veiculo': {
+    'idVeiculo': '2', 
+    'modelo': 'Gol', 
+    'ano': None, #pode ser None
+    'placa': 'aaa1234', 
+    'marca': {
+        'idMarca': 2, 
+        'nome': 'Volskwagen'}}, 
+'km': '99999', 
+'valorTotal': 25.98, 
+'aprovado': None, # 0 ou 1
+'dataAprovacao': None, #pode ser None se aprovado == 0
+'observacoes': ''} #pode ser None
+
+[{'cliente': 3, 'fone': '4288888888'}] #pode ter 1 ou 2
+
+[{'peca': 2, 'orcamento': 12, 'qtde': 1, 'valor': 9.99}] #pode ter vários
+
+[{'servico': 2, 'orcamento': 12, 'qtde': 1, 'valor': 15.99}] #pode ter vários
 
 # Configurações para geração do pdf
 
 
-def GeneratePDF(listainfos):
+def generatePDF(orcamento: dict, listaFones:list[dict], listaServicos:list[dict], listaPecas:list[dict]=None):
     pdf = canvas.Canvas(f"{os.path.expandvars('%LOCALAPPDATA%')}\Temp\\teste.pdf", pagesize=A4)
     pdf.drawInlineImage(
          "./resources/logo2.png", 0, 740, 200, 100
@@ -117,15 +152,15 @@ def GeneratePDF(listainfos):
         pdf.rect(390, l - 30, 1 * inch + 51, 15, fill=False, stroke=True)
         pdf.rect(441 + 1 * inch, l - 30, 1 * inch, 15, fill=False, stroke=True)
         pdf.drawString(265, g + 4, 'Observações:')
-        obs = "O Carro mostrou avarias na parte traseira, foi encontrado um cavalo no interior do veículo cujo o " \
-              "mesmo foi agressivo com o mecanico.kjadsaksjdsj kjdkasjdkjdsakjadsjkads "
-        aux = 0
+        linhas = orcamento['observacoes'].split('\n')
+        linhasObs = []
+        for linha in linhas:
+            linhasObs.extend(textwrap.wrap(linha, 100, break_long_words=True))
         c = 123
         q = g - 11
         # pular linha em observações(vai ser melhorado ainda)
-        for x in range(5):
-            pdf.drawString(30, q, obs[aux:c])
-            aux = c + 1
+        for x in linhasObs:
+            pdf.drawString(30, q, x)
             c = c + 103
             q = q - 15
         pdf.rect(10, g, 575, 15, fill=False, stroke=True)
@@ -260,4 +295,4 @@ def GeneratePDF(listainfos):
     print('teste.pdf criado com sucesso!')
 
 
-GeneratePDF(lista1)
+#generatePDF(lista1)
