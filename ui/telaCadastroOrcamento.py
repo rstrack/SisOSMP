@@ -278,11 +278,12 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
         # valor
         self.labelValorTotal1 = QtWidgets.QLabel(self.frameObs)
         self.labelValorTotal1.setAlignment(QtCore.Qt.AlignmentFlag.AlignRight | QtCore.Qt.AlignmentFlag.AlignVCenter)
-        self.labelValorTotal1.setText("VALOR TOTAL: R$")
         self.labelValorTotal1.setObjectName('boldText')
         self.labelValorTotal2 = QtWidgets.QLabel(self.frameObs)
         self.labelValorTotal2.setAlignment(QtCore.Qt.AlignmentFlag.AlignLeft | QtCore.Qt.AlignmentFlag.AlignVCenter)
         self.labelValorTotal2.setObjectName('boldText')
+        self.labelValorTotal2.setText('0,00')
+
         self.hlayoutObs.addWidget(self.labelValorTotal1)
         self.hlayoutObs.addWidget(self.labelValorTotal2)
         self.gridLayoutGeral.addWidget(self.frameObs, 3, 0, 1, -1)
@@ -394,7 +395,8 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
         self.labelUn.setText(_translate("MainWindow", "Un*"))
         self.botaoAddPecas.setText(_translate("MainWindow", "+"))
         self.labelNomePeca.setText(_translate("MainWindow", "Peça*"))
-        self.labelValorPeca.setText(_translate("MainWindow", "Valor*"))
+        self.labelValorPeca.setText("Valor*")
+        self.labelValorTotal1.setText(_translate("MainWindow", "VALOR TOTAL: R$"))
 
     def addLinhaPeca(self):
         label1 = QtWidgets.QLabel(text="Peça*")
@@ -732,15 +734,21 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
     def setValor(self):
         self.valorTotal=0.00
         for _,qtde,_,valor in self.linhasPeca:
-            if valor.text():
+            if valor.text().replace(',','',1).replace('.','',1).isdigit():
                 if qtde.text():
                     self.valorTotal+=float(valor.text().replace(',','.',1))*float(qtde.text().replace(',','.',1))
                 else: self.valorTotal+=float(valor.text().replace(',','.',1))
+            else:
+                self.labelValorTotal2.setText('0,00')
+                return
         for _,qtde,valor in self.linhasServico:
-            if valor.text():
+            if valor.text().replace(',','',1).replace('.','',1).isdigit():
                 if qtde.text():
                     self.valorTotal+=float(valor.text().replace(',','.',1))*float(qtde.text().replace(',','.',1))
                 else: self.valorTotal+=float(valor.text().replace(',','.',1))
+            else:
+                self.labelValorTotal2.setText('0,00')
+                return
         self.labelValorTotal2.setText('{:.2f}'.format(self.valorTotal))
 
     def buscarPeca(self, lineEditDesc, comboBoxUn, lineEditValor):

@@ -74,9 +74,12 @@ def generatePDF(orcamento: dict, listaFones:list[dict], listaServicos:list[dict]
     pdf.rect(10, 695, 575, 15, fill=False, stroke=True)
     pdf.drawString(20, 684, "{}:{}".format(listainfos[0][1], listainfos[0][2]))
     pdf.rect(10, 680, 235, 15, fill=False, stroke=True)
-    pdf.drawString(250, 684, "Fone:{}".format(listainfos[0][3]))
+    pdf.drawString(250, 684, "Fone:{}".format(listaFones[0]['fone']))
+    if listaFones[1]:
+        fone2 = listaFones[1]['fone']
+    else: fone2 = ''
     pdf.rect(245, 680, 200, 15, fill=False, stroke=True)
-    pdf.drawString(450, 684, "Fone:{}".format(listainfos[0][4]))
+    pdf.drawString(450, 684, "Fone:{}".format(fone2))
     pdf.rect(445, 680, 140, 15, fill=False, stroke=True)
     pdf.drawString(20, 669, "Endereço:{}".format(listainfos[0][5]))
     pdf.rect(10, 665, 575, 15, fill=False, stroke=True)
