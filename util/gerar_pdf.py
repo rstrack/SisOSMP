@@ -167,17 +167,11 @@ def generatePDF(orcamento: dict, listaFones: list[dict], listaServicos: list[dic
         ('INNERGRID', (0, 0), (-1, -1), 1, colors.black),
         ('BOX', (0, 0), (-1, -1), 1, colors.black),
     ])
-    pecasitem = 0
-    #TRANSFORMAR PARA DICIONÁRIO
-    num_elementos_listapecas = len(listaPecas)
-    while pecasitem < num_elementos_listapecas:
-        pecas.append(listaPecas[pecasitem])
-        pecasitem += 1
-    servicositem = 0
-    num_elementos_listaservicos = len(listaServicos)
-    while servicositem < num_elementos_listaservicos:
-        servicos.append(listaServicos[servicositem])
-        servicositem += 1
+
+    for dict in listaPecas:
+        pecas.append([dict['descricao'], dict['qtde'], dict['un'], dict['valor']])
+    for dict in listaServicos:
+        servicos.append([dict['descricao'], dict['qtde'], dict['valor']])
 
     y = 7.9 * inch
     width = 575

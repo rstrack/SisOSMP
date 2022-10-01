@@ -800,9 +800,15 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
         fones = self.clienteCtrl.listarFones(orcamento['cliente'])
         if fones: fones = list(fones)
         itemPecas = self.orcamentoCtrl.listarItemPecas(orcamento['idOrcamento'])
-        if itemPecas: itemPecas = list(itemPecas)
+        if itemPecas: 
+            for item in itemPecas:
+                item['descricao'] = self.pecaCtrl.getPeca(item['peca'])['descricao']
+            itemPecas = list(itemPecas)
         itemServicos = self.orcamentoCtrl.listarItemServicos(orcamento['idOrcamento'])
-        if itemServicos: itemServicos = list(itemServicos)
+        if itemServicos: 
+            for item in itemServicos:
+                item['descricao'] = self.servicoCtrl.getServico(item['servico'])['descricao']
+            itemServicos = list(itemServicos)
         print(orcamento)
         print(fones)
         print(itemPecas)
