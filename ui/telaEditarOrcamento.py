@@ -10,7 +10,7 @@ UNIDADES = ['CM', 'CM2', 'CM3', 'CX', 'DZ', 'G', 'KG',
 
 
 class TelaEditarOrcamento(QtWidgets.QMainWindow):
-
+    retornarConsulta = QtCore.pyqtSignal(int)
     def __init__(self):
         super(TelaEditarOrcamento, self).__init__()
         self.orcamentoCtrl = handleRoutes.getRoute('ORCAMENTOCTRL')
@@ -230,6 +230,9 @@ class TelaEditarOrcamento(QtWidgets.QMainWindow):
         self.botaoSalvar = QtWidgets.QPushButton(self.framebotoes)
         self.botaoSalvar.setMinimumSize(QtCore.QSize(100, 30))
         self.hlayout4.addWidget(self.botaoSalvar)
+        self.botaoCancelar = QtWidgets.QPushButton(self.framebotoes)
+        self.botaoCancelar.setMinimumSize(QtCore.QSize(100, 30))
+        self.hlayout4.addWidget(self.botaoCancelar)
         self.hlayout4.setContentsMargins(9, 0, 9, 9)
         self.vlayout1.addWidget(self.framebotoes)
         self.setCentralWidget(self.main_frame)
@@ -256,6 +259,7 @@ class TelaEditarOrcamento(QtWidgets.QMainWindow):
         self.setCompleters()
         self.botaoSalvar.clicked.connect(self.editarOrcamento)
         self.botaoAprovar.clicked.connect(self.aprovarOrcamento)
+        self.botaoCancelar.clicked.connect(self.cancelarEdicao)
 
     ##############################################################################################################################
                                                             #FUNÇÕES
@@ -266,6 +270,7 @@ class TelaEditarOrcamento(QtWidgets.QMainWindow):
         self.setWindowTitle(_translate("MainWindow", "Mecânica Pasetto"))
         self.botaoAprovar.setText(_translate("MainWindow", "Aprovar"))
         self.botaoSalvar.setText(_translate("MainWindow", "Salvar"))
+        self.botaoCancelar.setText(_translate("MainWindow", "Cancelar"))
         self.labelTitulo.setText(_translate("MainWindow", "Editar Orçamento"))
         self.labelData.setText(_translate("MainWindow", "Data do Orçamento"))
         self.groupBoxCliente.setTitle(_translate("MainWindow", "Dados do Cliente"))
@@ -594,6 +599,7 @@ class TelaEditarOrcamento(QtWidgets.QMainWindow):
             self.veiculoSelected = None
             self.valorTotal = 0
             self.orcamentoID = None
+            self.retornarConsulta.emit(1)
         except Exception as e:
             msg = QtWidgets.QMessageBox()
             msg.setWindowTitle("Aviso")
@@ -614,6 +620,18 @@ class TelaEditarOrcamento(QtWidgets.QMainWindow):
             msg.setWindowTitle("Aviso")
             msg.setText(str(e))
             msg.exec()
+
+    def cancelarEdicao(self):
+        msgBox = QtWidgets.QMessageBox()
+        msgBox.setWindowTitle("Aviso")
+        msgBox.setText('Deseja cancelar a edição? Alterações serão perdidas')
+        y = msgBox.addButton("Sim", QtWidgets.QMessageBox.ButtonRole.YesRole)
+        n = msgBox.addButton("Não", QtWidgets.QMessageBox.ButtonRole.NoRole)
+        y.setFixedWidth(60)
+        n.setFixedWidth(60)
+        msgBox.exec()
+        if msgBox.clickedButton() == y:
+            self.retornarConsulta.emit(1)
 
     def limparCampos(self):
         for lineedit in self.framedados.findChildren(QtWidgets.QLineEdit):

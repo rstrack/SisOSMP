@@ -161,7 +161,7 @@ class TelaCadastroCliente(QtWidgets.QMainWindow):
         self.botaolimpar.clicked.connect(self.resetarTela)
         self.botaoSalvar.clicked.connect(self.salvar)
         self.comboBoxPessoa.currentIndexChanged.connect(self.escolherTipoPessoa)
-        self.lineEditCEP.editingFinished.connect(self.buscarDadosCEP)
+        self.lineEditCEP.textChanged.connect(self.buscarDadosCEP)
 
     def retranslateUi(self):
         _translate = QtCore.QCoreApplication.translate

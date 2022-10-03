@@ -6,6 +6,7 @@ from ui.telaConsultaCliente import TelaConsultaCliente
 from ui.telaConsultaOS import TelaConsultaOS
 from ui.telaConsultaVeiculo import TelaConsultaVeiculo
 from ui.telaEditarOS import TelaEditarOS
+from ui.telaEditarVeiculo import TelaEditarVeiculo
 
 from util.buscaCEP import BuscaCEP
 
@@ -61,6 +62,7 @@ class MainController():
         self.telaConsultaOS = TelaConsultaOS()
 
         self.telaEditarCliente = TelaEditarCliente()
+        self.telaEditarVeiculo = TelaEditarVeiculo()
         self.telaEditarOrcamento = TelaEditarOrcamento()
         self.telaEditarOS = TelaEditarOS()
 
@@ -77,6 +79,7 @@ class MainController():
         self.telaInicio.stackedWidget.addWidget(self.telaConsultaOS)
 
         self.telaInicio.stackedWidget.addWidget(self.telaEditarCliente)
+        self.telaInicio.stackedWidget.addWidget(self.telaEditarVeiculo)
         self.telaInicio.stackedWidget.addWidget(self.telaEditarOrcamento)
         self.telaInicio.stackedWidget.addWidget(self.telaEditarOS)
         self.initConnections()
@@ -118,13 +121,22 @@ class MainController():
 
         # conectando seleção de edição com respectivas telas de edição
         self.telaConsultaCliente.botaoEditar.clicked.connect(
-            lambda: self.trocaPagina(self.telaEditarCliente, self.telaEditarCliente.renderEditar, self.telaConsultaCliente.editarCliente))
+            lambda: self.consultaParaEditar(self.telaEditarCliente, self.telaEditarCliente.renderEditar, self.telaConsultaCliente.editarCliente))
+        self.telaConsultaVeiculo.botaoEditar.clicked.connect(
+            lambda: self.consultaParaEditar(self.telaEditarVeiculo, self.telaEditarVeiculo.renderEditar, self.telaConsultaVeiculo.editarVeiculo))
         self.telaConsultaOrcamento.botaoEditar.clicked.connect(
-            lambda: self.trocaPagina(self.telaEditarOrcamento, self.telaEditarOrcamento.renderEditar, self.telaConsultaOrcamento.editarOrcamento))
+            lambda: self.consultaParaEditar(self.telaEditarOrcamento, self.telaEditarOrcamento.renderEditar, self.telaConsultaOrcamento.editarOrcamento))
         self.telaConsultaOS.botaoEditar.clicked.connect(
-            lambda: self.trocaPagina(self.telaEditarOS, self.telaEditarOS.renderEditar, self.telaConsultaOS.editarOS))
+            lambda: self.consultaParaEditar(self.telaEditarOS, self.telaEditarOS.renderEditar, self.telaConsultaOS.editarOS))
 
-    def trocaPagina(self, pagina, render, param):
+        # retorno das edições para tela de consulta em caso de cancelamento ou conclusão da operação
+        self.telaEditarCliente.retornarConsulta.connect(lambda: self.telaInicio.stackedWidget.setCurrentWidget(self.telaConsultaCliente))
+        self.telaEditarVeiculo.retornarConsulta.connect(lambda: self.telaInicio.stackedWidget.setCurrentWidget(self.telaConsultaVeiculo))
+        self.telaEditarOrcamento.retornarConsulta.connect(lambda: self.telaInicio.stackedWidget.setCurrentWidget(self.telaConsultaOrcamento))
+        self.telaEditarOS.retornarConsulta.connect(lambda: self.telaInicio.stackedWidget.setCurrentWidget(self.telaConsultaOS))
+
+    # função que passa da tela de consulta para a tela de edição da respectiva entidade, passando id a ser alterado como parametro
+    def consultaParaEditar(self, pagina, render, param):
         p = param()
         if p == None:
             return

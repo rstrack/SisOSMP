@@ -10,7 +10,7 @@ UNIDADES = ['CM', 'CM2', 'CM3', 'CX', 'DZ', 'G', 'KG',
 
 
 class TelaEditarOS(QtWidgets.QMainWindow):
-
+    retornarConsulta = QtCore.pyqtSignal(int)
     def __init__(self):
         super(TelaEditarOS, self).__init__()
         self.orcamentoCtrl = handleRoutes.getRoute('ORCAMENTOCTRL')
@@ -233,6 +233,9 @@ class TelaEditarOS(QtWidgets.QMainWindow):
         self.botaoSalvar = QtWidgets.QPushButton(self.framebotoes)
         self.botaoSalvar.setMinimumSize(QtCore.QSize(100, 30))
         self.hlayout4.addWidget(self.botaoSalvar)
+        self.botaoCancelar = QtWidgets.QPushButton(self.framebotoes)
+        self.botaoCancelar.setMinimumSize(QtCore.QSize(100, 30))
+        self.hlayout4.addWidget(self.botaoCancelar)
         self.hlayout4.setContentsMargins(9, 0, 9, 9)
         self.vlayout1.addWidget(self.framebotoes)
         self.setCentralWidget(self.main_frame)
@@ -258,6 +261,7 @@ class TelaEditarOS(QtWidgets.QMainWindow):
         self.setMarcas()
         self.setCompleters()
         self.botaoSalvar.clicked.connect(self.editarOrcamento)
+        self.botaoCancelar.clicked.connect(self.cancelarEdicao)
 
     ##############################################################################################################################
                                                             #FUNÇÕES
@@ -267,6 +271,7 @@ class TelaEditarOS(QtWidgets.QMainWindow):
         _translate = QtCore.QCoreApplication.translate
         self.setWindowTitle(_translate("MainWindow", "Mecânica Pasetto"))
         self.botaoSalvar.setText(_translate("MainWindow", "Salvar"))
+        self.botaoCancelar.setText(_translate("MainWindow", "Cancelar"))
         self.labelTitulo.setText(_translate("MainWindow", "Editar Ordem de Serviço"))
         self.labelData.setText(_translate("MainWindow", "Data da O.S."))
         self.labelDataAprovacao.setText(_translate("MainWindow", "Data de Aprovação"))
@@ -590,6 +595,7 @@ class TelaEditarOS(QtWidgets.QMainWindow):
             msg.setWindowTitle("Aviso")
             msg.setText("Orçamento editado com sucesso!")
             msg.exec()
+            self.retornarConsulta.emit(1)
             #RESETA DADOS DA TELA
             self.clienteSelected = None
             self.veiculoSelected = None
@@ -600,6 +606,18 @@ class TelaEditarOS(QtWidgets.QMainWindow):
             msg.setWindowTitle("Aviso")
             msg.setText(str(e))
             msg.exec()
+
+    def cancelarEdicao(self):
+        msgBox = QtWidgets.QMessageBox()
+        msgBox.setWindowTitle("Aviso")
+        msgBox.setText('Deseja cancelar a edição? Alterações serão perdidas')
+        y = msgBox.addButton("Sim", QtWidgets.QMessageBox.ButtonRole.YesRole)
+        n = msgBox.addButton("Não", QtWidgets.QMessageBox.ButtonRole.NoRole)
+        y.setFixedWidth(60)
+        n.setFixedWidth(60)
+        msgBox.exec()
+        if msgBox.clickedButton() == y:
+            self.retornarConsulta.emit(1)
 
     def limparCampos(self):
         for lineedit in self.framedados.findChildren(QtWidgets.QLineEdit):

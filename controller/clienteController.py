@@ -160,21 +160,37 @@ class ClienteController():
                 return e
 
 
-    def editarVeiculo(self, veiculo):
-        pass
+    def editarVeiculo(self, idVeiculo, veiculo):
+        with db.atomic() as transaction:
+            try:
+                veiculo['idVeiculo'] = idVeiculo
+                marca = self.marcaRep.findByNome(veiculo['marca'])
+                if not marca:
+                    marca = self.marcaRep.save({'nome':veiculo['marca']})
+                veiculo['marca'] = marca
+                _veiculo = self.veiculoRep.update(veiculo)
+                return _veiculo
+            except Exception as e:
+                transaction.rollback()
+                return e
 
 
     #listar todos os veiculos ou veiculos vinculados a um cliente
     def listarVeiculos(self, cliente=None):
+        _veiculos = []
         if cliente:
             veiculos = self.veiculoClienteRep.findVeiculosByClienteID(cliente['idCliente'])
             if veiculos:
-                return veiculos.dicts()
+                for veiculo in veiculos:
+                    _veiculos.append(model_to_dict(veiculo))
+                return _veiculos
             else: return None
         else:
             veiculos = self.veiculoRep.findAll()
             if veiculos:
-                return veiculos.dicts()
+                for veiculo in veiculos:
+                    _veiculos.append(model_to_dict(veiculo))
+                return _veiculos
             else: return None
 
     def getVeiculo(self, id):

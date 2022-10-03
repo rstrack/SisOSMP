@@ -1,5 +1,7 @@
 from PyQt6 import QtCore, QtGui, QtWidgets
 from routes import handleRoutes
+from ui.infiniteScroll import InfiniteScrollTableModel
+from flatdict import FlatDict
 
 class TelaConsultaVeiculo(QtWidgets.QMainWindow):
     def __init__(self):
@@ -43,8 +45,6 @@ class TelaConsultaVeiculo(QtWidgets.QMainWindow):
         self.filter.setFilterCaseSensitivity(
             QtCore.Qt.CaseSensitivity.CaseInsensitive)
 
-        self.tabela.setSortingEnabled(True)
-
         self.framebotoes = QtWidgets.QFrame(self.mainwidget)
         self.glayout.addWidget(self.framebotoes, 2, 0, 1, 1)
         self.hlayoutbotoes = QtWidgets.QHBoxLayout(self.framebotoes)
@@ -54,30 +54,77 @@ class TelaConsultaVeiculo(QtWidgets.QMainWindow):
         self.botaoEditar = QtWidgets.QPushButton(self.framebotoes)
         self.botaoEditar.setFixedSize(100, 25)
         self.hlayoutbotoes.addWidget(self.botaoEditar)
-        self.model = QtGui.QStandardItemModel()
+        self.model = InfiniteScrollTableModel([{}])
         self.filter.setSourceModel(self.model)
         self.filter.setFilterKeyColumn(-1)
         self.lineEditBusca.textChanged.connect(
             self.filter.setFilterRegularExpression)
         self.tabela.setModel(self.filter)
-        listaHeader = ['ID', 'Marca', 'Modelo', 'Placa', 'Ano', 'Clientes Vinculados']
+        listaHeader = ['ID', 'Marca', 'Modelo', 'Placa', 'Ano', 'Veiculos Vinculados']
         self.model.setHorizontalHeaderLabels(listaHeader)
         self.setCentralWidget(self.mainwidget)
         self.retranslateUi()
         self.selectionModel = self.tabela.selectionModel()
 
         self.listarVeiculos()
-
-        #self.selectionModel.selectionChanged.connect(self.mostrarDetalhes)
         self.botaoRefresh.clicked.connect(self.listarVeiculos)
-        '''self.botaoEditar.clicked.connect(self.editarVeiculo2)'''
+        self.tabela.verticalScrollBar().valueChanged.connect(self.scrolled)
+        self.tabela.verticalScrollBar().actionTriggered.connect(self.scrolled)
 
     def retranslateUi(self):
         _translate = QtCore.QCoreApplication.translate
         self.setWindowTitle(_translate("MainWindow", "Busca"))
         self.botaoEditar.setText(_translate("MainWindow", "Editar"))
 
+    def scrolled(self, value):
+        if value == self.tabela.verticalScrollBar().maximum():
+            self.maisVeiculos(50)
+            # threading.Thread(target=self.maisVeiculos, args=(100,)).start()
+
+    def maisVeiculos(self, qtde):
+        veiculos = self.clienteCtrl.listarVeiculos()
+        if not veiculos:
+            return
+        veiculos = list(reversed(veiculos))
+        maxLength = len(veiculos)
+        remainderRows = maxLength-self.linesShowed
+        rowsToFetch=min(qtde, remainderRows)
+        if rowsToFetch<=0:
+            return
+        initLen = self.linesShowed
+        maxRows = self.linesShowed + rowsToFetch
+        while self.linesShowed < maxRows:
+            queryClientes = self.clienteCtrl.listarClientes(veiculos[self.linesShowed])
+            if queryClientes:
+                nomes = []
+                for cliente in queryClientes:
+                    nomes.append(cliente['nome'])
+                veiculos[self.linesShowed]['clientes'] = ', '.join(nomes)
+            else: veiculos[self.linesShowed]['clientes'] = ''
+            veiculos[self.linesShowed] = FlatDict(veiculos[self.linesShowed], delimiter='.')
+            self.linesShowed+=1
+        self.model.addData(veiculos[initLen:self.linesShowed])
+        colunas = ['idVeiculo', 'marca.nome', 'modelo', 'placa', 'ano', 'clientes']
+        self.model.colunasDesejadas(colunas)
+        self.model.setRowCount(self.linesShowed)
+        self.model.setColumnCount(len(colunas))
+
     def listarVeiculos(self):
+        self.linesShowed = 0
+        self.model = InfiniteScrollTableModel([{}])
+        listaHeader = ['ID', 'Marca', 'Modelo', 'Placa', 'Ano', 'Veiculos Vinculados']
+        self.model.setHorizontalHeaderLabels(listaHeader)
+        self.filter.setSourceModel(self.model)
+        self.tabela.setModel(self.filter)
+        self.maisVeiculos(50)
+
+    def editarVeiculo(self):
+        self.linha = self.tabela.selectionModel().selectedRows()
+        if self.linha:
+            return self.tabela.model().index(self.linha[0].row(), 0).data()
+
+    # OLD
+    '''def listarVeiculos(self):
         veiculos = self.clienteCtrl.listarVeiculos()
         if not veiculos:
             return
@@ -119,7 +166,7 @@ class TelaConsultaVeiculo(QtWidgets.QMainWindow):
         header = self.tabela.horizontalHeader()
         header.setSectionResizeMode(QtWidgets.QHeaderView.ResizeMode.Interactive)
         header.setStretchLastSection(True)
-      
+      '''
 
 if __name__ == "__main__":
     import sys

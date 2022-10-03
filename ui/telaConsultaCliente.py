@@ -76,8 +76,8 @@ class TelaConsultaCliente(QtWidgets.QMainWindow):
 
     def scrolled(self, value):
         if value == self.tabela.verticalScrollBar().maximum():
-            self.maisClientes(50)
-            # threading.Thread(target=self.maisClientes, args=(100,)).start()
+            # self.maisClientes(50)
+            threading.Thread(target=self.maisClientes, args=(100,)).start()
 
     def maisClientes(self, qtde):
         clientes = self.clienteCtrl.listarClientes()
@@ -91,7 +91,7 @@ class TelaConsultaCliente(QtWidgets.QMainWindow):
             return
         initLen = self.linesShowed
         maxRows = self.linesShowed + rowsToFetch
-        while self.linesShowed <= maxRows:
+        while self.linesShowed < maxRows:
             if clientes[self.linesShowed]['tipo']=='0': clientes[self.linesShowed]['tipo'] = 'PESSOA FÍSICA'
             elif clientes[self.linesShowed]['tipo']=='1': clientes[self.linesShowed]['tipo'] = 'PESSOA JURIDICA'
             else: clientes[self.linesShowed]['tipo'] = 'ESTRANGEIRO'

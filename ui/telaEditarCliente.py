@@ -6,11 +6,12 @@ SIGLAESTADOS = ['AC', 'AL', 'AP', 'AM', 'BA', 'CE', 'DF', 'ES', 'GO', 'MA', 'MT'
 
 
 class TelaEditarCliente(QtWidgets.QMainWindow):
-
+    retornarConsulta = QtCore.pyqtSignal(int)
     def __init__(self):
         super(TelaEditarCliente, self).__init__()
         self.clienteCtrl = handleRoutes.getRoute('CLIENTECTRL')
         self.marcaCtrl = handleRoutes.getRoute('MARCACTRL')
+        self.buscaCEP = handleRoutes.getRoute('CEP')
         self.setupUi()
 
     def setupUi(self):
@@ -118,9 +119,9 @@ class TelaEditarCliente(QtWidgets.QMainWindow):
         self.botaoEditar.setMinimumSize(QtCore.QSize(120, 35))
         self.botaoEditar.setObjectName('botaoprincipal')
         self.hlayout4.addWidget(self.botaoEditar)
-        self.botaolimpar = QtWidgets.QPushButton(self.framebotoes)
-        self.botaolimpar.setMinimumSize(QtCore.QSize(100, 30))
-        self.hlayout4.addWidget(self.botaolimpar)
+        self.botaoCancelar = QtWidgets.QPushButton(self.framebotoes)
+        self.botaoCancelar.setMinimumSize(QtCore.QSize(100, 30))
+        self.hlayout4.addWidget(self.botaoCancelar)
         self.vlayout6.addWidget(self.framebotoes)
         spacerItem6 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding)
         self.glayoutp.addItem(spacerItem6)
@@ -128,9 +129,10 @@ class TelaEditarCliente(QtWidgets.QMainWindow):
 
         self.retranslateUi()
 
-        self.botaolimpar.clicked.connect(self.limparCampos)
+        self.botaoCancelar.clicked.connect(self.cancelarEdicao)
         self.botaoEditar.clicked.connect(self.editar)
         self.comboBoxPessoa.currentIndexChanged.connect(self.escolherTipoPessoa)
+        self.lineEditCEP.textChanged.connect(self.buscarDadosCEP)
 
     def retranslateUi(self):
         _translate = QtCore.QCoreApplication.translate
@@ -147,10 +149,8 @@ class TelaEditarCliente(QtWidgets.QMainWindow):
         self.labelUF.setText(_translate("MainWindow", "UF"))
         self.labelTel1.setText(_translate("MainWindow", "Fone 1"))
         self.labelTel2.setText(_translate("MainWindow", "Fone 2"))
-        self.botaolimpar.setText(_translate("MainWindow", "Cancelar"))
+        self.botaoCancelar.setText(_translate("MainWindow", "Cancelar"))
         self.botaoEditar.setText(_translate("MainWindow", "Editar"))
-
-    #################### REFORMULAR TODA A FUNÇÃO! ########################
     
     def editar(self):
         try:
@@ -163,11 +163,24 @@ class TelaEditarCliente(QtWidgets.QMainWindow):
             msg.setWindowTitle("Aviso")
             msg.setText('Cliente editado com sucesso!')
             msg.exec()
+            self.retornarConsulta.emit(1)
         except Exception as e:
             msg = QtWidgets.QMessageBox()
             msg.setWindowTitle("Erro")
             msg.setText(str(e))
             msg.exec()
+
+    def cancelarEdicao(self):
+        msgBox = QtWidgets.QMessageBox()
+        msgBox.setWindowTitle("Aviso")
+        msgBox.setText('Deseja cancelar a edição? Alterações serão perdidas')
+        y = msgBox.addButton("Sim", QtWidgets.QMessageBox.ButtonRole.YesRole)
+        n = msgBox.addButton("Não", QtWidgets.QMessageBox.ButtonRole.NoRole)
+        y.setFixedWidth(60)
+        n.setFixedWidth(60)
+        msgBox.exec()
+        if msgBox.clickedButton() == y:
+            self.retornarConsulta.emit(1)
 
     def limparCampos(self):
         for lineedit in self.framedados.findChildren(QtWidgets.QLineEdit):
@@ -284,7 +297,6 @@ class TelaEditarCliente(QtWidgets.QMainWindow):
             self.labelDocumento.setText('CNPJ')
         else: self.labelDocumento.setText('Documento')
 
-
     def renderEditar(self, id):
         self.limparCampos()
         self.clienteID = id
@@ -303,6 +315,19 @@ class TelaEditarCliente(QtWidgets.QMainWindow):
             cidade = None
             uf = None
         self.setEndereco(cliente['cep'], cliente['endereco'], cliente['numero'], cliente['bairro'], cidade, uf)
+
+    def buscarDadosCEP(self):
+        cep = self.lineEditCEP.text()
+        if len(cep) !=8:
+            return
+        dados = self.buscaCEP.buscarCEP(cep)
+        if 'erro' in dados:
+            return
+        self.lineEditEnder.setText(dados['logradouro'])
+        self.lineEditBairro.setText(dados['bairro'])
+        self.lineEditCidade.setText(dados['localidade'])
+        self.comboBoxuf.setCurrentIndex(self.comboBoxuf.findText(dados['uf'], QtCore.Qt.MatchFlag.MatchExactly))
+        return
 
 if __name__ == "__main__":
     import sys
