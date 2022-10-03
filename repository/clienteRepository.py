@@ -20,3 +20,4 @@ class ClienteRepository():
 
     def findByID(self, id):
         return Cliente.select().where(Cliente.idCliente==id).get()
+

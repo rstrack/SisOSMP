@@ -81,9 +81,10 @@ class ClienteController():
                 transaction.rollback()
                 return e
 
-    def editarCliente(self, cliente:dict):
+    def editarCliente(self, idCliente, cliente:dict, fonesTela:list):
         with db.atomic() as transaction:
             try:
+                cliente['idCliente'] = idCliente
                 if 'cidade' in cliente:
                     cidade = {}
                     cidade['nome'] = cliente.pop('cidade')
@@ -92,6 +93,18 @@ class ClienteController():
                     if qCidade: cliente['cidade'] = qCidade
                     else: cliente['cidade'] = self.cidadeRep.save(cidade)
                 _cliente = self.clienteRep.update(cliente)
+                fonesBanco = self.foneRep.findByClienteID(_cliente)
+                if fonesBanco != None:
+                    fonesBanco = list(fonesBanco.dicts())
+                    for fone in fonesBanco:
+                        if not fone['fone'] in fonesTela:
+                            self.foneRep.delete(_cliente, fone['fone'])
+                    for fone in fonesTela:
+                        if fone != None and next((False for item in fonesBanco if item['fone']==fone), True):
+                            self.foneRep.save(_cliente, fone)
+                else:
+                    for fone in fonesTela:
+                        self.foneRep.save(_cliente, fone)
                 return _cliente
             except Exception as e:
                 transaction.rollback()
@@ -99,17 +112,21 @@ class ClienteController():
     
     #listar todos os clientes ou clientes vinculados a um veiculo
     def listarClientes(self, veiculo=None):
+        _clientes = []
         if veiculo:
             clientes = self.veiculoClienteRep.findClientesByVeiculoID(veiculo['idVeiculo'])
             if clientes:
-                return clientes.dicts()
+                for cliente in clientes:
+                    _clientes.append(model_to_dict(cliente))
+                return _clientes
             else: return None
         else:
             clientes = self.clienteRep.findAll()
             if clientes:
-                return clientes.dicts()
+                for cliente in clientes:
+                    _clientes.append(model_to_dict(cliente))
+                return _clientes
             else: return None
-
 
     #listar cliente pelo id
     def getCliente(self, id):

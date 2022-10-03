@@ -33,8 +33,12 @@ class CidadeController():
     def listarCidades(self):
         with db.atomic() as transaction:
             try:
+                _listaCidades = []
                 listaCidades = self.cidadeRep.findAll()
-                if listaCidades: return listaCidades
+                if listaCidades: 
+                    for cidade in listaCidades:
+                        _listaCidades.append(model_to_dict(cidade))
+                    return _listaCidades
                 else: return None
             except Exception as e:
                 transaction.rollback()

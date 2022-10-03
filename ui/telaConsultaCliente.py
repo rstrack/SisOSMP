@@ -1,6 +1,9 @@
 from PyQt6 import QtCore, QtGui, QtWidgets
+from ui.infiniteScroll import InfiniteScrollTableModel
 from routes import handleRoutes
-
+from flatdict import FlatDict
+import threading
+import time
 class TelaConsultaCliente(QtWidgets.QMainWindow):
     def __init__(self):
         super(TelaConsultaCliente, self).__init__()
@@ -55,118 +58,80 @@ class TelaConsultaCliente(QtWidgets.QMainWindow):
         self.botaoEditar = QtWidgets.QPushButton(self.framebotoes)
         self.botaoEditar.setFixedSize(100, 25)
         self.hlayoutbotoes.addWidget(self.botaoEditar)
-        self.model = QtGui.QStandardItemModel()
-        self.filter.setSourceModel(self.model)
         self.filter.setFilterKeyColumn(-1)
         self.lineEditBusca.textChanged.connect(
             self.filter.setFilterRegularExpression)
         self.tabela.setModel(self.filter)
-        listaHeader = ['ID', 'Tipo', 'Nome', 'Documento', 'Endereço', 'Nº', 'Bairro', 'Cidade', 'UF', 'Telefones', 'Veículos']
-        self.model.setHorizontalHeaderLabels(listaHeader)
         self.setCentralWidget(self.mainwidget)
         self.retranslateUi()
-        self.selectionModel = self.tabela.selectionModel()
         self.listarClientes()
         self.botaoRefresh.clicked.connect(self.listarClientes)
+        self.tabela.verticalScrollBar().valueChanged.connect(self.scrolled)
+        self.tabela.verticalScrollBar().actionTriggered.connect(self.scrolled)
 
     def retranslateUi(self):
         _translate = QtCore.QCoreApplication.translate
         self.setWindowTitle(_translate("MainWindow", "Busca"))
         self.botaoEditar.setText(_translate("MainWindow", "Editar"))
 
-    def listarClientes(self):
+    def scrolled(self, value):
+        if value == self.tabela.verticalScrollBar().maximum():
+            self.maisClientes(50)
+            # threading.Thread(target=self.maisClientes, args=(100,)).start()
+
+    def maisClientes(self, qtde):
         clientes = self.clienteCtrl.listarClientes()
         if not clientes:
             return
-        self.model.setRowCount(len(clientes))
-        row = 0
-        for cliente in reversed(clientes):
-            #item = QtGui.QStandardItem(str(cliente['idCliente']))
-            item = QtGui.QStandardItem()
-            item.setData(cliente['idCliente'], QtCore.Qt.ItemDataRole.DisplayRole)
-            item.setTextAlignment(
-                QtCore.Qt.AlignmentFlag.AlignHCenter | QtCore.Qt.AlignmentFlag.AlignVCenter)
-            self.model.setItem(row, 0, item)
-            if cliente['tipo']=='0': tipo = 'PESSOA FÍSICA'
-            elif cliente['tipo']=='1': tipo = 'PESSOA JURIDICA'
-            elif cliente['tipo']=='2': tipo = 'ESTRANGEIRO'
-            else: tipo = ''
-            item = QtGui.QStandardItem()
-            item.setData(tipo, QtCore.Qt.ItemDataRole.DisplayRole)
-            item.setTextAlignment(
-                QtCore.Qt.AlignmentFlag.AlignHCenter | QtCore.Qt.AlignmentFlag.AlignVCenter)
-            self.model.setItem(row, 1, item)
-            item = QtGui.QStandardItem()
-            item.setData(cliente['nome'], QtCore.Qt.ItemDataRole.DisplayRole)
-            item.setTextAlignment(
-                QtCore.Qt.AlignmentFlag.AlignHCenter | QtCore.Qt.AlignmentFlag.AlignVCenter)
-            self.model.setItem(row, 2, item)
-            item = QtGui.QStandardItem()
-            item.setData(cliente['documento'], QtCore.Qt.ItemDataRole.DisplayRole)
-            item.setTextAlignment(
-                QtCore.Qt.AlignmentFlag.AlignHCenter | QtCore.Qt.AlignmentFlag.AlignVCenter)
-            self.model.setItem(row, 3, item)
-            item = QtGui.QStandardItem(str(cliente['endereco'] or ''))
-            item.setTextAlignment(
-                QtCore.Qt.AlignmentFlag.AlignHCenter | QtCore.Qt.AlignmentFlag.AlignVCenter)
-            self.model.setItem(row, 4, item)
-            item = QtGui.QStandardItem(str(cliente['numero'] or ''))
-            item.setTextAlignment(
-                QtCore.Qt.AlignmentFlag.AlignHCenter | QtCore.Qt.AlignmentFlag.AlignVCenter)
-            self.model.setItem(row, 5, item)
-            item = QtGui.QStandardItem(str(cliente['bairro'] or ''))
-            item.setTextAlignment(
-                QtCore.Qt.AlignmentFlag.AlignHCenter | QtCore.Qt.AlignmentFlag.AlignVCenter)
-            self.model.setItem(row, 6, item)
-            if cliente['cidade'] != None:
-                cidade = self.cidadeCtrl.getCidade(cliente['cidade'])
-                item = QtGui.QStandardItem(str(cidade['nome'] or ''))
-                item.setTextAlignment(
-                    QtCore.Qt.AlignmentFlag.AlignHCenter | QtCore.Qt.AlignmentFlag.AlignVCenter)
-                self.model.setItem(row, 7, item)
-                item = QtGui.QStandardItem(str(cidade['uf'] or ''))
-                item.setTextAlignment(
-                    QtCore.Qt.AlignmentFlag.AlignHCenter | QtCore.Qt.AlignmentFlag.AlignVCenter)
-                self.model.setItem(row, 8, item)
-            queryFones = self.clienteCtrl.listarFones(cliente)
+        clientes = list(reversed(clientes))
+        maxLength = len(clientes)
+        remainderRows = maxLength-self.linesShowed
+        rowsToFetch=min(qtde, remainderRows)
+        if rowsToFetch<=0:
+            return
+        initLen = self.linesShowed
+        maxRows = self.linesShowed + rowsToFetch
+        while self.linesShowed <= maxRows:
+            if clientes[self.linesShowed]['tipo']=='0': clientes[self.linesShowed]['tipo'] = 'PESSOA FÍSICA'
+            elif clientes[self.linesShowed]['tipo']=='1': clientes[self.linesShowed]['tipo'] = 'PESSOA JURIDICA'
+            else: clientes[self.linesShowed]['tipo'] = 'ESTRANGEIRO'
+            if clientes[self.linesShowed]['cidade'] == None:
+                clientes[self.linesShowed]['cidade'] = {'nome':None, 'uf':None}
+            queryFones = self.clienteCtrl.listarFones(clientes[self.linesShowed])
             if queryFones:
                 fones = []
                 for fone in queryFones:
                     fones.append(fone['fone'])
-                item = QtGui.QStandardItem(', '.join(fones))
-                self.model.setItem(row, 9, item)
-            queryVeiculo = self.clienteCtrl.listarVeiculos(cliente)
+                clientes[self.linesShowed]['fones'] = (', '.join(fones))
+            else: clientes[self.linesShowed]['fones'] = ''
+            queryVeiculo = self.clienteCtrl.listarVeiculos(clientes[self.linesShowed])
             if queryVeiculo:
                 nomes = []
                 for veiculo in queryVeiculo:
                     nomes.append(': '.join([veiculo['modelo'], veiculo['placa']]))
-                item = QtGui.QStandardItem(', '.join(nomes))
-                self.model.setItem(row, 10, item)
-            row = row+1
-        header = self.tabela.horizontalHeader()
-        header.setSectionResizeMode(
-            QtWidgets.QHeaderView.ResizeMode.Interactive)
-        header.setSectionResizeMode(0, 
-            QtWidgets.QHeaderView.ResizeMode.ResizeToContents)
-        header.setSectionResizeMode(5, 
-            QtWidgets.QHeaderView.ResizeMode.ResizeToContents)
-        header.setSectionResizeMode(8, 
-            QtWidgets.QHeaderView.ResizeMode.ResizeToContents)
-        header.setStretchLastSection(True)
+                clientes[self.linesShowed]['veiculos'] = ', '.join(nomes)
+            else: clientes[self.linesShowed]['veiculos'] = ''
+            clientes[self.linesShowed] = FlatDict(clientes[self.linesShowed], delimiter='.')
+            self.linesShowed+=1
+        self.model.addData(clientes[initLen:self.linesShowed])
+        colunas = ['idCliente', 'tipo', 'nome', 'documento', 'endereco', 'numero', 'bairro', 'cidade.nome', 'cidade.uf', 'fones', 'veiculos']
+        self.model.colunasDesejadas(colunas)
+        self.model.setRowCount(self.linesShowed)
+        self.model.setColumnCount(len(colunas))
+
+    def listarClientes(self):
+        self.linesShowed = 0
+        self.model = InfiniteScrollTableModel([{}])
+        listaHeader = ['ID', 'Tipo', 'Nome', 'Documento', 'Endereço', 'Nº', 'Bairro', 'Cidade', 'UF', 'Telefones', 'Veículos']
+        self.model.setHorizontalHeaderLabels(listaHeader)
+        self.filter.setSourceModel(self.model)
+        self.tabela.setModel(self.filter)
+        self.maisClientes(50)
 
     def editarCliente(self):
         self.linha = self.tabela.selectionModel().selectedRows()
         if self.linha:
             return self.tabela.model().index(self.linha[0].row(), 0).data()
-
-    '''def editarCliente2(self):
-        self.linha = self.tabela.selectionModel().selectedRows()
-        if self.linha:
-            id =  self.tabela.model().index(self.linha[0].row(), 0).data()
-        self.telaEditar = TelaCadastroCliente()
-        self.telaEditar.renderEditar(id)
-        self.telaEditar.show()'''
-      
 
 if __name__ == "__main__":
     import sys
