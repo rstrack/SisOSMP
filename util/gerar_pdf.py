@@ -8,6 +8,7 @@ from reportlab.lib import colors
 import textwrap
 import os
 
+
 # DICT DO ORÇAMENTO GERADO AO SALVAR/EDITAR
 # Configurações para geração do pdf
 def tabelas_pos(self, orcamento: dict, l, g):
@@ -18,8 +19,9 @@ def tabelas_pos(self, orcamento: dict, l, g):
     self.drawString(395, l - 11, 'Valor Total dos Serviços:')
     self.rect(390, l - 15, 1 * inch + 51, 15, fill=False, stroke=True)
     self.rect(441 + 1 * inch, l - 15, 1 * inch, 15, fill=False, stroke=True)
-    self.drawString(395, l - 26, 'Valor Total' )
-    self.drawString(532, l - 26, 'R$ {:.2f}'.format(orcamento['valorTotal']))
+    self.drawString(395, l - 26, 'Valor Total')
+    self.drawString(570 - (len(str(orcamento['valorTotal'])) * 7.1), l - 26,
+                    'R$ {:.2f}'.format(orcamento['valorTotal']))
     self.rect(390, l - 30, 1 * inch + 51, 15, fill=False, stroke=True)
     self.rect(441 + 1 * inch, l - 30, 1 * inch, 15, fill=False, stroke=True)
     self.drawString(265, g + 4, 'Observações:')
@@ -134,16 +136,32 @@ def generatePDF(orcamento: dict, listaFones: list[dict], listaServicos: list[dic
         ('INNERGRID', (0, 0), (-1, -1), 1, colors.black),
         ('BOX', (0, 0), (-1, -1), 1, colors.black),
     ])
-    table_style = TableStyle([
+    table_styleservico = TableStyle([
         ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
         ('ALIGN', (2, 1), (-1, -1), 'RIGHT'),
         ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
         ('INNERGRID', (0, 0), (-1, -1), 1, colors.black),
         ('BOX', (0, 0), (-1, -1), 1, colors.black),
     ])
-    #TRANSFORMAR PARA DICIONÁRIO
-    for dict in listaPecas:
-        pecas.append([dict['descricao'], dict['qtde'], dict['un'], 'R$ {:.2f}'.format(dict['valor'])])
+    table_styleservicopag2 = TableStyle([
+        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+        ('ALIGN', (2, 0), (-1, -1), 'RIGHT'),
+        ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+        ('INNERGRID', (0, 0), (-1, -1), 1, colors.black),
+        ('BOX', (0, 0), (-1, -1), 1, colors.black),
+    ])
+    table_stylepecaspag2 = TableStyle([
+        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+        ('ALIGN', (3, 0), (-1, -1), 'RIGHT'),
+        ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+        ('INNERGRID', (0, 0), (-1, -1), 1, colors.black),
+        ('BOX', (0, 0), (-1, -1), 1, colors.black),
+    ])
+    # TRANSFORMAR PARA DICIONÁRIO
+    if listaPecas:
+        for dict in listaPecas:
+            pecas.append([dict['descricao'], dict['qtde'], dict['un'], 'R$ {:.2f}'.format(dict['valor'])])
+
     for dict in listaServicos:
         servicos.append([dict['descricao'], dict['qtde'], 'R$ {:.2f}'.format(dict['valor'])])
 
@@ -153,11 +171,10 @@ def generatePDF(orcamento: dict, listaFones: list[dict], listaServicos: list[dic
     pdf.setFont('Helvetica', 10)
 
     # Função para posicionar as tabelas de valores e o quadro de observações no pdf.
-
     # Formatação da primeira página (o máximo de linhas das tabelas que a primeira página pode suportar é 27)
-    if len(pecas + servicos) >= 28:
-        if len(pecas) >= 28:
-            y = 7.9 * inch
+    if len(pecas + servicos) > 27:
+        if len(pecas) > 27:
+            y = 7.8 * inch
             for _ in range(len(pecas[0:28])):
                 y -= 0.2 * inch
             z = y - 0.3 * inch
@@ -176,8 +193,8 @@ def generatePDF(orcamento: dict, listaFones: list[dict], listaServicos: list[dic
                        rowHeights=0.2 * inch)
             s = Table(servicos, colWidths=[5.98 * inch, 1 * inch, 1 * inch], rowHeights=0.2 * inch)
             f.setStyle(table_stylepecas)
-            f2.setStyle(table_style)
-            s.setStyle(table_stylepecas)
+            f2.setStyle(table_stylepecaspag2)
+            s.setStyle(table_styleservico)
             s.wrapOn(pdf, width, height)
             f.wrapOn(pdf, width, height)
             f2.wrapOn(pdf, width, height)
@@ -202,23 +219,24 @@ def generatePDF(orcamento: dict, listaFones: list[dict], listaServicos: list[dic
                 g = l - 0.7 * inch
                 s = Table(servicos[0:tamanho_ser], colWidths=[5.98 * inch, 1 * inch, 1 * inch], rowHeights=0.2 * inch)
                 s2 = Table(servicos[tamanho_ser:], colWidths=[5.98 * inch, 1 * inch, 1 * inch], rowHeights=0.2 * inch)
-                s2.setStyle(table_style)
-                s.setStyle(table_stylepecas)
+                s2.setStyle(table_styleservicopag2)
+                s.setStyle(table_styleservico)
                 s.wrapOn(pdf, width, height)
                 s2.wrapOn(pdf, width, height)
                 s.drawOn(pdf, 10, z2)
                 pdf.showPage()
                 s2.drawOn(pdf, 10, alturaser)
-                tabelas_pos(pdf,orcamento, l, g)
+                tabelas_pos(pdf, orcamento, l, g)
+
             else:
-                y = 7.9 * inch
+                y = 7.8 * inch
                 tamanho_ser = 28 - len(pecas)
                 for _ in range(len(pecas)):
                     y -= 0.2 * inch
                 z = y - 0.3 * inch
                 for _ in range(len(servicos[0:tamanho_ser])):
                     z -= 0.2 * inch
-                z2 = z - 0.3 * inch
+                z2 = z + 0.1 * inch
                 alturaser = 10.8 * inch
                 for _ in range(len(servicos[tamanho_ser:])):
                     alturaser -= 0.2 * inch
@@ -229,19 +247,29 @@ def generatePDF(orcamento: dict, listaFones: list[dict], listaServicos: list[dic
                 s = Table(servicos[0:tamanho_ser], colWidths=[5.98 * inch, 1 * inch, 1 * inch], rowHeights=0.2 * inch)
                 s2 = Table(servicos[tamanho_ser:], colWidths=[5.98 * inch, 1 * inch, 1 * inch], rowHeights=0.2 * inch)
                 f.setStyle(table_stylepecas)
-                s2.setStyle(table_style)
-                s.setStyle(table_stylepecas)
+                s.setStyle(table_styleservico)
+                s2.setStyle(table_styleservicopag2)
                 s.wrapOn(pdf, width, height)
                 f.wrapOn(pdf, width, height)
                 s2.wrapOn(pdf, width, height)
-                f.drawOn(pdf, 10, y)
-                s.drawOn(pdf, 10, z2)
-                pdf.showPage()
-                s2.drawOn(pdf, 10, alturaser)
+                # Não deixar o cabeçalho ficar separado da tabela
+                if tamanho_ser == 1:
+                    f.drawOn(pdf, 10, y)
+                    pdf.showPage()
+                    s.drawOn(pdf, 10, alturaser)
+                    s2.drawOn(pdf, 10, alturaser - 0.2 * inch)
+                    l -= 0.4 * inch
+                    g -= 0.4 * inch
+                else:
+                    f.drawOn(pdf, 10, y)
+                    s.drawOn(pdf, 10, z2)
+                    pdf.showPage()
+                    s2.drawOn(pdf, 10, alturaser)
+
                 tabelas_pos(pdf, orcamento, l, g)
     else:
         if len(pecas) < 2:
-            y = 7.9 * inch
+            y = 7.8 * inch
             for _ in range(len(servicos)):
                 y -= 0.2 * inch
             l = y - 0.3 * inch
@@ -249,12 +277,12 @@ def generatePDF(orcamento: dict, listaFones: list[dict], listaServicos: list[dic
             width = 575
             height = 300
             s = Table(servicos, colWidths=[5.98 * inch, 1 * inch, 1 * inch], rowHeights=0.2 * inch)
-            tabelas_pos(pdf, orcamento, l, g)
-            s.setStyle(table_stylepecas)
+            tabelas_pos(pdf, orcamento, l, 70)
+            s.setStyle(table_styleservico)
             s.wrapOn(pdf, width, height)
             s.drawOn(pdf, 10, y)
         else:
-            y = 7.9 * inch
+            y = 7.8 * inch
             for _ in range(len(pecas)):
                 y -= 0.2 * inch
             z = y - 0.3 * inch
@@ -266,9 +294,9 @@ def generatePDF(orcamento: dict, listaFones: list[dict], listaServicos: list[dic
             height = 300
             f = Table(pecas, colWidths=[4.98 * inch, 1 * inch, 1 * inch, 1 * inch, 1 * inch], rowHeights=0.2 * inch)
             s = Table(servicos, colWidths=[5.98 * inch, 1 * inch, 1 * inch], rowHeights=0.2 * inch)
-            tabelas_pos(pdf, orcamento, l, g)
+            tabelas_pos(pdf, orcamento, l, 70)
             f.setStyle(table_stylepecas)
-            s.setStyle(table_style)
+            s.setStyle(table_styleservico)
             s.wrapOn(pdf, width, height)
             f.wrapOn(pdf, width, height)
             f.drawOn(pdf, 10, y)
@@ -277,4 +305,4 @@ def generatePDF(orcamento: dict, listaFones: list[dict], listaServicos: list[dic
     os.startfile(f"{os.path.expandvars('%LOCALAPPDATA%')}\Temp\\teste.pdf")
     print('teste.pdf criado com sucesso!')
 
-#generatePDF(orcamento, listaFones, listaServicos, listaPecas)
+# generatePDF(orcamento, listaFones, listaServicos, listaPecas)
