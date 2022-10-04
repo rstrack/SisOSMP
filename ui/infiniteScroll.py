@@ -148,6 +148,16 @@ class InfiniteScrollTableModel(QtCore.QAbstractTableModel):
     #fetchMore
 #InfiniteScrollTableModel
 
+class AlignDelegate(QtWidgets.QStyledItemDelegate):
+    def __init__(self, align: QtCore.Qt.AlignmentFlag) -> None:
+        super().__init__()
+        self.alignmentFlag = align
+    
+    def initStyleOption(self, option, index):
+        super(AlignDelegate, self).initStyleOption(option, index)
+        option.displayAlignment = self.alignmentFlag
+
+
 #classe pra testes
 class Window(QtWidgets.QWidget):
     

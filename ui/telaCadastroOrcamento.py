@@ -630,7 +630,7 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
         else:
             raise Exception("Nome do cliente obrigatório")
         if (self.lineEditCEP.text()):
-            if len(self.lineEditCEP.text()) != 8:
+            if len(self.lineEditCEP.text()) != 8 or not self.lineEditCEP.text().isdigit():
                 raise Exception("CEP inválido")
             dict['cep'] = self.lineEditCEP.text()
         else:
@@ -640,7 +640,9 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
         else:
             dict['endereco'] = None
         if (self.lineEditNumero.text()):
-            dict['numero'] = self.lineEditNumero.text()
+            if self.lineEditNumero.text().isdigit:
+                dict['numero'] = self.lineEditNumero.text()
+            else: raise Exception('Número inválido!')
         else:
             dict['numero'] = None
         if (self.lineEditBairro.text()):
