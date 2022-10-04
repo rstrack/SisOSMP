@@ -38,7 +38,7 @@ def tabelas_pos(self, orcamento: dict, l, g):
     self.rect(10, g - 60, 575, 60, fill=False, stroke=True)
 
 
-def generatePDF(orcamento: dict, listaFones: list[dict], listaServicos: list[dict], listaPecas: list[dict] = None):
+def generatePDF(orcamento: dict, listaFones: list[dict], listaServicos: list[dict], listaPecas: list[dict] = None, path:str = None):
     pdf = canvas.Canvas(f"{os.path.expandvars('%LOCALAPPDATA%')}\Temp\\teste.pdf", pagesize=A4)
     pdf.drawInlineImage(
         "./resources/logo2.png", 0, 740, 200, 100
@@ -274,7 +274,9 @@ def generatePDF(orcamento: dict, listaFones: list[dict], listaServicos: list[dic
             f.drawOn(pdf, 10, y)
             s.drawOn(pdf, 10, z)
     pdf.save()
-    os.startfile(f"{os.path.expandvars('%LOCALAPPDATA%')}\Temp\\teste.pdf")
-    print('teste.pdf criado com sucesso!')
+    if path:
+        os.startfile(f"{path}\\")
+    else:
+        os.startfile(f"{os.path.expandvars('%LOCALAPPDATA%')}\Temp\\teste.pdf")
 
 #generatePDF(orcamento, listaFones, listaServicos, listaPecas)

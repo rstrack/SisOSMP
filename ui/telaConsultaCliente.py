@@ -3,7 +3,6 @@ from ui.infiniteScroll import InfiniteScrollTableModel
 from routes import handleRoutes
 from flatdict import FlatDict
 import threading
-import time
 class TelaConsultaCliente(QtWidgets.QMainWindow):
     def __init__(self):
         super(TelaConsultaCliente, self).__init__()

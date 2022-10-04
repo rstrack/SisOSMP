@@ -212,7 +212,7 @@ class TelaEditarOrcamento(QtWidgets.QMainWindow):
         self.groupBoxObs = QtWidgets.QGroupBox(self.frameobs)
         self.vlayout2 = QtWidgets.QVBoxLayout(self.groupBoxObs)
         self.textEdit = QtWidgets.QTextEdit(self.groupBoxObs)
-        self.groupBoxObs.setMaximumHeight(80)
+        self.groupBoxObs.setMaximumHeight(100)
         self.vlayout2.addWidget(self.textEdit)
         self.gridLayoutGeral.addWidget(self.groupBoxObs, 5, 0, 1, -1)
         # botoes

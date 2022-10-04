@@ -46,6 +46,7 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
         self.gridLayoutGeral.setVerticalSpacing(6)
         self.gridLayoutGeral.setHorizontalSpacing(9)
         self.vlayout1.addWidget(self.framedados)
+        
         # dados do cliente
         self.groupBoxCliente = QtWidgets.QGroupBox(self.framedados)
         self.gridLayoutCliente = QtWidgets.QGridLayout(self.groupBoxCliente)
@@ -115,7 +116,7 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
         self.gridLayoutCliente.setColumnStretch(4, 6)
         self.gridLayoutCliente.setColumnStretch(5, 6)
         self.gridLayoutCliente.setColumnStretch(6, 2)
-        self.gridLayoutGeral.addWidget(self.groupBoxCliente, 0, 0, 1, -1)
+        self.gridLayoutGeral.addWidget(self.groupBoxCliente, 1, 0, 1, -1)
         # dados do veiculo
         self.groupBoxVeiculo = QtWidgets.QGroupBox(self.framedados)
         self.gridLayoutVeiculo = QtWidgets.QGridLayout(self.groupBoxVeiculo)
@@ -153,7 +154,7 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
         self.gridLayoutVeiculo.addWidget(self.lineEditAno, 2, 3, 1, 1)
         self.lineEditKm = QtWidgets.QLineEdit(self.groupBoxVeiculo)
         self.gridLayoutVeiculo.addWidget(self.lineEditKm, 2, 4, 1, 1)
-        self.gridLayoutGeral.addWidget(self.groupBoxVeiculo, 1, 0, 1, -1)
+        self.gridLayoutGeral.addWidget(self.groupBoxVeiculo, 2, 0, 1, -1)
         self.gridLayoutVeiculo.setColumnStretch(0, 3)
         self.gridLayoutVeiculo.setColumnStretch(1, 5)
         self.gridLayoutVeiculo.setColumnStretch(2, 1)
@@ -199,7 +200,7 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
         self.spacerpeca = QtWidgets.QSpacerItem(
             40, 20, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding)
         self.gridLayoutPecas.addItem(self.spacerpeca, 2, 0, 1, 1)
-        self.gridLayoutGeral.addWidget(self.groupBoxPecas, 2, 0, 1, 1)
+        self.gridLayoutGeral.addWidget(self.groupBoxPecas, 3, 0, 1, 1)
         self.gridLayoutPecas.setColumnStretch(0, 6)
         self.gridLayoutPecas.setColumnStretch(1, 1)
         self.gridLayoutPecas.setColumnStretch(3, 1)
@@ -240,19 +241,60 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
         self.spacerservico = QtWidgets.QSpacerItem(
             20, 40, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding)
         self.gridLayoutServicos.addItem(self.spacerservico, 2, 0, 1, 1)
-        self.gridLayoutGeral.addWidget(self.groupBoxServicos, 2, 1, 1, 1)
+        self.gridLayoutGeral.addWidget(self.groupBoxServicos, 3, 1, 1, 1)
 
         self.gridLayoutServicos.setColumnStretch(0, 6)
         self.gridLayoutServicos.setColumnStretch(1, 1)
         self.gridLayoutServicos.setColumnStretch(2, 1)
-        # frame
-        self.frameObs = QtWidgets.QFrame(self.framedados)
-        self.hlayoutObs = QtWidgets.QHBoxLayout(self.frameObs)
-        self.hlayoutObs.setContentsMargins(0,0,0,0)
-        self.hlayoutObs.setSpacing(4)
+
+        #dados orcamento
+        self.groupBoxOrcamento = QtWidgets.QGroupBox(self.framedados)
+        self.gridLayoutOrcamento = QtWidgets.QGridLayout(self.groupBoxOrcamento)
+        self.labelData = QtWidgets.QLabel(self.groupBoxOrcamento)
+        self.lineEditData = QtWidgets.QDateEdit(self.groupBoxOrcamento)
+        self.lineEditData.setFixedWidth(125)
+        self.lineEditData.setCalendarPopup(True)
+        self.lineEditData.setDateTime(QtCore.QDateTime.currentDateTime())
+        self.gridLayoutOrcamento.addWidget(self.labelData, 0, 0, 1, 1)
+        self.gridLayoutOrcamento.addWidget(self.lineEditData, 1, 0, 1, 1)
+        spacer = QtWidgets.QSpacerItem(20,20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
+        self.gridLayoutOrcamento.addItem(spacer, 0, 1, 1, 1)
+
+        self.labelValorTotal1 = QtWidgets.QLabel(self.groupBoxOrcamento)
+        #self.labelValorTotal1.setAlignment(QtCore.Qt.AlignmentFlag.AlignRight | QtCore.Qt.AlignmentFlag.AlignVCenter)
+        self.labelValorTotal1.setObjectName('boldText')
+        self.labelValorTotal2 = QtWidgets.QLabel(self.groupBoxOrcamento)
+        #self.labelValorTotal2.setAlignment(QtCore.Qt.AlignmentFlag.AlignLeft | QtCore.Qt.AlignmentFlag.AlignVCenter)
+        self.labelValorTotal2.setObjectName('boldText')
+        self.labelValorTotal2.setText('0,00')
+
+        self.gridLayoutOrcamento.addWidget(self.labelValorTotal1, 0, 2, -1, 1)
+        self.gridLayoutOrcamento.addWidget(self.labelValorTotal2, 0, 3, -1, 1)
+
+        self.gridLayoutGeral.addWidget(self.groupBoxOrcamento, 4, 0, 1, -1)
+
+        # valor
+        self.framevalor = QtWidgets.QFrame(self.framedados)
+        self.hlayoutvalor = QtWidgets.QHBoxLayout(self.framevalor)
+        self.labelLegenda = QtWidgets.QLabel(self.framevalor)
+        '''self.labelValorTotal1 = QtWidgets.QLabel(self.framevalor)
+        self.labelValorTotal1.setAlignment(QtCore.Qt.AlignmentFlag.AlignRight | QtCore.Qt.AlignmentFlag.AlignVCenter)
+        self.labelValorTotal1.setObjectName('boldText')
+        self.labelValorTotal2 = QtWidgets.QLabel(self.framevalor)
+        self.labelValorTotal2.setAlignment(QtCore.Qt.AlignmentFlag.AlignLeft | QtCore.Qt.AlignmentFlag.AlignVCenter)
+        self.labelValorTotal2.setObjectName('boldText')
+        self.labelValorTotal2.setText('0,00')'''
+        spacer = QtWidgets.QSpacerItem(40, 10, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
+        
+        '''self.hlayoutvalor.addWidget(self.labelLegenda)
+        self.hlayoutvalor.addItem(spacer)
+        self.hlayoutvalor.addWidget(self.labelValorTotal1)
+        self.hlayoutvalor.addWidget(self.labelValorTotal2)'''
+
+        self.gridLayoutGeral.addWidget(self.framevalor, 4, 0, 1, -1)
 
         # campo de observações
-        self.groupBoxObs = QtWidgets.QGroupBox(self.frameObs)
+        self.groupBoxObs = QtWidgets.QGroupBox(self.framedados)
         self.vlayout2 = QtWidgets.QVBoxLayout(self.groupBoxObs)
         self.textEdit = QtWidgets.QTextEdit(self.groupBoxObs)
         self.groupBoxObs.setMaximumHeight(90)
@@ -260,41 +302,13 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
         self.gridLayoutGeral.setColumnStretch(0,1)
         self.gridLayoutGeral.setColumnStretch(1,1)
 
-        self.hlayoutObs.addWidget(self.groupBoxObs)
+        self.gridLayoutGeral.addWidget(self.groupBoxObs, 5, 0, 1, -1)
 
-        # data do orçamento
-
-        self.framedata = QtWidgets.QFrame(self.frameObs)
-        self.vlayoutdata = QtWidgets.QVBoxLayout(self.framedata)
-        self.labelData = QtWidgets.QLabel(self.framedata)
-        self.lineEditData = QtWidgets.QDateEdit(self.framedata)
-        self.lineEditData.setFixedWidth(125)
-        self.lineEditData.setCalendarPopup(True)
-        self.lineEditData.setDateTime(QtCore.QDateTime.currentDateTime())
-        self.vlayoutdata.addWidget(self.labelData)
-        self.vlayoutdata.addWidget(self.lineEditData)
-        self.hlayoutObs.addWidget(self.framedata)
-
-        # valor
-        self.labelValorTotal1 = QtWidgets.QLabel(self.frameObs)
-        self.labelValorTotal1.setAlignment(QtCore.Qt.AlignmentFlag.AlignRight | QtCore.Qt.AlignmentFlag.AlignVCenter)
-        self.labelValorTotal1.setObjectName('boldText')
-        self.labelValorTotal2 = QtWidgets.QLabel(self.frameObs)
-        self.labelValorTotal2.setAlignment(QtCore.Qt.AlignmentFlag.AlignLeft | QtCore.Qt.AlignmentFlag.AlignVCenter)
-        self.labelValorTotal2.setObjectName('boldText')
-        self.labelValorTotal2.setText('0,00')
-
-        self.hlayoutObs.addWidget(self.labelValorTotal1)
-        self.hlayoutObs.addWidget(self.labelValorTotal2)
-        self.gridLayoutGeral.addWidget(self.frameObs, 3, 0, 1, -1)
-        self.gridLayoutGeral.setRowStretch(2, 10)
-        self.gridLayoutGeral.setRowStretch(3, 0)
+        self.gridLayoutGeral.setRowStretch(3, 10)
         
         # botoes
         self.framebotoes = QtWidgets.QFrame(self.main_frame)
         self.hlayout4 = QtWidgets.QHBoxLayout(self.framebotoes)
-        self.labelLegenda = QtWidgets.QLabel(self.framebotoes)
-        self.hlayout4.addWidget(self.labelLegenda)
         spacerItem5 = QtWidgets.QSpacerItem(
             40, 10, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
         self.hlayout4.addItem(spacerItem5)
@@ -340,8 +354,6 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
         self.comboBoxPessoa.currentIndexChanged.connect(self.escolherTipoPessoa)
         self.lineEditNomePeca.textChanged.connect(lambda: self.buscarPeca(self.lineEditNomePeca,self.comboBoxUn, self.lineEditValorPeca))
         self.lineEditNomeServico.textChanged.connect(lambda: self.buscarServico(self.lineEditNomeServico,self.lineEditValorServico))
-        self.lineEditNomePeca.textChanged.connect(self.setValor)
-        self.lineEditNomeServico.textChanged.connect(self.setValor)
         self.lineEditQtdeP.textChanged.connect(self.setValor)
         self.lineEditQtdeS.textChanged.connect(self.setValor)
         self.lineEditValorPeca.textChanged.connect(self.setValor)
@@ -360,7 +372,8 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
         self.botaoSalvar.setText(_translate("MainWindow", "Salvar"))
         self.botaolimpar.setText(_translate("MainWindow", "Limpar"))
         self.labelTitulo.setText(_translate("MainWindow", "Orçamentos"))
-        #self.labelData.setText(_translate("MainWindow", "Data do Orçamento"))
+        self.labelData.setText(_translate("MainWindow", "Data do Orçamento"))
+        self.groupBoxOrcamento.setTitle(_translate("MainWindow", "Dados do Orçamento"))
         self.groupBoxCliente.setTitle(_translate("MainWindow", "Dados do Cliente"))
         self.botaobuscarCliente.setText(_translate("MainWindow", "Selecionar Cliente"))
         self.checkboxNovoCliente.setText(_translate("MainWindow", "Novo Cliente"))
@@ -388,7 +401,7 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
         self.labelValorServico.setText(_translate("MainWindow", "Valor*"))
         self.labelNomeServico.setText(_translate("MainWindow", "Serviço*"))
         self.labelQtdeS.setText(_translate("MainWindow", "Qtde*"))
-        self.labelLegenda.setText(_translate("MainWindow", "* Campos Obrigatórios"))
+        #self.labelLegenda.setText(_translate("MainWindow", "* Campos Obrigatórios"))
         self.groupBoxObs.setTitle(_translate("MainWindow", "Observações (Max. 200 caracteres)"))
         self.groupBoxPecas.setTitle(_translate("MainWindow", "Peças"))
         self.labelQtde.setText(_translate("MainWindow", "Qtde*"))
@@ -425,7 +438,6 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
         self.linhasPeca.append([lineedit1, lineedit2, comboBox, lineedit4])
         self.gridLayoutPecas.removeItem(self.spacerpeca)
         self.gridLayoutPecas.addItem(self.spacerpeca, len(self.linhasPeca)*2, 0, 1, 1)
-        lineedit1.textChanged.connect(self.setValor)
         lineedit2.textChanged.connect(self.setValor)
         lineedit4.textChanged.connect(self.setValor)
         lineedit1.textChanged.connect(lambda: self.buscarPeca(lineedit1, comboBox, lineedit4))
@@ -475,7 +487,6 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
         self.linhasServico.append([lineedit1, lineedit2, lineedit3])
         self.gridLayoutServicos.removeItem(self.spacerservico)
         self.gridLayoutServicos.addItem(self.spacerservico, len(self.linhasServico)*2, 0, 1, 1)
-        lineedit1.textChanged.connect(self.setValor)
         lineedit2.textChanged.connect(self.setValor)
         lineedit3.textChanged.connect(self.setValor)
         lineedit1.textChanged.connect(lambda: self.buscarServico(lineedit1, lineedit3))
@@ -734,22 +745,26 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
     def setValor(self):
         self.valorTotal=0.00
         for _,qtde,_,valor in self.linhasPeca:
-            if valor.text().replace(',','',1).replace('.','',1).isdigit():
+            if not valor.text():
+                pass
+            elif not valor.text().replace(',','',1).replace('.','',1).isdigit():
+                self.labelValorTotal2.setText('0,00')
+                return
+            else:
                 if qtde.text():
                     self.valorTotal+=float(valor.text().replace(',','.',1))*float(qtde.text().replace(',','.',1))
                 else: self.valorTotal+=float(valor.text().replace(',','.',1))
-            else:
-                self.labelValorTotal2.setText('0,00')
-                return
         for _,qtde,valor in self.linhasServico:
-            if valor.text().replace(',','',1).replace('.','',1).isdigit():
+            if not valor.text():
+                pass
+            elif valor.text().replace(',','',1).replace('.','',1).isdigit():
                 if qtde.text():
                     self.valorTotal+=float(valor.text().replace(',','.',1))*float(qtde.text().replace(',','.',1))
                 else: self.valorTotal+=float(valor.text().replace(',','.',1))
             else:
                 self.labelValorTotal2.setText('0,00')
                 return
-        self.labelValorTotal2.setText('{:.2f}'.format(self.valorTotal))
+        self.labelValorTotal2.setText(('{:.2f}'.format(self.valorTotal)).replace('.',',',1))
 
     def buscarPeca(self, lineEditDesc, comboBoxUn, lineEditValor):
         qPeca = self.pecaCtrl.getPecaByDescricao(lineEditDesc.text())
@@ -809,10 +824,6 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
             for item in itemServicos:
                 item['descricao'] = self.servicoCtrl.getServico(item['servico'])['descricao']
             itemServicos = list(itemServicos)
-        print(orcamento)
-        print(fones)
-        print(itemPecas)
-        print(itemServicos)
 
     def telaBuscaCliente(self):
         self.windowCliente = QtWidgets.QMainWindow()

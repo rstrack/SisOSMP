@@ -4,7 +4,6 @@ class MessageBox():
     def __init__(self) -> None:
          pass
 
-    @staticmethod
     def question(self, string):
             msgBox = QtWidgets.QMessageBox()
             msgBox.setWindowTitle("Aviso")
