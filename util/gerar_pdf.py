@@ -41,7 +41,10 @@ def tabelas_pos(self, orcamento: dict, l, g):
 
 
 def generatePDF(orcamento: dict, listaFones: list[dict], listaServicos: list[dict], listaPecas: list[dict] = None, path:str = None):
-    pdf = canvas.Canvas(f"{os.path.expandvars('%LOCALAPPDATA%')}\Temp\\teste.pdf", pagesize=A4)
+    if path:
+        pdf = canvas.Canvas(f"{path}\\teste.pdf", pagesize=A4)
+    else:
+        pdf = canvas.Canvas(f"{os.path.expandvars('%LOCALAPPDATA%')}\Temp\\teste.pdf", pagesize=A4)
     pdf.drawInlineImage(
         "./resources/logo2.png", 0, 740, 200, 100
     )
@@ -117,7 +120,7 @@ def generatePDF(orcamento: dict, listaFones: list[dict], listaServicos: list[dic
     if orcamento['aprovado']:
         pdf.drawString(253, 578, 'Ordem de serviço')
         pdf.setFont('Helvetica', 10)
-        pdf.drawString(117, 729, 'Data de Aprovação: {}'.format(orcamento['dataAprovacao']))
+        pdf.drawString(117, 729, 'Data de Aprovação: {}'.format(orcamento['dataAprovacao'].strftime("%d/%m/%Y")))
         pdf.rect(107, 725, 162, 15, fill=False, stroke=True)
     else:
         pdf.drawString(275, 578, 'Orçamento')
@@ -303,7 +306,7 @@ def generatePDF(orcamento: dict, listaFones: list[dict], listaServicos: list[dic
             s.drawOn(pdf, 10, z)
     pdf.save()
     if path:
-        os.startfile(f"{path}\\")
+        os.startfile(f"{path}\\teste.pdf")
     else:
         os.startfile(f"{os.path.expandvars('%LOCALAPPDATA%')}\Temp\\teste.pdf")
 

@@ -141,17 +141,15 @@ class TelaConsultaOrcamento(QtWidgets.QMainWindow):
         itemPecas = self.orcamentoCtrl.listarItemPecas(orcamento['idOrcamento'])
         if itemPecas:
             for item in itemPecas:
-                item['descricao'] = self.pecaCtrl.getPeca(item['peca'])['descricao']
+                peca = self.pecaCtrl.getPeca(item['peca'])
+                item['descricao'] = peca['descricao']
+                item['un'] = peca['un']
             itemPecas = list(itemPecas)
         itemServicos = self.orcamentoCtrl.listarItemServicos(orcamento['idOrcamento'])
         if itemServicos: 
             for item in itemServicos:
                 item['descricao'] = self.servicoCtrl.getServico(item['servico'])['descricao']
             itemServicos = list(itemServicos)
-        print(orcamento)
-        print(fones)
-        print(itemServicos)
-        print(itemPecas)
         msg = MessageBox()
         r = msg.question('Deseja salvar o arquivo?')
         if r == 'cancelar':
@@ -159,7 +157,10 @@ class TelaConsultaOrcamento(QtWidgets.QMainWindow):
         elif r == 'nao':
             generatePDF(orcamento, fones, itemServicos, itemPecas)
         else:
-            pass
+            window = QtWidgets.QMainWindow()
+            fd = QtWidgets.QFileDialog()
+            path = fd.getExistingDirectory(window, 'Salvar como', './')
+            generatePDF(orcamento, fones, itemServicos, itemPecas, path)
 
 
 if __name__ == "__main__":

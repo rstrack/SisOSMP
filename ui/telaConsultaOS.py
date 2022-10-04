@@ -1,11 +1,15 @@
 from PyQt6 import QtCore, QtGui, QtWidgets
 from routes import handleRoutes
+from ui.messageBox import MessageBox
+from util.gerar_pdf import generatePDF
 
 class TelaConsultaOS(QtWidgets.QMainWindow):
     def __init__(self):
         super(TelaConsultaOS, self).__init__()
         self.orcamentoCtrl = handleRoutes.getRoute('ORCAMENTOCTRL')
         self.clienteCtrl = handleRoutes.getRoute('CLIENTECTRL')
+        self.pecaCtrl = handleRoutes.getRoute('PECACTRL')
+        self.servicoCtrl = handleRoutes.getRoute('SERVICOCTRL')
         self.setupUi()
 
     def setupUi(self):
@@ -47,6 +51,9 @@ class TelaConsultaOS(QtWidgets.QMainWindow):
         self.botaoEditar = QtWidgets.QPushButton(self.framebotoes)
         self.botaoEditar.setFixedSize(100, 25)
         self.hlayoutbotoes.addWidget(self.botaoEditar)
+        self.botaoImprimir = QtWidgets.QPushButton(self.framebotoes)
+        self.botaoImprimir.setFixedSize(100, 25)
+        self.hlayoutbotoes.addWidget(self.botaoImprimir)
         self.model = QtGui.QStandardItemModel()
         self.filter.setSourceModel(self.model)
         self.filter.setFilterKeyColumn(-1)
@@ -58,12 +65,14 @@ class TelaConsultaOS(QtWidgets.QMainWindow):
         self.retranslateUi()
         self.selectionModel = self.tabela.selectionModel()
         self.botaoRefresh.clicked.connect(self.listarOrcamentos)
+        self.botaoImprimir.clicked.connect(self.imprimir)
         self.listarOrcamentos()
 
     def retranslateUi(self):
         _translate = QtCore.QCoreApplication.translate
         self.setWindowTitle(_translate("MainWindow", "Busca"))
         self.botaoEditar.setText(_translate("MainWindow", "Editar"))
+        self.botaoImprimir.setText(_translate("MainWindow", "Imprimir"))
 
     def listarOrcamentos(self):
         orcamentos = self.orcamentoCtrl.listarOrcamentos(True)
@@ -131,6 +140,37 @@ class TelaConsultaOS(QtWidgets.QMainWindow):
         if self.linha:
             return self.tabela.model().index(self.linha[0].row(), 0).data()
 
+    def imprimir(self):
+        self.linha = self.tabela.selectionModel().selectedRows()
+        if self.linha:
+            id = self.tabela.model().index(self.linha[0].row(), 0).data()
+        else: return
+        orcamento = self.orcamentoCtrl.getOrcamento(id)
+        fones = self.clienteCtrl.listarFones(orcamento['cliente'])
+        if fones: fones = list(fones)
+        itemPecas = self.orcamentoCtrl.listarItemPecas(orcamento['idOrcamento'])
+        if itemPecas:
+            for item in itemPecas:
+                peca = self.pecaCtrl.getPeca(item['peca'])
+                item['descricao'] = peca['descricao']
+                item['un'] = peca['un']
+            itemPecas = list(itemPecas)
+        itemServicos = self.orcamentoCtrl.listarItemServicos(orcamento['idOrcamento'])
+        if itemServicos: 
+            for item in itemServicos:
+                item['descricao'] = self.servicoCtrl.getServico(item['servico'])['descricao']
+            itemServicos = list(itemServicos)
+        msg = MessageBox()
+        r = msg.question('Deseja salvar o arquivo?')
+        if r == 'cancelar':
+            return
+        elif r == 'nao':
+            generatePDF(orcamento, fones, itemServicos, itemPecas)
+        else:
+            window = QtWidgets.QMainWindow()
+            fd = QtWidgets.QFileDialog()
+            path = fd.getExistingDirectory(window, 'Salvar como', './')
+            generatePDF(orcamento, fones, itemServicos, itemPecas, path)
 
 if __name__ == "__main__":
     import sys
