@@ -1,10 +1,4 @@
-# Fetch More Example - Lazy Table Edition
-# Ported to PyQt4 by Darryl Wallace, 2009 - wallacdj at gmail.com
-
-from controller.orcamentoController import OrcamentoController
-from controller.clienteController import ClienteController
-import sys
-from PyQt6 import QtGui, QtCore, QtWidgets
+from PyQt6 import QtCore, QtWidgets
 
 class InfiniteScrollTableModel(QtCore.QAbstractTableModel):
     numberPopulated = QtCore.pyqtSignal(int, int)
@@ -14,7 +8,6 @@ class InfiniteScrollTableModel(QtCore.QAbstractTableModel):
         self.numColumns=len(data[0]) if self.numRows>0 else 0
         self._data=data
         self.horizontalHeaders = [''] * len(self._data)
-    #__init__
 
     def setRowCount(self, rows: int) -> None:
         self.beginResetModel()
@@ -72,15 +65,13 @@ class InfiniteScrollTableModel(QtCore.QAbstractTableModel):
         """
         parent=QModelIndex
         """
-        return self.numRows
-    #rowCount    
+        return self.numRows 
     
     def columnCount(self, parent):
         """
         parent=QModelIndex
         """
-        return self.numColumns
-    #columnCount    
+        return self.numColumns  
     
     def data(self, index, role=QtCore.Qt.ItemDataRole.DisplayRole):
         """
@@ -98,7 +89,6 @@ class InfiniteScrollTableModel(QtCore.QAbstractTableModel):
             return QtCore.QVariant(QtWidgets.QApplication.palette().base())
             
         return QtCore.QVariant()
-    #data
 
     def updateData(self, data):
         self.beginResetModel()
@@ -121,13 +111,12 @@ class InfiniteScrollTableModel(QtCore.QAbstractTableModel):
             return True
         else:
             return False
-    #canFetchMore
     
     def fetchMore(self, index):
         """
         Index=QModelIndex
         """
-        maxFetch=10     #maximum number of rows/columns to grab at a time.
+        maxFetch=20 # max de linhas renderizadas por vez
         
         remainderRows=len(self._data)-self.numRows
         rowsToFetch=min(maxFetch, remainderRows)
@@ -145,40 +134,6 @@ class InfiniteScrollTableModel(QtCore.QAbstractTableModel):
             self.numColumns+=columnsToFetch
         
         self.numberPopulated.emit(rowsToFetch, columnsToFetch)
-    #fetchMore
-#InfiniteScrollTableModel
-
-#classe pra testes
-class Window(QtWidgets.QWidget):
-    
-    def __init__(self, data, parent=None):
-        QtWidgets.QWidget.__init__(self, parent)
-        
-        self.model = InfiniteScrollTableModel(data, parent=self)
-        
-        view=QtWidgets.QTableView()
-        view.setModel(self.model)
-        
-        layout=QtWidgets.QGridLayout()
-        layout.addWidget(view, 0, 0, 1, 2)
-        
-        self.setLayout(layout)
-        
-        self.resize(400, 600)
-    #__init__
-    
-    def updateLog(self, rows, columns):
-        self.logViewer.append("{} rows added. {} columns added".format(rows, columns))
-    #updateLog
-#Window
 
 if __name__=='__main__':
-    qApp=QtWidgets.QApplication(sys.argv)
-    rep = ClienteController()
-    data = rep.listarClientes()
-    data = list(reversed(data))
-    fetchMoreWindow=Window(data)
-    r = fetchMoreWindow.model.setHorizontalHeaderLabels(['idCliente', 'nome', 'documento'])
-    fetchMoreWindow.model.colunasDesejadas(['idCliente', 'nome', 'documento'])
-    fetchMoreWindow.show()
-    qApp.exec()
+    pass

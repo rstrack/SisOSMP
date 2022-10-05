@@ -6,7 +6,7 @@ SIGLAESTADOS = ['AC', 'AL', 'AP', 'AM', 'BA', 'CE', 'DF', 'ES', 'GO', 'MA', 'MT'
 
 
 class TelaEditarCliente(QtWidgets.QMainWindow):
-    retornarConsulta = QtCore.pyqtSignal(int)
+    retornarParaConsulta = QtCore.pyqtSignal(int)
     def __init__(self):
         super(TelaEditarCliente, self).__init__()
         self.clienteCtrl = handleRoutes.getRoute('CLIENTECTRL')
@@ -163,7 +163,7 @@ class TelaEditarCliente(QtWidgets.QMainWindow):
             msg.setWindowTitle("Aviso")
             msg.setText('Cliente editado com sucesso!')
             msg.exec()
-            self.retornarConsulta.emit(1)
+            self.retornarParaConsulta.emit(1)
         except Exception as e:
             msg = QtWidgets.QMessageBox()
             msg.setWindowTitle("Erro")
@@ -180,7 +180,7 @@ class TelaEditarCliente(QtWidgets.QMainWindow):
         n.setFixedWidth(60)
         msgBox.exec()
         if msgBox.clickedButton() == y:
-            self.retornarConsulta.emit(1)
+            self.retornarParaConsulta.emit(1)
 
     def limparCampos(self):
         for lineedit in self.framedados.findChildren(QtWidgets.QLineEdit):

@@ -118,6 +118,10 @@ class MainController():
         self.telaInicio.botao_clientes.clicked.connect(self.telaCadastroCliente.setMarcas)
         self.telaInicio.botao_orcamentos.clicked.connect(self.telaCadastroOrcamento.setMarcas)
         self.telaInicio.botao_orcamentos.clicked.connect(self.telaCadastroOrcamento.setCompleters)
+        
+        self.telaInicio.botao_clientes_2.clicked.connect(self.telaConsultaCliente.listarClientes)
+        self.telaInicio.botao_orcamentos_2.clicked.connect(self.telaConsultaOrcamento.listarOrcamentos)
+        self.telaInicio.botao_os.clicked.connect(self.telaConsultaOS.listarOS)
 
         # conectando seleção de edição com respectivas telas de edição
         self.telaConsultaCliente.botaoEditar.clicked.connect(
@@ -130,10 +134,10 @@ class MainController():
             lambda: self.consultaParaEditar(self.telaEditarOS, self.telaEditarOS.renderEditar, self.telaConsultaOS.editarOS))
 
         # retorno das edições para tela de consulta em caso de cancelamento ou conclusão da operação
-        self.telaEditarCliente.retornarConsulta.connect(lambda: self.telaInicio.stackedWidget.setCurrentWidget(self.telaConsultaCliente))
-        self.telaEditarVeiculo.retornarConsulta.connect(lambda: self.telaInicio.stackedWidget.setCurrentWidget(self.telaConsultaVeiculo))
-        self.telaEditarOrcamento.retornarConsulta.connect(lambda: self.telaInicio.stackedWidget.setCurrentWidget(self.telaConsultaOrcamento))
-        self.telaEditarOS.retornarConsulta.connect(lambda: self.telaInicio.stackedWidget.setCurrentWidget(self.telaConsultaOS))
+        self.telaEditarCliente.retornarParaConsulta.connect(lambda: self.telaInicio.stackedWidget.setCurrentWidget(self.telaConsultaCliente))
+        self.telaEditarVeiculo.retornarParaConsulta.connect(lambda: self.telaInicio.stackedWidget.setCurrentWidget(self.telaConsultaVeiculo))
+        self.telaEditarOrcamento.retornarParaConsulta.connect(lambda: self.telaInicio.stackedWidget.setCurrentWidget(self.telaConsultaOrcamento))
+        self.telaEditarOS.retornarParaConsulta.connect(lambda: self.telaInicio.stackedWidget.setCurrentWidget(self.telaConsultaOS))
 
     # função que passa da tela de consulta para a tela de edição da respectiva entidade, passando id a ser alterado como parametro
     def consultaParaEditar(self, pagina, render, param):

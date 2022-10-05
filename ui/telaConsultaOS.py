@@ -64,9 +64,9 @@ class TelaConsultaOS(QtWidgets.QMainWindow):
         self.setCentralWidget(self.mainwidget)
         self.retranslateUi()
         self.selectionModel = self.tabela.selectionModel()
-        self.botaoRefresh.clicked.connect(self.listarOrcamentos)
+        self.botaoRefresh.clicked.connect(self.listarOS)
         self.botaoImprimir.clicked.connect(self.imprimir)
-        self.listarOrcamentos()
+        self.listarOS()
 
     def retranslateUi(self):
         _translate = QtCore.QCoreApplication.translate
@@ -74,7 +74,7 @@ class TelaConsultaOS(QtWidgets.QMainWindow):
         self.botaoEditar.setText(_translate("MainWindow", "Editar"))
         self.botaoImprimir.setText(_translate("MainWindow", "Imprimir"))
 
-    def listarOrcamentos(self):
+    def listarOS(self):
         orcamentos = self.orcamentoCtrl.listarOrcamentos(True)
         if not orcamentos:
             return

@@ -10,7 +10,7 @@ UNIDADES = ['CM', 'CM2', 'CM3', 'CX', 'DZ', 'G', 'KG',
 
 
 class TelaEditarOrcamento(QtWidgets.QMainWindow):
-    retornarConsulta = QtCore.pyqtSignal(int)
+    retornarParaConsulta = QtCore.pyqtSignal(int)
     def __init__(self):
         super(TelaEditarOrcamento, self).__init__()
         self.orcamentoCtrl = handleRoutes.getRoute('ORCAMENTOCTRL')
@@ -599,7 +599,7 @@ class TelaEditarOrcamento(QtWidgets.QMainWindow):
             self.veiculoSelected = None
             self.valorTotal = 0
             self.orcamentoID = None
-            self.retornarConsulta.emit(1)
+            self.retornarParaConsulta.emit(1)
         except Exception as e:
             msg = QtWidgets.QMessageBox()
             msg.setWindowTitle("Aviso")
@@ -631,7 +631,7 @@ class TelaEditarOrcamento(QtWidgets.QMainWindow):
         n.setFixedWidth(60)
         msgBox.exec()
         if msgBox.clickedButton() == y:
-            self.retornarConsulta.emit(1)
+            self.retornarParaConsulta.emit(1)
 
     def limparCampos(self):
         for lineedit in self.framedados.findChildren(QtWidgets.QLineEdit):

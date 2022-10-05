@@ -1,5 +1,7 @@
 from PyQt6 import QtCore, QtGui, QtWidgets
+from flatdict import FlatDict
 from routes import handleRoutes
+from ui.infiniteScroll import InfiniteScrollTableModel
 from ui.telaCadastroPeca import TelaCadastroPeca
 
 class TelaConsultaPeca(QtWidgets.QMainWindow):
@@ -55,14 +57,10 @@ class TelaConsultaPeca(QtWidgets.QMainWindow):
         self.botaoEditar = QtWidgets.QPushButton(self.framebotoes)
         self.botaoEditar.setFixedSize(100, 25)
         self.hlayoutbotoes.addWidget(self.botaoEditar)
-        self.model = QtGui.QStandardItemModel()
-        self.filter.setSourceModel(self.model)
         self.filter.setFilterKeyColumn(-1)
         self.lineEditBusca.textChanged.connect(
             self.filter.setFilterRegularExpression)
         self.tabela.setModel(self.filter)
-        listaHeader = ['ID', 'Descrição da peça', 'Unidade', 'Valor']
-        self.model.setHorizontalHeaderLabels(listaHeader)
         self.setCentralWidget(self.mainwidget)
         self.retranslateUi()
         self.selectionModel = self.tabela.selectionModel()
@@ -78,38 +76,39 @@ class TelaConsultaPeca(QtWidgets.QMainWindow):
         self.setWindowTitle(_translate("MainWindow", "Busca"))
         self.botaoEditar.setText(_translate("MainWindow", "Editar"))
 
-    def listarPecas(self):
+    def scrolled(self, value):
+        if value == self.tabela.verticalScrollBar().maximum():
+            self.maisPecas(50)
+
+    def maisPecas(self, qtde):
         pecas = self.pecaCtrl.listarPecas()
         if not pecas:
             return
-        self.model.setRowCount(len(pecas))
-        row = 0
-        for peca in pecas:
-            item = QtGui.QStandardItem()
-            item.setData(peca['idPeca'], QtCore.Qt.ItemDataRole.DisplayRole)
-            item.setTextAlignment(
-                QtCore.Qt.AlignmentFlag.AlignHCenter | QtCore.Qt.AlignmentFlag.AlignVCenter)
-            self.model.setItem(row, 0, item)
-            item = QtGui.QStandardItem()
-            item.setData(peca['descricao'], QtCore.Qt.ItemDataRole.DisplayRole)
-            item.setTextAlignment(
-                QtCore.Qt.AlignmentFlag.AlignHCenter | QtCore.Qt.AlignmentFlag.AlignVCenter)
-            self.model.setItem(row, 1, item)
-            item = QtGui.QStandardItem()
-            item.setData(peca['un'], QtCore.Qt.ItemDataRole.DisplayRole)
-            item.setTextAlignment(
-                QtCore.Qt.AlignmentFlag.AlignHCenter | QtCore.Qt.AlignmentFlag.AlignVCenter)
-            self.model.setItem(row, 2, item)
-            item = QtGui.QStandardItem("R$ {:.2f}".format(peca['valor']).replace('.',',',1))
-            item.setTextAlignment(
-                QtCore.Qt.AlignmentFlag.AlignHCenter | QtCore.Qt.AlignmentFlag.AlignVCenter)
-            self.model.setItem(row, 3, item)
-            row = row+1
-        header = self.tabela.horizontalHeader()
-        header.setSectionResizeMode(
-            QtWidgets.QHeaderView.ResizeMode.ResizeToContents)
-        header.setSectionResizeMode(1, 
-            QtWidgets.QHeaderView.ResizeMode.Stretch)
+        pecas = list(reversed(pecas))
+        maxLength = len(pecas)
+        remainderRows = maxLength-self.linesShowed
+        rowsToFetch=min(qtde, remainderRows)
+        if rowsToFetch<=0:
+            return
+        initLen = self.linesShowed
+        maxRows = self.linesShowed + rowsToFetch
+        while self.linesShowed < maxRows:
+            pecas[self.linesShowed]['valor'] = "R$ {:.2f}".format(pecas[self.linesShowed]['valor']).replace('.',',',1)
+            self.linesShowed+=1
+        self.model.addData(pecas[initLen:self.linesShowed])
+        colunas = ['idPeca', 'descricao', 'un', 'valor']
+        self.model.colunasDesejadas(colunas)
+        self.model.setRowCount(self.linesShowed)
+        self.model.setColumnCount(len(colunas))
+
+    def listarPecas(self):
+        self.linesShowed = 0
+        self.model = InfiniteScrollTableModel([{}])
+        listaHeader = ['ID', 'Descrição', 'Un', 'Valor']
+        self.model.setHorizontalHeaderLabels(listaHeader)
+        self.filter.setSourceModel(self.model)
+        self.tabela.setModel(self.filter)
+        self.maisPecas(50)
 
     def editarPeca(self):
         self.linha = self.tabela.selectionModel().selectedRows()

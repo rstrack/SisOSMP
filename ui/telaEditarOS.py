@@ -10,7 +10,7 @@ UNIDADES = ['CM', 'CM2', 'CM3', 'CX', 'DZ', 'G', 'KG',
 
 
 class TelaEditarOS(QtWidgets.QMainWindow):
-    retornarConsulta = QtCore.pyqtSignal(int)
+    retornarParaConsulta = QtCore.pyqtSignal(int)
     def __init__(self):
         super(TelaEditarOS, self).__init__()
         self.orcamentoCtrl = handleRoutes.getRoute('ORCAMENTOCTRL')
@@ -595,7 +595,7 @@ class TelaEditarOS(QtWidgets.QMainWindow):
             msg.setWindowTitle("Aviso")
             msg.setText("Orçamento editado com sucesso!")
             msg.exec()
-            self.retornarConsulta.emit(1)
+            self.retornarParaConsulta.emit(1)
             #RESETA DADOS DA TELA
             self.clienteSelected = None
             self.veiculoSelected = None
@@ -617,7 +617,7 @@ class TelaEditarOS(QtWidgets.QMainWindow):
         n.setFixedWidth(60)
         msgBox.exec()
         if msgBox.clickedButton() == y:
-            self.retornarConsulta.emit(1)
+            self.retornarParaConsulta.emit(1)
 
     def limparCampos(self):
         for lineedit in self.framedados.findChildren(QtWidgets.QLineEdit):

@@ -2,7 +2,7 @@ from PyQt6 import QtCore, QtGui, QtWidgets
 from ui.infiniteScroll import InfiniteScrollTableModel
 from routes import handleRoutes
 from flatdict import FlatDict
-import threading
+
 class TelaConsultaCliente(QtWidgets.QMainWindow):
     def __init__(self):
         super(TelaConsultaCliente, self).__init__()
@@ -75,8 +75,7 @@ class TelaConsultaCliente(QtWidgets.QMainWindow):
 
     def scrolled(self, value):
         if value == self.tabela.verticalScrollBar().maximum():
-            # self.maisClientes(50)
-            threading.Thread(target=self.maisClientes, args=(100,)).start()
+            self.maisClientes(50)
 
     def maisClientes(self, qtde):
         clientes = self.clienteCtrl.listarClientes()
