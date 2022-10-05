@@ -1,5 +1,7 @@
 from PyQt6 import QtCore, QtGui, QtWidgets
+from flatdict import FlatDict
 from routes import handleRoutes
+from ui.infiniteScroll import AlignDelegate, InfiniteScrollTableModel
 from ui.messageBox import MessageBox
 from util.gerar_pdf import generatePDF
 
@@ -40,9 +42,9 @@ class TelaConsultaOS(QtWidgets.QMainWindow):
         self.tabela.setSelectionMode(QtWidgets.QAbstractItemView.SelectionMode.SingleSelection)
         self.tabela.horizontalHeader().setHighlightSections(False)
         self.tabela.verticalHeader().setVisible(False)
+        self.delegateRight = AlignDelegate(QtCore.Qt.AlignmentFlag.AlignRight | QtCore.Qt.AlignmentFlag.AlignVCenter)
         self.filter = QtCore.QSortFilterProxyModel()
         self.filter.setFilterCaseSensitivity(QtCore.Qt.CaseSensitivity.CaseInsensitive)
-        self.tabela.setSortingEnabled(True)
         self.framebotoes = QtWidgets.QFrame(self.mainwidget)
         self.glayout.addWidget(self.framebotoes, 2, 0, 1, 1)
         self.hlayoutbotoes = QtWidgets.QHBoxLayout(self.framebotoes)
@@ -74,7 +76,51 @@ class TelaConsultaOS(QtWidgets.QMainWindow):
         self.botaoEditar.setText(_translate("MainWindow", "Editar"))
         self.botaoImprimir.setText(_translate("MainWindow", "Imprimir"))
 
+    def scrolled(self, value):
+        if value == self.tabela.verticalScrollBar().maximum():
+            self.maisOS(50)
+
+    def maisOS(self, qtde):
+        orcamentos = self.orcamentoCtrl.listarOrcamentos(aprovado=True, limit=self.linesShowed+qtde)
+        if not orcamentos:
+            return
+        maxLength = len(orcamentos)
+        remainderRows = maxLength-self.linesShowed
+        rowsToFetch=min(qtde, remainderRows)
+        if rowsToFetch<=0:
+            return
+        initLen = self.linesShowed
+        maxRows = self.linesShowed + rowsToFetch
+        while self.linesShowed < maxRows:
+            orcamentos[self.linesShowed]['dataOrcamento'] = orcamentos[self.linesShowed]['dataOrcamento'].strftime("%d/%m/%Y")
+            orcamentos[self.linesShowed]['dataAprovacao'] = orcamentos[self.linesShowed]['dataAprovacao'].strftime("%d/%m/%Y")
+
+            orcamentos[self.linesShowed] = FlatDict(orcamentos[self.linesShowed], delimiter='.')
+            self.linesShowed+=1
+        self.model.addData(orcamentos[initLen:self.linesShowed])
+        colunas = ['idOrcamento', 'dataOrcamento', 'dataAprovacao', 'cliente.nome', 'veiculo.marca.nome', 'veiculo.modelo', 'veiculo.placa', 'valorTotal']
+        self.model.colunasDesejadas(colunas)
+        self.model.setRowCount(self.linesShowed)
+        self.model.setColumnCount(len(colunas))
+        self.tabela.hideColumn(0)
+
     def listarOS(self):
+        self.linesShowed = 0
+        self.model = InfiniteScrollTableModel([{}])
+        listaHeader = ['ID', 'Data do Orçamento', 'Data de Aprovação', 'Cliente', 'Marca', 'Modelo', 'Placa', 'Valor Total']
+        self.model.setHorizontalHeaderLabels(listaHeader)
+        self.filter.setSourceModel(self.model)
+        self.tabela.setModel(self.filter)
+        self.tabela.setItemDelegateForColumn(5, self.delegateRight)
+        self.model.setHeaderData(1, QtCore.Qt.Orientation.Horizontal, 'tipo', 1)
+        self.maisOS(50)
+        header = self.tabela.horizontalHeader()
+        header.setSectionResizeMode(
+            QtWidgets.QHeaderView.ResizeMode.ResizeToContents)
+        header.setSectionResizeMode(3, 
+            QtWidgets.QHeaderView.ResizeMode.Stretch)
+
+    '''def listarOS(self):
         orcamentos = self.orcamentoCtrl.listarOrcamentos(True)
         if not orcamentos:
             return
@@ -133,7 +179,7 @@ class TelaConsultaOS(QtWidgets.QMainWindow):
         header.setSectionResizeMode(2, 
             QtWidgets.QHeaderView.ResizeMode.ResizeToContents)
         header.setSectionResizeMode(3, 
-            QtWidgets.QHeaderView.ResizeMode.Stretch)
+            QtWidgets.QHeaderView.ResizeMode.Stretch)'''
 
     def editarOS(self):
         self.linha = self.tabela.selectionModel().selectedRows()

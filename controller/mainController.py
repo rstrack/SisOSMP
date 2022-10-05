@@ -119,9 +119,7 @@ class MainController():
         self.telaInicio.botao_orcamentos.clicked.connect(self.telaCadastroOrcamento.setMarcas)
         self.telaInicio.botao_orcamentos.clicked.connect(self.telaCadastroOrcamento.setCompleters)
         
-        self.telaInicio.botao_clientes_2.clicked.connect(self.telaConsultaCliente.listarClientes)
-        self.telaInicio.botao_orcamentos_2.clicked.connect(self.telaConsultaOrcamento.listarOrcamentos)
-        self.telaInicio.botao_os.clicked.connect(self.telaConsultaOS.listarOS)
+        self.telaInicio.stackedWidget.currentChanged.connect(self.atualizarJanelas)
 
         # conectando seleção de edição com respectivas telas de edição
         self.telaConsultaCliente.botaoEditar.clicked.connect(
@@ -146,6 +144,13 @@ class MainController():
             return
         render(p)
         self.telaInicio.stackedWidget.setCurrentWidget(pagina)
+
+    def atualizarJanelas(self):
+        match self.telaInicio.stackedWidget.currentWidget():
+            case self.telaConsultaCliente:
+                self.telaConsultaCliente.listarClientes()
+            case _:
+                return
 
     def run(self):
         self.telaInicio.resize(1280,800)

@@ -111,7 +111,7 @@ class ClienteController():
                 return e
     
     #listar todos os clientes ou clientes vinculados a um veiculo
-    def listarClientes(self, veiculo=None):
+    def listarClientes(self, veiculo=None, qtde=None):
         _clientes = []
         if veiculo:
             clientes = self.veiculoClienteRep.findClientesByVeiculoID(veiculo['idVeiculo'])
@@ -121,7 +121,7 @@ class ClienteController():
                 return _clientes
             else: return None
         else:
-            clientes = self.clienteRep.findAll()
+            clientes = self.clienteRep.findAll(qtde)
             if clientes:
                 for cliente in clientes:
                     _clientes.append(model_to_dict(cliente))

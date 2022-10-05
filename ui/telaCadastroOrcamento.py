@@ -273,26 +273,6 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
 
         self.gridLayoutGeral.addWidget(self.groupBoxOrcamento, 4, 0, 1, -1)
 
-        # valor
-        self.framevalor = QtWidgets.QFrame(self.framedados)
-        self.hlayoutvalor = QtWidgets.QHBoxLayout(self.framevalor)
-        self.labelLegenda = QtWidgets.QLabel(self.framevalor)
-        '''self.labelValorTotal1 = QtWidgets.QLabel(self.framevalor)
-        self.labelValorTotal1.setAlignment(QtCore.Qt.AlignmentFlag.AlignRight | QtCore.Qt.AlignmentFlag.AlignVCenter)
-        self.labelValorTotal1.setObjectName('boldText')
-        self.labelValorTotal2 = QtWidgets.QLabel(self.framevalor)
-        self.labelValorTotal2.setAlignment(QtCore.Qt.AlignmentFlag.AlignLeft | QtCore.Qt.AlignmentFlag.AlignVCenter)
-        self.labelValorTotal2.setObjectName('boldText')
-        self.labelValorTotal2.setText('0,00')'''
-        spacer = QtWidgets.QSpacerItem(40, 10, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
-        
-        '''self.hlayoutvalor.addWidget(self.labelLegenda)
-        self.hlayoutvalor.addItem(spacer)
-        self.hlayoutvalor.addWidget(self.labelValorTotal1)
-        self.hlayoutvalor.addWidget(self.labelValorTotal2)'''
-
-        self.gridLayoutGeral.addWidget(self.framevalor, 4, 0, 1, -1)
-
         # campo de observações
         self.groupBoxObs = QtWidgets.QGroupBox(self.framedados)
         self.vlayout2 = QtWidgets.QVBoxLayout(self.groupBoxObs)
@@ -789,7 +769,7 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
             pecas = self.getPecas()
             servicos  = self.getServicos()
             orcamento = self.getDadosOrcamento()
-            orcamento['valorTotal'] = self.valorTotal
+            orcamento['valorTotal'] = round(self.valorTotal, 2)
             r = self.orcamentoCtrl.salvarOrcamento(cliente, fones, self.clienteSelected, veiculo, self.veiculoSelected, orcamento, pecas, servicos)
             if isinstance(r, Exception):
                 raise Exception(r)

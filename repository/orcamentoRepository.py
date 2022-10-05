@@ -15,11 +15,11 @@ class OrcamentoRepository():
     def delete(self, id):
         return Orcamento.delete_by_id(id)
 
-    def findAll(self):
-        return Orcamento.select()
+    def findAll(self, limit):
+        return Orcamento.select().order_by(-Orcamento.dataOrcamento).limit(limit)
 
     def findByID(self, id):
         return Orcamento.select().where(Orcamento.idOrcamento==id).get()
 
-    def findByAprovado(self, aprovado):
-        return Orcamento.select().where(Orcamento.aprovado==aprovado)
+    def findByAprovado(self, aprovado, limit):
+        return Orcamento.select().where(Orcamento.aprovado==aprovado).order_by(-Orcamento.dataOrcamento).limit(limit)

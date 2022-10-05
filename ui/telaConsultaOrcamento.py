@@ -1,15 +1,14 @@
 from PyQt6 import QtCore, QtGui, QtWidgets
 from routes import handleRoutes
 from datetime import datetime
+from flatdict import FlatDict
+from ui.infiniteScroll import AlignDelegate, InfiniteScrollTableModel
 from ui.messageBox import MessageBox
 from util.gerar_pdf import generatePDF
 class TelaConsultaOrcamento(QtWidgets.QMainWindow):
     def __init__(self):
         super(TelaConsultaOrcamento, self).__init__()
         self.orcamentoCtrl = handleRoutes.getRoute('ORCAMENTOCTRL')
-        self.clienteCtrl = handleRoutes.getRoute('CLIENTECTRL')
-        self.pecaCtrl = handleRoutes.getRoute('PECACTRL')
-        self.servicoCtrl = handleRoutes.getRoute('SERVICOCTRL')
         self.setupUi()
 
     def setupUi(self):
@@ -40,9 +39,9 @@ class TelaConsultaOrcamento(QtWidgets.QMainWindow):
         self.tabela.setSelectionMode(QtWidgets.QAbstractItemView.SelectionMode.SingleSelection)
         self.tabela.horizontalHeader().setHighlightSections(False)
         self.tabela.verticalHeader().setVisible(False)
+        self.delegateRight = AlignDelegate(QtCore.Qt.AlignmentFlag.AlignRight | QtCore.Qt.AlignmentFlag.AlignVCenter)
         self.filter = QtCore.QSortFilterProxyModel()
         self.filter.setFilterCaseSensitivity(QtCore.Qt.CaseSensitivity.CaseInsensitive)
-        self.tabela.setSortingEnabled(True)
         self.framebotoes = QtWidgets.QFrame(self.mainwidget)
         self.glayout.addWidget(self.framebotoes, 2, 0, 1, 1)
         self.hlayoutbotoes = QtWidgets.QHBoxLayout(self.framebotoes)
@@ -54,16 +53,10 @@ class TelaConsultaOrcamento(QtWidgets.QMainWindow):
         self.botaoImprimir = QtWidgets.QPushButton(self.framebotoes)
         self.botaoImprimir.setFixedSize(100, 25)
         self.hlayoutbotoes.addWidget(self.botaoImprimir)
-        self.model = QtGui.QStandardItemModel()
-        self.filter.setSourceModel(self.model)
         self.filter.setFilterKeyColumn(-1)
         self.lineEditBusca.textChanged.connect(self.filter.setFilterRegularExpression)
-        self.tabela.setModel(self.filter)
-        listaHeader = ['ID', 'Data', 'Cliente', 'Marca', 'Modelo', 'Placa', 'Valor Total']
-        self.model.setHorizontalHeaderLabels(listaHeader)
         self.setCentralWidget(self.mainwidget)
         self.retranslateUi()
-        self.selectionModel = self.tabela.selectionModel()
         self.botaoRefresh.clicked.connect(self.listarOrcamentos)
         self.botaoImprimir.clicked.connect(self.imprimir)
         self.listarOrcamentos()
@@ -74,7 +67,52 @@ class TelaConsultaOrcamento(QtWidgets.QMainWindow):
         self.botaoEditar.setText(_translate("MainWindow", "Editar"))
         self.botaoImprimir.setText(_translate("MainWindow", "Imprimir"))
 
+    def scrolled(self, value):
+        if value == self.tabela.verticalScrollBar().maximum():
+            self.maisOrcamentos(50)
+
+    def maisOrcamentos(self, qtde):
+        orcamentos = self.orcamentoCtrl.listarOrcamentos(aprovado=False, limit=self.linesShowed+qtde)
+        if not orcamentos:
+            return
+        maxLength = len(orcamentos)
+        remainderRows = maxLength-self.linesShowed
+        rowsToFetch=min(qtde, remainderRows)
+        if rowsToFetch<=0:
+            return
+        initLen = self.linesShowed
+        maxRows = self.linesShowed + rowsToFetch
+        while self.linesShowed < maxRows:
+            orcamentos[self.linesShowed]['dataOrcamento'] = orcamentos[self.linesShowed]['dataOrcamento'].strftime("%d/%m/%Y")
+            orcamentos[self.linesShowed]['valorTotal'] = "R$ {:.2f}".format(orcamentos[self.linesShowed]['valorTotal']).replace('.',',',1)
+            orcamentos[self.linesShowed] = FlatDict(orcamentos[self.linesShowed], delimiter='.')
+            self.linesShowed+=1
+        self.model.addData(orcamentos[initLen:self.linesShowed])
+        colunas = ['idOrcamento', 'dataOrcamento', 'cliente.nome', 'veiculo.marca.nome', 'veiculo.modelo', 'veiculo.placa', 'valorTotal']
+        self.model.colunasDesejadas(colunas)
+        self.model.setRowCount(self.linesShowed)
+        self.model.setColumnCount(len(colunas))
+        self.tabela.hideColumn(0)
+
     def listarOrcamentos(self):
+        self.linesShowed = 0
+        self.model = InfiniteScrollTableModel([{}])
+        listaHeader = ['ID', 'Data', 'Cliente', 'Marca', 'Modelo', 'Placa', 'Valor Total']
+        self.model.setHorizontalHeaderLabels(listaHeader)
+        self.filter.setSourceModel(self.model)
+        self.tabela.setModel(self.filter)
+        self.tabela.setItemDelegateForColumn(5, self.delegateRight)
+        self.model.setHeaderData(1, QtCore.Qt.Orientation.Horizontal, 'tipo', 1)
+        self.maisOrcamentos(50)
+        header = self.tabela.horizontalHeader()
+        header.setSectionResizeMode(
+            QtWidgets.QHeaderView.ResizeMode.Interactive)
+        header.setSectionResizeMode(1, 
+            QtWidgets.QHeaderView.ResizeMode.ResizeToContents)
+        header.setSectionResizeMode(2, 
+            QtWidgets.QHeaderView.ResizeMode.Stretch)
+
+    '''def listarOrcamentos(self):
         orcamentos = self.orcamentoCtrl.listarOrcamentos(False)
         if not orcamentos:
             return
@@ -92,14 +130,14 @@ class TelaConsultaOrcamento(QtWidgets.QMainWindow):
             item.setTextAlignment(
                 QtCore.Qt.AlignmentFlag.AlignRight | QtCore.Qt.AlignmentFlag.AlignVCenter)
             self.model.setItem(row, 1, item)
-            cliente = self.clienteCtrl.getCliente(orcamento['cliente'])
+            orcamento = self.orcamentoCtrl.getorcamento(orcamento['orcamento'])
             item = QtGui.QStandardItem()
-            item.setData(cliente['nome'], QtCore.Qt.ItemDataRole.DisplayRole)
+            item.setData(orcamento['nome'], QtCore.Qt.ItemDataRole.DisplayRole)
             item.setTextAlignment(
                 QtCore.Qt.AlignmentFlag.AlignLeft | QtCore.Qt.AlignmentFlag.AlignVCenter)
             self.model.setItem(row, 2, item)
             #VEICULO
-            veiculo = self.clienteCtrl.getVeiculo(orcamento['veiculo'])
+            veiculo = self.orcamentoCtrl.getVeiculo(orcamento['veiculo'])
             item = QtGui.QStandardItem(str(veiculo['marca']['nome']))
             item.setTextAlignment(
                 QtCore.Qt.AlignmentFlag.AlignLeft | QtCore.Qt.AlignmentFlag.AlignVCenter)
@@ -123,7 +161,7 @@ class TelaConsultaOrcamento(QtWidgets.QMainWindow):
         header.setSectionResizeMode(1, 
             QtWidgets.QHeaderView.ResizeMode.ResizeToContents)
         header.setSectionResizeMode(2, 
-            QtWidgets.QHeaderView.ResizeMode.Stretch)
+            QtWidgets.QHeaderView.ResizeMode.Stretch)'''
 
     def editarOrcamento(self):
         self.linha = self.tabela.selectionModel().selectedRows()
@@ -136,7 +174,7 @@ class TelaConsultaOrcamento(QtWidgets.QMainWindow):
             id = self.tabela.model().index(self.linha[0].row(), 0).data()
         else: return
         orcamento = self.orcamentoCtrl.getOrcamento(id)
-        fones = self.clienteCtrl.listarFones(orcamento['cliente'])
+        fones = self.orcamentoCtrl.listarFones(orcamento['orcamento'])
         if fones: fones = list(fones)
         itemPecas = self.orcamentoCtrl.listarItemPecas(orcamento['idOrcamento'])
         if itemPecas:
@@ -180,8 +218,8 @@ fonesBanco
 
 for fone in fonesTela:
     _fone = foneRep.findByFone(fone)
-    if _fone and not _fone.cliente == cliente:
-        raise Exception(f'Fone {_fone.fone} utilizado por outro cliente')
+    if _fone and not _fone.orcamento == orcamento:
+        raise Exception(f'Fone {_fone.fone} utilizado por outro orcamento')
     elif not _fone:
 
 
@@ -194,8 +232,8 @@ for fone in fonesBanco:
 for fone in fonesTela:
     if not fone['fone'] in fonesBanco:
         _fone = foneRep.findByFone(fone)
-        if _fone and _fone.cliente != cliente:
-            raise Exception(f'Fone {_fone.fone} utilizado por outro cliente')
+        if _fone and _fone.orcamento != orcamento:
+            raise Exception(f'Fone {_fone.fone} utilizado por outro orcamento')
         rep.save(fone)
 
 

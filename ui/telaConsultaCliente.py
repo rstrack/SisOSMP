@@ -41,15 +41,13 @@ class TelaConsultaCliente(QtWidgets.QMainWindow):
         self.tabela.setSelectionMode(
             QtWidgets.QAbstractItemView.SelectionMode.SingleSelection)
         self.tabela.horizontalHeader().setHighlightSections(False)
-        self.delegateLeft = AlignDelegate(QtCore.Qt.AlignmentFlag.AlignLeft | QtCore.Qt.AlignmentFlag.AlignVCenter)
+        # self.delegateLeft = AlignDelegate(QtCore.Qt.AlignmentFlag.AlignLeft | QtCore.Qt.AlignmentFlag.AlignVCenter)
         self.delegateRight = AlignDelegate(QtCore.Qt.AlignmentFlag.AlignRight | QtCore.Qt.AlignmentFlag.AlignVCenter)
         self.tabela.horizontalHeader().setDefaultAlignment(QtCore.Qt.AlignmentFlag.AlignLeft | QtCore.Qt.AlignmentFlag.AlignVCenter)
         self.tabela.verticalHeader().setVisible(False)
         self.filter = QtCore.QSortFilterProxyModel()
         self.filter.setFilterCaseSensitivity(
             QtCore.Qt.CaseSensitivity.CaseInsensitive)
-
-        self.tabela.setSortingEnabled(True)
 
         self.framebotoes = QtWidgets.QFrame(self.mainwidget)
         self.glayout.addWidget(self.framebotoes, 2, 0, 1, 1)
@@ -81,10 +79,9 @@ class TelaConsultaCliente(QtWidgets.QMainWindow):
             self.maisClientes(50)
 
     def maisClientes(self, qtde):
-        clientes = self.clienteCtrl.listarClientes()
+        clientes = self.clienteCtrl.listarClientes(qtde=self.linesShowed+qtde)
         if not clientes:
             return
-        clientes = sorted(clientes, key=lambda k: k['nome']) 
         maxLength = len(clientes)
         remainderRows = maxLength-self.linesShowed
         rowsToFetch=min(qtde, remainderRows)
@@ -134,8 +131,6 @@ class TelaConsultaCliente(QtWidgets.QMainWindow):
         header = self.tabela.horizontalHeader()
         header.setSectionResizeMode(
             QtWidgets.QHeaderView.ResizeMode.ResizeToContents)
-        '''header.setSectionResizeMode(1, 
-            QtWidgets.QHeaderView.ResizeMode.ResizeToContents)'''
         header.setSectionResizeMode(10, 
             QtWidgets.QHeaderView.ResizeMode.Stretch)
 

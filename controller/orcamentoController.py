@@ -137,10 +137,13 @@ class OrcamentoController():
                 transaction.rollback()
                 return e
 
-    def listarOrcamentos(self, aprovado):
-        orcamentos = self.orcamentoRep.findByAprovado(aprovado)
+    def listarOrcamentos(self, aprovado, limit=None):
+        _orcamentos = []
+        orcamentos = self.orcamentoRep.findByAprovado(aprovado, limit)
         if orcamentos:
-            return orcamentos.dicts()
+            for orcamento in orcamentos:
+                _orcamentos.append(model_to_dict(orcamento))
+            return _orcamentos
         else: return None
 
     def getOrcamento(self, idOrcamento):

@@ -1,7 +1,6 @@
 from PyQt6 import QtCore, QtGui, QtWidgets
-from flatdict import FlatDict
 from routes import handleRoutes
-from ui.infiniteScroll import InfiniteScrollTableModel
+from ui.infiniteScroll import AlignDelegate, InfiniteScrollTableModel
 from ui.telaCadastroPeca import TelaCadastroPeca
 
 class TelaConsultaPeca(QtWidgets.QMainWindow):
@@ -42,11 +41,10 @@ class TelaConsultaPeca(QtWidgets.QMainWindow):
             QtWidgets.QAbstractItemView.SelectionMode.SingleSelection)
         self.tabela.horizontalHeader().setHighlightSections(False)
         self.tabela.verticalHeader().setVisible(False)
+        self.delegateRight = AlignDelegate(QtCore.Qt.AlignmentFlag.AlignRight | QtCore.Qt.AlignmentFlag.AlignVCenter)
         self.filter = QtCore.QSortFilterProxyModel()
         self.filter.setFilterCaseSensitivity(
             QtCore.Qt.CaseSensitivity.CaseInsensitive)
-
-        self.tabela.setSortingEnabled(True)
 
         self.framebotoes = QtWidgets.QFrame(self.mainwidget)
         self.glayout.addWidget(self.framebotoes, 2, 0, 1, 1)
@@ -84,7 +82,7 @@ class TelaConsultaPeca(QtWidgets.QMainWindow):
         pecas = self.pecaCtrl.listarPecas()
         if not pecas:
             return
-        pecas = list(reversed(pecas))
+        pecas = sorted(pecas, key=lambda k: k['descricao'].casefold())
         maxLength = len(pecas)
         remainderRows = maxLength-self.linesShowed
         rowsToFetch=min(qtde, remainderRows)
@@ -100,6 +98,7 @@ class TelaConsultaPeca(QtWidgets.QMainWindow):
         self.model.colunasDesejadas(colunas)
         self.model.setRowCount(self.linesShowed)
         self.model.setColumnCount(len(colunas))
+        self.tabela.hideColumn(0)
 
     def listarPecas(self):
         self.linesShowed = 0
@@ -108,20 +107,18 @@ class TelaConsultaPeca(QtWidgets.QMainWindow):
         self.model.setHorizontalHeaderLabels(listaHeader)
         self.filter.setSourceModel(self.model)
         self.tabela.setModel(self.filter)
+        self.tabela.setItemDelegateForColumn(3, self.delegateRight)
         self.maisPecas(50)
+        header = self.tabela.horizontalHeader()
+        header.setSectionResizeMode(
+            QtWidgets.QHeaderView.ResizeMode.ResizeToContents)
+        header.setSectionResizeMode(1, 
+            QtWidgets.QHeaderView.ResizeMode.Stretch)
 
     def editarPeca(self):
         self.linha = self.tabela.selectionModel().selectedRows()
         if self.linha:
             return self.tabela.model().index(self.linha[0].row(), 0).data()
-
-    def editarPeca2(self):
-        self.linha = self.tabela.selectionModel().selectedRows()
-        if self.linha:
-            id =  self.tabela.model().index(self.linha[0].row(), 0).data()
-        self.telaEditar = TelaCadastroPeca()
-        self.telaEditar.renderEditar(id)
-        self.telaEditar.show()
       
 
 if __name__ == "__main__":

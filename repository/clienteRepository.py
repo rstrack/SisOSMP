@@ -15,9 +15,9 @@ class ClienteRepository():
     def delete(self, id):
         return Cliente.delete_by_id(id)
 
-    def findAll(self):
-        return Cliente.select()
-
+    def findAll(self, limit=None):
+        return Cliente.select().order_by(Cliente.nome).limit(limit)
+    
     def findByID(self, id):
         return Cliente.select().where(Cliente.idCliente==id).get()
 
