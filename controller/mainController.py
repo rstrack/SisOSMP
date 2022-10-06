@@ -54,13 +54,13 @@ class MainController():
         self.telaCadastroServico = TelaCadastroServico()
         self.telaCadastroCliente = TelaCadastroCliente()
         self.telaCadastroOrcamento = TelaCadastroOrcamento()
+        
         self.telaConsultaPeca = TelaConsultaPeca()
         self.telaConsultaServico = TelaConsultaServico()
         self.telaConsultaCliente = TelaConsultaCliente()
         self.telaConsultaVeiculo = TelaConsultaVeiculo()
         self.telaConsultaOrcamento = TelaConsultaOrcamento()
         self.telaConsultaOS = TelaConsultaOS()
-
         self.telaEditarCliente = TelaEditarCliente()
         self.telaEditarVeiculo = TelaEditarVeiculo()
         self.telaEditarOrcamento = TelaEditarOrcamento()
@@ -156,7 +156,7 @@ class MainController():
         self.telaInicio.resize(1280,800)
         self.telaInicio.show()
         self.splash.finish(self.telaInicio)
-        sys.exit(self.app.exec())
+        self.app.exec()
 
 
 if __name__ == "__main__":

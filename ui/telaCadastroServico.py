@@ -46,6 +46,7 @@ class TelaCadastroServico(QtWidgets.QMainWindow):
         self.gridLayout.setColumnStretch(1, 1)
         self.gridLayout.setColumnStretch(3, 1)
         self.botaoadd = QtWidgets.QPushButton(self.framedados)
+        self.botaoadd.setToolTip('Adicionar linha')
         self.botaoadd.setFixedSize(QtCore.QSize(26, 26))
         self.linhasServico = [[self.lineEditnome, self.lineEditvalor]]
         self.gridLayout.addWidget(self.botaoadd, 1, 2, 1, 1)
@@ -95,6 +96,7 @@ class TelaCadastroServico(QtWidgets.QMainWindow):
         lineedit2 = QtWidgets.QLineEdit()
         lineedit2.setFixedWidth(80)
         botaoRemoverLinha = QtWidgets.QPushButton()
+        botaoRemoverLinha.setToolTip('Adicionar linha')
         botaoRemoverLinha.setFixedSize(QtCore.QSize(26, 26))
         botaoRemoverLinha.setText("-")
         botaoRemoverLinha.setObjectName('excluir')

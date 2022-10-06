@@ -1,5 +1,6 @@
 from PyQt6 import QtCore, QtGui, QtWidgets
 from routes import handleRoutes
+from ui.infiniteScroll import AlignDelegate, InfiniteScrollTableModel
 from ui.telaCadastroServico import TelaCadastroServico
 
 class TelaConsultaServico(QtWidgets.QMainWindow):
@@ -23,6 +24,7 @@ class TelaConsultaServico(QtWidgets.QMainWindow):
             iconBusca, QtWidgets.QLineEdit.ActionPosition.LeadingPosition)
         self.hlayoutBusca.addWidget(self.lineEditBusca)
         self.botaoRefresh = QtWidgets.QPushButton(self.frameBusca)
+        self.botaoRefresh.setToolTip('Atualizar')
         self.botaoRefresh.setFixedSize(30,30)
         self.botaoRefresh.setIcon(QtGui.QIcon("./resources/refresh-icon.png"))
         self.hlayoutBusca.addWidget(self.botaoRefresh)
@@ -40,12 +42,10 @@ class TelaConsultaServico(QtWidgets.QMainWindow):
             QtWidgets.QAbstractItemView.SelectionMode.SingleSelection)
         self.tabela.horizontalHeader().setHighlightSections(False)
         self.tabela.verticalHeader().setVisible(False)
+        self.delegateRight = AlignDelegate(QtCore.Qt.AlignmentFlag.AlignRight | QtCore.Qt.AlignmentFlag.AlignVCenter)
         self.filter = QtCore.QSortFilterProxyModel()
         self.filter.setFilterCaseSensitivity(
             QtCore.Qt.CaseSensitivity.CaseInsensitive)
-
-        self.tabela.setSortingEnabled(True)
-
         self.framebotoes = QtWidgets.QFrame(self.mainwidget)
         self.glayout.addWidget(self.framebotoes, 2, 0, 1, 1)
         self.hlayoutbotoes = QtWidgets.QHBoxLayout(self.framebotoes)
@@ -55,14 +55,10 @@ class TelaConsultaServico(QtWidgets.QMainWindow):
         self.botaoEditar = QtWidgets.QPushButton(self.framebotoes)
         self.botaoEditar.setFixedSize(100, 25)
         self.hlayoutbotoes.addWidget(self.botaoEditar)
-        self.model = QtGui.QStandardItemModel()
-        self.filter.setSourceModel(self.model)
         self.filter.setFilterKeyColumn(-1)
         self.lineEditBusca.textChanged.connect(
             self.filter.setFilterRegularExpression)
         self.tabela.setModel(self.filter)
-        listaHeader = ['ID', 'Descrição da peça', 'Valor']
-        self.model.setHorizontalHeaderLabels(listaHeader)
         self.setCentralWidget(self.mainwidget)
         self.retranslateUi()
         self.selectionModel = self.tabela.selectionModel()
@@ -78,33 +74,46 @@ class TelaConsultaServico(QtWidgets.QMainWindow):
         self.setWindowTitle(_translate("MainWindow", "Busca"))
         self.botaoEditar.setText(_translate("MainWindow", "Editar"))
 
-    def listarServicos(self):
+    def scrolled(self, value):
+        if value == self.tabela.verticalScrollBar().maximum():
+            self.maisServicos(50)
+
+    def maisServicos(self, qtde):
         servicos = self.servicoCtrl.listarServicos()
         if not servicos:
             return
-        self.model.setRowCount(len(servicos))
-        row = 0
-        for servico in servicos:
-            item = QtGui.QStandardItem()
-            item.setData(servico['idServico'], QtCore.Qt.ItemDataRole.DisplayRole)
-            item.setTextAlignment(
-                QtCore.Qt.AlignmentFlag.AlignHCenter | QtCore.Qt.AlignmentFlag.AlignVCenter)
-            self.model.setItem(row, 0, item)
-            item = QtGui.QStandardItem()
-            item.setData(servico['descricao'], QtCore.Qt.ItemDataRole.DisplayRole)
-            item.setTextAlignment(
-                QtCore.Qt.AlignmentFlag.AlignHCenter | QtCore.Qt.AlignmentFlag.AlignVCenter)
-            self.model.setItem(row, 1, item)
-            item = QtGui.QStandardItem("R$ {:.2f}".format(servico['valor']).replace('.',',',1))
-            item.setTextAlignment(
-                QtCore.Qt.AlignmentFlag.AlignHCenter | QtCore.Qt.AlignmentFlag.AlignVCenter)
-            self.model.setItem(row, 2, item)
-            row = row+1
-        header = self.tabela.horizontalHeader()
-        header.setSectionResizeMode(
-            QtWidgets.QHeaderView.ResizeMode.ResizeToContents)
-        header.setSectionResizeMode(1, 
-            QtWidgets.QHeaderView.ResizeMode.Stretch)
+        maxLength = len(servicos)
+        remainderRows = maxLength-self.linesShowed
+        rowsToFetch=min(qtde, remainderRows)
+        if rowsToFetch<=0:
+            return
+        initLen = self.linesShowed
+        maxRows = self.linesShowed + rowsToFetch
+        while self.linesShowed < maxRows:
+            servicos[self.linesShowed]['valor'] = "R$ {:.2f}".format(servicos[self.linesShowed]['valor']).replace('.',',',1)
+            self.linesShowed+=1
+        self.model.addData(servicos[initLen:self.linesShowed])
+        colunas = ['idServico', 'descricao', 'valor']
+        self.model.colunasDesejadas(colunas)
+        self.model.setRowCount(self.linesShowed)
+        self.model.setColumnCount(len(colunas))
+        self.tabela.hideColumn(0)
+
+    def listarServicos(self):
+        self.linesShowed = 0
+        self.model = InfiniteScrollTableModel([{}])
+        listaHeader = ['ID', 'Descrição', 'Valor']
+        self.model.setHorizontalHeaderLabels(listaHeader)
+        self.filter.setSourceModel(self.model)
+        self.tabela.setModel(self.filter)
+        self.tabela.setItemDelegateForColumn(3, self.delegateRight)
+        self.maisServicos(50)
+        if self.linesShowed > 0:
+            header = self.tabela.horizontalHeader()
+            header.setSectionResizeMode(
+                QtWidgets.QHeaderView.ResizeMode.ResizeToContents)
+            header.setSectionResizeMode(1, 
+                QtWidgets.QHeaderView.ResizeMode.Stretch)
 
     def editarServico(self):
         self.linha = self.tabela.selectionModel().selectedRows()

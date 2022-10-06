@@ -25,6 +25,7 @@ class TelaConsultaOrcamento(QtWidgets.QMainWindow):
         self.lineEditBusca.addAction(iconBusca, QtWidgets.QLineEdit.ActionPosition.LeadingPosition)
         self.hlayoutBusca.addWidget(self.lineEditBusca)
         self.botaoRefresh = QtWidgets.QPushButton(self.frameBusca)
+        self.botaoRefresh.setToolTip('Atualizar')
         self.botaoRefresh.setFixedSize(30,30)
         self.botaoRefresh.setIcon(QtGui.QIcon("./resources/refresh-icon.png"))
         self.hlayoutBusca.addWidget(self.botaoRefresh)
@@ -72,30 +73,30 @@ class TelaConsultaOrcamento(QtWidgets.QMainWindow):
             self.maisOrcamentos(50)
 
     def maisOrcamentos(self, qtde):
-        orcamentos = self.orcamentoCtrl.listarOrcamentos(aprovado=False, limit=self.linesShowed+qtde)
+        orcamentos = self.orcamentoCtrl.listarOrcamentos(aprovado=False, limit=self.linhasCarregadas+qtde)
         if not orcamentos:
             return
         maxLength = len(orcamentos)
-        remainderRows = maxLength-self.linesShowed
+        remainderRows = maxLength-self.linhasCarregadas
         rowsToFetch=min(qtde, remainderRows)
         if rowsToFetch<=0:
             return
-        initLen = self.linesShowed
-        maxRows = self.linesShowed + rowsToFetch
-        while self.linesShowed < maxRows:
-            orcamentos[self.linesShowed]['dataOrcamento'] = orcamentos[self.linesShowed]['dataOrcamento'].strftime("%d/%m/%Y")
-            orcamentos[self.linesShowed]['valorTotal'] = "R$ {:.2f}".format(orcamentos[self.linesShowed]['valorTotal']).replace('.',',',1)
-            orcamentos[self.linesShowed] = FlatDict(orcamentos[self.linesShowed], delimiter='.')
-            self.linesShowed+=1
-        self.model.addData(orcamentos[initLen:self.linesShowed])
+        initLen = self.linhasCarregadas
+        maxRows = self.linhasCarregadas + rowsToFetch
+        while self.linhasCarregadas < maxRows:
+            orcamentos[self.linhasCarregadas]['dataOrcamento'] = orcamentos[self.linhasCarregadas]['dataOrcamento'].strftime("%d/%m/%Y")
+            orcamentos[self.linhasCarregadas]['valorTotal'] = "R$ {:.2f}".format(orcamentos[self.linhasCarregadas]['valorTotal']).replace('.',',',1)
+            orcamentos[self.linhasCarregadas] = FlatDict(orcamentos[self.linhasCarregadas], delimiter='.')
+            self.linhasCarregadas+=1
+        self.model.addData(orcamentos[initLen:self.linhasCarregadas])
         colunas = ['idOrcamento', 'dataOrcamento', 'cliente.nome', 'veiculo.marca.nome', 'veiculo.modelo', 'veiculo.placa', 'valorTotal']
         self.model.colunasDesejadas(colunas)
-        self.model.setRowCount(self.linesShowed)
+        self.model.setRowCount(self.linhasCarregadas)
         self.model.setColumnCount(len(colunas))
         self.tabela.hideColumn(0)
 
     def listarOrcamentos(self):
-        self.linesShowed = 0
+        self.linhasCarregadas = 0
         self.model = InfiniteScrollTableModel([{}])
         listaHeader = ['ID', 'Data', 'Cliente', 'Marca', 'Modelo', 'Placa', 'Valor Total']
         self.model.setHorizontalHeaderLabels(listaHeader)
@@ -104,70 +105,35 @@ class TelaConsultaOrcamento(QtWidgets.QMainWindow):
         self.tabela.setItemDelegateForColumn(5, self.delegateRight)
         self.model.setHeaderData(1, QtCore.Qt.Orientation.Horizontal, 'tipo', 1)
         self.maisOrcamentos(50)
-        header = self.tabela.horizontalHeader()
-        header.setSectionResizeMode(
-            QtWidgets.QHeaderView.ResizeMode.Interactive)
-        header.setSectionResizeMode(1, 
-            QtWidgets.QHeaderView.ResizeMode.ResizeToContents)
-        header.setSectionResizeMode(2, 
-            QtWidgets.QHeaderView.ResizeMode.Stretch)
-
-    '''def listarOrcamentos(self):
-        orcamentos = self.orcamentoCtrl.listarOrcamentos(False)
-        if not orcamentos:
-            return
-        self.model.setRowCount(len(orcamentos))
-        row = 0
-        for orcamento in reversed(orcamentos):
-            item = QtGui.QStandardItem()
-            item.setData(orcamento['idOrcamento'], QtCore.Qt.ItemDataRole.DisplayRole)
-            item.setTextAlignment(
-                QtCore.Qt.AlignmentFlag.AlignRight | QtCore.Qt.AlignmentFlag.AlignVCenter)
-            self.model.setItem(row, 0, item)
-            item = QtGui.QStandardItem()
-            dataOrcamento = orcamento['dataOrcamento'].strftime("%d/%m/%Y")
-            item.setData(dataOrcamento, QtCore.Qt.ItemDataRole.DisplayRole)
-            item.setTextAlignment(
-                QtCore.Qt.AlignmentFlag.AlignRight | QtCore.Qt.AlignmentFlag.AlignVCenter)
-            self.model.setItem(row, 1, item)
-            orcamento = self.orcamentoCtrl.getorcamento(orcamento['orcamento'])
-            item = QtGui.QStandardItem()
-            item.setData(orcamento['nome'], QtCore.Qt.ItemDataRole.DisplayRole)
-            item.setTextAlignment(
-                QtCore.Qt.AlignmentFlag.AlignLeft | QtCore.Qt.AlignmentFlag.AlignVCenter)
-            self.model.setItem(row, 2, item)
-            #VEICULO
-            veiculo = self.orcamentoCtrl.getVeiculo(orcamento['veiculo'])
-            item = QtGui.QStandardItem(str(veiculo['marca']['nome']))
-            item.setTextAlignment(
-                QtCore.Qt.AlignmentFlag.AlignLeft | QtCore.Qt.AlignmentFlag.AlignVCenter)
-            self.model.setItem(row, 3, item)
-            item = QtGui.QStandardItem(str(veiculo['modelo']))
-            item.setTextAlignment(
-                QtCore.Qt.AlignmentFlag.AlignLeft | QtCore.Qt.AlignmentFlag.AlignVCenter)
-            self.model.setItem(row, 4, item)
-            item = QtGui.QStandardItem(str(veiculo['placa'] or ''))
-            item.setTextAlignment(
-                QtCore.Qt.AlignmentFlag.AlignLeft | QtCore.Qt.AlignmentFlag.AlignVCenter)
-            self.model.setItem(row, 5, item)
-            item = QtGui.QStandardItem('R$ {:.2f}'.format(orcamento['valorTotal']))
-            item.setTextAlignment(
-                QtCore.Qt.AlignmentFlag.AlignRight | QtCore.Qt.AlignmentFlag.AlignVCenter)
-            self.model.setItem(row, 6, item)
-            row = row+1
-        header = self.tabela.horizontalHeader()
-        header.setSectionResizeMode(
-            QtWidgets.QHeaderView.ResizeMode.Interactive)
-        header.setSectionResizeMode(1, 
-            QtWidgets.QHeaderView.ResizeMode.ResizeToContents)
-        header.setSectionResizeMode(2, 
-            QtWidgets.QHeaderView.ResizeMode.Stretch)'''
+        if self.linhasCarregadas > 0:
+            header = self.tabela.horizontalHeader()
+            header.setSectionResizeMode(
+                QtWidgets.QHeaderView.ResizeMode.Interactive)
+            header.setSectionResizeMode(1, 
+                QtWidgets.QHeaderView.ResizeMode.ResizeToContents)
+            header.setSectionResizeMode(2, 
+                QtWidgets.QHeaderView.ResizeMode.Stretch)
 
     def editarOrcamento(self):
         self.linha = self.tabela.selectionModel().selectedRows()
         if self.linha:
             return self.tabela.model().index(self.linha[0].row(), 0).data()
 
+    def excluirOrcamento(self):
+        msgBox = QtWidgets.QMessageBox()
+        msgBox.setWindowTitle("Aviso")
+        msgBox.setText('Tem certeza que deseja excluir?')
+        y = msgBox.addButton("Sim", QtWidgets.QMessageBox.ButtonRole.YesRole)
+        n = msgBox.addButton("Não", QtWidgets.QMessageBox.ButtonRole.NoRole)
+        y.setFixedWidth(60)
+        n.setFixedWidth(60)
+        msgBox.exec()
+        if msgBox.clickedButton() == y:
+            self.linha = self.tabela.selectionModel().selectedRows()
+            if self.linha:
+                id = self.tabela.model().index(self.linha[0].row(), 0).data()
+        
+        
     def imprimir(self):
         self.linha = self.tabela.selectionModel().selectedRows()
         if self.linha:
@@ -211,38 +177,3 @@ if __name__ == "__main__":
     app.setStyleSheet(style)
     sys.exit(app.exec())
 
-
-'''
-fonesTela
-fonesBanco
-
-for fone in fonesTela:
-    _fone = foneRep.findByFone(fone)
-    if _fone and not _fone.orcamento == orcamento:
-        raise Exception(f'Fone {_fone.fone} utilizado por outro orcamento')
-    elif not _fone:
-
-
-
-
-for fone in fonesBanco:
-    if not fone['fone'] in fonesTela:
-        rep.delete(fone)
-
-for fone in fonesTela:
-    if not fone['fone'] in fonesBanco:
-        _fone = foneRep.findByFone(fone)
-        if _fone and _fone.orcamento != orcamento:
-            raise Exception(f'Fone {_fone.fone} utilizado por outro orcamento')
-        rep.save(fone)
-
-
-
-
-
-
-
-
-
-
-'''

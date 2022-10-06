@@ -24,6 +24,7 @@ class TelaConsultaPeca(QtWidgets.QMainWindow):
             iconBusca, QtWidgets.QLineEdit.ActionPosition.LeadingPosition)
         self.hlayoutBusca.addWidget(self.lineEditBusca)
         self.botaoRefresh = QtWidgets.QPushButton(self.frameBusca)
+        self.botaoRefresh.setToolTip('Atualizar')
         self.botaoRefresh.setFixedSize(30,30)
         self.botaoRefresh.setIcon(QtGui.QIcon("./resources/refresh-icon.png"))
         self.hlayoutBusca.addWidget(self.botaoRefresh)
@@ -82,7 +83,6 @@ class TelaConsultaPeca(QtWidgets.QMainWindow):
         pecas = self.pecaCtrl.listarPecas()
         if not pecas:
             return
-        pecas = sorted(pecas, key=lambda k: k['descricao'].casefold())
         maxLength = len(pecas)
         remainderRows = maxLength-self.linesShowed
         rowsToFetch=min(qtde, remainderRows)
@@ -109,11 +109,12 @@ class TelaConsultaPeca(QtWidgets.QMainWindow):
         self.tabela.setModel(self.filter)
         self.tabela.setItemDelegateForColumn(3, self.delegateRight)
         self.maisPecas(50)
-        header = self.tabela.horizontalHeader()
-        header.setSectionResizeMode(
-            QtWidgets.QHeaderView.ResizeMode.ResizeToContents)
-        header.setSectionResizeMode(1, 
-            QtWidgets.QHeaderView.ResizeMode.Stretch)
+        if self.linesShowed > 0:
+            header = self.tabela.horizontalHeader()
+            header.setSectionResizeMode(
+                QtWidgets.QHeaderView.ResizeMode.ResizeToContents)
+            header.setSectionResizeMode(1, 
+                QtWidgets.QHeaderView.ResizeMode.Stretch)
 
     def editarPeca(self):
         self.linha = self.tabela.selectionModel().selectedRows()

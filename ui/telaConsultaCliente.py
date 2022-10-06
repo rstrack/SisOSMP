@@ -25,6 +25,7 @@ class TelaConsultaCliente(QtWidgets.QMainWindow):
             iconBusca, QtWidgets.QLineEdit.ActionPosition.LeadingPosition)
         self.hlayoutBusca.addWidget(self.lineEditBusca)
         self.botaoRefresh = QtWidgets.QPushButton(self.frameBusca)
+        self.botaoRefresh.setToolTip('Atualizar')
         self.botaoRefresh.setFixedSize(30,30)
         self.botaoRefresh.setIcon(QtGui.QIcon("./resources/refresh-icon.png"))
         self.hlayoutBusca.addWidget(self.botaoRefresh)
@@ -79,47 +80,47 @@ class TelaConsultaCliente(QtWidgets.QMainWindow):
             self.maisClientes(50)
 
     def maisClientes(self, qtde):
-        clientes = self.clienteCtrl.listarClientes(qtde=self.linesShowed+qtde)
+        clientes = self.clienteCtrl.listarClientes(qtde=self.linhasCarregadas+qtde)
         if not clientes:
             return
         maxLength = len(clientes)
-        remainderRows = maxLength-self.linesShowed
+        remainderRows = maxLength-self.linhasCarregadas
         rowsToFetch=min(qtde, remainderRows)
         if rowsToFetch<=0:
             return
-        initLen = self.linesShowed
-        maxRows = self.linesShowed + rowsToFetch
-        while self.linesShowed < maxRows:
-            if clientes[self.linesShowed]['tipo']=='0': clientes[self.linesShowed]['tipo'] = 'PESSOA FÍSICA'
-            elif clientes[self.linesShowed]['tipo']=='1': clientes[self.linesShowed]['tipo'] = 'PESSOA JURIDICA'
-            else: clientes[self.linesShowed]['tipo'] = 'ESTRANGEIRO'
-            if clientes[self.linesShowed]['cidade'] == None:
-                clientes[self.linesShowed]['cidade'] = {'nome':None, 'uf':None}
-            queryFones = self.clienteCtrl.listarFones(clientes[self.linesShowed])
+        initLen = self.linhasCarregadas
+        maxRows = self.linhasCarregadas + rowsToFetch
+        while self.linhasCarregadas < maxRows:
+            if clientes[self.linhasCarregadas]['tipo']=='0': clientes[self.linhasCarregadas]['tipo'] = 'PESSOA FÍSICA'
+            elif clientes[self.linhasCarregadas]['tipo']=='1': clientes[self.linhasCarregadas]['tipo'] = 'PESSOA JURIDICA'
+            else: clientes[self.linhasCarregadas]['tipo'] = 'ESTRANGEIRO'
+            if clientes[self.linhasCarregadas]['cidade'] == None:
+                clientes[self.linhasCarregadas]['cidade'] = {'nome':None, 'uf':None}
+            queryFones = self.clienteCtrl.listarFones(clientes[self.linhasCarregadas])
             if queryFones:
                 fones = []
                 for fone in queryFones:
                     fones.append(fone['fone'])
-                clientes[self.linesShowed]['fones'] = (', '.join(fones))
-            else: clientes[self.linesShowed]['fones'] = ''
-            queryVeiculo = self.clienteCtrl.listarVeiculos(clientes[self.linesShowed])
+                clientes[self.linhasCarregadas]['fones'] = (', '.join(fones))
+            else: clientes[self.linhasCarregadas]['fones'] = ''
+            queryVeiculo = self.clienteCtrl.listarVeiculos(clientes[self.linhasCarregadas])
             if queryVeiculo:
                 nomes = []
                 for veiculo in queryVeiculo:
                     nomes.append(': '.join([veiculo['modelo'], veiculo['placa']]))
-                clientes[self.linesShowed]['veiculos'] = ', '.join(nomes)
-            else: clientes[self.linesShowed]['veiculos'] = ''
-            clientes[self.linesShowed] = FlatDict(clientes[self.linesShowed], delimiter='.')
-            self.linesShowed+=1
-        self.model.addData(clientes[initLen:self.linesShowed])
+                clientes[self.linhasCarregadas]['veiculos'] = ', '.join(nomes)
+            else: clientes[self.linhasCarregadas]['veiculos'] = ''
+            clientes[self.linhasCarregadas] = FlatDict(clientes[self.linhasCarregadas], delimiter='.')
+            self.linhasCarregadas+=1
+        self.model.addData(clientes[initLen:self.linhasCarregadas])
         colunas = ['idCliente', 'tipo', 'nome', 'documento', 'endereco', 'numero', 'bairro', 'cidade.nome', 'cidade.uf', 'fones', 'veiculos']
         self.model.colunasDesejadas(colunas)
-        self.model.setRowCount(self.linesShowed)
+        self.model.setRowCount(self.linhasCarregadas)
         self.model.setColumnCount(len(colunas))
         self.tabela.hideColumn(0)
 
     def listarClientes(self):
-        self.linesShowed = 0
+        self.linhasCarregadas = 0
         self.model = InfiniteScrollTableModel([{}])
         listaHeader = ['ID', 'Tipo', 'Nome', 'Documento', 'Endereço', 'Nº', 'Bairro', 'Cidade', 'UF', 'Telefones', 'Veículos']
         self.model.setHorizontalHeaderLabels(listaHeader)
@@ -128,11 +129,12 @@ class TelaConsultaCliente(QtWidgets.QMainWindow):
         self.tabela.setItemDelegateForColumn(5, self.delegateRight)
         self.model.setHeaderData(1, QtCore.Qt.Orientation.Horizontal, 'tipo', 1)
         self.maisClientes(50)
-        header = self.tabela.horizontalHeader()
-        header.setSectionResizeMode(
-            QtWidgets.QHeaderView.ResizeMode.ResizeToContents)
-        header.setSectionResizeMode(10, 
-            QtWidgets.QHeaderView.ResizeMode.Stretch)
+        if self.linhasCarregadas > 0:
+            header = self.tabela.horizontalHeader()
+            header.setSectionResizeMode(
+                QtWidgets.QHeaderView.ResizeMode.ResizeToContents)
+            header.setSectionResizeMode(10, 
+                QtWidgets.QHeaderView.ResizeMode.Stretch)
 
     def editarCliente(self):
         self.linha = self.tabela.selectionModel().selectedRows()

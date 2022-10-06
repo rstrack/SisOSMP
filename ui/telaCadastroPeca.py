@@ -55,6 +55,7 @@ class TelaCadastroPeca(QtWidgets.QMainWindow):
         self.linhasPeca.append(
             [self.lineEditNomePeca, self.comboboxun, self.lineEditValorPeca])
         self.botaoadd = QtWidgets.QPushButton(self.framedados)
+        self.botaoadd.setToolTip('Adicionar linha')
         self.botaoadd.setFixedSize(QtCore.QSize(26, 26))
         self.gridLayout.addWidget(self.botaoadd, 1, 3, 1, 1)
         self.spacer = QtWidgets.QSpacerItem(
@@ -105,6 +106,7 @@ class TelaCadastroPeca(QtWidgets.QMainWindow):
         lineedit2.setFixedWidth(80)
         botaoRemoverLinha = QtWidgets.QPushButton()
         botaoRemoverLinha.setFixedSize(QtCore.QSize(26, 26))
+        botaoRemoverLinha.setToolTip('Remover linha')
         botaoRemoverLinha.setText("-")
         botaoRemoverLinha.setObjectName('excluir')
         botaoRemoverLinha.clicked.connect(lambda: self.removerLinha(self.gridLayout.getItemPosition(self.gridLayout.indexOf(botaoRemoverLinha))[0]))
