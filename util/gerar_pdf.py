@@ -49,10 +49,10 @@ def generatePDF(orcamento: dict, listaFones: list[dict], listaServicos: list[dic
     tamlinhas = 15
     # Cabeçalho padrão do pdf
     espacamento_subtitulos = 18
-    pdf.drawString(312, 818, 'Fone: (42) 3027-4990 / (42) 4141-1755')
-    pdf.drawString(260, 803, 'Rua Barão do Bojuru, Nº 87 - Ronda - Ponta Grossa - PR')
-    pdf.drawString(335, 787, 'CNPJ : 85.481.562/0001-57')
-    pdf.drawString(315, 772, 'E-mail:mecanicapasetto@gmail.com ')
+    pdf.drawString(312, 814, 'Fone: (42) 3027-4990 / (42) 4141-1755')
+    pdf.drawString(260, 798.5, 'Rua Barão do Bojuru, Nº 87 - Ronda - Ponta Grossa - PR')
+    pdf.drawString(335, 783, 'CNPJ : 85.481.562/0001-57')
+    pdf.drawString(315, 767.5, 'E-mail:mecanicapasetto@gmail.com ')
     pdf.rect(39, 750, 517, 2, fill=True, stroke=True)
     
     # Informações do Cliente
@@ -131,6 +131,7 @@ def generatePDF(orcamento: dict, listaFones: list[dict], listaServicos: list[dic
         ['Nome do Serviço', 'Qtde', 'Valor']
     ]
     table_stylepecas = TableStyle([
+        ('FONTNAME', (0,0), (-1,0), 'Helvetica-Bold'),
         ('ALIGN', (1, 0), (-1, -1), 'LEFT'),
         ('ALIGN', (2, 0), (-1, -1), 'RIGHT'),
         ('ALIGN', (3, 1), (-1, -1), 'RIGHT'),
@@ -139,6 +140,7 @@ def generatePDF(orcamento: dict, listaFones: list[dict], listaServicos: list[dic
         ('BOX', (0, 0), (-1, -1), 1, colors.black),
     ])
     table_styleservico = TableStyle([
+        ('FONTNAME', (0,0), (-1,0), 'Helvetica-Bold'),
         ('ALIGN', (1, 0), (-1, -1), 'LEFT'),
         ('ALIGN', (1, 0), (-1, -1), 'RIGHT'),
         ('ALIGN', (2, 1), (-1, -1), 'RIGHT'),
