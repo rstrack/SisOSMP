@@ -102,7 +102,7 @@ class TelaConsultaServico(QtWidgets.QMainWindow):
     def listarServicos(self):
         self.linesShowed = 0
         self.model = InfiniteScrollTableModel([{}])
-        listaHeader = ['ID', 'Descrição', 'Valor']
+        listaHeader = ['ID ', 'Descrição ', 'Valor ']
         self.model.setHorizontalHeaderLabels(listaHeader)
         self.filter.setSourceModel(self.model)
         self.tabela.setModel(self.filter)
@@ -114,20 +114,12 @@ class TelaConsultaServico(QtWidgets.QMainWindow):
                 QtWidgets.QHeaderView.ResizeMode.ResizeToContents)
             header.setSectionResizeMode(1, 
                 QtWidgets.QHeaderView.ResizeMode.Stretch)
+            self.model.setHeaderAlignment(2, QtCore.Qt.AlignmentFlag.AlignRight | QtCore.Qt.AlignmentFlag.AlignVCenter)
 
     def editarServico(self):
         self.linha = self.tabela.selectionModel().selectedRows()
         if self.linha:
-            return self.tabela.model().index(self.linha[0].row(), 0).data()
-
-    def editarServico2(self):
-        self.linha = self.tabela.selectionModel().selectedRows()
-        if self.linha:
-            id =  self.tabela.model().index(self.linha[0].row(), 0).data()
-        self.telaEditar = TelaCadastroServico()
-        self.telaEditar.renderEditar(id)
-        self.telaEditar.show()
-      
+            return self.tabela.model().index(self.linha[0].row(), 0).data()    
 
 if __name__ == "__main__":
     import sys

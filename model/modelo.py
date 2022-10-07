@@ -51,8 +51,8 @@ class Cliente(BaseModel):
 
 
 class Veiculo_Cliente(BaseModel):
-    veiculo = ForeignKeyField(Veiculo, backref='veiculos',null=False)
-    cliente = ForeignKeyField(Cliente, backref='clientes',null=False)
+    veiculo = ForeignKeyField(Veiculo, backref='veiculos',null=False, on_delete='CASCADE')
+    cliente = ForeignKeyField(Cliente, backref='clientes',null=False, on_delete='CASCADE')
     class Meta:
         primary_key = CompositeKey('veiculo', 'cliente')
 
@@ -84,7 +84,7 @@ class Orcamento(BaseModel):
 
 class ItemPeca(BaseModel):
     peca = ForeignKeyField(Peca, backref='pecas')
-    orcamento = ForeignKeyField(Orcamento, backref='orcamentos')
+    orcamento = ForeignKeyField(Orcamento, backref='orcamentos', on_delete='CASCADE')
     qtde = IntegerField()
     valor = DoubleField(constraints=[Check('valor>=0')],null=False)
     class Meta:
@@ -93,7 +93,7 @@ class ItemPeca(BaseModel):
 
 class ItemServico(BaseModel):
     servico = ForeignKeyField(Servico, backref='servicos',null=False)
-    orcamento = ForeignKeyField(Orcamento, backref='orcamentos',null=False)
+    orcamento = ForeignKeyField(Orcamento, backref='orcamentos',null=False, on_delete='CASCADE')
     qtde = IntegerField()
     valor = DoubleField(constraints=[Check('valor>=0')], null=False)
     class Meta:
@@ -101,8 +101,8 @@ class ItemServico(BaseModel):
 
 
 class Fone(BaseModel):
-    cliente = ForeignKeyField(Cliente, backref='clientes',null=False)
-    fone = CharField(max_length=14,null=False, unique=True)
+    cliente = ForeignKeyField(Cliente, backref='clientes',null=False, on_delete='CASCADE')
+    fone = CharField(max_length=14,null=False, unique=True, constraints=[Check('len(fone)>=9')])
     class Meta:
         primary_key = CompositeKey('cliente', 'fone')
 

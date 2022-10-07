@@ -31,6 +31,16 @@ class ServicoController():
                 transaction.rollback()
                 return e
 
+    def editarServico(self, id, servico:dict):
+        with db.atomic() as transaction:
+            try:
+                servico['idServico'] = id
+                _servico = self.servicoRep.update(servico)
+                return _servico
+            except Exception as e:
+                transaction.rollback()
+                return e
+
     def listarServicos(self):
         servicos = self.servicoRep.findAll()
         if servicos:

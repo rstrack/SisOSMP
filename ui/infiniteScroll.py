@@ -8,6 +8,7 @@ class InfiniteScrollTableModel(QtCore.QAbstractTableModel):
         self.numColumns=len(data[0]) if self.numRows>0 else 0
         self._data=data
         self.horizontalHeaders = [''] * len(self._data)
+        self.headerAlignment = [QtCore.Qt.AlignmentFlag.AlignLeft | QtCore.Qt.AlignmentFlag.AlignVCenter] * len(self._data)
 
     def setRowCount(self, rows: int) -> None:
         self.beginResetModel()
@@ -42,11 +43,24 @@ class InfiniteScrollTableModel(QtCore.QAbstractTableModel):
                 return True
             except:
                 return False
+        elif orientation == QtCore.Qt.Orientation.Horizontal and role == QtCore.Qt.ItemDataRole.TextAlignmentRole:
+            try:
+                return self.headerAlignment[section]
+            except:
+                return False
         return super().setHeaderData(section, orientation, value, role)
+
+    def setHeaderAlignment(self, section, alignment):
+        try:
+            self.headerAlignment[section] = alignment
+            return True
+        except:
+            return False
 
     def setHorizontalHeaderLabels(self, list):
         try:
             self.horizontalHeaders = [''] * len(list)
+            self.headerAlignment = [QtCore.Qt.AlignmentFlag.AlignLeft | QtCore.Qt.AlignmentFlag.AlignVCenter] * len(list)
             for i in range(len(list)):
                 self.horizontalHeaders[i] = list[i]
             return True
@@ -59,6 +73,8 @@ class InfiniteScrollTableModel(QtCore.QAbstractTableModel):
                 return self.horizontalHeaders[section]
             except:
                 pass
+        elif role == QtCore.Qt.ItemDataRole.TextAlignmentRole and orientation == QtCore.Qt.Orientation.Horizontal:
+            return self.headerAlignment[section]
         return super().headerData(section, orientation, role)
 
     def rowCount(self, parent):

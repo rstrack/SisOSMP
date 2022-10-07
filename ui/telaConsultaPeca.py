@@ -103,7 +103,7 @@ class TelaConsultaPeca(QtWidgets.QMainWindow):
     def listarPecas(self):
         self.linesShowed = 0
         self.model = InfiniteScrollTableModel([{}])
-        listaHeader = ['ID', 'Descrição', 'Un', 'Valor']
+        listaHeader = ['ID ', 'Descrição ', 'Un ', 'Valor ']
         self.model.setHorizontalHeaderLabels(listaHeader)
         self.filter.setSourceModel(self.model)
         self.tabela.setModel(self.filter)
@@ -112,9 +112,10 @@ class TelaConsultaPeca(QtWidgets.QMainWindow):
         if self.linesShowed > 0:
             header = self.tabela.horizontalHeader()
             header.setSectionResizeMode(
-                QtWidgets.QHeaderView.ResizeMode.ResizeToContents)
+                QtWidgets.QHeaderView.ResizeMode.Interactive)
             header.setSectionResizeMode(1, 
                 QtWidgets.QHeaderView.ResizeMode.Stretch)
+            self.model.setHeaderAlignment(3, QtCore.Qt.AlignmentFlag.AlignRight | QtCore.Qt.AlignmentFlag.AlignVCenter)
 
     def editarPeca(self):
         self.linha = self.tabela.selectionModel().selectedRows()

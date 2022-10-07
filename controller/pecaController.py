@@ -30,12 +30,12 @@ class PecaController():
                 transaction.rollback()
                 return e
 
-    def editarPeca(self, peca:dict):
+    def editarPeca(self, id, peca:dict):
         with db.atomic() as transaction:
             try:
-                pass
-
-
+                peca['idPeca'] = id
+                _peca = self.pecaRep.update(peca)
+                return _peca
             except Exception as e:
                 transaction.rollback()
                 return e

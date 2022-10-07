@@ -55,6 +55,10 @@ class TelaConsultaVeiculo(QtWidgets.QMainWindow):
         self.botaoEditar = QtWidgets.QPushButton(self.framebotoes)
         self.botaoEditar.setFixedSize(100, 25)
         self.hlayoutbotoes.addWidget(self.botaoEditar)
+        self.botaoExcluir = QtWidgets.QPushButton(self.framebotoes)
+        self.botaoExcluir.setObjectName('excluir')
+        self.botaoExcluir.setFixedSize(100, 25)
+        self.hlayoutbotoes.addWidget(self.botaoExcluir)
         self.model = InfiniteScrollTableModel([{}])
         self.filter.setSourceModel(self.model)
         self.filter.setFilterKeyColumn(-1)
@@ -69,6 +73,7 @@ class TelaConsultaVeiculo(QtWidgets.QMainWindow):
 
         self.listarVeiculos()
         self.botaoRefresh.clicked.connect(self.listarVeiculos)
+        self.botaoExcluir.clicked.connect(self.excluirVeiculo)
         self.tabela.verticalScrollBar().valueChanged.connect(self.scrolled)
         self.tabela.verticalScrollBar().actionTriggered.connect(self.scrolled)
 
@@ -76,6 +81,7 @@ class TelaConsultaVeiculo(QtWidgets.QMainWindow):
         _translate = QtCore.QCoreApplication.translate
         self.setWindowTitle(_translate("MainWindow", "Busca"))
         self.botaoEditar.setText(_translate("MainWindow", "Editar"))
+        self.botaoExcluir.setText(_translate("MainWindow", "Excluir"))
 
     def scrolled(self, value):
         if value == self.tabela.verticalScrollBar().maximum():
@@ -123,6 +129,38 @@ class TelaConsultaVeiculo(QtWidgets.QMainWindow):
         self.linha = self.tabela.selectionModel().selectedRows()
         if self.linha:
             return self.tabela.model().index(self.linha[0].row(), 0).data()
+    
+    def excluirVeiculo(self):
+        try:
+            linha = self.tabela.selectionModel().selectedRows()
+            if linha:
+                msgBox = QtWidgets.QMessageBox()
+                msgBox.setWindowTitle("Aviso")
+                msgBox.setText('Tem certeza que deseja excluir?')
+                y = msgBox.addButton("Sim", QtWidgets.QMessageBox.ButtonRole.YesRole)
+                n = msgBox.addButton("Não", QtWidgets.QMessageBox.ButtonRole.NoRole)
+                y.setFixedWidth(60)
+                n.setFixedWidth(60)
+                msgBox.exec()
+                if msgBox.clickedButton() == y:
+                    id = self.tabela.model().index(linha[0].row(), 0).data()
+                    r = self.clienteCtrl.excluirVeiculo(id)
+                    if isinstance(r, Exception):
+                        raise Exception(r)
+                    if r:
+                        msg = QtWidgets.QMessageBox()
+                        msg.setWindowTitle("Aviso")
+                        msg.setIcon(QtWidgets.QMessageBox.Icon.Information)
+                        msg.setText(f"Veiculo excluído com sucesso!")
+                        msg.exec()
+                    else: raise Exception('Erro ao excluir')
+        except Exception as e:
+            msg = QtWidgets.QMessageBox()
+            msg.setWindowIcon(QtGui.QIcon('./resources/logo-icon.png'))
+            msg.setIcon(QtWidgets.QMessageBox.Icon.Critical)
+            msg.setWindowTitle("Erro")
+            msg.setText(str(e))
+            msg.exec()
 
 if __name__ == "__main__":
     import sys

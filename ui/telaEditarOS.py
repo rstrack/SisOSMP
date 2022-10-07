@@ -19,11 +19,11 @@ class TelaEditarOS(QtWidgets.QMainWindow):
         self.servicoCtrl = handleRoutes.getRoute('SERVICOCTRL')
         self.marcaCtrl = handleRoutes.getRoute('MARCACTRL')
         self.buscaCEP = handleRoutes.getRoute('CEP')
+        self.orcamentoID = None
         self.setupUi()
 
     def setupUi(self):
         self.valorTotal = 0
-        self.orcamentoID = None
         self.linhasPeca = []
         self.linhasServico = []
         self.resize(1280, 760)

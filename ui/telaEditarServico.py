@@ -1,14 +1,12 @@
 from PyQt6 import QtCore, QtWidgets, QtGui
 from routes import handleRoutes
-from ui.telaCadastroOrcamento import UNIDADES
 
-
-class TelaEditarPeca(QtWidgets.QMainWindow):
+class TelaEditarServico(QtWidgets.QMainWindow):
     retornarParaConsulta = QtCore.pyqtSignal(int)
     def __init__(self):
-        super(TelaEditarPeca, self).__init__()
-        self.pecaCtrl = handleRoutes.getRoute('PECACTRL')
-        self.pecaID = None
+        super(TelaEditarServico, self).__init__()
+        self.servicoCtrl = handleRoutes.getRoute('SERVICOCTRL')
+        self.servicoID = None
         self.setupUi()
 
     def setupUi(self):
@@ -34,23 +32,16 @@ class TelaEditarPeca(QtWidgets.QMainWindow):
         self.gridLayout = QtWidgets.QGridLayout(self.framedados)
         self.labelnome = QtWidgets.QLabel(self.framedados)
         self.gridLayout.addWidget(self.labelnome, 0, 0, 1, 1)
-        self.labelUn = QtWidgets.QLabel(self.framedados)
-        self.gridLayout.addWidget(self.labelUn, 0, 1, 1, 1)
         self.labelvalor = QtWidgets.QLabel(self.framedados)
-        self.gridLayout.addWidget(self.labelvalor, 0, 2, 1, 1)
-        self.lineEditNomePeca = QtWidgets.QLineEdit(self.framedados)
-        self.lineEditNomePeca.setMaximumWidth(200)
-        self.lineEditNomePeca.setMaximumWidth(600)
-        self.gridLayout.addWidget(self.lineEditNomePeca, 1, 0, 1, 1)
-        self.comboboxun = QtWidgets.QComboBox(self.framedados)
-        self.comboboxun.addItems(UNIDADES)
-        self.comboboxun.setCurrentIndex(15)
-        self.gridLayout.addWidget(self.comboboxun, 1, 1, 1, 1)
-        self.lineEditValorPeca = QtWidgets.QLineEdit(self.framedados)
-        self.lineEditValorPeca.setFixedWidth(80)
-        self.gridLayout.addWidget(self.lineEditValorPeca, 1, 2, 1, 1)
+        self.gridLayout.addWidget(self.labelvalor, 0, 1, 1, 1)
+        self.lineEditNomeServico = QtWidgets.QLineEdit(self.framedados)
+        self.lineEditNomeServico.setMaximumWidth(200)
+        self.lineEditNomeServico.setMaximumWidth(600)
+        self.gridLayout.addWidget(self.lineEditNomeServico, 1, 0, 1, 1)
+        self.lineEditValorServico = QtWidgets.QLineEdit(self.framedados)
+        self.lineEditValorServico.setFixedWidth(80)
+        self.gridLayout.addWidget(self.lineEditValorServico, 1, 1, 1, 1)
         self.gridLayout.setColumnStretch(0, 6)
-        self.gridLayout.setColumnStretch(2, 2)
         self.gridLayout.setColumnStretch(4, 1)
         self.spacer = QtWidgets.QSpacerItem(
             40, 20, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding)
@@ -71,7 +62,7 @@ class TelaEditarPeca(QtWidgets.QMainWindow):
         self.retranslateUi()
         # conexoes
         self.botaoCancelar.clicked.connect(self.cancelarEdicao)
-        self.botaoEditar.clicked.connect(self.editarPeca)
+        self.botaoEditar.clicked.connect(self.editarServico)
 
     def retranslateUi(self):
         _translate = QtCore.QCoreApplication.translate
@@ -79,7 +70,6 @@ class TelaEditarPeca(QtWidgets.QMainWindow):
 
         self.labelTitulo.setText(_translate("MainWindow", "Editar Peça"))
         self.labelnome.setText(_translate("MainWindow", "Descrição da peça*"))
-        self.labelUn.setText(_translate("MainWindow", "Un"))
         self.labelvalor.setText(_translate("MainWindow", "Valor Un.*"))
         self.botaoCancelar.setText(_translate("MainWindow", "Cancelar"))
         self.botaoEditar.setText(_translate("MainWindow", "Editar"))
@@ -87,27 +77,26 @@ class TelaEditarPeca(QtWidgets.QMainWindow):
     def resetarTela(self):
         self.limparCampos()
         
-    def getPeca(self):
-        if not self.lineEditNomePeca.text() or not self.lineEditValorPeca.text():
+    def getServico(self):
+        if not self.lineEditNomeServico.text() or not self.lineEditValorServico.text():
             raise Exception("Preencha todos os campos!")
         dict = {}
-        dict['descricao'] = self.lineEditNomePeca.text()
-        dict['un'] = self.comboboxun.currentText()
-        if not self.lineEditValorPeca.text().replace(',','',1).replace('.','',1).isdigit():
+        dict['descricao'] = self.lineEditNomeServico.text()
+        if not self.lineEditValorServico.text().replace(',','',1).replace('.','',1).isdigit():
             raise Exception("Campo 'valor' deve possuir apenas números!")
-        dict['valor'] = self.lineEditValorPeca.text().replace(',','.',1)
+        dict['valor'] = self.lineEditValorServico.text().replace(',','.',1)
         return dict
 
-    def editarPeca(self):
+    def editarServico(self):
         try:
-            peca = self.getPeca()
-            r = self.pecaCtrl.editarPeca(self.pecaID, peca)
+            servico = self.getServico()
+            r = self.servicoCtrl.editarServico(self.servicoID, servico)
             if isinstance(r, Exception):
                 raise Exception(r)
             msg = QtWidgets.QMessageBox()
             msg.setWindowTitle("Aviso")
             msg.setIcon(QtWidgets.QMessageBox.Icon.Information)
-            msg.setText(f"Peça editada com sucesso!")
+            msg.setText(f"Serviço editado com sucesso!")
             msg.exec()
             self.retornarParaConsulta.emit(1)
         except Exception as e:
@@ -131,10 +120,10 @@ class TelaEditarPeca(QtWidgets.QMainWindow):
             self.retornarParaConsulta.emit(1)
 
     def renderEditar(self, id):
-        self.pecaID = id
-        peca = self.pecaCtrl.getPeca(id)
-        self.lineEditNomePeca.setText(peca['descricao'])
-        self.lineEditValorPeca.setText(str(peca['valor']).replace('.',',',1))
+        self.servicoID = id
+        servico = self.servicoCtrl.getServico(id)
+        self.lineEditNomeServico.setText(servico['descricao'])
+        self.lineEditValorServico.setText(str(servico['valor']).replace('.',',',1))
 
     def limparCampos(self):
         for lineedit in self.framedados.findChildren(QtWidgets.QLineEdit):
@@ -144,7 +133,7 @@ class TelaEditarPeca(QtWidgets.QMainWindow):
 if __name__ == "__main__":
     import sys
     app = QtWidgets.QApplication(sys.argv)
-    ui = TelaEditarPeca()
+    ui = TelaEditarServico()
     ui.show()
     style = open('./ui/styles.qss').read()
     app.setStyleSheet(style)

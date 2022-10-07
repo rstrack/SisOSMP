@@ -6,6 +6,8 @@ from ui.telaConsultaCliente import TelaConsultaCliente
 from ui.telaConsultaOS import TelaConsultaOS
 from ui.telaConsultaVeiculo import TelaConsultaVeiculo
 from ui.telaEditarOS import TelaEditarOS
+from ui.telaEditarPeca import TelaEditarPeca
+from ui.telaEditarServico import TelaEditarServico
 from ui.telaEditarVeiculo import TelaEditarVeiculo
 
 from util.buscaCEP import BuscaCEP
@@ -61,6 +63,9 @@ class MainController():
         self.telaConsultaVeiculo = TelaConsultaVeiculo()
         self.telaConsultaOrcamento = TelaConsultaOrcamento()
         self.telaConsultaOS = TelaConsultaOS()
+
+        self.telaEditarPeca = TelaEditarPeca()
+        self.telaEditarServico = TelaEditarServico()
         self.telaEditarCliente = TelaEditarCliente()
         self.telaEditarVeiculo = TelaEditarVeiculo()
         self.telaEditarOrcamento = TelaEditarOrcamento()
@@ -78,6 +83,8 @@ class MainController():
         self.telaInicio.stackedWidget.addWidget(self.telaConsultaOrcamento)
         self.telaInicio.stackedWidget.addWidget(self.telaConsultaOS)
 
+        self.telaInicio.stackedWidget.addWidget(self.telaEditarPeca)
+        self.telaInicio.stackedWidget.addWidget(self.telaEditarServico)
         self.telaInicio.stackedWidget.addWidget(self.telaEditarCliente)
         self.telaInicio.stackedWidget.addWidget(self.telaEditarVeiculo)
         self.telaInicio.stackedWidget.addWidget(self.telaEditarOrcamento)
@@ -114,6 +121,7 @@ class MainController():
         self.telaInicio.botao_veiculos.clicked.connect(lambda: self.telaInicio.stackedWidget.setCurrentWidget(self.telaConsultaVeiculo))
         self.telaInicio.botao_orcamentos_2.clicked.connect(lambda: self.telaInicio.stackedWidget.setCurrentWidget(self.telaConsultaOrcamento))
         self.telaInicio.botao_os.clicked.connect(lambda: self.telaInicio.stackedWidget.setCurrentWidget(self.telaConsultaOS))
+        
         # conectando atualizações de janelas
         self.telaInicio.botao_clientes.clicked.connect(self.telaCadastroCliente.setMarcas)
         self.telaInicio.botao_orcamentos.clicked.connect(self.telaCadastroOrcamento.setMarcas)
@@ -122,6 +130,10 @@ class MainController():
         self.telaInicio.stackedWidget.currentChanged.connect(self.atualizarJanelas)
 
         # conectando seleção de edição com respectivas telas de edição
+        self.telaConsultaPeca.botaoEditar.clicked.connect(
+            lambda: self.consultaParaEditar(self.telaEditarPeca, self.telaEditarPeca.renderEditar, self.telaConsultaPeca.editarPeca))
+        self.telaConsultaServico.botaoEditar.clicked.connect(
+            lambda: self.consultaParaEditar(self.telaEditarServico, self.telaEditarServico.renderEditar, self.telaConsultaServico.editarServico))
         self.telaConsultaCliente.botaoEditar.clicked.connect(
             lambda: self.consultaParaEditar(self.telaEditarCliente, self.telaEditarCliente.renderEditar, self.telaConsultaCliente.editarCliente))
         self.telaConsultaVeiculo.botaoEditar.clicked.connect(
@@ -132,6 +144,8 @@ class MainController():
             lambda: self.consultaParaEditar(self.telaEditarOS, self.telaEditarOS.renderEditar, self.telaConsultaOS.editarOS))
 
         # retorno das edições para tela de consulta em caso de cancelamento ou conclusão da operação
+        self.telaEditarPeca.retornarParaConsulta.connect(lambda: self.telaInicio.stackedWidget.setCurrentWidget(self.telaConsultaPeca))
+        self.telaEditarServico.retornarParaConsulta.connect(lambda: self.telaInicio.stackedWidget.setCurrentWidget(self.telaConsultaServico))
         self.telaEditarCliente.retornarParaConsulta.connect(lambda: self.telaInicio.stackedWidget.setCurrentWidget(self.telaConsultaCliente))
         self.telaEditarVeiculo.retornarParaConsulta.connect(lambda: self.telaInicio.stackedWidget.setCurrentWidget(self.telaConsultaVeiculo))
         self.telaEditarOrcamento.retornarParaConsulta.connect(lambda: self.telaInicio.stackedWidget.setCurrentWidget(self.telaConsultaOrcamento))
@@ -147,8 +161,25 @@ class MainController():
 
     def atualizarJanelas(self):
         match self.telaInicio.stackedWidget.currentWidget():
+            case self.telaCadastroCliente:
+                self.telaCadastroCliente.setMarcas()
+            case self.telaCadastroOrcamento:
+                self.telaCadastroOrcamento.setMarcas()
+                self.telaCadastroOrcamento.setCompleters()
+            case self.telaConsultaPeca:
+                self.telaConsultaPeca.listarPecas()
+            case self.telaConsultaServico:
+                self.telaConsultaServico.listarServicos()
+            case self.telaConsultaServico:
+                self.telaConsultaServico.listarServicos()
             case self.telaConsultaCliente:
                 self.telaConsultaCliente.listarClientes()
+            case self.telaConsultaVeiculo:
+                self.telaConsultaVeiculo.listarVeiculos()
+            case self.telaConsultaOrcamento:
+                self.telaConsultaOrcamento.listarOrcamentos()
+            case self.telaConsultaOS:
+                self.telaConsultaOS.listarOS()
             case _:
                 return
 

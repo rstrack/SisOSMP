@@ -141,6 +141,7 @@ QCheckBox::indicator{
 QHeaderView::section{
     background-color: #F1f1f1;
     font-size: 13px;
+    margin: 4px;
 }
 
 QToolTip{

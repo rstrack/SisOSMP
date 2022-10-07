@@ -9,6 +9,9 @@ class TelaConsultaOrcamento(QtWidgets.QMainWindow):
     def __init__(self):
         super(TelaConsultaOrcamento, self).__init__()
         self.orcamentoCtrl = handleRoutes.getRoute('ORCAMENTOCTRL')
+        self.clienteCtrl = handleRoutes.getRoute('CLIENTECTRL')
+        self.pecaCtrl = handleRoutes.getRoute('PECACTRL')
+        self.servicoCtrl = handleRoutes.getRoute('SERVICOCTRL')
         self.setupUi()
 
     def setupUi(self):
@@ -140,7 +143,7 @@ class TelaConsultaOrcamento(QtWidgets.QMainWindow):
             id = self.tabela.model().index(self.linha[0].row(), 0).data()
         else: return
         orcamento = self.orcamentoCtrl.getOrcamento(id)
-        fones = self.orcamentoCtrl.listarFones(orcamento['orcamento'])
+        fones = self.clienteCtrl.listarFones(orcamento['cliente'])
         if fones: fones = list(fones)
         itemPecas = self.orcamentoCtrl.listarItemPecas(orcamento['idOrcamento'])
         if itemPecas:

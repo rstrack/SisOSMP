@@ -2,7 +2,7 @@ import pymysql as sql
 from controller.mainController import MainController
 from model.modelo import *
 import sys
-from PyQt6 import QtCore, QtWidgets
+from PyQt6 import QtWidgets
 
 driver = sql.connect(user='root', password='admin', host='localhost', port=3306)
 cursor = driver.cursor()
@@ -17,7 +17,7 @@ def excepthook(type_, value, traceback_):
     sys.__excepthook__(type_, value, traceback_)
     msg = QtWidgets.QMessageBox()
     msg.setWindowTitle("Erro")
-    msg.setText('Ocorreu um erro.\nEntre em contato com o administrador')
+    msg.setText('Ocorreu um erro.\nEntre em contato com o desenvolvedor')
     msg.exec()
 sys.excepthook = excepthook
 
