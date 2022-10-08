@@ -8,8 +8,8 @@ from reportlab.platypus import TableStyle
 from reportlab.lib import colors
 import textwrap
 import os
-
-
+import locale
+import re
 # DICT DO ORÇAMENTO GERADO AO SALVAR/EDITAR
 # Configurações para geração do pdf
 def tabelas_pos(self, orcamento: dict, l, g):
@@ -34,8 +34,8 @@ def tabelas_pos(self, orcamento: dict, l, g):
     self.rect(39, g+16, 517, 15, fill=False, stroke=True)
     self.rect(39, g - 44, 517, 60, fill=False, stroke=True)
 
-
 def generatePDF(orcamento: dict, listaFones: list[dict], listaServicos: list[dict], listaPecas: list[dict] = None, path:str = None):
+    locale.setlocale(locale.LC_ALL, 'pt_BR.UTF-8')
     if path:
         pdf = canvas.Canvas(f"{path}\\teste.pdf", pagesize=A4)
     else:
@@ -71,9 +71,10 @@ def generatePDF(orcamento: dict, listaFones: list[dict], listaServicos: list[dic
         documento = 'Documento'
     pdf.drawString(44, 653, "{}: {}".format(documento, str(orcamento['cliente']['documento'] or '')))
     pdf.rect(39, 649, 172.3, 15, fill=False, stroke=True)
+    
     pdf.drawString(216.3, 653, "Fone: {}".format(listaFones[0]['fone']))
     if len(listaFones) == 2:
-        fone2 = listaFones[1]['fone']
+        fone2 = (listaFones[1]['fone'])
     else:
         fone2 = ''
     pdf.rect(211.3, 649, 172.3, 15, fill=False, stroke=True)
@@ -167,10 +168,10 @@ def generatePDF(orcamento: dict, listaFones: list[dict], listaServicos: list[dic
     # TRANSFORMAR PARA DICIONÁRIO
     if listaPecas:
         for dict in listaPecas:
-            pecas.append([dict['descricao'], dict['un'], dict['qtde'], 'R$ {:.2f}'.format(dict['valor'])])
+            pecas.append([dict['descricao'], dict['un'], dict['qtde'], locale.currency(dict['valor'])])
 
     for dict in listaServicos:
-        servicos.append([dict['descricao'], dict['qtde'], 'R$ {:.2f}'.format(dict['valor'])])
+        servicos.append([dict['descricao'], dict['qtde'], locale.currency(dict['valor'])])
 
     y = 7.5 * inch
     width = 575
