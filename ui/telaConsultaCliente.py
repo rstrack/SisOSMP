@@ -1,13 +1,13 @@
 from PyQt6 import QtCore, QtGui, QtWidgets
 from ui.infiniteScroll import AlignDelegate, InfiniteScrollTableModel
-from routes import handleRoutes
+from container import handleDeps
 from flatdict import FlatDict
 
 class TelaConsultaCliente(QtWidgets.QMainWindow):
     def __init__(self):
         super(TelaConsultaCliente, self).__init__()
-        self.clienteCtrl = handleRoutes.getRoute('CLIENTECTRL')
-        self.cidadeCtrl = handleRoutes.getRoute('CIDADECTRL')
+        self.clienteCtrl = handleDeps.getDep('CLIENTECTRL')
+        self.cidadeCtrl = handleDeps.getDep('CIDADECTRL')
         self.setupUi()
 
     def setupUi(self):

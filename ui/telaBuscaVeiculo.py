@@ -1,11 +1,11 @@
 from PyQt6 import QtCore, QtGui, QtWidgets
 
-from routes import handleRoutes
+from container import handleDeps
 
 class TelaBuscaVeiculo(QtWidgets.QWidget):
     def __init__(self, MainWindow):
         super(TelaBuscaVeiculo, self).__init__()
-        self.clienteCtrl = handleRoutes.getRoute('CLIENTECTRL')
+        self.clienteCtrl = handleDeps.getDep('CLIENTECTRL')
         self.setupUi(MainWindow)
 
     def setupUi(self, MainWindow):

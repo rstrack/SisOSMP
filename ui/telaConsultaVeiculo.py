@@ -1,13 +1,13 @@
 from PyQt6 import QtCore, QtGui, QtWidgets
-from routes import handleRoutes
-from ui.infiniteScroll import InfiniteScrollTableModel
+from container import handleDeps
+from ui.infiniteScroll import AlignDelegate, InfiniteScrollTableModel
 from flatdict import FlatDict
 
 class TelaConsultaVeiculo(QtWidgets.QMainWindow):
     def __init__(self):
         super(TelaConsultaVeiculo, self).__init__()
-        self.clienteCtrl = handleRoutes.getRoute('CLIENTECTRL')
-        self.marcaCtrl = handleRoutes.getRoute('MARCACTRL')
+        self.clienteCtrl = handleDeps.getDep('CLIENTECTRL')
+        self.marcaCtrl = handleDeps.getDep('MARCACTRL')
         self.setupUi()
 
     def setupUi(self):
@@ -42,6 +42,7 @@ class TelaConsultaVeiculo(QtWidgets.QMainWindow):
             QtWidgets.QAbstractItemView.SelectionMode.SingleSelection)
         self.tabela.horizontalHeader().setHighlightSections(False)
         self.tabela.verticalHeader().setVisible(False)
+        self.delegateRight = AlignDelegate(QtCore.Qt.AlignmentFlag.AlignRight | QtCore.Qt.AlignmentFlag.AlignVCenter)
         self.filter = QtCore.QSortFilterProxyModel()
         self.filter.setFilterCaseSensitivity(
             QtCore.Qt.CaseSensitivity.CaseInsensitive)
@@ -65,7 +66,7 @@ class TelaConsultaVeiculo(QtWidgets.QMainWindow):
         self.lineEditBusca.textChanged.connect(
             self.filter.setFilterRegularExpression)
         self.tabela.setModel(self.filter)
-        listaHeader = ['ID', 'Marca', 'Modelo', 'Placa', 'Ano', 'Veiculos Vinculados']
+        listaHeader = ['ID', 'Marca', 'Modelo', 'Placa', 'Ano', 'Clientes Vinculados']
         self.model.setHorizontalHeaderLabels(listaHeader)
         self.setCentralWidget(self.mainwidget)
         self.retranslateUi()
@@ -119,11 +120,19 @@ class TelaConsultaVeiculo(QtWidgets.QMainWindow):
     def listarVeiculos(self):
         self.linesShowed = 0
         self.model = InfiniteScrollTableModel([{}])
-        listaHeader = ['ID', 'Marca', 'Modelo', 'Placa', 'Ano', 'Veiculos Vinculados']
+        listaHeader = ['ID', 'Marca', 'Modelo', 'Placa', 'Ano', 'Clientes Vinculados']
         self.model.setHorizontalHeaderLabels(listaHeader)
         self.filter.setSourceModel(self.model)
         self.tabela.setModel(self.filter)
+        self.tabela.setItemDelegateForColumn(4, self.delegateRight)
         self.maisVeiculos(50)
+        if self.linesShowed > 0:
+            header = self.tabela.horizontalHeader()
+            header.setSectionResizeMode(
+                QtWidgets.QHeaderView.ResizeMode.ResizeToContents)
+            header.setSectionResizeMode(2,
+                QtWidgets.QHeaderView.ResizeMode.Stretch)
+            self.model.setHeaderAlignment(4, QtCore.Qt.AlignmentFlag.AlignRight | QtCore.Qt.AlignmentFlag.AlignVCenter)
 
     def editarVeiculo(self):
         self.linha = self.tabela.selectionModel().selectedRows()

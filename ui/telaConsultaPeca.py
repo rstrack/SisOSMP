@@ -1,12 +1,12 @@
 from PyQt6 import QtCore, QtGui, QtWidgets
-from routes import handleRoutes
+from container import handleDeps
 from ui.infiniteScroll import AlignDelegate, InfiniteScrollTableModel
 from ui.telaCadastroPeca import TelaCadastroPeca
 
 class TelaConsultaPeca(QtWidgets.QMainWindow):
     def __init__(self):
         super(TelaConsultaPeca, self).__init__()
-        self.pecaCtrl = handleRoutes.getRoute('PECACTRL')
+        self.pecaCtrl = handleDeps.getDep('PECACTRL')
         self.setupUi()
 
     def setupUi(self):

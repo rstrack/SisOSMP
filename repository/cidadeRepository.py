@@ -16,7 +16,7 @@ class CidadeRepository():
         return Cidade.delete_by_id(id)
 
     def findAll(self):
-        return Cidade.select().dicts()
+        return Cidade.select()
 
     def findByID(seld, id):
         return Cidade.select().where(Cidade.idCidade==id).get()

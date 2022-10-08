@@ -138,6 +138,10 @@ QCheckBox::indicator{
     height: 16px; 
 }
 
+QTableView::item{
+    padding: 4px;
+}
+
 QHeaderView::section{
     background-color: #F1f1f1;
     font-size: 13px;

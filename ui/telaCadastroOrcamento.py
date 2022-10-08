@@ -1,5 +1,5 @@
 from PyQt6 import QtCore, QtWidgets, QtGui
-from routes import handleRoutes
+from container import handleDeps
 
 from datetime import datetime
 
@@ -16,12 +16,13 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
 
     def __init__(self):
         super(TelaCadastroOrcamento, self).__init__()
-        self.orcamentoCtrl = handleRoutes.getRoute('ORCAMENTOCTRL')
-        self.clienteCtrl = handleRoutes.getRoute('CLIENTECTRL')
-        self.pecaCtrl = handleRoutes.getRoute('PECACTRL')
-        self.servicoCtrl = handleRoutes.getRoute('SERVICOCTRL')
-        self.marcaCtrl = handleRoutes.getRoute('MARCACTRL')
-        self.buscaCEP = handleRoutes.getRoute('CEP')
+        self.orcamentoCtrl = handleDeps.getDep('ORCAMENTOCTRL')
+        self.clienteCtrl = handleDeps.getDep('CLIENTECTRL')
+        self.cidadeCtrl = handleDeps.getDep('CIDADECTRL')
+        self.marcaCtrl = handleDeps.getDep('MARCACTRL')
+        self.pecaCtrl = handleDeps.getDep('PECACTRL')
+        self.servicoCtrl = handleDeps.getDep('SERVICOCTRL')
+        self.buscaCEP = handleDeps.getDep('CEP')
         self.clienteSelected = None
         self.veiculoSelected = None
         self.valorTotal = 0
@@ -304,6 +305,15 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
         self.completerServico.setCompletionMode(
             QtWidgets.QCompleter.CompletionMode.PopupCompletion)
         self.lineEditNomeServico.setCompleter(self.completerServico)
+
+        self.completerCidade = QtWidgets.QCompleter([])
+        self.completerCidade.setMaxVisibleItems(5)
+        self.completerCidade.setCaseSensitivity(
+            QtCore.Qt.CaseSensitivity.CaseInsensitive)
+        self.completerCidade.setCompletionMode(
+            QtWidgets.QCompleter.CompletionMode.PopupCompletion)
+        self.lineEditCidade.setCompleter(self.completerCidade)
+
         self.retranslateUi()
         self.setMarcas()
         self.setCompleters()
@@ -558,20 +568,28 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
     def setCompleters(self):
         pecas = self.pecaCtrl.listarPecas()
         servicos = self.servicoCtrl.listarServicos()
+        cidades = self.cidadeCtrl.listarCidades()
         listaPecas = []
         listaServicos = []
+        listaCidades = []
         if pecas:
             for peca in pecas:
                 listaPecas.append(peca['descricao'])
         if servicos:
             for servico in servicos:
                 listaServicos.append(servico['descricao'])
+        if cidades:
+            for cidade in cidades:
+                listaCidades.append(cidade['nome'])
         modelPecas = QtCore.QStringListModel()
         modelPecas.setStringList(listaPecas)
         self.completerPeca.setModel(modelPecas)
         modelServicos = QtCore.QStringListModel()
         modelServicos.setStringList(listaServicos)
         self.completerServico.setModel(modelServicos)
+        modelCidades = QtCore.QStringListModel()
+        modelCidades.setStringList(listaCidades)
+        self.completerCidade.setModel(modelCidades)
 
     def getDadosCliente(self):
         dict = {}
@@ -642,13 +660,13 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
     def getDadosVeiculo(self):
         dict = {}
         if self.comboBoxMarca.currentText():
-            dict['marca'] = self.comboBoxMarca.currentText()
+            dict['marca'] = self.comboBoxMarca.currentText().upper()
         else: raise Exception("Campo 'Marca' obrigatório!")
         if (self.lineEditModelo.text()):
             dict['modelo'] = self.lineEditModelo.text()
         else: raise Exception("Campo 'Modelo' obrigatório!")
         if (self.lineEditPlaca.text()):
-            dict['placa'] = self.lineEditPlaca.text()
+            dict['placa'] = self.lineEditPlaca.text().upper()
         else: raise Exception("Campo 'Placa' obrigatório!")
         if (self.lineEditAno.text()):
             dict['ano'] = self.lineEditAno.text()
@@ -663,11 +681,11 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
                 dict['descricao'] = desc.text()
                 if not qtde.text(): dict['qtde'] = 1
                 else:
-                    if not qtde.text().replace(',','').replace('.','').isdigit():
+                    if not (qtde.text().replace(',','',1).isnumeric() or qtde.text().replace('.','',1).isnumeric()):
                         raise Exception("Campo 'qtde' deve possuir apenas números!")
                     dict['qtde'] = qtde.text().replace(',','.',1)
                 dict['un'] = un.currentText()
-                if not valor.text().replace(',','').replace('.','').isdigit():
+                if not (valor.text().replace(',','',1).isnumeric() or valor.text().replace('.','',1).isnumeric()):
                     raise Exception("Campo 'valor' deve possuir apenas números!")
                 dict['valor'] = valor.text().replace(',','.',1)
                 pecas.append(dict)
@@ -684,11 +702,11 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
                 dict = {}
                 dict['descricao'] = desc.text()
                 if not qtde.text(): dict['qtde'] = 1
-                else: 
-                    if not qtde.text().replace(',','').replace('.','').isdigit():
+                else:
+                    if not (qtde.text().replace(',','',1).isnumeric() or qtde.text().replace('.','',1).isnumeric()):
                         raise Exception("Campo 'qtde' deve possuir apenas números!")
                     dict['qtde'] = qtde.text().replace(',','.',1)
-                if not valor.text().replace(',','').replace('.','').isdigit():
+                if not (valor.text().replace(',','',1).isnumeric() or valor.text().replace('.','',1).isnumeric()):
                     raise Exception("Campo 'valor' deve possuir apenas números!")
                 dict['valor'] = valor.text().replace(',','.',1)
                 servicos.append(dict)
@@ -714,24 +732,31 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
         self.valorTotal=0.00
         for _,qtde,_,valor in self.linhasPeca:
             if not valor.text():
-                pass
-            elif not valor.text().replace(',','',1).replace('.','',1).isdigit():
+                continue
+            if not (valor.text().replace(',','',1).isnumeric() or valor.text().replace('.','',1).isnumeric()):
                 self.labelValorTotal2.setText('0,00')
                 return
+            if qtde.text():
+                if not (qtde.text().replace(',','',1).isnumeric() or qtde.text().replace('.','',1).isnumeric()):
+                    self.labelValorTotal2.setText('0,00')
+                    return 
+                self.valorTotal+=float(valor.text().replace(',','.',1))*float(qtde.text().replace(',','.',1))
             else:
-                if qtde.text():
-                    self.valorTotal+=float(valor.text().replace(',','.',1))*float(qtde.text().replace(',','.',1))
-                else: self.valorTotal+=float(valor.text().replace(',','.',1))
+                self.valorTotal+=float(valor.text().replace(',','.',1))
+
         for _,qtde,valor in self.linhasServico:
             if not valor.text():
-                pass
-            elif valor.text().replace(',','',1).replace('.','',1).isdigit():
-                if qtde.text():
-                    self.valorTotal+=float(valor.text().replace(',','.',1))*float(qtde.text().replace(',','.',1))
-                else: self.valorTotal+=float(valor.text().replace(',','.',1))
-            else:
+                continue
+            if not (valor.text().replace(',','',1).isnumeric() or valor.text().replace('.','',1).isnumeric()):
                 self.labelValorTotal2.setText('0,00')
                 return
+            if qtde.text():
+                if not (qtde.text().replace(',','',1).isnumeric() or qtde.text().replace('.','',1).isnumeric()):
+                    self.labelValorTotal2.setText('0,00')
+                    return 
+                self.valorTotal+=float(valor.text().replace(',','.',1))*float(qtde.text().replace(',','.',1))
+            else:
+                self.valorTotal+=float(valor.text().replace(',','.',1))
         self.labelValorTotal2.setText(('{:.2f}'.format(self.valorTotal)).replace('.',',',1))
 
     def buscarPeca(self, lineEditDesc, comboBoxUn, lineEditValor):

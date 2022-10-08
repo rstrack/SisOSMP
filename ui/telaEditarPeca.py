@@ -1,5 +1,5 @@
 from PyQt6 import QtCore, QtWidgets, QtGui
-from routes import handleRoutes
+from container import handleDeps
 from ui.telaCadastroOrcamento import UNIDADES
 
 
@@ -7,7 +7,7 @@ class TelaEditarPeca(QtWidgets.QMainWindow):
     retornarParaConsulta = QtCore.pyqtSignal(int)
     def __init__(self):
         super(TelaEditarPeca, self).__init__()
-        self.pecaCtrl = handleRoutes.getRoute('PECACTRL')
+        self.pecaCtrl = handleDeps.getDep('PECACTRL')
         self.pecaID = None
         self.setupUi()
 

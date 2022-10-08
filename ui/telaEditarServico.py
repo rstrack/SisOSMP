@@ -1,11 +1,11 @@
 from PyQt6 import QtCore, QtWidgets, QtGui
-from routes import handleRoutes
+from container import handleDeps
 
 class TelaEditarServico(QtWidgets.QMainWindow):
     retornarParaConsulta = QtCore.pyqtSignal(int)
     def __init__(self):
         super(TelaEditarServico, self).__init__()
-        self.servicoCtrl = handleRoutes.getRoute('SERVICOCTRL')
+        self.servicoCtrl = handleDeps.getDep('SERVICOCTRL')
         self.servicoID = None
         self.setupUi()
 
@@ -68,8 +68,8 @@ class TelaEditarServico(QtWidgets.QMainWindow):
         _translate = QtCore.QCoreApplication.translate
         self.setWindowTitle(_translate("MainWindow", "MainWindow"))
 
-        self.labelTitulo.setText(_translate("MainWindow", "Editar Peça"))
-        self.labelnome.setText(_translate("MainWindow", "Descrição da peça*"))
+        self.labelTitulo.setText(_translate("MainWindow", "Editar Serviço"))
+        self.labelnome.setText(_translate("MainWindow", "Descrição do serviço*"))
         self.labelvalor.setText(_translate("MainWindow", "Valor Un.*"))
         self.botaoCancelar.setText(_translate("MainWindow", "Cancelar"))
         self.botaoEditar.setText(_translate("MainWindow", "Editar"))

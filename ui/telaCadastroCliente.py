@@ -1,5 +1,5 @@
 from PyQt6 import QtCore, QtWidgets
-from routes import handleRoutes
+from container import handleDeps
 
 SIGLAESTADOS = ['AC', 'AL', 'AP', 'AM', 'BA', 'CE', 'DF', 'ES', 'GO', 'MA', 'MT', 'MS',
                 'MG', 'PA', 'PB', 'PR', 'PE', 'PI', 'RJ', 'RN', 'RS', 'RO', 'RR', 'SC', 'SP', 'SE', 'TO']
@@ -9,9 +9,10 @@ class TelaCadastroCliente(QtWidgets.QMainWindow):
 
     def __init__(self):
         super(TelaCadastroCliente, self).__init__()
-        self.clienteCtrl = handleRoutes.getRoute('CLIENTECTRL')
-        self.marcaCtrl = handleRoutes.getRoute('MARCACTRL')
-        self.buscaCEP = handleRoutes.getRoute('CEP')
+        self.clienteCtrl = handleDeps.getDep('CLIENTECTRL')
+        self.cidadeCtrl = handleDeps.getDep('CIDADECTRL')
+        self.marcaCtrl = handleDeps.getDep('MARCACTRL')
+        self.buscaCEP = handleDeps.getDep('CEP')
         self.setupUi()
 
     def setupUi(self):
@@ -154,6 +155,14 @@ class TelaCadastroCliente(QtWidgets.QMainWindow):
             40, 20, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding)
         self.glayoutp.addItem(spacerItem6)
         self.setCentralWidget(self.main_frame)
+
+        self.completerCidade = QtWidgets.QCompleter([])
+        self.completerCidade.setMaxVisibleItems(5)
+        self.completerCidade.setCaseSensitivity(
+            QtCore.Qt.CaseSensitivity.CaseInsensitive)
+        self.completerCidade.setCompletionMode(
+            QtWidgets.QCompleter.CompletionMode.PopupCompletion)
+        self.lineEditCidade.setCompleter(self.completerCidade)
 
         self.retranslateUi()
         self.setMarcas()
@@ -353,6 +362,16 @@ class TelaCadastroCliente(QtWidgets.QMainWindow):
         for marca in marcas:
             self.comboBoxMarca.addItem(marca['nome'])
         self.comboBoxMarca.setCurrentIndex(-1)
+
+    def setCompleters(self):
+        cidades = self.cidadeCtrl.listarCidades()
+        listaCidades = []
+        if cidades:
+            for cidade in cidades:
+                listaCidades.append(cidade['nome'])
+        modelCidades = QtCore.QStringListModel()
+        modelCidades.setStringList(listaCidades)
+        self.completerCidade.setModel(modelCidades)
 
     def buscarDadosCEP(self):
         cep = self.lineEditCEP.text()

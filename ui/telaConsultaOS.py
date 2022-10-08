@@ -1,6 +1,6 @@
 from PyQt6 import QtCore, QtGui, QtWidgets
 from flatdict import FlatDict
-from routes import handleRoutes
+from container import handleDeps
 from ui.infiniteScroll import AlignDelegate, InfiniteScrollTableModel
 from ui.messageBox import MessageBox
 from util.gerar_pdf import generatePDF
@@ -8,10 +8,10 @@ from util.gerar_pdf import generatePDF
 class TelaConsultaOS(QtWidgets.QMainWindow):
     def __init__(self):
         super(TelaConsultaOS, self).__init__()
-        self.orcamentoCtrl = handleRoutes.getRoute('ORCAMENTOCTRL')
-        self.clienteCtrl = handleRoutes.getRoute('CLIENTECTRL')
-        self.pecaCtrl = handleRoutes.getRoute('PECACTRL')
-        self.servicoCtrl = handleRoutes.getRoute('SERVICOCTRL')
+        self.orcamentoCtrl = handleDeps.getDep('ORCAMENTOCTRL')
+        self.clienteCtrl = handleDeps.getDep('CLIENTECTRL')
+        self.pecaCtrl = handleDeps.getDep('PECACTRL')
+        self.servicoCtrl = handleDeps.getDep('SERVICOCTRL')
         self.setupUi()
 
     def setupUi(self):

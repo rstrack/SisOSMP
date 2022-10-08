@@ -1,7 +1,7 @@
 import sys
 from PyQt6 import QtWidgets, QtGui, QtCore
 
-from routes import handleRoutes
+from container import handleDeps
 from ui.telaConsultaCliente import TelaConsultaCliente
 from ui.telaConsultaOS import TelaConsultaOS
 from ui.telaConsultaVeiculo import TelaConsultaVeiculo
@@ -47,7 +47,7 @@ class MainController():
         font = QtGui.QFont('Helvetica')
         self.app.setFont(font)
         self.app.setWindowIcon(QtGui.QIcon('./resources/logo-icon.png'))
-        self.setRoutes()
+        self.setDeps()
         self.telaInicio = TelaInicial()
         self.telaInicio.setStyle(QtWidgets.QApplication.setStyle('Fusion'))
         self.telaInicio.setStyleSheet(style)
@@ -92,21 +92,21 @@ class MainController():
         self.initConnections()
 
     #função que instancia uma unica vez cada controller, que podem ser acessados onde necessário
-    def setRoutes(self):
+    def setDeps(self):
         pecaController = PecaController()
-        handleRoutes.setRoute('PECACTRL', pecaController)
+        handleDeps.setDep('PECACTRL', pecaController)
         servicoController = ServicoController()
-        handleRoutes.setRoute('SERVICOCTRL', servicoController)
+        handleDeps.setDep('SERVICOCTRL', servicoController)
         clienteController = ClienteController()
-        handleRoutes.setRoute('CLIENTECTRL', clienteController)
+        handleDeps.setDep('CLIENTECTRL', clienteController)
         orcamentoController = OrcamentoController()
-        handleRoutes.setRoute('ORCAMENTOCTRL', orcamentoController)
+        handleDeps.setDep('ORCAMENTOCTRL', orcamentoController)
         marcaController = MarcaController()
-        handleRoutes.setRoute('MARCACTRL', marcaController)
+        handleDeps.setDep('MARCACTRL', marcaController)
         cidadeController = CidadeController()
-        handleRoutes.setRoute('CIDADECTRL', cidadeController)
+        handleDeps.setDep('CIDADECTRL', cidadeController)
         buscaCEP = BuscaCEP()
-        handleRoutes.setRoute('CEP', buscaCEP)
+        handleDeps.setDep('CEP', buscaCEP)
 
     def initConnections(self):
         # conectando botões do menu
@@ -163,13 +163,12 @@ class MainController():
         match self.telaInicio.stackedWidget.currentWidget():
             case self.telaCadastroCliente:
                 self.telaCadastroCliente.setMarcas()
+                self.telaCadastroCliente.setCompleters()
             case self.telaCadastroOrcamento:
                 self.telaCadastroOrcamento.setMarcas()
                 self.telaCadastroOrcamento.setCompleters()
             case self.telaConsultaPeca:
                 self.telaConsultaPeca.listarPecas()
-            case self.telaConsultaServico:
-                self.telaConsultaServico.listarServicos()
             case self.telaConsultaServico:
                 self.telaConsultaServico.listarServicos()
             case self.telaConsultaCliente:
@@ -194,3 +193,5 @@ if __name__ == "__main__":
 
     c = MainController()
     c.run()
+
+

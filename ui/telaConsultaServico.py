@@ -1,12 +1,12 @@
 from PyQt6 import QtCore, QtGui, QtWidgets
-from routes import handleRoutes
+from container import handleDeps
 from ui.infiniteScroll import AlignDelegate, InfiniteScrollTableModel
 from ui.telaCadastroServico import TelaCadastroServico
 
 class TelaConsultaServico(QtWidgets.QMainWindow):
     def __init__(self):
         super(TelaConsultaServico, self).__init__()
-        self.servicoCtrl = handleRoutes.getRoute('SERVICOCTRL')
+        self.servicoCtrl = handleDeps.getDep('SERVICOCTRL')
         self.setupUi()
 
     def setupUi(self):
@@ -106,7 +106,7 @@ class TelaConsultaServico(QtWidgets.QMainWindow):
         self.model.setHorizontalHeaderLabels(listaHeader)
         self.filter.setSourceModel(self.model)
         self.tabela.setModel(self.filter)
-        self.tabela.setItemDelegateForColumn(3, self.delegateRight)
+        self.tabela.setItemDelegateForColumn(2, self.delegateRight)
         self.maisServicos(50)
         if self.linesShowed > 0:
             header = self.tabela.horizontalHeader()

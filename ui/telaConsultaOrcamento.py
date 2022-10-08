@@ -1,5 +1,5 @@
 from PyQt6 import QtCore, QtGui, QtWidgets
-from routes import handleRoutes
+from container import handleDeps
 from datetime import datetime
 from flatdict import FlatDict
 from ui.infiniteScroll import AlignDelegate, InfiniteScrollTableModel
@@ -8,10 +8,10 @@ from util.gerar_pdf import generatePDF
 class TelaConsultaOrcamento(QtWidgets.QMainWindow):
     def __init__(self):
         super(TelaConsultaOrcamento, self).__init__()
-        self.orcamentoCtrl = handleRoutes.getRoute('ORCAMENTOCTRL')
-        self.clienteCtrl = handleRoutes.getRoute('CLIENTECTRL')
-        self.pecaCtrl = handleRoutes.getRoute('PECACTRL')
-        self.servicoCtrl = handleRoutes.getRoute('SERVICOCTRL')
+        self.orcamentoCtrl = handleDeps.getDep('ORCAMENTOCTRL')
+        self.clienteCtrl = handleDeps.getDep('CLIENTECTRL')
+        self.pecaCtrl = handleDeps.getDep('PECACTRL')
+        self.servicoCtrl = handleDeps.getDep('SERVICOCTRL')
         self.setupUi()
 
     def setupUi(self):

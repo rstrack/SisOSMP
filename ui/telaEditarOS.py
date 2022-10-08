@@ -1,5 +1,5 @@
 from PyQt6 import QtCore, QtWidgets
-from routes import handleRoutes
+from container import handleDeps
 
 from datetime import datetime
 
@@ -13,12 +13,12 @@ class TelaEditarOS(QtWidgets.QMainWindow):
     retornarParaConsulta = QtCore.pyqtSignal(int)
     def __init__(self):
         super(TelaEditarOS, self).__init__()
-        self.orcamentoCtrl = handleRoutes.getRoute('ORCAMENTOCTRL')
-        self.clienteCtrl = handleRoutes.getRoute('CLIENTECTRL')
-        self.pecaCtrl = handleRoutes.getRoute('PECACTRL')
-        self.servicoCtrl = handleRoutes.getRoute('SERVICOCTRL')
-        self.marcaCtrl = handleRoutes.getRoute('MARCACTRL')
-        self.buscaCEP = handleRoutes.getRoute('CEP')
+        self.orcamentoCtrl = handleDeps.getDep('ORCAMENTOCTRL')
+        self.clienteCtrl = handleDeps.getDep('CLIENTECTRL')
+        self.pecaCtrl = handleDeps.getDep('PECACTRL')
+        self.servicoCtrl = handleDeps.getDep('SERVICOCTRL')
+        self.marcaCtrl = handleDeps.getDep('MARCACTRL')
+        self.buscaCEP = handleDeps.getDep('CEP')
         self.orcamentoID = None
         self.setupUi()
 

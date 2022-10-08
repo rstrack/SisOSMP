@@ -1,5 +1,5 @@
 from PyQt6 import QtCore, QtWidgets
-from routes import handleRoutes
+from container import handleDeps
 
 SIGLAESTADOS = ['AC', 'AL', 'AP', 'AM', 'BA', 'CE', 'DF', 'ES', 'GO', 'MA', 'MT', 'MS',
                 'MG', 'PA', 'PB', 'PR', 'PE', 'PI', 'RJ', 'RN', 'RS', 'RO', 'RR', 'SC', 'SP', 'SE', 'TO']
@@ -9,9 +9,9 @@ class TelaEditarCliente(QtWidgets.QMainWindow):
     retornarParaConsulta = QtCore.pyqtSignal(int)
     def __init__(self):
         super(TelaEditarCliente, self).__init__()
-        self.clienteCtrl = handleRoutes.getRoute('CLIENTECTRL')
-        self.marcaCtrl = handleRoutes.getRoute('MARCACTRL')
-        self.buscaCEP = handleRoutes.getRoute('CEP')
+        self.clienteCtrl = handleDeps.getDep('CLIENTECTRL')
+        self.marcaCtrl = handleDeps.getDep('MARCACTRL')
+        self.buscaCEP = handleDeps.getDep('CEP')
         self.setupUi()
 
     def setupUi(self):
