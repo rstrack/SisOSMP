@@ -1,3 +1,4 @@
+from sre_constants import _NamedIntConstant
 from tkinter import E
 from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.lib.units import inch
@@ -9,17 +10,23 @@ from reportlab.lib import colors
 import textwrap
 import os
 import locale
-import re
+import phonenumbers
+
+locale.setlocale(locale.LC_ALL, 'pt_BR.UTF-8')
+
+
 # DICT DO ORÇAMENTO GERADO AO SALVAR/EDITAR
 # Configurações para geração do pdf
 def tabelas_pos(self, orcamento: dict, l, g):
     self.setFont('Helvetica', 10)
     self.drawString(406, l + 4, 'Valor Total')
     self.drawString(541 - (len(str(orcamento['valorTotal'])) * 7.1), l + 4,
-                    'R$ {:.2f}'.format(orcamento['valorTotal']))
+                    '{}'.format(locale.currency(orcamento['valorTotal'])))
     self.rect(402, l, 1 * inch + 11, 15, fill=False, stroke=True)
     self.rect(413 + 1 * inch, l, 1 * inch, 15, fill=False, stroke=True)
-    self.drawString(265, g + 20, 'Observações:')
+    self.setFont('Helvetica-Bold', 10)
+    self.drawString(44, g + 20, 'Observações:')
+    self.setFont('Helvetica', 10)
     linhas = orcamento['observacoes'].split('\n')
     linhasObs = []
     for linha in linhas:
@@ -31,11 +38,27 @@ def tabelas_pos(self, orcamento: dict, l, g):
         self.drawString(44, q, x)
         c = c + 103
         q = q - 15
-    self.rect(39, g+16, 517, 15, fill=False, stroke=True)
+    self.rect(39, g + 16, 517, 15, fill=False, stroke=True)
     self.rect(39, g - 44, 517, 60, fill=False, stroke=True)
 
-def generatePDF(orcamento: dict, listaFones: list[dict], listaServicos: list[dict], listaPecas: list[dict] = None, path:str = None):
-    locale.setlocale(locale.LC_ALL, 'pt_BR.UTF-8')
+
+def formatar_cep(self):
+    cepformatado = '{}-{}'.format(self[0:5], self[5:])
+    return cepformatado
+
+
+def formatar_fone(self):
+    if len(self) > 11:
+        print(len(self))
+        return (phonenumbers.format_number(phonenumbers.parse("+" + str(self), None),
+                                           phonenumbers.PhoneNumberFormat.NATIONAL))
+    else:
+        return (phonenumbers.format_number(phonenumbers.parse(str(self), 'BR'),
+                                           phonenumbers.PhoneNumberFormat.NATIONAL))
+
+
+def generatePDF(orcamento: dict, listaFones: list[dict], listaServicos: list[dict], listaPecas: list[dict] = None,
+                path: str = None):
     if path:
         pdf = canvas.Canvas(f"{path}\\teste.pdf", pagesize=A4)
     else:
@@ -54,7 +77,7 @@ def generatePDF(orcamento: dict, listaFones: list[dict], listaServicos: list[dic
     pdf.drawString(335, 783, 'CNPJ : 85.481.562/0001-57')
     pdf.drawString(315, 767.5, 'E-mail:mecanicapasetto@gmail.com ')
     pdf.rect(39, 750, 517, 2, fill=True, stroke=True)
-    
+
     # Informações do Cliente
     pdf.setFont('Helvetica-Bold', 12)
     pdf.drawString(255, 688, 'Dados do Cliente')
@@ -65,16 +88,22 @@ def generatePDF(orcamento: dict, listaFones: list[dict], listaServicos: list[dic
     pdf.rect(39, 664, 517, 15, fill=False, stroke=True)
     if orcamento['cliente']['tipo'] == '0':
         documento = 'CPF'
+        ndoc = str(orcamento['cliente']['documento'])
+        cpf = "{}.{}.{}-{}".format(ndoc[0:3], ndoc[3:6], ndoc[6:9], ndoc[9:])
+        pdf.drawString(44, 653, "{}: {}".format(documento, cpf or ''))
+
     elif orcamento['cliente']['tipo'] == '1':
         documento = 'CNPJ'
+        ndoc = str(orcamento['cliente']['documento'])
+        cnpj = "{}.{}.{}/{}-{}".format(ndoc[0:2], ndoc[2:5], ndoc[5:8], ndoc[8:12], ndoc[12:])
+        pdf.drawString(44, 653, "{}: {}".format(documento, cnpj or ''))
     else:
         documento = 'Documento'
-    pdf.drawString(44, 653, "{}: {}".format(documento, str(orcamento['cliente']['documento'] or '')))
+        pdf.drawString(44, 653, "{}: {}".format(documento, orcamento['cliente']['documento'] or ''))
     pdf.rect(39, 649, 172.3, 15, fill=False, stroke=True)
-    
-    pdf.drawString(216.3, 653, "Fone: {}".format(listaFones[0]['fone']))
+    pdf.drawString(216.3, 653, "Fone: {}".format(formatar_fone(listaFones[0]['fone'])))
     if len(listaFones) == 2:
-        fone2 = (listaFones[1]['fone'])
+        fone2 = formatar_fone((listaFones[1]['fone']))
     else:
         fone2 = ''
     pdf.rect(211.3, 649, 172.3, 15, fill=False, stroke=True)
@@ -84,7 +113,8 @@ def generatePDF(orcamento: dict, listaFones: list[dict], listaServicos: list[dic
     pdf.rect(39, 634, 441, 15, fill=False, stroke=True)
     pdf.drawString(44, 623, "Bairro: {}".format(str(orcamento['cliente']['bairro'] or ' ')))
     pdf.rect(242, 619, 198, 15, fill=False, stroke=True)
-    pdf.drawString(443, 623, "CEP: {}".format(str(orcamento['cliente']['cep'] or ' ')))
+    pdf.drawString(443, 623, "CEP: {}".format(
+        (str('{}-{}'.format(orcamento['cliente']['cep'][0:5], orcamento['cliente']['cep'][5:])) or ' ')))
     pdf.rect(440, 619, 80, 15, fill=False, stroke=True)
     pdf.drawString(485, 638, "Nº: {}".format(str(orcamento['cliente']['numero'] or ' ')))
     pdf.rect(480, 634, 76, 15, fill=False, stroke=True)
@@ -96,7 +126,7 @@ def generatePDF(orcamento: dict, listaFones: list[dict], listaServicos: list[dic
     else:
         pdf.drawString(245, 623, "Cidade: {}".format(orcamento['cliente']['cidade']['nome']))
         pdf.rect(39, 619, 203, 15, fill=False, stroke=True)
-        pdf.drawString(523, 623, "UF: {}".format(orcamento['cliente']['cidade']['uf']))
+        pdf.drawString(522, 623, "UF: {}".format(orcamento['cliente']['cidade']['uf']))
         pdf.rect(520, 619, 36, 15, fill=False, stroke=True)
     pdf.setFont('Helvetica-Bold', 12)
     pdf.drawString(253, 603, 'Dados do Veículo')
@@ -126,13 +156,13 @@ def generatePDF(orcamento: dict, listaFones: list[dict], listaServicos: list[dic
     pdf.setFont('Helvetica-Bold', 12)
     pdf.drawString(253, 548, 'Peças e Serviços')
     pecas = [
-        ['Nome da Peça','Unidade', 'Qtde', 'Valor'],
+        ['Nome da Peça', 'Unidade', 'Qtde', 'Valor'],
     ]
     servicos = [
         ['Nome do Serviço', 'Qtde', 'Valor']
     ]
     table_stylepecas = TableStyle([
-        ('FONTNAME', (0,0), (-1,0), 'Helvetica-Bold'),
+        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
         ('ALIGN', (1, 0), (-1, -1), 'LEFT'),
         ('ALIGN', (2, 0), (-1, -1), 'RIGHT'),
         ('ALIGN', (3, 1), (-1, -1), 'RIGHT'),
@@ -141,7 +171,7 @@ def generatePDF(orcamento: dict, listaFones: list[dict], listaServicos: list[dic
         ('BOX', (0, 0), (-1, -1), 1, colors.black),
     ])
     table_styleservico = TableStyle([
-        ('FONTNAME', (0,0), (-1,0), 'Helvetica-Bold'),
+        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
         ('ALIGN', (1, 0), (-1, -1), 'LEFT'),
         ('ALIGN', (1, 0), (-1, -1), 'RIGHT'),
         ('ALIGN', (2, 1), (-1, -1), 'RIGHT'),
@@ -253,7 +283,8 @@ def generatePDF(orcamento: dict, listaFones: list[dict], listaServicos: list[dic
                 f = Table(pecas, colWidths=[4.98 * inch, 0.7 * inch, 0.5 * inch, 1 * inch, 1 * inch],
                           rowHeights=0.2 * inch)
                 if tamanho_ser <= 1:
-                    s = Table(servicos[tamanho_ser:], colWidths=[5.68 * inch, 0.5 * inch, 1 * inch], rowHeights=0.2 * inch)
+                    s = Table(servicos[tamanho_ser:], colWidths=[5.68 * inch, 0.5 * inch, 1 * inch],
+                              rowHeights=0.2 * inch)
                     s.setStyle(table_styleservico)
                     f.setStyle(table_stylepecas)
                     f.wrapOn(pdf, width, height)
@@ -264,8 +295,10 @@ def generatePDF(orcamento: dict, listaFones: list[dict], listaServicos: list[dic
                     l -= 0.4 * inch
                     g -= 0.4 * inch
                 else:
-                    s = Table(servicos[0:tamanho_ser], colWidths=[5.68 * inch, 0.5 * inch, 1 * inch], rowHeights=0.2 * inch)
-                    s2 = Table(servicos[tamanho_ser:], colWidths=[5.68 * inch, 0.5 * inch, 1 * inch], rowHeights=0.2 * inch)
+                    s = Table(servicos[0:tamanho_ser], colWidths=[5.68 * inch, 0.5 * inch, 1 * inch],
+                              rowHeights=0.2 * inch)
+                    s2 = Table(servicos[tamanho_ser:], colWidths=[5.68 * inch, 0.5 * inch, 1 * inch],
+                               rowHeights=0.2 * inch)
                     s.setStyle(table_styleservico)
                     s2.setStyle(table_styleservicopag2)
                     f.setStyle(table_stylepecas)
