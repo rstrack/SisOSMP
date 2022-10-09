@@ -10,7 +10,7 @@ UNIDADES = ['CM', 'CM2', 'CM3', 'CX', 'DZ', 'G', 'KG',
 
 
 class TelaEditarOS(QtWidgets.QMainWindow):
-    retornarParaConsulta = QtCore.pyqtSignal(int)
+    paraTelaConsulta = QtCore.pyqtSignal(int)
     def __init__(self):
         super(TelaEditarOS, self).__init__()
         self.orcamentoCtrl = handleDeps.getDep('ORCAMENTOCTRL')
@@ -177,46 +177,39 @@ class TelaEditarOS(QtWidgets.QMainWindow):
         self.gridLayoutServicos.setColumnStretch(0, 6)
         self.gridLayoutServicos.setColumnStretch(1, 1)
         self.gridLayoutServicos.setColumnStretch(2, 1)
-        # frame
-        self.framevalor = QtWidgets.QFrame(self.framedados)
-        self.hlayoutvalor = QtWidgets.QHBoxLayout(self.framevalor)
-        self.hlayoutvalor.setContentsMargins(0, 0, 0, 0)
-        # data do orçamento
-        self.framedata = QtWidgets.QFrame(self.framevalor)
-        self.gridLayoutData = QtWidgets.QGridLayout(self.framedata)
-        self.labelData = QtWidgets.QLabel(self.framedata)
-        self.lineEditData = QtWidgets.QDateEdit(self.framedata)
+        #dados orcamento
+        self.groupBoxOrcamento = QtWidgets.QGroupBox(self.framedados)
+        self.gridLayoutOrcamento = QtWidgets.QGridLayout(self.groupBoxOrcamento)
+        self.labelData = QtWidgets.QLabel(self.groupBoxOrcamento)
+        self.lineEditData = QtWidgets.QDateEdit(self.groupBoxOrcamento)
         self.lineEditData.setFixedWidth(125)
         self.lineEditData.setCalendarPopup(True)
         self.lineEditData.setDateTime(QtCore.QDateTime.currentDateTime())
-        self.labelDataAprovacao = QtWidgets.QLabel(self.framedata)
-        self.lineEditDataAprovacao = QtWidgets.QDateEdit(self.framedata)
+        self.labelDataAprovacao = QtWidgets.QLabel(self.groupBoxOrcamento)
+        self.lineEditDataAprovacao = QtWidgets.QDateEdit(self.groupBoxOrcamento)
         self.lineEditDataAprovacao.setFixedWidth(125)
         self.lineEditDataAprovacao.setCalendarPopup(True)
         self.lineEditDataAprovacao.setDateTime(QtCore.QDateTime.currentDateTime())
-        self.gridLayoutData.addWidget(self.labelData, 0, 0, 1, 1)
-        self.gridLayoutData.addWidget(self.lineEditData, 1, 0, 1, 1)
-        self.gridLayoutData.addWidget(self.labelDataAprovacao, 0, 1, 1, 1)
-        self.gridLayoutData.addWidget(self.lineEditDataAprovacao, 1, 1, 1, 1)
-        self.hlayoutvalor.addWidget(self.framedata)
-        # valor
-        self.labelValorTotal1 = QtWidgets.QLabel(self.framevalor)
-        self.labelValorTotal1.setText("VALOR TOTAL: R$")
-        self.labelValorTotal2 = QtWidgets.QLabel(self.framevalor)
+        self.gridLayoutOrcamento.addWidget(self.labelData, 0, 0, 1, 1)
+        self.gridLayoutOrcamento.addWidget(self.lineEditData, 1, 0, 1, 1)
+        self.gridLayoutOrcamento.addWidget(self.labelDataAprovacao, 0, 1, 1, 1)
+        self.gridLayoutOrcamento.addWidget(self.lineEditDataAprovacao, 1, 1, 1, 1)
+        spacer = QtWidgets.QSpacerItem(20,20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
+        self.gridLayoutOrcamento.addItem(spacer, 0, 2, 1, 1)
+        self.labelValorTotal1 = QtWidgets.QLabel(self.groupBoxOrcamento)
+        #self.labelValorTotal1.setAlignment(QtCore.Qt.AlignmentFlag.AlignRight | QtCore.Qt.AlignmentFlag.AlignVCenter)
+        self.labelValorTotal1.setObjectName('boldText')
+        self.labelValorTotal2 = QtWidgets.QLabel(self.groupBoxOrcamento)
+        #self.labelValorTotal2.setAlignment(QtCore.Qt.AlignmentFlag.AlignLeft | QtCore.Qt.AlignmentFlag.AlignVCenter)
+        self.labelValorTotal2.setObjectName('boldText')
         self.labelValorTotal2.setText('0,00')
-        spacerItem = QtWidgets.QSpacerItem(
-            10, 10, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
-        self.hlayoutvalor.addItem(spacerItem)
-        self.hlayoutvalor.addWidget(self.labelValorTotal1)
-        self.hlayoutvalor.addWidget(self.labelValorTotal2)
-        self.gridLayoutGeral.addWidget(self.framevalor, 3, 0, 1, -1)
+        self.gridLayoutOrcamento.addWidget(self.labelValorTotal1, 0, 3, -1, 1)
+        self.gridLayoutOrcamento.addWidget(self.labelValorTotal2, 0, 4, -1, 1)
+        self.gridLayoutGeral.addWidget(self.groupBoxOrcamento, 4, 0, 1, -1)
         self.gridLayoutGeral.setRowStretch(2, 10)
         self.gridLayoutGeral.setRowStretch(3, 0)
-
-        self.frameobs = QtWidgets.QFrame(self.framedados)
-        self.gridLayoutGeral.addWidget(self.frameobs, 4, 0, 1, -1)
         # campo de observações
-        self.groupBoxObs = QtWidgets.QGroupBox(self.frameobs)
+        self.groupBoxObs = QtWidgets.QGroupBox(self.framedados)
         self.vlayout2 = QtWidgets.QVBoxLayout(self.groupBoxObs)
         self.textEdit = QtWidgets.QTextEdit(self.groupBoxObs)
         self.groupBoxObs.setMaximumHeight(80)
@@ -225,7 +218,7 @@ class TelaEditarOS(QtWidgets.QMainWindow):
         # botoes
         self.framebotoes = QtWidgets.QFrame(self.main_frame)
         self.hlayout4 = QtWidgets.QHBoxLayout(self.framebotoes)
-        self.labelLegenda = QtWidgets.QLabel(self.framevalor)
+        self.labelLegenda = QtWidgets.QLabel(self.framebotoes)
         self.hlayout4.addWidget(self.labelLegenda)
         spacerItem5 = QtWidgets.QSpacerItem(
             40, 10, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
@@ -299,6 +292,7 @@ class TelaEditarOS(QtWidgets.QMainWindow):
         self.groupBoxObs.setTitle(_translate("MainWindow", "Observações (Max. 200 caracteres)"))
         self.groupBoxPecas.setTitle(_translate("MainWindow", "Peças"))
         self.botaoAddPecas.setText(_translate("MainWindow", "+"))
+        self.labelValorTotal1.setText(_translate("MainWindow", "VALOR TOTAL: R$"))
 
     def addLinhaPeca(self):
         label1 = QtWidgets.QLabel(text="Peça*")
@@ -350,7 +344,7 @@ class TelaEditarOS(QtWidgets.QMainWindow):
     def addLinhaServico(self):
         label1 = QtWidgets.QLabel(text="Serviço*")
         label2 = QtWidgets.QLabel(text="Qtde*")
-        label3 = QtWidgets.QLabel(text="Valor*")
+        label3 = QtWidgets.QLabel(text="Valor un.*")
         lineedit1 = QtWidgets.QLineEdit()
         lineedit1.setCompleter(self.completerServico)
         lineedit2 = QtWidgets.QLineEdit()
@@ -471,12 +465,12 @@ class TelaEditarOS(QtWidgets.QMainWindow):
                 dict['descricao'] = desc.text()
                 if not qtde.text(): dict['qtde'] = 1
                 else:
-                    if not qtde.text().replace(',','').replace('.','').isdigit():
-                        raise Exception("Campo 'qtde' deve possuir apenas números!")
+                    if not (qtde.text().replace(',','',1).isnumeric() or qtde.text().replace('.','',1).isnumeric()):
+                        raise Exception("Campo 'qtde' inválido!")
                     dict['qtde'] = qtde.text().replace(',','.',1)
                 dict['un'] = un.currentText()
-                if not valor.text().replace(',','').replace('.','').isdigit():
-                    raise Exception("Campo 'valor' deve possuir apenas números!")
+                if not (valor.text().replace(',','',1).isnumeric() or valor.text().replace('.','',1).isnumeric()):
+                    raise Exception("Campo 'valor' inválido!")
                 dict['valor'] = valor.text().replace(',','.',1)
                 pecas.append(dict)
             elif desc.text() or valor.text():
@@ -492,18 +486,18 @@ class TelaEditarOS(QtWidgets.QMainWindow):
                 dict = {}
                 dict['descricao'] = desc.text()
                 if not qtde.text(): dict['qtde'] = 1
-                else: 
-                    if not qtde.text().replace(',','').replace('.','').isdigit():
-                        raise Exception("Campo 'qtde' deve possuir apenas números!")
+                else:
+                    if not (qtde.text().replace(',','',1).isnumeric() or qtde.text().replace('.','',1).isnumeric()):
+                        raise Exception("Campo 'qtde' inválido!")
                     dict['qtde'] = qtde.text().replace(',','.',1)
-                if not valor.text().replace(',','').replace('.','').isdigit():
-                    raise Exception("Campo 'valor' deve possuir apenas números!")
+                if not (valor.text().replace(',','',1).isnumeric() or valor.text().replace('.','',1).isnumeric()):
+                    raise Exception("Campo 'valor' inválido!")
                 dict['valor'] = valor.text().replace(',','.',1)
                 servicos.append(dict)
             elif desc.text() or valor.text():
                 raise Exception('Preencha todos os campos de cada serviço!')
         if linhasValidas==0:
-            raise Exception('O orçamento precisa de pelo menos um serviço realizado!')
+            raise Exception('A ordem de serviço precisa de pelo menos um serviço realizado!')
         return servicos
 
     def getDadosOrcamento(self):
@@ -519,16 +513,33 @@ class TelaEditarOS(QtWidgets.QMainWindow):
     def setValor(self):
         self.valorTotal=0.00
         for _,qtde,_,valor in self.linhasPeca:
-            if valor.text():
-                if qtde.text():
-                    self.valorTotal+=float(valor.text().replace(',','.',1))*float(qtde.text().replace(',','.',1))
-                else: self.valorTotal+=float(valor.text().replace(',','.',1))
+            if not valor.text():
+                continue
+            if not (valor.text().replace(',','',1).isnumeric() or valor.text().replace('.','',1).isnumeric()):
+                self.labelValorTotal2.setText('0,00')
+                return
+            if qtde.text():
+                if not (qtde.text().replace(',','',1).isnumeric() or qtde.text().replace('.','',1).isnumeric()):
+                    self.labelValorTotal2.setText('0,00')
+                    return 
+                self.valorTotal+=float(valor.text().replace(',','.',1))*float(qtde.text().replace(',','.',1))
+            else:
+                self.valorTotal+=float(valor.text().replace(',','.',1))
+
         for _,qtde,valor in self.linhasServico:
-            if valor.text():
-                if qtde.text():
-                    self.valorTotal+=float(valor.text().replace(',','.',1))*float(qtde.text().replace(',','.',1))
-                else: self.valorTotal+=float(valor.text().replace(',','.',1))
-        self.labelValorTotal2.setText('{:.2f}'.format(self.valorTotal).replace('.',',',1))
+            if not valor.text():
+                continue
+            if not (valor.text().replace(',','',1).isnumeric() or valor.text().replace('.','',1).isnumeric()):
+                self.labelValorTotal2.setText('0,00')
+                return
+            if qtde.text():
+                if not (qtde.text().replace(',','',1).isnumeric() or qtde.text().replace('.','',1).isnumeric()):
+                    self.labelValorTotal2.setText('0,00')
+                    return 
+                self.valorTotal+=float(valor.text().replace(',','.',1))*float(qtde.text().replace(',','.',1))
+            else:
+                self.valorTotal+=float(valor.text().replace(',','.',1))
+        self.labelValorTotal2.setText(('{:.2f}'.format(self.valorTotal)).replace('.',',',1))
 
     def buscarPeca(self, lineEditDesc, comboBoxUn, lineEditValor):
         qPeca = self.pecaCtrl.getPecaByDescricao(lineEditDesc.text())
@@ -545,6 +556,7 @@ class TelaEditarOS(QtWidgets.QMainWindow):
 
     def renderEditar(self, id):
         self.resetarTela()
+        self.setCompleters()
         self.orcamentoID = id
         orcamento = self.orcamentoCtrl.getOrcamento(id)
         fones = self.clienteCtrl.listarFones(orcamento['cliente'])
@@ -593,9 +605,9 @@ class TelaEditarOS(QtWidgets.QMainWindow):
                 raise Exception(r)
             msg = QtWidgets.QMessageBox()
             msg.setWindowTitle("Aviso")
-            msg.setText("Orçamento editado com sucesso!")
+            msg.setText("Ordem de serviço editada com sucesso!")
             msg.exec()
-            self.retornarParaConsulta.emit(1)
+            self.paraTelaConsulta.emit(1)
             #RESETA DADOS DA TELA
             self.clienteSelected = None
             self.veiculoSelected = None
@@ -617,7 +629,7 @@ class TelaEditarOS(QtWidgets.QMainWindow):
         n.setFixedWidth(60)
         msgBox.exec()
         if msgBox.clickedButton() == y:
-            self.retornarParaConsulta.emit(1)
+            self.paraTelaConsulta.emit(1)
 
     def limparCampos(self):
         for lineedit in self.framedados.findChildren(QtWidgets.QLineEdit):

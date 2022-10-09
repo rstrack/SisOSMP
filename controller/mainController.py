@@ -31,6 +31,7 @@ from controller.clienteController import ClienteController
 from controller.cidadeController import CidadeController
 from controller.orcamentoController import OrcamentoController
 
+#Classe que instancia views e controllers e faz conexão entre objetos
 class MainController():
 
     def __init__(self):
@@ -122,11 +123,6 @@ class MainController():
         self.telaInicio.botao_orcamentos_2.clicked.connect(lambda: self.telaInicio.stackedWidget.setCurrentWidget(self.telaConsultaOrcamento))
         self.telaInicio.botao_os.clicked.connect(lambda: self.telaInicio.stackedWidget.setCurrentWidget(self.telaConsultaOS))
         
-        # conectando atualizações de janelas
-        self.telaInicio.botao_clientes.clicked.connect(self.telaCadastroCliente.setMarcas)
-        self.telaInicio.botao_orcamentos.clicked.connect(self.telaCadastroOrcamento.setMarcas)
-        self.telaInicio.botao_orcamentos.clicked.connect(self.telaCadastroOrcamento.setCompleters)
-        
         self.telaInicio.stackedWidget.currentChanged.connect(self.atualizarJanelas)
 
         # conectando seleção de edição com respectivas telas de edição
@@ -144,12 +140,12 @@ class MainController():
             lambda: self.consultaParaEditar(self.telaEditarOS, self.telaEditarOS.renderEditar, self.telaConsultaOS.editarOS))
 
         # retorno das edições para tela de consulta em caso de cancelamento ou conclusão da operação
-        self.telaEditarPeca.retornarParaConsulta.connect(lambda: self.telaInicio.stackedWidget.setCurrentWidget(self.telaConsultaPeca))
-        self.telaEditarServico.retornarParaConsulta.connect(lambda: self.telaInicio.stackedWidget.setCurrentWidget(self.telaConsultaServico))
-        self.telaEditarCliente.retornarParaConsulta.connect(lambda: self.telaInicio.stackedWidget.setCurrentWidget(self.telaConsultaCliente))
-        self.telaEditarVeiculo.retornarParaConsulta.connect(lambda: self.telaInicio.stackedWidget.setCurrentWidget(self.telaConsultaVeiculo))
-        self.telaEditarOrcamento.retornarParaConsulta.connect(lambda: self.telaInicio.stackedWidget.setCurrentWidget(self.telaConsultaOrcamento))
-        self.telaEditarOS.retornarParaConsulta.connect(lambda: self.telaInicio.stackedWidget.setCurrentWidget(self.telaConsultaOS))
+        self.telaEditarPeca.paraTelaConsulta.connect(lambda: self.telaInicio.stackedWidget.setCurrentWidget(self.telaConsultaPeca))
+        self.telaEditarServico.paraTelaConsulta.connect(lambda: self.telaInicio.stackedWidget.setCurrentWidget(self.telaConsultaServico))
+        self.telaEditarCliente.paraTelaConsulta.connect(lambda: self.telaInicio.stackedWidget.setCurrentWidget(self.telaConsultaCliente))
+        self.telaEditarVeiculo.paraTelaConsulta.connect(lambda: self.telaInicio.stackedWidget.setCurrentWidget(self.telaConsultaVeiculo))
+        self.telaEditarOrcamento.paraTelaConsulta.connect(lambda: self.telaInicio.stackedWidget.setCurrentWidget(self.telaConsultaOrcamento))
+        self.telaEditarOS.paraTelaConsulta.connect(lambda: self.telaInicio.stackedWidget.setCurrentWidget(self.telaConsultaOS))
 
     # função que passa da tela de consulta para a tela de edição da respectiva entidade, passando id a ser alterado como parametro
     def consultaParaEditar(self, pagina, render, param):

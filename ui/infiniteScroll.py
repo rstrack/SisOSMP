@@ -159,6 +159,3 @@ class AlignDelegate(QtWidgets.QStyledItemDelegate):
     def initStyleOption(self, option, index):
         super(AlignDelegate, self).initStyleOption(option, index)
         option.displayAlignment = self.alignmentFlag
-
-if __name__=='__main__':
-    pass

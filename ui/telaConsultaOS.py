@@ -54,9 +54,9 @@ class TelaConsultaOS(QtWidgets.QMainWindow):
         self.botaoEditar = QtWidgets.QPushButton(self.framebotoes)
         self.botaoEditar.setFixedSize(100, 25)
         self.hlayoutbotoes.addWidget(self.botaoEditar)
-        self.botaoImprimir = QtWidgets.QPushButton(self.framebotoes)
-        self.botaoImprimir.setFixedSize(100, 25)
-        self.hlayoutbotoes.addWidget(self.botaoImprimir)
+        self.botaoGerarPDF = QtWidgets.QPushButton(self.framebotoes)
+        self.botaoGerarPDF.setFixedSize(100, 25)
+        self.hlayoutbotoes.addWidget(self.botaoGerarPDF)
         self.model = QtGui.QStandardItemModel()
         self.filter.setSourceModel(self.model)
         self.filter.setFilterKeyColumn(-1)
@@ -68,14 +68,14 @@ class TelaConsultaOS(QtWidgets.QMainWindow):
         self.retranslateUi()
         self.selectionModel = self.tabela.selectionModel()
         self.botaoRefresh.clicked.connect(self.listarOS)
-        self.botaoImprimir.clicked.connect(self.imprimir)
+        self.botaoGerarPDF.clicked.connect(self.imprimir)
         self.listarOS()
 
     def retranslateUi(self):
         _translate = QtCore.QCoreApplication.translate
         self.setWindowTitle(_translate("MainWindow", "Busca"))
         self.botaoEditar.setText(_translate("MainWindow", "Editar"))
-        self.botaoImprimir.setText(_translate("MainWindow", "Imprimir"))
+        self.botaoGerarPDF.setText(_translate("MainWindow", "Gerar PDF"))
 
     def scrolled(self, value):
         if value == self.tabela.verticalScrollBar().maximum():

@@ -2,7 +2,7 @@ from PyQt6 import QtCore, QtWidgets, QtGui
 from container import handleDeps
 
 class TelaEditarServico(QtWidgets.QMainWindow):
-    retornarParaConsulta = QtCore.pyqtSignal(int)
+    paraTelaConsulta = QtCore.pyqtSignal(int)
     def __init__(self):
         super(TelaEditarServico, self).__init__()
         self.servicoCtrl = handleDeps.getDep('SERVICOCTRL')
@@ -98,7 +98,7 @@ class TelaEditarServico(QtWidgets.QMainWindow):
             msg.setIcon(QtWidgets.QMessageBox.Icon.Information)
             msg.setText(f"Serviço editado com sucesso!")
             msg.exec()
-            self.retornarParaConsulta.emit(1)
+            self.paraTelaConsulta.emit(1)
         except Exception as e:
             msg = QtWidgets.QMessageBox()
             msg.setWindowIcon(QtGui.QIcon('./resources/logo-icon.png'))
@@ -117,7 +117,7 @@ class TelaEditarServico(QtWidgets.QMainWindow):
         n.setFixedWidth(60)
         msgBox.exec()
         if msgBox.clickedButton() == y:
-            self.retornarParaConsulta.emit(1)
+            self.paraTelaConsulta.emit(1)
 
     def renderEditar(self, id):
         self.servicoID = id

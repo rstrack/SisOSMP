@@ -7,7 +7,7 @@ SIGLAESTADOS = ['AC', 'AL', 'AP', 'AM', 'BA', 'CE', 'DF', 'ES', 'GO', 'MA', 'MT'
 
 
 class TelaEditarVeiculo(QtWidgets.QMainWindow):
-    retornarParaConsulta = QtCore.pyqtSignal(int)
+    paraTelaConsulta = QtCore.pyqtSignal(int)
     def __init__(self):
         super(TelaEditarVeiculo, self).__init__()
         self.clienteCtrl = handleDeps.getDep('CLIENTECTRL')
@@ -143,7 +143,7 @@ class TelaEditarVeiculo(QtWidgets.QMainWindow):
             msg.setWindowTitle("Aviso")
             msg.setText('Veiculo editado com sucesso!')
             msg.exec()
-            self.retornarParaConsulta.emit(1)
+            self.paraTelaConsulta.emit(1)
         except Exception as e:
             msg = QtWidgets.QMessageBox()
             msg.setWindowTitle("Erro")
@@ -161,7 +161,7 @@ class TelaEditarVeiculo(QtWidgets.QMainWindow):
         msgBox.exec()
         if msgBox.clickedButton() == y:
             self.VeiculoID = None
-            self.retornarParaConsulta.emit(1)
+            self.paraTelaConsulta.emit(1)
     
     def limparCampos(self):
         for lineedit in self.framedados.findChildren(QtWidgets.QLineEdit):

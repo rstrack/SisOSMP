@@ -372,7 +372,7 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
         self.labelKm.setText(_translate("MainWindow", "Km*"))
         self.groupBoxServicos.setTitle(_translate("MainWindow", "Serviços"))
         self.botaoAddServicos.setText(_translate("MainWindow", "+"))
-        self.labelValorServico.setText(_translate("MainWindow", "Valor*"))
+        self.labelValorServico.setText(_translate("MainWindow", "Valor un.*"))
         self.labelNomeServico.setText(_translate("MainWindow", "Serviço*"))
         self.labelQtdeS.setText(_translate("MainWindow", "Qtde*"))
         #self.labelLegenda.setText(_translate("MainWindow", "* Campos Obrigatórios"))
@@ -382,14 +382,14 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
         self.labelUn.setText(_translate("MainWindow", "Un*"))
         self.botaoAddPecas.setText(_translate("MainWindow", "+"))
         self.labelNomePeca.setText(_translate("MainWindow", "Peça*"))
-        self.labelValorPeca.setText("Valor*")
+        self.labelValorPeca.setText(_translate("MainWindow", "Valor un.*"))
         self.labelValorTotal1.setText(_translate("MainWindow", "VALOR TOTAL: R$"))
 
     def addLinhaPeca(self):
         label1 = QtWidgets.QLabel(text="Peça*")
         label2 = QtWidgets.QLabel(text="Qtde*")
         label3 = QtWidgets.QLabel(text="Un*")
-        label4 = QtWidgets.QLabel(text="Valor*")
+        label4 = QtWidgets.QLabel(text="Valor un.*")
         lineedit1 = QtWidgets.QLineEdit()
         lineedit1.setCompleter(self.completerPeca)
         lineedit2 = QtWidgets.QLineEdit()
@@ -444,7 +444,7 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
     def addLinhaServico(self):
         label1 = QtWidgets.QLabel(text="Serviço*")
         label2 = QtWidgets.QLabel(text="Qtde*")
-        label3 = QtWidgets.QLabel(text="Valor*")
+        label3 = QtWidgets.QLabel(text="Valor un.*")
         lineedit1 = QtWidgets.QLineEdit()
         lineedit1.setCompleter(self.completerServico)
         lineedit2 = QtWidgets.QLineEdit()
@@ -682,11 +682,11 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
                 if not qtde.text(): dict['qtde'] = 1
                 else:
                     if not (qtde.text().replace(',','',1).isnumeric() or qtde.text().replace('.','',1).isnumeric()):
-                        raise Exception("Campo 'qtde' deve possuir apenas números!")
+                        raise Exception("Campo 'qtde' inválido!")
                     dict['qtde'] = qtde.text().replace(',','.',1)
                 dict['un'] = un.currentText()
                 if not (valor.text().replace(',','',1).isnumeric() or valor.text().replace('.','',1).isnumeric()):
-                    raise Exception("Campo 'valor' deve possuir apenas números!")
+                    raise Exception("Campo 'valor' inválido!")
                 dict['valor'] = valor.text().replace(',','.',1)
                 pecas.append(dict)
             elif desc.text() or valor.text():
@@ -704,10 +704,10 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
                 if not qtde.text(): dict['qtde'] = 1
                 else:
                     if not (qtde.text().replace(',','',1).isnumeric() or qtde.text().replace('.','',1).isnumeric()):
-                        raise Exception("Campo 'qtde' deve possuir apenas números!")
+                        raise Exception("Campo 'qtde' inválido!")
                     dict['qtde'] = qtde.text().replace(',','.',1)
                 if not (valor.text().replace(',','',1).isnumeric() or valor.text().replace('.','',1).isnumeric()):
-                    raise Exception("Campo 'valor' deve possuir apenas números!")
+                    raise Exception("Campo 'valor' inválido!")
                 dict['valor'] = valor.text().replace(',','.',1)
                 servicos.append(dict)
             elif desc.text() or valor.text():

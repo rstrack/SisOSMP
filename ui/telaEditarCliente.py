@@ -6,7 +6,7 @@ SIGLAESTADOS = ['AC', 'AL', 'AP', 'AM', 'BA', 'CE', 'DF', 'ES', 'GO', 'MA', 'MT'
 
 
 class TelaEditarCliente(QtWidgets.QMainWindow):
-    retornarParaConsulta = QtCore.pyqtSignal(int)
+    paraTelaConsulta = QtCore.pyqtSignal(int)
     def __init__(self):
         super(TelaEditarCliente, self).__init__()
         self.clienteCtrl = handleDeps.getDep('CLIENTECTRL')
@@ -163,7 +163,7 @@ class TelaEditarCliente(QtWidgets.QMainWindow):
             msg.setWindowTitle("Aviso")
             msg.setText('Cliente editado com sucesso!')
             msg.exec()
-            self.retornarParaConsulta.emit(1)
+            self.paraTelaConsulta.emit(1)
         except Exception as e:
             msg = QtWidgets.QMessageBox()
             msg.setWindowTitle("Erro")
@@ -180,7 +180,7 @@ class TelaEditarCliente(QtWidgets.QMainWindow):
         n.setFixedWidth(60)
         msgBox.exec()
         if msgBox.clickedButton() == y:
-            self.retornarParaConsulta.emit(1)
+            self.paraTelaConsulta.emit(1)
 
     def limparCampos(self):
         for lineedit in self.framedados.findChildren(QtWidgets.QLineEdit):
@@ -297,8 +297,27 @@ class TelaEditarCliente(QtWidgets.QMainWindow):
             self.labelDocumento.setText('CNPJ')
         else: self.labelDocumento.setText('Documento')
 
+    def setMarcas(self):
+        self.comboBoxMarca.clear()
+        marcas = self.marcaCtrl.listarMarcas()
+        for marca in marcas:
+            self.comboBoxMarca.addItem(marca['nome'])
+        self.comboBoxMarca.setCurrentIndex(-1)
+
+    def setCompleters(self):
+        cidades = self.cidadeCtrl.listarCidades()
+        listaCidades = []
+        if cidades:
+            for cidade in cidades:
+                listaCidades.append(cidade['nome'])
+        modelCidades = QtCore.QStringListModel()
+        modelCidades.setStringList(listaCidades)
+        self.completerCidade.setModel(modelCidades)
+
     def renderEditar(self, id):
         self.limparCampos()
+        self.setMarcas()
+        self.setCompleters()
         self.clienteID = id
         cliente = self.clienteCtrl.getCliente(id)
         fones = self.clienteCtrl.listarFones(cliente)

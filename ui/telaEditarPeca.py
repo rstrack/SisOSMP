@@ -4,7 +4,7 @@ from ui.telaCadastroOrcamento import UNIDADES
 
 
 class TelaEditarPeca(QtWidgets.QMainWindow):
-    retornarParaConsulta = QtCore.pyqtSignal(int)
+    paraTelaConsulta = QtCore.pyqtSignal(int)
     def __init__(self):
         super(TelaEditarPeca, self).__init__()
         self.pecaCtrl = handleDeps.getDep('PECACTRL')
@@ -109,7 +109,7 @@ class TelaEditarPeca(QtWidgets.QMainWindow):
             msg.setIcon(QtWidgets.QMessageBox.Icon.Information)
             msg.setText(f"Peça editada com sucesso!")
             msg.exec()
-            self.retornarParaConsulta.emit(1)
+            self.paraTelaConsulta.emit(1)
         except Exception as e:
             msg = QtWidgets.QMessageBox()
             msg.setWindowIcon(QtGui.QIcon('./resources/logo-icon.png'))
@@ -128,7 +128,7 @@ class TelaEditarPeca(QtWidgets.QMainWindow):
         n.setFixedWidth(60)
         msgBox.exec()
         if msgBox.clickedButton() == y:
-            self.retornarParaConsulta.emit(1)
+            self.paraTelaConsulta.emit(1)
 
     def renderEditar(self, id):
         self.pecaID = id

@@ -48,19 +48,6 @@ class ClienteController():
                 transaction.rollback()
                 return e
 
-    '''def salvarFones(self, cliente, fones:list):
-        with db.atomic() as transaction:
-            try:
-                _fones = []
-                for fone in fones:
-                    if fone != None:
-                        f = 
-                        _fones.append(self.foneRep.save(cliente, fone))
-                return _fones
-            except Exception as e:
-                transaction.rollback()
-                return e'''
-
     #salva dados do cliente, telefones, veiculo e vincula-os
     def salvarClienteVeiculo(self, dadosCliente:dict, dadosFone:list, dadosVeiculo:dict):
         with db.atomic() as transaction:
@@ -239,6 +226,3 @@ class ClienteController():
             except Exception as e:
                 transaction.rollback()
                 return e
-
-
-    

@@ -54,22 +54,22 @@ class TelaConsultaOrcamento(QtWidgets.QMainWindow):
         self.botaoEditar = QtWidgets.QPushButton(self.framebotoes)
         self.botaoEditar.setFixedSize(100, 25)
         self.hlayoutbotoes.addWidget(self.botaoEditar)
-        self.botaoImprimir = QtWidgets.QPushButton(self.framebotoes)
-        self.botaoImprimir.setFixedSize(100, 25)
-        self.hlayoutbotoes.addWidget(self.botaoImprimir)
+        self.botaoGerarPDF = QtWidgets.QPushButton(self.framebotoes)
+        self.botaoGerarPDF.setFixedSize(100, 25)
+        self.hlayoutbotoes.addWidget(self.botaoGerarPDF)
         self.filter.setFilterKeyColumn(-1)
         self.lineEditBusca.textChanged.connect(self.filter.setFilterRegularExpression)
         self.setCentralWidget(self.mainwidget)
         self.retranslateUi()
         self.botaoRefresh.clicked.connect(self.listarOrcamentos)
-        self.botaoImprimir.clicked.connect(self.imprimir)
+        self.botaoGerarPDF.clicked.connect(self.gerarPDF)
         self.listarOrcamentos()
 
     def retranslateUi(self):
         _translate = QtCore.QCoreApplication.translate
         self.setWindowTitle(_translate("MainWindow", "Busca"))
         self.botaoEditar.setText(_translate("MainWindow", "Editar"))
-        self.botaoImprimir.setText(_translate("MainWindow", "Imprimir"))
+        self.botaoGerarPDF.setText(_translate("MainWindow", "Gerar PDF"))
 
     def scrolled(self, value):
         if value == self.tabela.verticalScrollBar().maximum():
@@ -137,7 +137,7 @@ class TelaConsultaOrcamento(QtWidgets.QMainWindow):
                 id = self.tabela.model().index(self.linha[0].row(), 0).data()
         
         
-    def imprimir(self):
+    def gerarPDF(self):
         self.linha = self.tabela.selectionModel().selectedRows()
         if self.linha:
             id = self.tabela.model().index(self.linha[0].row(), 0).data()
