@@ -14,7 +14,6 @@ import phonenumbers
 
 locale.setlocale(locale.LC_ALL, 'pt_BR.UTF-8')
 
-
 # DICT DO ORÇAMENTO GERADO AO SALVAR/EDITAR
 # Configurações para geração do pdf
 def tabelas_pos(self, orcamento: dict, l, g):
@@ -86,20 +85,21 @@ def generatePDF(orcamento: dict, listaFones: list[dict], listaServicos: list[dic
     pdf.rect(39, 704, 517, 15, fill=False, stroke=True)
     pdf.drawString(44, 668, 'Nome: {}'.format(orcamento['cliente']['nome']))
     pdf.rect(39, 664, 517, 15, fill=False, stroke=True)
-    if orcamento['cliente']['tipo'] == '0':
-        documento = 'CPF'
-        ndoc = str(orcamento['cliente']['documento'])
-        cpf = "{}.{}.{}-{}".format(ndoc[0:3], ndoc[3:6], ndoc[6:9], ndoc[9:])
-        pdf.drawString(44, 653, "{}: {}".format(documento, cpf or ''))
-
-    elif orcamento['cliente']['tipo'] == '1':
-        documento = 'CNPJ'
-        ndoc = str(orcamento['cliente']['documento'])
-        cnpj = "{}.{}.{}/{}-{}".format(ndoc[0:2], ndoc[2:5], ndoc[5:8], ndoc[8:12], ndoc[12:])
-        pdf.drawString(44, 653, "{}: {}".format(documento, cnpj or ''))
-    else:
-        documento = 'Documento'
-        pdf.drawString(44, 653, "{}: {}".format(documento, orcamento['cliente']['documento'] or ''))
+    if orcamento['cliente']['documento'] != None:
+        if orcamento['cliente']['tipo'] == '0':
+            documento = 'CPF'
+            ndoc = str(orcamento['cliente']['documento'])
+            cpf = "{}.{}.{}-{}".format(ndoc[0:3], ndoc[3:6], ndoc[6:9], ndoc[9:])
+            pdf.drawString(44, 653, "{}: {}".format(documento, cpf or ''))
+        elif orcamento['cliente']['tipo'] == '1':
+            documento = 'CNPJ'
+            ndoc = str(orcamento['cliente']['documento'])
+            cnpj = "{}.{}.{}/{}-{}".format(ndoc[0:2], ndoc[2:5], ndoc[5:8], ndoc[8:12], ndoc[12:])
+            pdf.drawString(44, 653, "{}: {}".format(documento, cnpj or ''))
+        else:
+            documento = 'Documento'
+            pdf.drawString(44, 653, "{}: {}".format(documento, orcamento['cliente']['documento'] or ''))
+    else: pdf.drawString(44, 653, "Documento:")
     pdf.rect(39, 649, 172.3, 15, fill=False, stroke=True)
     pdf.drawString(216.3, 653, "Fone: {}".format(formatar_fone(listaFones[0]['fone'])))
     if len(listaFones) == 2:
