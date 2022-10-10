@@ -1,4 +1,5 @@
 from PyQt6 import QtCore, QtGui, QtWidgets
+from telaClienteVeiculo import TelaClienteVeiculo
 from ui.infiniteScroll import AlignDelegate, InfiniteScrollTableModel
 from container import handleDeps
 from flatdict import FlatDict
@@ -59,6 +60,9 @@ class TelaConsultaCliente(QtWidgets.QMainWindow):
         self.botaoEditar = QtWidgets.QPushButton(self.framebotoes)
         self.botaoEditar.setFixedSize(100, 25)
         self.hlayoutbotoes.addWidget(self.botaoEditar)
+        self.botaoVeiculos = QtWidgets.QPushButton(self.framebotoes)
+        self.botaoVeiculos.setFixedSize(100, 25)
+        self.hlayoutbotoes.addWidget(self.botaoVeiculos)
         self.botaoExcluir = QtWidgets.QPushButton(self.framebotoes)
         self.botaoExcluir.setObjectName('excluir')
         self.botaoExcluir.setFixedSize(100, 25)
@@ -71,6 +75,7 @@ class TelaConsultaCliente(QtWidgets.QMainWindow):
         self.retranslateUi()
         self.listarClientes()
         self.botaoRefresh.clicked.connect(self.listarClientes)
+        self.botaoVeiculos.clicked.connect(self.veiculos)
         self.botaoExcluir.clicked.connect(self.excluirCliente)
         self.tabela.verticalScrollBar().valueChanged.connect(self.scrolled)
         self.tabela.verticalScrollBar().actionTriggered.connect(self.scrolled)
@@ -79,6 +84,7 @@ class TelaConsultaCliente(QtWidgets.QMainWindow):
         _translate = QtCore.QCoreApplication.translate
         self.setWindowTitle(_translate("MainWindow", "Busca"))
         self.botaoEditar.setText(_translate("MainWindow", "Editar"))
+        self.botaoVeiculos.setText(_translate("MainWindow", "Veiculos"))
         self.botaoExcluir.setText(_translate("MainWindow", "Excluir"))
 
     def scrolled(self, value):
@@ -102,14 +108,14 @@ class TelaConsultaCliente(QtWidgets.QMainWindow):
             else: clientes[self.linhasCarregadas]['tipo'] = 'ESTRANGEIRO'
             if clientes[self.linhasCarregadas]['cidade'] == None:
                 clientes[self.linhasCarregadas]['cidade'] = {'nome':None, 'uf':None}
-            queryFones = self.clienteCtrl.listarFones(clientes[self.linhasCarregadas])
+            queryFones = self.clienteCtrl.listarFones(clientes[self.linhasCarregadas]['idCliente'])
             if queryFones:
                 fones = []
                 for fone in queryFones:
                     fones.append(fone['fone'])
                 clientes[self.linhasCarregadas]['fones'] = (', '.join(fones))
             else: clientes[self.linhasCarregadas]['fones'] = ''
-            queryVeiculo = self.clienteCtrl.listarVeiculos(clientes[self.linhasCarregadas])
+            queryVeiculo = self.clienteCtrl.listarVeiculos(clientes[self.linhasCarregadas]['idCliente'])
             if queryVeiculo:
                 nomes = []
                 for veiculo in queryVeiculo:
@@ -139,8 +145,9 @@ class TelaConsultaCliente(QtWidgets.QMainWindow):
             header = self.tabela.horizontalHeader()
             header.setSectionResizeMode(
                 QtWidgets.QHeaderView.ResizeMode.ResizeToContents)
-            header.setSectionResizeMode(10, 
-                QtWidgets.QHeaderView.ResizeMode.Stretch)
+            header.setSectionResizeMode(9, 
+                QtWidgets.QHeaderView.ResizeMode.Interactive)
+            header.setStretchLastSection(True)
             self.model.setHeaderAlignment(5, QtCore.Qt.AlignmentFlag.AlignRight | QtCore.Qt.AlignmentFlag.AlignVCenter)
 
     def editarCliente(self):
@@ -180,6 +187,14 @@ class TelaConsultaCliente(QtWidgets.QMainWindow):
             msg.setText(str(e))
             msg.exec()
 
+    def veiculos(self):
+        linha = self.tabela.selectionModel().selectedRows()
+        if linha:
+            id = self.tabela.model().index(linha[0].row(), 0).data()
+            self.telaClienteVeiculo = TelaClienteVeiculo()
+            self.telaClienteVeiculo.renderVeiculos(id)
+            self.telaClienteVeiculo.show()
+
         
 
 if __name__ == "__main__":
@@ -190,7 +205,7 @@ if __name__ == "__main__":
     ui.setupUi()
     ui.show()
 
-    style = open('./ui/styles.qss').read()
+    style = open('./resources/styles.qss').read()
     app.setStyleSheet(style)
 
     sys.exit(app.exec())

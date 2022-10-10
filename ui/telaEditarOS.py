@@ -386,13 +386,13 @@ class TelaEditarOS(QtWidgets.QMainWindow):
         self.lineEditNomeCliente.setText(nome)
         if documento:
             self.lineEditDocumento.setText(documento)
-            if tipo == 0:
+            if tipo == '0':
                 self.labelDocumento.setText("CPF")
                 self.comboBoxPessoa.setCurrentIndex(0)
-            if tipo == 1:
+            elif tipo == '1':
                 self.labelDocumento.setText("CNPJ")
                 self.comboBoxPessoa.setCurrentIndex(1)
-            if tipo == 1:
+            else:
                 self.labelDocumento.setText("Documento")
                 self.comboBoxPessoa.setCurrentIndex(2)
         self.lineEditFone1.setText(tel1)
@@ -559,7 +559,7 @@ class TelaEditarOS(QtWidgets.QMainWindow):
         self.setCompleters()
         self.orcamentoID = id
         orcamento = self.orcamentoCtrl.getOrcamento(id)
-        fones = self.clienteCtrl.listarFones(orcamento['cliente'])
+        fones = self.clienteCtrl.listarFones(orcamento['cliente']['idCliente'])
         itemPecas = self.orcamentoCtrl.listarItemPecas(orcamento['idOrcamento'])
         itemServicos = self.orcamentoCtrl.listarItemServicos(orcamento['idOrcamento'])
         if itemPecas:

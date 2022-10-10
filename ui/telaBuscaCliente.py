@@ -1,5 +1,6 @@
 from PyQt6 import QtCore, QtGui, QtWidgets
 from container import handleDeps
+from telaClienteVeiculo import TelaClienteVeiculo
 
 class TelaBuscaCliente(QtWidgets.QWidget):
     def __init__(self, MainWindow):
@@ -45,6 +46,9 @@ class TelaBuscaCliente(QtWidgets.QWidget):
         self.botaoSelecionar = QtWidgets.QPushButton(self.framebotoes)
         self.botaoSelecionar.setFixedSize(100, 25)
         self.hlayoutbotoes.addWidget(self.botaoSelecionar)
+        self.botaoVeiculos = QtWidgets.QPushButton(self.framebotoes)
+        self.botaoVeiculos.setFixedSize(100, 25)
+        self.hlayoutbotoes.addWidget(self.botaoVeiculos)
         self.model = QtGui.QStandardItemModel()
         self.filter.setSourceModel(self.model)
         listaHeader = ['ID', 'Nome', 'Documento', 'Veículos']
@@ -57,12 +61,14 @@ class TelaBuscaCliente(QtWidgets.QWidget):
         MainWindow.setCentralWidget(self.mainwidget)
         self.retranslateUi(MainWindow)
         self.listarClientes()
+        self.botaoVeiculos.clicked.connect(self.veiculos)
 
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "Selecionar Cliente"))
         self.botaoSelecionar.setText(_translate("MainWindow", "Selecionar"))
+        self.botaoVeiculos.setText(_translate("MainWindow", "Veículos"))
 
     def listarClientes(self):
         clientes = self.clienteCtrl.listarClientes()
@@ -83,7 +89,7 @@ class TelaBuscaCliente(QtWidgets.QWidget):
             item.setTextAlignment(
                 QtCore.Qt.AlignmentFlag.AlignHCenter | QtCore.Qt.AlignmentFlag.AlignVCenter)
             self.model.setItem(row, 2, item)
-            queryVeiculo = self.clienteCtrl.listarVeiculos(cliente)
+            queryVeiculo = self.clienteCtrl.listarVeiculos(cliente['idCliente'])
             nomes = []
             if queryVeiculo:
                 for veiculo in queryVeiculo:
@@ -97,6 +103,14 @@ class TelaBuscaCliente(QtWidgets.QWidget):
         header.setSectionResizeMode(
             0, QtWidgets.QHeaderView.ResizeMode.ResizeToContents)
         header.setStretchLastSection(True)
+
+    def veiculos(self):
+        linha = self.tabela.selectionModel().selectedRows()
+        if linha:
+            id = self.tabela.model().index(linha[0].row(), 0).data()
+            self.telaClienteVeiculo = TelaClienteVeiculo()
+            self.telaClienteVeiculo.renderVeiculos(id)
+            self.telaClienteVeiculo.show()
 
 if __name__ == "__main__":
     import sys

@@ -149,6 +149,6 @@ if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
     ui = TelaEditarPeca()
     ui.show()
-    style = open('./ui/styles.qss').read()
+    style = open('./resources/styles.qss').read()
     app.setStyleSheet(style)
     sys.exit(app.exec())

@@ -807,7 +807,7 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
 
     def gerarPDF(self):
         orcamento = self.salvarOrcamento()
-        fones = self.clienteCtrl.listarFones(orcamento['cliente'])
+        fones = self.clienteCtrl.listarFones(orcamento['cliente']['idCliente'])
         if fones: fones = list(fones)
         itemPecas = self.orcamentoCtrl.listarItemPecas(orcamento['idOrcamento'])
         if itemPecas: 
@@ -833,7 +833,7 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
             id = self.telaCliente.tabela.model().index(linha[0].row(), 0).data()
             cliente = self.clienteCtrl.getCliente(id)
             listaFones = [None, None]
-            fones = self.clienteCtrl.listarFones(cliente)
+            fones = self.clienteCtrl.listarFones(cliente['idCliente'])
             for x in range(len(fones)):
                 listaFones[x] = fones[x]['fone']
             if cliente['cidade'] != None:
@@ -898,6 +898,6 @@ if __name__ == "__main__":
     ui = TelaCadastroOrcamento()
     ui.setupUi()
     ui.show()
-    style = open('./ui/styles.qss').read()
+    style = open('./resources/styles.qss').read()
     app.setStyleSheet(style)
     sys.exit(app.exec())

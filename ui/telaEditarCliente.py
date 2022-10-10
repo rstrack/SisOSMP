@@ -272,13 +272,13 @@ class TelaEditarCliente(QtWidgets.QMainWindow):
         self.lineEditNomeCliente.setText(nome)
         if documento:
             self.lineEditDocumento.setText(documento)
-            if tipo == 0:
+            if tipo == '0':
                 self.labelDocumento.setText("CPF")
                 self.comboBoxPessoa.setCurrentIndex(0)
-            if tipo == 1:
+            elif tipo == '1':
                 self.labelDocumento.setText("CNPJ")
                 self.comboBoxPessoa.setCurrentIndex(1)
-            if tipo == 1:
+            else:
                 self.labelDocumento.setText("Documento")
                 self.comboBoxPessoa.setCurrentIndex(2)
         self.lineEditFone1.setText(tel1)
@@ -321,7 +321,7 @@ class TelaEditarCliente(QtWidgets.QMainWindow):
         self.setCompleters()
         self.clienteID = id
         cliente = self.clienteCtrl.getCliente(id)
-        fones = self.clienteCtrl.listarFones(cliente)
+        fones = self.clienteCtrl.listarFones(cliente['idCliente'])
         listaFones = [None, None]
         if fones:
             for x in range(len(fones)):
@@ -357,7 +357,7 @@ if __name__ == "__main__":
 
     ui.show()
 
-    style = open('./ui/styles.qss').read()
+    style = open('./resources/styles.qss').read()
     app.setStyleSheet(style)
 
     sys.exit(app.exec())

@@ -1,5 +1,6 @@
 from PyQt6 import QtCore, QtGui, QtWidgets
 from container import handleDeps
+from telaClienteVeiculo import TelaClienteVeiculo
 from ui.infiniteScroll import AlignDelegate, InfiniteScrollTableModel
 from flatdict import FlatDict
 
@@ -56,6 +57,9 @@ class TelaConsultaVeiculo(QtWidgets.QMainWindow):
         self.botaoEditar = QtWidgets.QPushButton(self.framebotoes)
         self.botaoEditar.setFixedSize(100, 25)
         self.hlayoutbotoes.addWidget(self.botaoEditar)
+        self.botaoClientes = QtWidgets.QPushButton(self.framebotoes)
+        self.botaoClientes.setFixedSize(100, 25)
+        self.hlayoutbotoes.addWidget(self.botaoClientes)
         self.botaoExcluir = QtWidgets.QPushButton(self.framebotoes)
         self.botaoExcluir.setObjectName('excluir')
         self.botaoExcluir.setFixedSize(100, 25)
@@ -74,6 +78,7 @@ class TelaConsultaVeiculo(QtWidgets.QMainWindow):
 
         self.listarVeiculos()
         self.botaoRefresh.clicked.connect(self.listarVeiculos)
+        self.botaoClientes.clicked.connect(self.clientes)
         self.botaoExcluir.clicked.connect(self.excluirVeiculo)
         self.tabela.verticalScrollBar().valueChanged.connect(self.scrolled)
         self.tabela.verticalScrollBar().actionTriggered.connect(self.scrolled)
@@ -82,6 +87,7 @@ class TelaConsultaVeiculo(QtWidgets.QMainWindow):
         _translate = QtCore.QCoreApplication.translate
         self.setWindowTitle(_translate("MainWindow", "Busca"))
         self.botaoEditar.setText(_translate("MainWindow", "Editar"))
+        self.botaoClientes.setText(_translate("MainWindow", "Clientes"))
         self.botaoExcluir.setText(_translate("MainWindow", "Excluir"))
 
     def scrolled(self, value):
@@ -101,7 +107,7 @@ class TelaConsultaVeiculo(QtWidgets.QMainWindow):
         initLen = self.linesShowed
         maxRows = self.linesShowed + rowsToFetch
         while self.linesShowed < maxRows:
-            queryClientes = self.clienteCtrl.listarClientes(veiculos[self.linesShowed])
+            queryClientes = self.clienteCtrl.listarClientes(veiculos[self.linesShowed]['idVeiculo'])
             if queryClientes:
                 nomes = []
                 for cliente in queryClientes:
@@ -170,6 +176,14 @@ class TelaConsultaVeiculo(QtWidgets.QMainWindow):
             msg.setText(str(e))
             msg.exec()
 
+    def clientes(self):
+        linha = self.tabela.selectionModel().selectedRows()
+        if linha:
+            id = self.tabela.model().index(linha[0].row(), 0).data()
+            self.telaClienteVeiculo = TelaClienteVeiculo()
+            self.telaClienteVeiculo.renderClientes(id)
+            self.telaClienteVeiculo.show()
+
 if __name__ == "__main__":
     import sys
     app = QtWidgets.QApplication(sys.argv)
@@ -178,7 +192,7 @@ if __name__ == "__main__":
     
     ui.show()
 
-    style = open('./ui/styles.qss').read()
+    style = open('./resources/styles.qss').read()
     app.setStyleSheet(style)
 
     sys.exit(app.exec())

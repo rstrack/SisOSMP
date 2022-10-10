@@ -106,10 +106,10 @@ class ClienteController():
                 return e
     
     #listar todos os clientes ou clientes vinculados a um veiculo
-    def listarClientes(self, veiculo=None, qtde=None):
+    def listarClientes(self, idVeiculo=None, qtde=None):
         _clientes = []
-        if veiculo:
-            clientes = self.veiculoClienteRep.findClientesByVeiculoID(veiculo['idVeiculo'])
+        if idVeiculo:
+            clientes = self.veiculoClienteRep.findClientesByVeiculoID(idVeiculo)
             if clientes:
                 for cliente in clientes:
                     _clientes.append(model_to_dict(cliente))
@@ -130,8 +130,8 @@ class ClienteController():
         else: return None
 
     #listar fones dado um cliente
-    def listarFones(self, cliente:dict):
-        fones =  self.foneRep.findByClienteID(cliente['idCliente'])
+    def listarFones(self, idCliente):
+        fones =  self.foneRep.findByClienteID(idCliente)
         if fones:
             return fones.dicts()
         else: return None
@@ -175,12 +175,12 @@ class ClienteController():
 
 
     #listar todos os veiculos ou veiculos vinculados a um cliente
-    def listarVeiculos(self, cliente=None):
+    def listarVeiculos(self, idCliente=None):
         with db.atomic() as transaction:
             try:
                 _veiculos = []
-                if cliente:
-                    veiculos = self.veiculoClienteRep.findVeiculosByClienteID(cliente['idCliente'])
+                if idCliente:
+                    veiculos = self.veiculoClienteRep.findVeiculosByClienteID(idCliente)
                     if veiculos:
                         for veiculo in veiculos:
                             _veiculos.append(model_to_dict(veiculo))
@@ -224,6 +224,18 @@ class ClienteController():
                 if orcamento:
                     raise Exception('Não é possível excluir este veículo, ele está vinculado à orçamento(s).')
                 linesAffected = self.veiculoRep.delete(id)
+                if linesAffected != 0:
+                    return True
+                else: return False
+            except Exception as e:
+                transaction.rollback()
+                return e
+
+    def excluirVeiculoCliente(self, veiculo, cliente):
+        with db.atomic() as transaction:
+            try:
+                veiculoCliente = self.veiculoClienteRep.findByVeiculoAndCliente(veiculo, cliente)
+                linesAffected = self.veiculoClienteRep.delete(veiculoCliente.veiculo, veiculoCliente.cliente)
                 if linesAffected != 0:
                     return True
                 else: return False

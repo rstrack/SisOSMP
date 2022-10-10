@@ -132,7 +132,7 @@ class TelaConsultaOS(QtWidgets.QMainWindow):
             id = self.tabela.model().index(self.linha[0].row(), 0).data()
         else: return
         orcamento = self.orcamentoCtrl.getOrcamento(id)
-        fones = self.clienteCtrl.listarFones(orcamento['cliente'])
+        fones = self.clienteCtrl.listarFones(orcamento['cliente']['idCliente'])
         if fones: fones = list(fones)
         itemPecas = self.orcamentoCtrl.listarItemPecas(orcamento['idOrcamento'])
         if itemPecas:

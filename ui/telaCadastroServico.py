@@ -190,7 +190,7 @@ if __name__ == "__main__":
     MainWindow = QtWidgets.QMainWindow()
     ui = TelaCadastroServico()
     ui.setupUi()
-    style = open('./ui/styles.qss').read()
+    style = open('./resources/styles.qss').read()
     app.setStyleSheet(style)
     ui.show()
     sys.exit(app.exec())

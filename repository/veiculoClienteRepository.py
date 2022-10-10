@@ -8,9 +8,8 @@ class VeiculoClienteRepository():
     def save(self, veiculo: Veiculo, cliente: Cliente):
         return Veiculo_Cliente.create(veiculo=veiculo, cliente=cliente)
 
-    #TERMINAR! VERIFICAR COMO SERÁ PASSADO OS VALORES -> POR MODEL OU DICT
     def delete(self, veiculo, cliente):
-        return Veiculo_Cliente.delete()
+        return Veiculo_Cliente.delete_by_id((veiculo, cliente))
 
     def findByVeiculoAndCliente(self, veiculo, cliente):
         veiculoCliente = Veiculo_Cliente.select().where((Veiculo_Cliente.veiculo==veiculo) & (Veiculo_Cliente.cliente==cliente))
