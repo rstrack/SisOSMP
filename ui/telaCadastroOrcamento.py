@@ -275,16 +275,18 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
         # botoes
         self.framebotoes = QtWidgets.QFrame(self.main_frame)
         self.hlayout4 = QtWidgets.QHBoxLayout(self.framebotoes)
+        self.labelLegenda = QtWidgets.QLabel(self.framebotoes)
+        self.hlayout4.addWidget(self.labelLegenda)
         spacerItem5 = QtWidgets.QSpacerItem(
             40, 10, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
         self.hlayout4.addItem(spacerItem5)
-        self.botaoSalvareImprimir = QtWidgets.QPushButton(self.framebotoes)
-        self.botaoSalvareImprimir.setMinimumSize(QtCore.QSize(150, 35))
-        self.botaoSalvareImprimir.setObjectName('botaoprincipal')
-        self.hlayout4.addWidget(self.botaoSalvareImprimir)
         self.botaoSalvar = QtWidgets.QPushButton(self.framebotoes)
         self.botaoSalvar.setMinimumSize(QtCore.QSize(100, 30))
+        self.botaoSalvar.setObjectName('botaoprincipal')
         self.hlayout4.addWidget(self.botaoSalvar)
+        self.botaoSalvareGerarPDF = QtWidgets.QPushButton(self.framebotoes)
+        self.botaoSalvareGerarPDF.setMinimumSize(QtCore.QSize(150, 30))
+        self.hlayout4.addWidget(self.botaoSalvareGerarPDF)
         self.botaolimpar = QtWidgets.QPushButton(self.framebotoes)
         self.botaolimpar.setMinimumSize(QtCore.QSize(100, 30))
         self.hlayout4.addWidget(self.botaolimpar)
@@ -324,7 +326,7 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
         self.lineEditCEP.editingFinished.connect(self.buscarDadosCEP)
         self.botaolimpar.clicked.connect(self.resetarTela)
         self.botaoSalvar.clicked.connect(self.salvarOrcamento)
-        self.botaoSalvareImprimir.clicked.connect(self.salvarImprimirOrcamento)
+        self.botaoSalvareGerarPDF.clicked.connect(self.gerarPDF)
         self.comboBoxPessoa.currentIndexChanged.connect(self.escolherTipoPessoa)
         self.lineEditNomePeca.textChanged.connect(lambda: self.buscarPeca(self.lineEditNomePeca,self.comboBoxUn, self.lineEditValorPeca))
         self.lineEditNomeServico.textChanged.connect(lambda: self.buscarServico(self.lineEditNomeServico,self.lineEditValorServico))
@@ -342,7 +344,7 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
     def retranslateUi(self):
         _translate = QtCore.QCoreApplication.translate
         self.setWindowTitle(_translate("MainWindow", "Mecânica Pasetto"))
-        self.botaoSalvareImprimir.setText(_translate("MainWindow", "Salvar e Imprimir"))
+        self.botaoSalvareGerarPDF.setText(_translate("MainWindow", "Salvar e Imprimir"))
         self.botaoSalvar.setText(_translate("MainWindow", "Salvar"))
         self.botaolimpar.setText(_translate("MainWindow", "Limpar"))
         self.labelTitulo.setText(_translate("MainWindow", "Orçamentos"))
@@ -375,7 +377,6 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
         self.labelValorServico.setText(_translate("MainWindow", "Valor un.*"))
         self.labelNomeServico.setText(_translate("MainWindow", "Serviço*"))
         self.labelQtdeS.setText(_translate("MainWindow", "Qtde*"))
-        #self.labelLegenda.setText(_translate("MainWindow", "* Campos Obrigatórios"))
         self.groupBoxObs.setTitle(_translate("MainWindow", "Observações (Max. 200 caracteres)"))
         self.groupBoxPecas.setTitle(_translate("MainWindow", "Peças"))
         self.labelQtde.setText(_translate("MainWindow", "Qtde*"))
@@ -383,6 +384,7 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
         self.botaoAddPecas.setText(_translate("MainWindow", "+"))
         self.labelNomePeca.setText(_translate("MainWindow", "Peça*"))
         self.labelValorPeca.setText(_translate("MainWindow", "Valor un.*"))
+        self.labelLegenda.setText(_translate("MainWindow", "* Campos Obrigatórios"))
         self.labelValorTotal1.setText(_translate("MainWindow", "VALOR TOTAL: R$"))
 
     def addLinhaPeca(self):
@@ -660,10 +662,10 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
     def getDadosVeiculo(self):
         dict = {}
         if self.comboBoxMarca.currentText():
-            dict['marca'] = self.comboBoxMarca.currentText().upper()
+            dict['marca'] = self.comboBoxMarca.currentText().title()
         else: raise Exception("Campo 'Marca' obrigatório!")
         if (self.lineEditModelo.text()):
-            dict['modelo'] = self.lineEditModelo.text()
+            dict['modelo'] = self.lineEditModelo.text()[0].upper() + self.lineEditModelo.text()[1:]
         else: raise Exception("Campo 'Modelo' obrigatório!")
         if (self.lineEditPlaca.text()):
             dict['placa'] = self.lineEditPlaca.text().upper()
@@ -803,7 +805,7 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
             msg.setText(str(e))
             msg.exec()
 
-    def salvarImprimirOrcamento(self):
+    def gerarPDF(self):
         orcamento = self.salvarOrcamento()
         fones = self.clienteCtrl.listarFones(orcamento['cliente'])
         if fones: fones = list(fones)

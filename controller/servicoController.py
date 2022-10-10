@@ -12,7 +12,7 @@ class ServicoController():
             try:
                 qServico = self.servicoRep.findByDescricao(servico['descricao'])
                 if qServico:
-                    return qServico
+                    raise Exception(f"O serviço {servico['descricao']} já está cadastrado!")
                 else: return self.servicoRep.save(servico)
             except Exception as e:
                 transaction.rollback()
@@ -24,7 +24,7 @@ class ServicoController():
                 for servico in servicos:
                     _servico = self.servicoRep.findByDescricao(servico['descricao'])
                     if _servico:
-                        raise Exception(f'A peça {_servico.descricao} já está cadastrado!')
+                        raise Exception(f"O serviço {servico['descricao']} já está cadastrado!")
                     self.servicoRep.save(servico)
                 return True
             except Exception as e:
@@ -34,6 +34,9 @@ class ServicoController():
     def editarServico(self, id, servico:dict):
         with db.atomic() as transaction:
             try:
+                qServico = self.servicoRep.findByDescricao(servico['descricao'])
+                if qServico:
+                    raise Exception(f"O serviço {servico['descricao']} já está cadastrado!")
                 servico['idServico'] = id
                 _servico = self.servicoRep.update(servico)
                 return _servico

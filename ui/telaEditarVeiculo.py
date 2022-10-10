@@ -63,6 +63,8 @@ class TelaEditarVeiculo(QtWidgets.QMainWindow):
         # botoes
         self.framebotoes = QtWidgets.QFrame(self.main_frame)
         self.hlayout4 = QtWidgets.QHBoxLayout(self.framebotoes)
+        self.labelLegenda = QtWidgets.QLabel(self.framebotoes)
+        self.hlayout4.addWidget(self.labelLegenda)
         spacerItem5 = QtWidgets.QSpacerItem(
             40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
         self.hlayout4.addItem(spacerItem5)
@@ -88,10 +90,11 @@ class TelaEditarVeiculo(QtWidgets.QMainWindow):
         _translate = QtCore.QCoreApplication.translate
         self.setWindowTitle(_translate("MainWindow", "Mecânica Pasetto"))
         self.labelAno.setText(_translate("MainWindow", "Ano"))
-        self.labelPlaca.setText(_translate("MainWindow", "Placa"))
-        self.labelModelo.setText(_translate("MainWindow", "Modelo"))
-        self.labelMarca.setText(_translate("MainWindow", "Marca"))
+        self.labelPlaca.setText(_translate("MainWindow", "Placa*"))
+        self.labelModelo.setText(_translate("MainWindow", "Modelo*"))
+        self.labelMarca.setText(_translate("MainWindow", "Marca*"))
         self.labelTitulo.setText(_translate("MainWindow", "Editar Veículo"))
+        self.labelLegenda.setText(_translate("MainWindow", "* Campos Obrigatórios"))
         self.botaoCancelar.setText(_translate("MainWindow", "Cancelar"))
         self.botaoEditar.setText(_translate("MainWindow", "Editar"))
 
@@ -99,11 +102,11 @@ class TelaEditarVeiculo(QtWidgets.QMainWindow):
         if len(list(filter(lambda dados: dados.text(), self.groupBoxVeiculo.findChildren(QtWidgets.QLineEdit)))) == 0:
             return None
         dict = {}
-        dict['marca'] = self.comboBoxMarca.currentText().upper()
+        dict['marca'] = self.comboBoxMarca.currentText().title()
         if dict['marca'] == '':
             raise Exception('Marca obrigatória!')
         if (self.lineEditModelo.text()):
-            dict['modelo'] = self.lineEditModelo.text().title()
+            dict['modelo'] = self.lineEditModelo.text()[0].upper() + self.lineEditModelo.text()[1:]
         else:
             raise Exception('Modelo obrigatório!')
         if (self.lineEditPlaca.text()):

@@ -1,4 +1,4 @@
-from model.modelo import Veiculo
+from model.modelo import Marca, Veiculo
 
 class VeiculoRepository():
     def __init__(self):
@@ -16,7 +16,7 @@ class VeiculoRepository():
         return Veiculo.delete_by_id(id)
 
     def findAll(self):
-        return Veiculo.select()
+        return Veiculo.select().join(Marca).order_by(Marca.nome, Veiculo.modelo)
 
     def findByID(self, id):
         return Veiculo.select().where(Veiculo.idVeiculo==id).get()

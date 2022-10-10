@@ -229,7 +229,7 @@ class TelaEditarOS(QtWidgets.QMainWindow):
         self.botaoCancelar = QtWidgets.QPushButton(self.framebotoes)
         self.botaoCancelar.setMinimumSize(QtCore.QSize(100, 30))
         self.hlayout4.addWidget(self.botaoCancelar)
-        self.hlayout4.setContentsMargins(9, 0, 9, 9)
+        self.hlayout4.setContentsMargins(9, 9, 9, 9)
         self.vlayout1.addWidget(self.framebotoes)
         self.setCentralWidget(self.main_frame)
         self.completerPeca = QtWidgets.QCompleter([])

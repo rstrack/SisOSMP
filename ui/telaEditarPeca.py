@@ -55,18 +55,20 @@ class TelaEditarPeca(QtWidgets.QMainWindow):
         self.spacer = QtWidgets.QSpacerItem(
             40, 20, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding)
         self.gridLayout.addItem(self.spacer, 2, 0, 1, 1)
-        self.frameBotoes1 = QtWidgets.QFrame(self.main_frame)
-        self.hlayout2 = QtWidgets.QHBoxLayout(self.frameBotoes1)
+        self.framebotoes = QtWidgets.QFrame(self.main_frame)
+        self.hlayout2 = QtWidgets.QHBoxLayout(self.framebotoes)
+        self.labelLegenda = QtWidgets.QLabel(self.framebotoes)
+        self.hlayout2.addWidget(self.labelLegenda)
         spacerItem3 = QtWidgets.QSpacerItem(
             40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
         self.hlayout2.addItem(spacerItem3)
-        self.botaoEditar = QtWidgets.QPushButton(self.frameBotoes1)
+        self.botaoEditar = QtWidgets.QPushButton(self.framebotoes)
         self.botaoEditar.setMinimumSize(QtCore.QSize(100, 30))
         self.hlayout2.addWidget(self.botaoEditar)
-        self.botaoCancelar = QtWidgets.QPushButton(self.frameBotoes1)
+        self.botaoCancelar = QtWidgets.QPushButton(self.framebotoes)
         self.botaoCancelar.setMinimumSize(QtCore.QSize(100, 30))
         self.hlayout2.addWidget(self.botaoCancelar)
-        self.vlayout6.addWidget(self.frameBotoes1)
+        self.vlayout6.addWidget(self.framebotoes)
         self.setCentralWidget(self.main_frame)
         self.retranslateUi()
         # conexoes
@@ -81,6 +83,7 @@ class TelaEditarPeca(QtWidgets.QMainWindow):
         self.labelnome.setText(_translate("MainWindow", "Descrição da peça*"))
         self.labelUn.setText(_translate("MainWindow", "Un"))
         self.labelvalor.setText(_translate("MainWindow", "Valor Un.*"))
+        self.labelLegenda.setText(_translate("MainWindow", "* Campos Obrigatórios"))
         self.botaoCancelar.setText(_translate("MainWindow", "Cancelar"))
         self.botaoEditar.setText(_translate("MainWindow", "Editar"))
 

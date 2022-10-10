@@ -10,6 +10,7 @@ class TelaEditarCliente(QtWidgets.QMainWindow):
     def __init__(self):
         super(TelaEditarCliente, self).__init__()
         self.clienteCtrl = handleDeps.getDep('CLIENTECTRL')
+        self.cidadeCtrl = handleDeps.getDep('CIDADECTRL')
         self.marcaCtrl = handleDeps.getDep('MARCACTRL')
         self.buscaCEP = handleDeps.getDep('CEP')
         self.setupUi()
@@ -113,6 +114,8 @@ class TelaEditarCliente(QtWidgets.QMainWindow):
         # botoes
         self.framebotoes = QtWidgets.QFrame(self.main_frame)
         self.hlayout4 = QtWidgets.QHBoxLayout(self.framebotoes)
+        self.labelLegenda = QtWidgets.QLabel(self.framebotoes)
+        self.hlayout4.addWidget(self.labelLegenda)
         spacerItem5 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
         self.hlayout4.addItem(spacerItem5)
         self.botaoEditar = QtWidgets.QPushButton(self.framebotoes)
@@ -126,9 +129,14 @@ class TelaEditarCliente(QtWidgets.QMainWindow):
         spacerItem6 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding)
         self.glayoutp.addItem(spacerItem6)
         self.setCentralWidget(self.main_frame)
-
+        self.completerCidade = QtWidgets.QCompleter([])
+        self.completerCidade.setMaxVisibleItems(5)
+        self.completerCidade.setCaseSensitivity(
+            QtCore.Qt.CaseSensitivity.CaseInsensitive)
+        self.completerCidade.setCompletionMode(
+            QtWidgets.QCompleter.CompletionMode.PopupCompletion)
+        self.lineEditCidade.setCompleter(self.completerCidade)
         self.retranslateUi()
-
         self.botaoCancelar.clicked.connect(self.cancelarEdicao)
         self.botaoEditar.clicked.connect(self.editar)
         self.comboBoxPessoa.currentIndexChanged.connect(self.escolherTipoPessoa)
@@ -149,6 +157,7 @@ class TelaEditarCliente(QtWidgets.QMainWindow):
         self.labelUF.setText(_translate("MainWindow", "UF"))
         self.labelTel1.setText(_translate("MainWindow", "Fone 1"))
         self.labelTel2.setText(_translate("MainWindow", "Fone 2"))
+        self.labelLegenda.setText(_translate("MainWindow", "* Campos Obrigatórios"))
         self.botaoCancelar.setText(_translate("MainWindow", "Cancelar"))
         self.botaoEditar.setText(_translate("MainWindow", "Editar"))
     
@@ -297,13 +306,6 @@ class TelaEditarCliente(QtWidgets.QMainWindow):
             self.labelDocumento.setText('CNPJ')
         else: self.labelDocumento.setText('Documento')
 
-    def setMarcas(self):
-        self.comboBoxMarca.clear()
-        marcas = self.marcaCtrl.listarMarcas()
-        for marca in marcas:
-            self.comboBoxMarca.addItem(marca['nome'])
-        self.comboBoxMarca.setCurrentIndex(-1)
-
     def setCompleters(self):
         cidades = self.cidadeCtrl.listarCidades()
         listaCidades = []
@@ -316,7 +318,6 @@ class TelaEditarCliente(QtWidgets.QMainWindow):
 
     def renderEditar(self, id):
         self.limparCampos()
-        self.setMarcas()
         self.setCompleters()
         self.clienteID = id
         cliente = self.clienteCtrl.getCliente(id)
@@ -326,7 +327,6 @@ class TelaEditarCliente(QtWidgets.QMainWindow):
             for x in range(len(fones)):
                 listaFones[x] = fones[x]['fone']
         self.setCliente(cliente['tipo'], cliente['nome'], cliente['documento'], listaFones[0], listaFones[1])
-
         if cliente['cidade'] != None:
             cidade = cliente['cidade']['nome']
             uf = cliente['cidade']['uf']
@@ -340,6 +340,8 @@ class TelaEditarCliente(QtWidgets.QMainWindow):
         if len(cep) !=8:
             return
         dados = self.buscaCEP.buscarCEP(cep)
+        if dados == None:
+            return
         if 'erro' in dados:
             return
         self.lineEditEnder.setText(dados['logradouro'])

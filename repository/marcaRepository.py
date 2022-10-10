@@ -15,9 +15,8 @@ class MarcaRepository():
     def delete(self, id):
         return Marca.delete_by_id(id)
         
-
     def findAll(self):
-        return Marca.select()
+        return Marca.select().order_by(Marca.nome)
 
     def findByID(self, id):
         return Marca.select().where(Marca.idMarca==id).get()

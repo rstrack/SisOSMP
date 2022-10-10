@@ -314,11 +314,11 @@ class TelaCadastroCliente(QtWidgets.QMainWindow):
         if len(list(filter(lambda dados: dados.text(), self.groupBoxVeiculo.findChildren(QtWidgets.QLineEdit)))) == 0:
             return None
         dict = {}
-        dict['marca'] = self.comboBoxMarca.currentText().upper()
+        dict['marca'] = self.comboBoxMarca.currentText().title()
         if dict['marca'] == '':
             raise Exception('Marca obrigatória')
         if (self.lineEditModelo.text()):
-            dict['modelo'] = self.lineEditModelo.text().title()
+            dict['modelo'] = self.lineEditModelo.text()[0].upper() + self.lineEditModelo.text()[1:]
         else:
             raise Exception('Modelo obrigatório')
         if (self.lineEditPlaca.text()):

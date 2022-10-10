@@ -16,7 +16,7 @@ class ServicoRepository():
         return Servico.delete_by_id(id)
 
     def findAll(self):
-        return Servico.select()
+        return Servico.select().order_by(Servico.descricao)
 
     def findByID(self, id):
         return Servico.select().where(Servico.idServico==id).get()

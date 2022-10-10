@@ -16,7 +16,7 @@ class PecaRepository():
         return Peca.delete_by_id(id)
 
     def findAll(self):
-        return Peca.select()
+        return Peca.select().order_by(Peca.descricao)
 
     def findByID(self, id):
         return Peca.select().where(Peca.idPeca==id).get()

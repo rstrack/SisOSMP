@@ -93,7 +93,6 @@ class TelaConsultaVeiculo(QtWidgets.QMainWindow):
         veiculos = self.clienteCtrl.listarVeiculos()
         if not veiculos:
             return
-        veiculos = list(reversed(veiculos))
         maxLength = len(veiculos)
         remainderRows = maxLength-self.linesShowed
         rowsToFetch=min(qtde, remainderRows)

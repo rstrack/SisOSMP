@@ -158,6 +158,10 @@ class ClienteController():
     def editarVeiculo(self, idVeiculo, veiculo):
         with db.atomic() as transaction:
             try:
+                qVeiculo = self.veiculoRep.findByPlaca(veiculo['placa'])
+                if qVeiculo:
+                    raise Exception(f'Placa {qVeiculo.placa} já registrada para o veículo ' \
+                    +f'{self.marcaRep.findByID(qVeiculo.marca).nome} {qVeiculo.modelo}')
                 veiculo['idVeiculo'] = idVeiculo
                 marca = self.marcaRep.findByNome(veiculo['marca'])
                 if not marca:
