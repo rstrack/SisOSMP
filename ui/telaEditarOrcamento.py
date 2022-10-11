@@ -1,4 +1,4 @@
-from PyQt6 import QtCore, QtWidgets
+from PyQt6 import QtCore, QtWidgets, QtGui
 from datetime import datetime
 
 from container import handleDeps
@@ -218,14 +218,14 @@ class TelaEditarOrcamento(QtWidgets.QMainWindow):
         spacerItem5 = QtWidgets.QSpacerItem(
             40, 10, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
         self.hlayout4.addItem(spacerItem5)
-        self.botaoAprovar = QtWidgets.QPushButton(self.framebotoes)
-        self.botaoAprovar.setMinimumSize(QtCore.QSize(100, 30))
-        self.hlayout4.addWidget(self.botaoAprovar)
         self.botaoSalvar = QtWidgets.QPushButton(self.framebotoes)
-        self.botaoSalvar.setMinimumSize(QtCore.QSize(100, 30))
+        self.botaoSalvar.setMinimumSize(QtCore.QSize(100, 35))
         self.hlayout4.addWidget(self.botaoSalvar)
+        self.botaoAprovar = QtWidgets.QPushButton(self.framebotoes)
+        self.botaoAprovar.setMinimumSize(QtCore.QSize(100, 35))
+        self.hlayout4.addWidget(self.botaoAprovar)
         self.botaoCancelar = QtWidgets.QPushButton(self.framebotoes)
-        self.botaoCancelar.setMinimumSize(QtCore.QSize(100, 30))
+        self.botaoCancelar.setMinimumSize(QtCore.QSize(100, 35))
         self.hlayout4.addWidget(self.botaoCancelar)
         self.hlayout4.setContentsMargins(9, 9, 9, 9)
         self.vlayout1.addWidget(self.framebotoes)
@@ -434,11 +434,13 @@ class TelaEditarOrcamento(QtWidgets.QMainWindow):
             linha[2].setText('{:.2f}'.format(listaServicos[self.linhasServico.index(linha)]['valor']).replace('.',',',1))
 
     def setMarcas(self):
+        currentText = self.comboBoxMarca.currentText()
         self.comboBoxMarca.clear()
         marcas = self.marcaCtrl.listarMarcas()
         for marca in marcas:
             self.comboBoxMarca.addItem(marca['nome'])
-        self.comboBoxMarca.setCurrentIndex(-1)
+        self.comboBoxMarca.setCurrentIndex(
+            self.comboBoxMarca.findText(currentText, QtCore.Qt.MatchFlag.MatchExactly))
 
     def setCompleters(self):
         pecas = self.pecaCtrl.listarPecas()
@@ -606,6 +608,8 @@ class TelaEditarOrcamento(QtWidgets.QMainWindow):
             if isinstance(r, Exception):
                 raise Exception(r)
             msg = QtWidgets.QMessageBox()
+            msg.setWindowIcon(QtGui.QIcon('./resources/logo-icon.png'))
+            msg.setIcon(QtWidgets.QMessageBox.Icon.Information)
             msg.setWindowTitle("Aviso")
             msg.setText("Orçamento editado com sucesso!")
             msg.exec()
@@ -617,7 +621,9 @@ class TelaEditarOrcamento(QtWidgets.QMainWindow):
             self.paraTelaConsulta.emit(1)
         except Exception as e:
             msg = QtWidgets.QMessageBox()
-            msg.setWindowTitle("Aviso")
+            msg.setWindowIcon(QtGui.QIcon('./resources/logo-icon.png'))
+            msg.setIcon(QtWidgets.QMessageBox.Icon.Critical)
+            msg.setWindowTitle("Erro")
             msg.setText(str(e))
             msg.exec()
 
@@ -627,11 +633,15 @@ class TelaEditarOrcamento(QtWidgets.QMainWindow):
             if isinstance(r, Exception):
                 raise Exception(r)
             msg = QtWidgets.QMessageBox()
+            msg.setWindowIcon(QtGui.QIcon('./resources/logo-icon.png'))
+            msg.setIcon(QtWidgets.QMessageBox.Icon.Information)
             msg.setWindowTitle("Aviso")
             msg.setText("Orçamento aprovado com sucesso!")
             msg.exec()
         except Exception as e:
             msg = QtWidgets.QMessageBox()
+            msg.setWindowIcon(QtGui.QIcon('./resources/logo-icon.png'))
+            msg.setIcon(QtWidgets.QMessageBox.Icon.Critical)
             msg.setWindowTitle("Aviso")
             msg.setText(str(e))
             msg.exec()

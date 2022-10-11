@@ -53,14 +53,19 @@ class TelaConsultaOrcamento(QtWidgets.QMainWindow):
         spacer = QtWidgets.QSpacerItem(20, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
         self.hlayoutbotoes.addItem(spacer)
         self.botaoEditar = QtWidgets.QPushButton(self.framebotoes)
-        self.botaoEditar.setFixedSize(100, 25)
+        self.botaoEditar.setFixedSize(100, 35)
+        self.botaoEditar.setObjectName('botaoprincipal')
         self.hlayoutbotoes.addWidget(self.botaoEditar)
         self.botaoAprovar = QtWidgets.QPushButton(self.framebotoes)
-        self.botaoAprovar.setFixedSize(100, 25)
+        self.botaoAprovar.setFixedSize(100, 35)
         self.hlayoutbotoes.addWidget(self.botaoAprovar)
         self.botaoGerarPDF = QtWidgets.QPushButton(self.framebotoes)
-        self.botaoGerarPDF.setFixedSize(100, 25)
+        self.botaoGerarPDF.setFixedSize(100, 35)
         self.hlayoutbotoes.addWidget(self.botaoGerarPDF)
+        self.botaoExcluir = QtWidgets.QPushButton(self.framebotoes)
+        self.botaoExcluir.setObjectName('excluir')
+        self.botaoExcluir.setFixedSize(100, 35)
+        self.hlayoutbotoes.addWidget(self.botaoExcluir)
         self.filter.setFilterKeyColumn(-1)
         self.lineEditBusca.textChanged.connect(self.filter.setFilterRegularExpression)
         self.setCentralWidget(self.mainwidget)
@@ -68,6 +73,7 @@ class TelaConsultaOrcamento(QtWidgets.QMainWindow):
         self.botaoRefresh.clicked.connect(self.listarOrcamentos)
         self.botaoAprovar.clicked.connect(self.aprovar)
         self.botaoGerarPDF.clicked.connect(self.gerarPDF)
+        self.botaoExcluir.clicked.connect(self.excluirOrcamento)
         self.listarOrcamentos()
 
     def retranslateUi(self):
@@ -76,6 +82,7 @@ class TelaConsultaOrcamento(QtWidgets.QMainWindow):
         self.botaoEditar.setText(_translate("MainWindow", "Editar"))
         self.botaoAprovar.setText(_translate("MainWindow", "Aprovar"))
         self.botaoGerarPDF.setText(_translate("MainWindow", "Gerar PDF"))
+        self.botaoExcluir.setText(_translate("MainWindow", "Excluir"))
 
     def scrolled(self, value):
         if value == self.tabela.verticalScrollBar().maximum():
@@ -137,30 +144,54 @@ class TelaConsultaOrcamento(QtWidgets.QMainWindow):
                 if isinstance(r, Exception):
                     raise Exception(r)
                 msg = QtWidgets.QMessageBox()
+                msg.setWindowIcon(QtGui.QIcon('./resources/logo-icon.png'))
+                msg.setIcon(QtWidgets.QMessageBox.Icon.Information)
                 msg.setWindowTitle("Aviso")
                 msg.setText("Orçamento aprovado com sucesso!")
                 msg.exec()
                 self.orcamentoAprovado.emit(1)
         except Exception as e:
             msg = QtWidgets.QMessageBox()
-            msg.setWindowTitle("Aviso")
+            msg.setWindowIcon(QtGui.QIcon('./resources/logo-icon.png'))
+            msg.setIcon(QtWidgets.QMessageBox.Icon.Critical)
+            msg.setWindowTitle("Erro")
             msg.setText(str(e))
             msg.exec()
 
     def excluirOrcamento(self):
-        msgBox = QtWidgets.QMessageBox()
-        msgBox.setWindowTitle("Aviso")
-        msgBox.setText('Tem certeza que deseja excluir?')
-        y = msgBox.addButton("Sim", QtWidgets.QMessageBox.ButtonRole.YesRole)
-        n = msgBox.addButton("Não", QtWidgets.QMessageBox.ButtonRole.NoRole)
-        y.setFixedWidth(60)
-        n.setFixedWidth(60)
-        msgBox.exec()
-        if msgBox.clickedButton() == y:
-            self.linha = self.tabela.selectionModel().selectedRows()
-            if self.linha:
-                id = self.tabela.model().index(self.linha[0].row(), 0).data()
-        
+        try:
+            msgBox = QtWidgets.QMessageBox()
+            msgBox.setWindowTitle("Aviso")
+            msgBox.setText('Tem certeza que deseja excluir?')
+            y = msgBox.addButton("Sim", QtWidgets.QMessageBox.ButtonRole.YesRole)
+            n = msgBox.addButton("Não", QtWidgets.QMessageBox.ButtonRole.NoRole)
+            y.setFixedWidth(60)
+            n.setFixedWidth(60)
+            msgBox.exec()
+            if msgBox.clickedButton() == y:
+                self.linha = self.tabela.selectionModel().selectedRows()
+                if self.linha:
+                    id = self.tabela.model().index(self.linha[0].row(), 0).data()
+                    r = self.orcamentoCtrl.excluirOrcamento(id)
+                    if isinstance(r, Exception):
+                        raise Exception(r)
+                    elif not r:
+                        raise Exception('Erro ao excluir')
+                    else:
+                        msg = QtWidgets.QMessageBox()
+                        msg.setWindowTitle("Aviso")
+                        msg.setWindowIcon(QtGui.QIcon('./resources/logo-icon.png'))
+                        msg.setIcon(QtWidgets.QMessageBox.Icon.Information)
+                        msg.setText(f"Orçamento excluído com sucesso!")
+                        msg.exec()
+                        self.listarOrcamentos()
+        except Exception as e:
+            msg = QtWidgets.QMessageBox()
+            msg.setWindowIcon(QtGui.QIcon('./resources/logo-icon.png'))
+            msg.setIcon(QtWidgets.QMessageBox.Icon.Critical)
+            msg.setWindowTitle("Erro")
+            msg.setText(str(e))
+            msg.exec()
         
     def gerarPDF(self):
         self.linha = self.tabela.selectionModel().selectedRows()
@@ -192,6 +223,8 @@ class TelaConsultaOrcamento(QtWidgets.QMainWindow):
             window = QtWidgets.QMainWindow()
             fd = QtWidgets.QFileDialog()
             path = fd.getExistingDirectory(window, 'Salvar como', './')
+            if path == '':
+                return
             generatePDF(orcamento, fones, itemServicos, itemPecas, path)
 
 

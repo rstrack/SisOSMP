@@ -1,10 +1,12 @@
 from model.modelo import db
 from playhouse.shortcuts import model_to_dict
+from repository.itemPecaRepository import ItemPecaRepository
 from repository.pecaRepository import PecaRepository
 
 class PecaController():
     def __init__(self):
         self.pecaRep = PecaRepository()
+        self.itemPecaRep = ItemPecaRepository()
 
     def salvarPeca(self, peca:dict):
         with db.atomic() as transaction:
@@ -44,19 +46,49 @@ class PecaController():
                 return e
 
     def listarPecas(self):
-        pecas = self.pecaRep.findAll()
-        if pecas:
-            return pecas.dicts()
-        else: return None
+        with db.atomic() as transaction:
+            try:
+                pecas = self.pecaRep.findAll()
+                if pecas:
+                    return pecas.dicts()
+                else: return None
+            except Exception as e:
+                transaction.rollback()
+                return e
 
     def getPeca(self, id):
-        peca = self.pecaRep.findByID(id)
-        if peca:
-            return model_to_dict(peca)
-        else: return None
+        with db.atomic() as transaction:
+            try:
+                peca = self.pecaRep.findByID(id)
+                if peca:
+                    return model_to_dict(peca)
+                else: return None
+            except Exception as e:
+                transaction.rollback()
+                return e
 
     def getPecaByDescricao(self, desc):
-        peca = self.pecaRep.findByDescricao(desc)
-        if peca:
-            return model_to_dict(peca)
-        else: return None
+        with db.atomic() as transaction:
+            try:
+                peca = self.pecaRep.findByDescricao(desc)
+                if peca:
+                    return model_to_dict(peca)
+                else: return None
+            except Exception as e:
+                transaction.rollback()
+                return e
+
+    def excluirPeca(self, id):
+        with db.atomic() as transaction:
+            try:
+                _itemPeca = self.itemPecaRep.findByPeca(id)
+                if _itemPeca:
+                    raise Exception('Não é possível excluir esta peça, ela está vinculada à orçamento(s).')
+                linesAffected = self.pecaRep.delete(id)
+                if linesAffected != 0:
+                    return True
+                else: return False
+            except Exception as e:
+                transaction.rollback()
+                return e
+

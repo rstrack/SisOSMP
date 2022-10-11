@@ -1,11 +1,13 @@
 from PyQt6 import QtWidgets
 from playhouse.shortcuts import model_to_dict
 from model.modelo import *
+from repository.itemServicoRepository import ItemServicoRepository
 from repository.servicoRepository import ServicoRepository
 
 class ServicoController():
     def __init__(self):
         self.servicoRep = ServicoRepository()
+        self.itemServicoRep = ItemServicoRepository()
 
     def salvarServico(self, servico:dict):
         with db.atomic() as transaction:
@@ -61,3 +63,17 @@ class ServicoController():
         if servico:
             return model_to_dict(servico)
         else: return None
+
+    def excluirServico(self, id):
+        with db.atomic() as transaction:
+            try:
+                _itemServico = self.itemServicoRep.findByServico(id)
+                if _itemServico:
+                    raise Exception('Não é possível excluir este serviço, ela está vinculado à orçamento(s).')
+                linesAffected = self.servicoRep.delete(id)
+                if linesAffected != 0:
+                    return True
+                else: return False
+            except Exception as e:
+                transaction.rollback()
+                return e

@@ -7,6 +7,7 @@ class TelaClienteVeiculo(QtWidgets.QMainWindow):
         super(TelaClienteVeiculo, self).__init__()
         self.clienteCtrl = handleDeps.getDep('CLIENTECTRL')
         self.clienteID = None
+        self.veiculoID = None
         self.setupUi()
 
     def setupUi(self):
@@ -138,7 +139,7 @@ class TelaClienteVeiculo(QtWidgets.QMainWindow):
                 self.tabela.setItem(i, 3, item4)
                 botao = QtWidgets.QPushButton(self.framedados, text='Desvincular')
                 botao.setFixedWidth(150)
-                botao.clicked.connect(self.desvincularVeiculo)
+                botao.clicked.connect(self.desvincularCliente)
                 self.tabela.setCellWidget(i, 4, botao)
                 i+=1
             self.tabela.hideColumn(0)

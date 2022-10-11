@@ -52,11 +52,16 @@ class TelaConsultaOS(QtWidgets.QMainWindow):
         spacer = QtWidgets.QSpacerItem(20, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
         self.hlayoutbotoes.addItem(spacer)
         self.botaoEditar = QtWidgets.QPushButton(self.framebotoes)
-        self.botaoEditar.setFixedSize(100, 25)
+        self.botaoEditar.setFixedSize(100, 35)
+        self.botaoEditar.setObjectName('botaoprincipal')
         self.hlayoutbotoes.addWidget(self.botaoEditar)
         self.botaoGerarPDF = QtWidgets.QPushButton(self.framebotoes)
-        self.botaoGerarPDF.setFixedSize(100, 25)
+        self.botaoGerarPDF.setFixedSize(100, 35)
         self.hlayoutbotoes.addWidget(self.botaoGerarPDF)
+        self.botaoExcluir = QtWidgets.QPushButton(self.framebotoes)
+        self.botaoExcluir.setFixedSize(100, 35)
+        self.botaoExcluir.setObjectName('excluir')
+        self.hlayoutbotoes.addWidget(self.botaoExcluir)
         self.model = QtGui.QStandardItemModel()
         self.filter.setSourceModel(self.model)
         self.filter.setFilterKeyColumn(-1)
@@ -68,7 +73,8 @@ class TelaConsultaOS(QtWidgets.QMainWindow):
         self.retranslateUi()
         self.selectionModel = self.tabela.selectionModel()
         self.botaoRefresh.clicked.connect(self.listarOS)
-        self.botaoGerarPDF.clicked.connect(self.imprimir)
+        self.botaoGerarPDF.clicked.connect(self.gerarPDF)
+        self.botaoExcluir.clicked.connect(self.excluirOS)
         self.listarOS()
 
     def retranslateUi(self):
@@ -76,37 +82,38 @@ class TelaConsultaOS(QtWidgets.QMainWindow):
         self.setWindowTitle(_translate("MainWindow", "Busca"))
         self.botaoEditar.setText(_translate("MainWindow", "Editar"))
         self.botaoGerarPDF.setText(_translate("MainWindow", "Gerar PDF"))
+        self.botaoExcluir.setText(_translate("MainWindow", "Excluir"))
 
     def scrolled(self, value):
         if value == self.tabela.verticalScrollBar().maximum():
             self.maisOS(50)
 
     def maisOS(self, qtde):
-        orcamentos = self.orcamentoCtrl.listarOrcamentos(aprovado=True, limit=self.linesShowed+qtde)
+        orcamentos = self.orcamentoCtrl.listarOrcamentos(aprovado=True, limit=self.linhasCarregadas+qtde)
         if not orcamentos:
             return
         maxLength = len(orcamentos)
-        remainderRows = maxLength-self.linesShowed
+        remainderRows = maxLength-self.linhasCarregadas
         rowsToFetch=min(qtde, remainderRows)
         if rowsToFetch<=0:
             return
-        initLen = self.linesShowed
-        maxRows = self.linesShowed + rowsToFetch
-        while self.linesShowed < maxRows:
-            orcamentos[self.linesShowed]['dataOrcamento'] = orcamentos[self.linesShowed]['dataOrcamento'].strftime("%d/%m/%Y")
-            orcamentos[self.linesShowed]['dataAprovacao'] = orcamentos[self.linesShowed]['dataAprovacao'].strftime("%d/%m/%Y")
+        initLen = self.linhasCarregadas
+        maxRows = self.linhasCarregadas + rowsToFetch
+        while self.linhasCarregadas < maxRows:
+            orcamentos[self.linhasCarregadas]['dataOrcamento'] = orcamentos[self.linhasCarregadas]['dataOrcamento'].strftime("%d/%m/%Y")
+            orcamentos[self.linhasCarregadas]['dataAprovacao'] = orcamentos[self.linhasCarregadas]['dataAprovacao'].strftime("%d/%m/%Y")
 
-            orcamentos[self.linesShowed] = FlatDict(orcamentos[self.linesShowed], delimiter='.')
-            self.linesShowed+=1
-        self.model.addData(orcamentos[initLen:self.linesShowed])
+            orcamentos[self.linhasCarregadas] = FlatDict(orcamentos[self.linhasCarregadas], delimiter='.')
+            self.linhasCarregadas+=1
+        self.model.addData(orcamentos[initLen:self.linhasCarregadas])
         colunas = ['idOrcamento', 'dataOrcamento', 'dataAprovacao', 'cliente.nome', 'veiculo.marca.nome', 'veiculo.modelo', 'veiculo.placa', 'valorTotal']
         self.model.colunasDesejadas(colunas)
-        self.model.setRowCount(self.linesShowed)
+        self.model.setRowCount(self.linhasCarregadas)
         self.model.setColumnCount(len(colunas))
         self.tabela.hideColumn(0)
 
     def listarOS(self):
-        self.linesShowed = 0
+        self.linhasCarregadas = 0
         self.model = InfiniteScrollTableModel([{}])
         listaHeader = ['ID', 'Data do Orçamento', 'Data de Aprovação', 'Cliente', 'Marca', 'Modelo', 'Placa', 'Valor Total']
         self.model.setHorizontalHeaderLabels(listaHeader)
@@ -126,7 +133,7 @@ class TelaConsultaOS(QtWidgets.QMainWindow):
         if self.linha:
             return self.tabela.model().index(self.linha[0].row(), 0).data()
 
-    def imprimir(self):
+    def gerarPDF(self):
         self.linha = self.tabela.selectionModel().selectedRows()
         if self.linha:
             id = self.tabela.model().index(self.linha[0].row(), 0).data()
@@ -156,7 +163,36 @@ class TelaConsultaOS(QtWidgets.QMainWindow):
             window = QtWidgets.QMainWindow()
             fd = QtWidgets.QFileDialog()
             path = fd.getExistingDirectory(window, 'Salvar como', './')
+            if path == '':
+                return
             generatePDF(orcamento, fones, itemServicos, itemPecas, path)
+    
+    def excluirOS(self):
+        msgBox = QtWidgets.QMessageBox()
+        msgBox.setWindowTitle("Aviso")
+        msgBox.setText('Tem certeza que deseja excluir?')
+        y = msgBox.addButton("Sim", QtWidgets.QMessageBox.ButtonRole.YesRole)
+        n = msgBox.addButton("Não", QtWidgets.QMessageBox.ButtonRole.NoRole)
+        y.setFixedWidth(60)
+        n.setFixedWidth(60)
+        msgBox.exec()
+        if msgBox.clickedButton() == y:
+            self.linha = self.tabela.selectionModel().selectedRows()
+            if self.linha:
+                id = self.tabela.model().index(self.linha[0].row(), 0).data()
+                r = self.orcamentoCtrl.excluirOrcamento(id)
+                if isinstance(r, Exception):
+                    raise Exception(r)
+                elif not r:
+                    raise Exception('Erro ao excluir')
+                else:
+                    msg = QtWidgets.QMessageBox()
+                    msg.setWindowTitle("Aviso")
+                    msg.setWindowIcon(QtGui.QIcon('./resources/logo-icon.png'))
+                    msg.setIcon(QtWidgets.QMessageBox.Icon.Information)
+                    msg.setText(f"Ordem de Serviço excluída com sucesso!")
+                    msg.exec()
+                    self.listarOS()
 
 if __name__ == "__main__":
     import sys

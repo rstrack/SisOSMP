@@ -5,12 +5,12 @@
 
 QFrame{
     
-    border: 1px solid red;
+    /* border: 1px solid red; */
    
 }
 
 QFrame #main_frame{
-    margin: 20vw !important;
+
 }
 
 QLabel#boldText{

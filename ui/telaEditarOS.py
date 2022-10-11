@@ -1,4 +1,4 @@
-from PyQt6 import QtCore, QtWidgets
+from PyQt6 import QtCore, QtWidgets, QtGui
 from container import handleDeps
 
 from datetime import datetime
@@ -420,24 +420,26 @@ class TelaEditarOS(QtWidgets.QMainWindow):
             self.addLinhaPeca()
         for linha in self.linhasPeca:
             linha[0].setText(listaPecas[self.linhasPeca.index(linha)]['descricao'])
-            linha[1].setText(str(listaPecas[self.linhasPeca.index(linha)]['qtde']))
+            linha[1].setText(str(listaPecas[self.linhasPeca.index(linha)]['qtde']).replace('.',',',1))
             linha[2].setCurrentIndex(linha[2].findText(listaPecas[self.linhasPeca.index(linha)]['un'], QtCore.Qt.MatchFlag.MatchExactly))
-            linha[3].setText('{:.2f}'.format(listaPecas[self.linhasPeca.index(linha)]['valor']))
+            linha[3].setText('{:.2f}'.format(listaPecas[self.linhasPeca.index(linha)]['valor']).replace('.',',',1))
 
     def setServicos(self, listaServicos:list):
         for _ in range(len(listaServicos)):
             self.addLinhaServico()
         for linha in self.linhasServico:
             linha[0].setText(listaServicos[self.linhasServico.index(linha)]['descricao'])
-            linha[1].setText(str(listaServicos[self.linhasServico.index(linha)]['qtde']))
-            linha[2].setText('{:.2f}'.format(listaServicos[self.linhasServico.index(linha)]['valor']))
+            linha[1].setText(str(listaServicos[self.linhasServico.index(linha)]['qtde']).replace('.',',',1))
+            linha[2].setText('{:.2f}'.format(listaServicos[self.linhasServico.index(linha)]['valor']).replace('.',',',1))
 
     def setMarcas(self):
+        currentText = self.comboBoxMarca.currentText()
         self.comboBoxMarca.clear()
         marcas = self.marcaCtrl.listarMarcas()
         for marca in marcas:
             self.comboBoxMarca.addItem(marca['nome'])
-        self.comboBoxMarca.setCurrentIndex(-1)
+        self.comboBoxMarca.setCurrentIndex(
+            self.comboBoxMarca.findText(currentText, QtCore.Qt.MatchFlag.MatchExactly))
 
     def setCompleters(self):
         pecas = self.pecaCtrl.listarPecas()
@@ -604,6 +606,8 @@ class TelaEditarOS(QtWidgets.QMainWindow):
             if isinstance(r, Exception):
                 raise Exception(r)
             msg = QtWidgets.QMessageBox()
+            msg.setWindowIcon(QtGui.QIcon('./resources/logo-icon.png'))
+            msg.setIcon(QtWidgets.QMessageBox.Icon.Information)
             msg.setWindowTitle("Aviso")
             msg.setText("Ordem de serviço editada com sucesso!")
             msg.exec()
@@ -615,6 +619,8 @@ class TelaEditarOS(QtWidgets.QMainWindow):
             self.orcamentoID = None
         except Exception as e:
             msg = QtWidgets.QMessageBox()
+            msg.setWindowIcon(QtGui.QIcon('./resources/logo-icon.png'))
+            msg.setIcon(QtWidgets.QMessageBox.Icon.Critical)
             msg.setWindowTitle("Aviso")
             msg.setText(str(e))
             msg.exec()

@@ -54,8 +54,13 @@ class TelaConsultaPeca(QtWidgets.QMainWindow):
             20, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
         self.hlayoutbotoes.addItem(spacer)
         self.botaoEditar = QtWidgets.QPushButton(self.framebotoes)
-        self.botaoEditar.setFixedSize(100, 25)
+        self.botaoEditar.setFixedSize(100, 35)
+        self.botaoEditar.setObjectName('botaoprincipal')
         self.hlayoutbotoes.addWidget(self.botaoEditar)
+        self.botaoExcluir = QtWidgets.QPushButton(self.framebotoes)
+        self.botaoExcluir.setFixedSize(100, 35)
+        self.botaoExcluir.setObjectName('excluir')
+        self.hlayoutbotoes.addWidget(self.botaoExcluir)
         self.filter.setFilterKeyColumn(-1)
         self.lineEditBusca.textChanged.connect(
             self.filter.setFilterRegularExpression)
@@ -69,11 +74,13 @@ class TelaConsultaPeca(QtWidgets.QMainWindow):
         #self.selectionModel.selectionChanged.connect(self.mostrarDetalhes)
         self.botaoRefresh.clicked.connect(self.listarPecas)
         self.botaoEditar.clicked.connect(self.editarPeca)
+        self.botaoExcluir.clicked.connect(self.excluirPeca)
 
     def retranslateUi(self):
         _translate = QtCore.QCoreApplication.translate
         self.setWindowTitle(_translate("MainWindow", "Busca"))
         self.botaoEditar.setText(_translate("MainWindow", "Editar"))
+        self.botaoExcluir.setText(_translate("MainWindow", "Excluir"))
 
     def scrolled(self, value):
         if value == self.tabela.verticalScrollBar().maximum():
@@ -84,24 +91,24 @@ class TelaConsultaPeca(QtWidgets.QMainWindow):
         if not pecas:
             return
         maxLength = len(pecas)
-        remainderRows = maxLength-self.linesShowed
+        remainderRows = maxLength-self.linhasCarregadas
         rowsToFetch=min(qtde, remainderRows)
         if rowsToFetch<=0:
             return
-        initLen = self.linesShowed
-        maxRows = self.linesShowed + rowsToFetch
-        while self.linesShowed < maxRows:
-            pecas[self.linesShowed]['valor'] = "R$ {:.2f}".format(pecas[self.linesShowed]['valor']).replace('.',',',1)
-            self.linesShowed+=1
-        self.model.addData(pecas[initLen:self.linesShowed])
+        initLen = self.linhasCarregadas
+        maxRows = self.linhasCarregadas + rowsToFetch
+        while self.linhasCarregadas < maxRows:
+            pecas[self.linhasCarregadas]['valor'] = "R$ {:.2f}".format(pecas[self.linhasCarregadas]['valor']).replace('.',',',1)
+            self.linhasCarregadas+=1
+        self.model.addData(pecas[initLen:self.linhasCarregadas])
         colunas = ['idPeca', 'descricao', 'un', 'valor']
         self.model.colunasDesejadas(colunas)
-        self.model.setRowCount(self.linesShowed)
+        self.model.setRowCount(self.linhasCarregadas)
         self.model.setColumnCount(len(colunas))
         self.tabela.hideColumn(0)
 
     def listarPecas(self):
-        self.linesShowed = 0
+        self.linhasCarregadas = 0
         self.model = InfiniteScrollTableModel([{}])
         listaHeader = ['ID ', 'Descrição ', 'Un ', 'Valor ']
         self.model.setHorizontalHeaderLabels(listaHeader)
@@ -109,7 +116,7 @@ class TelaConsultaPeca(QtWidgets.QMainWindow):
         self.tabela.setModel(self.filter)
         self.tabela.setItemDelegateForColumn(3, self.delegateRight)
         self.maisPecas(50)
-        if self.linesShowed > 0:
+        if self.linhasCarregadas > 0:
             header = self.tabela.horizontalHeader()
             header.setSectionResizeMode(
                 QtWidgets.QHeaderView.ResizeMode.Interactive)
@@ -118,10 +125,44 @@ class TelaConsultaPeca(QtWidgets.QMainWindow):
             self.model.setHeaderAlignment(3, QtCore.Qt.AlignmentFlag.AlignRight | QtCore.Qt.AlignmentFlag.AlignVCenter)
 
     def editarPeca(self):
-        self.linha = self.tabela.selectionModel().selectedRows()
-        if self.linha:
-            return self.tabela.model().index(self.linha[0].row(), 0).data()
-      
+        linha = self.tabela.selectionModel().selectedRows()
+        if linha:
+            return self.tabela.model().index(linha[0].row(), 0).data()
+
+    def excluirPeca(self):
+        try:
+            linha = self.tabela.selectionModel().selectedRows()
+            if linha:
+                msgBox = QtWidgets.QMessageBox()
+                msgBox.setWindowTitle("Aviso")
+                msgBox.setText('Tem certeza que deseja excluir?')
+                y = msgBox.addButton("Sim", QtWidgets.QMessageBox.ButtonRole.YesRole)
+                n = msgBox.addButton("Não", QtWidgets.QMessageBox.ButtonRole.NoRole)
+                y.setFixedWidth(60)
+                n.setFixedWidth(60)
+                msgBox.exec()
+                if msgBox.clickedButton() == y:
+                    id = self.tabela.model().index(linha[0].row(), 0).data()
+                    r = self.pecaCtrl.excluirPeca(id)
+                    if isinstance(r, Exception):
+                        raise Exception(r)
+                    elif not r:
+                        raise Exception('Erro ao excluir')
+                    else:
+                        msg = QtWidgets.QMessageBox()
+                        msg.setWindowTitle("Aviso")
+                        msg.setWindowIcon(QtGui.QIcon('./resources/logo-icon.png'))
+                        msg.setIcon(QtWidgets.QMessageBox.Icon.Information)
+                        msg.setText(f"Peça excluída com sucesso!")
+                        msg.exec()
+                        self.listarPecas()
+        except Exception as e:
+            msg = QtWidgets.QMessageBox()
+            msg.setWindowIcon(QtGui.QIcon('./resources/logo-icon.png'))
+            msg.setIcon(QtWidgets.QMessageBox.Icon.Critical)
+            msg.setWindowTitle("Erro")
+            msg.setText(str(e))
+            msg.exec()
 
 if __name__ == "__main__":
     import sys

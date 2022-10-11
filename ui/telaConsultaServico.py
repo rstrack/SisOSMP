@@ -53,8 +53,13 @@ class TelaConsultaServico(QtWidgets.QMainWindow):
             20, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
         self.hlayoutbotoes.addItem(spacer)
         self.botaoEditar = QtWidgets.QPushButton(self.framebotoes)
-        self.botaoEditar.setFixedSize(100, 25)
+        self.botaoEditar.setFixedSize(100, 35)
+        self.botaoEditar.setObjectName('botaoprincipal')
         self.hlayoutbotoes.addWidget(self.botaoEditar)
+        self.botaoExcluir = QtWidgets.QPushButton(self.framebotoes)
+        self.botaoExcluir.setFixedSize(100, 35)
+        self.botaoExcluir.setObjectName('excluir')
+        self.hlayoutbotoes.addWidget(self.botaoExcluir)
         self.filter.setFilterKeyColumn(-1)
         self.lineEditBusca.textChanged.connect(
             self.filter.setFilterRegularExpression)
@@ -68,11 +73,13 @@ class TelaConsultaServico(QtWidgets.QMainWindow):
         #self.selectionModel.selectionChanged.connect(self.mostrarDetalhes)
         self.botaoRefresh.clicked.connect(self.listarServicos)
         self.botaoEditar.clicked.connect(self.editarServico)
+        self.botaoExcluir.clicked.connect(self.excluirServico)
 
     def retranslateUi(self):
         _translate = QtCore.QCoreApplication.translate
         self.setWindowTitle(_translate("MainWindow", "Busca"))
         self.botaoEditar.setText(_translate("MainWindow", "Editar"))
+        self.botaoExcluir.setText(_translate("MainWindow", "Excluir"))
 
     def scrolled(self, value):
         if value == self.tabela.verticalScrollBar().maximum():
@@ -83,24 +90,24 @@ class TelaConsultaServico(QtWidgets.QMainWindow):
         if not servicos:
             return
         maxLength = len(servicos)
-        remainderRows = maxLength-self.linesShowed
+        remainderRows = maxLength-self.linhasCarregadas
         rowsToFetch=min(qtde, remainderRows)
         if rowsToFetch<=0:
             return
-        initLen = self.linesShowed
-        maxRows = self.linesShowed + rowsToFetch
-        while self.linesShowed < maxRows:
-            servicos[self.linesShowed]['valor'] = "R$ {:.2f}".format(servicos[self.linesShowed]['valor']).replace('.',',',1)
-            self.linesShowed+=1
-        self.model.addData(servicos[initLen:self.linesShowed])
+        initLen = self.linhasCarregadas
+        maxRows = self.linhasCarregadas + rowsToFetch
+        while self.linhasCarregadas < maxRows:
+            servicos[self.linhasCarregadas]['valor'] = "R$ {:.2f}".format(servicos[self.linhasCarregadas]['valor']).replace('.',',',1)
+            self.linhasCarregadas+=1
+        self.model.addData(servicos[initLen:self.linhasCarregadas])
         colunas = ['idServico', 'descricao', 'valor']
         self.model.colunasDesejadas(colunas)
-        self.model.setRowCount(self.linesShowed)
+        self.model.setRowCount(self.linhasCarregadas)
         self.model.setColumnCount(len(colunas))
         self.tabela.hideColumn(0)
 
     def listarServicos(self):
-        self.linesShowed = 0
+        self.linhasCarregadas = 0
         self.model = InfiniteScrollTableModel([{}])
         listaHeader = ['ID ', 'Descrição ', 'Valor ']
         self.model.setHorizontalHeaderLabels(listaHeader)
@@ -108,7 +115,7 @@ class TelaConsultaServico(QtWidgets.QMainWindow):
         self.tabela.setModel(self.filter)
         self.tabela.setItemDelegateForColumn(2, self.delegateRight)
         self.maisServicos(50)
-        if self.linesShowed > 0:
+        if self.linhasCarregadas > 0:
             header = self.tabela.horizontalHeader()
             header.setSectionResizeMode(
                 QtWidgets.QHeaderView.ResizeMode.ResizeToContents)
@@ -117,9 +124,44 @@ class TelaConsultaServico(QtWidgets.QMainWindow):
             self.model.setHeaderAlignment(2, QtCore.Qt.AlignmentFlag.AlignRight | QtCore.Qt.AlignmentFlag.AlignVCenter)
 
     def editarServico(self):
-        self.linha = self.tabela.selectionModel().selectedRows()
-        if self.linha:
-            return self.tabela.model().index(self.linha[0].row(), 0).data()    
+        linha = self.tabela.selectionModel().selectedRows()
+        if linha:
+            return self.tabela.model().index(linha[0].row(), 0).data()
+    
+    def excluirServico(self):
+        try:
+            linha = self.tabela.selectionModel().selectedRows()
+            if linha:
+                msgBox = QtWidgets.QMessageBox()
+                msgBox.setWindowTitle("Aviso")
+                msgBox.setText('Tem certeza que deseja excluir?')
+                y = msgBox.addButton("Sim", QtWidgets.QMessageBox.ButtonRole.YesRole)
+                n = msgBox.addButton("Não", QtWidgets.QMessageBox.ButtonRole.NoRole)
+                y.setFixedWidth(60)
+                n.setFixedWidth(60)
+                msgBox.exec()
+                if msgBox.clickedButton() == y:
+                    id = self.tabela.model().index(linha[0].row(), 0).data()
+                    r = self.servicoCtrl.excluirServico(id)
+                    if isinstance(r, Exception):
+                        raise Exception(r)
+                    elif not r:
+                        raise Exception('Erro ao excluir')
+                    else:
+                        msg = QtWidgets.QMessageBox()
+                        msg.setWindowTitle("Aviso")
+                        msg.setWindowIcon(QtGui.QIcon('./resources/logo-icon.png'))
+                        msg.setIcon(QtWidgets.QMessageBox.Icon.Information)
+                        msg.setText(f"Servico excluído com sucesso!")
+                        msg.exec()
+                        self.listarServicos()
+        except Exception as e:
+            msg = QtWidgets.QMessageBox()
+            msg.setWindowIcon(QtGui.QIcon('./resources/logo-icon.png'))
+            msg.setIcon(QtWidgets.QMessageBox.Icon.Critical)
+            msg.setWindowTitle("Erro")
+            msg.setText(str(e))
+            msg.exec()
 
 if __name__ == "__main__":
     import sys

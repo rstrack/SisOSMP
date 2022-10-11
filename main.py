@@ -2,7 +2,7 @@ import pymysql as sql
 from controller.mainController import MainController
 from model.modelo import *
 import sys
-from PyQt6 import QtWidgets
+from PyQt6 import QtWidgets, QtGui
 
 driver = sql.connect(user='root', password='admin', host='localhost', port=3306)
 cursor = driver.cursor()
@@ -16,6 +16,8 @@ if cursor.execute(f"SELECT SCHEMA_NAME FROM INFORMATION_SCHEMA.SCHEMATA WHERE SC
 def excepthook(type_, value, traceback_):
     sys.__excepthook__(type_, value, traceback_)
     msg = QtWidgets.QMessageBox()
+    msg.setWindowIcon(QtGui.QIcon('./resources/logo-icon.png'))
+    msg.setIcon(QtWidgets.QMessageBox.Icon.Critical)
     msg.setWindowTitle("Erro")
     msg.setText('Ocorreu um erro.\nEntre em contato com o desenvolvedor')
     msg.exec()

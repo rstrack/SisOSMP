@@ -1,4 +1,4 @@
-from PyQt6 import QtCore, QtWidgets
+from PyQt6 import QtCore, QtWidgets, QtGui
 from container import handleDeps
 
 SIGLAESTADOS = ['AC', 'AL', 'AP', 'AM', 'BA', 'CE', 'DF', 'ES', 'GO', 'MA', 'MT', 'MS',
@@ -119,11 +119,11 @@ class TelaEditarCliente(QtWidgets.QMainWindow):
         spacerItem5 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
         self.hlayout4.addItem(spacerItem5)
         self.botaoEditar = QtWidgets.QPushButton(self.framebotoes)
-        self.botaoEditar.setMinimumSize(QtCore.QSize(120, 35))
+        self.botaoEditar.setMinimumSize(QtCore.QSize(100, 35))
         self.botaoEditar.setObjectName('botaoprincipal')
         self.hlayout4.addWidget(self.botaoEditar)
         self.botaoCancelar = QtWidgets.QPushButton(self.framebotoes)
-        self.botaoCancelar.setMinimumSize(QtCore.QSize(100, 30))
+        self.botaoCancelar.setMinimumSize(QtCore.QSize(100, 35))
         self.hlayout4.addWidget(self.botaoCancelar)
         self.vlayout6.addWidget(self.framebotoes)
         spacerItem6 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding)
@@ -169,12 +169,16 @@ class TelaEditarCliente(QtWidgets.QMainWindow):
             if isinstance(r, Exception):
                 raise Exception(r)
             msg = QtWidgets.QMessageBox()
+            msg.setWindowIcon(QtGui.QIcon('./resources/logo-icon.png'))
+            msg.setIcon(QtWidgets.QMessageBox.Icon.Information)
             msg.setWindowTitle("Aviso")
             msg.setText('Cliente editado com sucesso!')
             msg.exec()
             self.paraTelaConsulta.emit(1)
         except Exception as e:
             msg = QtWidgets.QMessageBox()
+            msg.setWindowIcon(QtGui.QIcon('./resources/logo-icon.png'))
+            msg.setIcon(QtWidgets.QMessageBox.Icon.Critical)
             msg.setWindowTitle("Erro")
             msg.setText(str(e))
             msg.exec()

@@ -193,3 +193,14 @@ class OrcamentoController():
         itemServicos = self.itemServicoRep.findByOrcamento(idOrcamento)
         if itemServicos: return itemServicos.dicts()
         else: return None
+
+    def excluirOrcamento(self, idOrcamento):
+        with db.atomic() as transaction:
+            try:
+                linesAffected = self.orcamentoRep.delete(idOrcamento)
+                if linesAffected != 0:
+                    return True
+                else: return False
+            except Exception as e:
+                transaction.rollback()
+                return e

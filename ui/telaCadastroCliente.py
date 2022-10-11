@@ -1,4 +1,4 @@
-from PyQt6 import QtCore, QtWidgets
+from PyQt6 import QtCore, QtWidgets, QtGui
 from container import handleDeps
 
 SIGLAESTADOS = ['AC', 'AL', 'AP', 'AM', 'BA', 'CE', 'DF', 'ES', 'GO', 'MA', 'MT', 'MS',
@@ -144,11 +144,11 @@ class TelaCadastroCliente(QtWidgets.QMainWindow):
             40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
         self.hlayout4.addItem(spacerItem5)
         self.botaoSalvar = QtWidgets.QPushButton(self.framebotoes)
-        self.botaoSalvar.setMinimumSize(QtCore.QSize(120, 35))
+        self.botaoSalvar.setMinimumSize(QtCore.QSize(100, 35))
         self.botaoSalvar.setObjectName('botaoprincipal')
         self.hlayout4.addWidget(self.botaoSalvar)
         self.botaolimpar = QtWidgets.QPushButton(self.framebotoes)
-        self.botaolimpar.setMinimumSize(QtCore.QSize(100, 30))
+        self.botaolimpar.setMinimumSize(QtCore.QSize(100, 35))
         self.hlayout4.addWidget(self.botaolimpar)
         self.vlayout6.addWidget(self.framebotoes)
         spacerItem6 = QtWidgets.QSpacerItem(
@@ -198,8 +198,7 @@ class TelaCadastroCliente(QtWidgets.QMainWindow):
     def salvar(self):
         try:
             cliente = self.getDadosCliente()
-            veiculo = self.getDadosVeiculo()
-            
+            veiculo = self.getDadosVeiculo()   
             #se tem valores escritos nos campos de cliente e veiculo, tenta salvar os dois
             if cliente and veiculo:
                 fones = self.getFones()
@@ -215,18 +214,20 @@ class TelaCadastroCliente(QtWidgets.QMainWindow):
                 r = self.clienteCtrl.salvarVeiculo(veiculo)
                 string = 'Veiculo inserido com sucesso!'
             else: raise Exception('Campos vazios!')
-
             if isinstance(r, Exception):
                 raise Exception(r)
-
             msg = QtWidgets.QMessageBox()
+            msg.setWindowIcon(QtGui.QIcon('./resources/logo-icon.png'))
+            msg.setIcon(QtWidgets.QMessageBox.Icon.Information)
             msg.setWindowTitle("Aviso")
             msg.setText(string)
             msg.exec()
             self.limparCampos()
         except Exception as e:
             msg = QtWidgets.QMessageBox()
-            msg.setWindowTitle("Aviso")
+            msg.setWindowIcon(QtGui.QIcon('./resources/logo-icon.png'))
+            msg.setIcon(QtWidgets.QMessageBox.Icon.Critical)
+            msg.setWindowTitle("Erro")
             msg.setText(str(e))
             msg.exec()
 
@@ -358,11 +359,13 @@ class TelaCadastroCliente(QtWidgets.QMainWindow):
         else: self.labelDocumento.setText('Documento')
 
     def setMarcas(self):
+        currentText = self.comboBoxMarca.currentText()
         self.comboBoxMarca.clear()
         marcas = self.marcaCtrl.listarMarcas()
         for marca in marcas:
             self.comboBoxMarca.addItem(marca['nome'])
-        self.comboBoxMarca.setCurrentIndex(-1)
+        self.comboBoxMarca.setCurrentIndex(
+            self.comboBoxMarca.findText(currentText, QtCore.Qt.MatchFlag.MatchExactly))
 
     def setCompleters(self):
         cidades = self.cidadeCtrl.listarCidades()

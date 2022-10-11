@@ -4,15 +4,15 @@ from container import handleDeps
 from ui.infiniteScroll import AlignDelegate, InfiniteScrollTableModel
 from ui.telaClienteVeiculo import TelaClienteVeiculo
 
-class TelaBuscaCliente(QtWidgets.QWidget):
-    def __init__(self, MainWindow):
+class TelaBuscaCliente(QtWidgets.QMainWindow):
+    def __init__(self):
         super(TelaBuscaCliente, self).__init__()
         self.clienteCtrl = handleDeps.getDep('CLIENTECTRL')
-        self.setupUi(MainWindow)
+        self.setupUi()
 
-    def setupUi(self, MainWindow):
-        MainWindow.resize(800, 400)
-        self.mainwidget = QtWidgets.QWidget(MainWindow)
+    def setupUi(self):
+        self.resize(800, 400)
+        self.mainwidget = QtWidgets.QWidget(self)
         self.glayout = QtWidgets.QGridLayout(self.mainwidget)
         self.frameBusca = QtWidgets.QFrame(self.mainwidget)
         self.glayout.addWidget(self.frameBusca, 0, 0, 1, 1)
@@ -71,7 +71,7 @@ class TelaBuscaCliente(QtWidgets.QWidget):
         self.lineEditBusca.textChanged.connect(
             self.filter.setFilterRegularExpression)
         self.tabela.setModel(self.filter)
-        MainWindow.setCentralWidget(self.mainwidget)
+        self.setCentralWidget(self.mainwidget)
         self.retranslateUi()
         self.listarClientes()
         self.botaoRefresh.clicked.connect(self.listarClientes)
@@ -81,7 +81,7 @@ class TelaBuscaCliente(QtWidgets.QWidget):
 
     def retranslateUi(self):
         _translate = QtCore.QCoreApplication.translate
-        self.setWindowTitle(_translate("MainWindow", "Busca"))
+        self.setWindowTitle(_translate("MainWindow", "Busca por Cliente"))
         self.botaoSelecionar.setText(_translate("MainWindow", "Selecionar"))
         self.botaoVeiculos.setText(_translate("MainWindow", "Veiculos"))
         self.botaoExcluir.setText(_translate("MainWindow", "Excluir"))

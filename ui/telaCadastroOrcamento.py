@@ -2,9 +2,11 @@ from PyQt6 import QtCore, QtWidgets, QtGui
 from container import handleDeps
 
 from datetime import datetime
+from ui.messageBox import MessageBox
 
 from ui.telaBuscaCliente import TelaBuscaCliente
 from ui.telaBuscaVeiculo import TelaBuscaVeiculo
+from util.gerar_pdf import generatePDF
 
 SIGLAESTADOS = ['AC', 'AL', 'AP', 'AM', 'BA', 'CE', 'DF', 'ES', 'GO', 'MA', 'MT', 'MS',
                 'MG', 'PA', 'PB', 'PR', 'PE', 'PI', 'RJ', 'RN', 'RS', 'RO', 'RR', 'SC', 'SP', 'SE', 'TO']
@@ -281,14 +283,14 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
             40, 10, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
         self.hlayout4.addItem(spacerItem5)
         self.botaoSalvar = QtWidgets.QPushButton(self.framebotoes)
-        self.botaoSalvar.setMinimumSize(QtCore.QSize(100, 30))
+        self.botaoSalvar.setMinimumSize(QtCore.QSize(100, 35))
         self.botaoSalvar.setObjectName('botaoprincipal')
         self.hlayout4.addWidget(self.botaoSalvar)
-        self.botaoSalvareGerarPDF = QtWidgets.QPushButton(self.framebotoes)
-        self.botaoSalvareGerarPDF.setMinimumSize(QtCore.QSize(150, 30))
-        self.hlayout4.addWidget(self.botaoSalvareGerarPDF)
+        self.botaoSalvaresalvareGerarPDF = QtWidgets.QPushButton(self.framebotoes)
+        self.botaoSalvaresalvareGerarPDF.setMinimumSize(QtCore.QSize(150, 35))
+        self.hlayout4.addWidget(self.botaoSalvaresalvareGerarPDF)
         self.botaolimpar = QtWidgets.QPushButton(self.framebotoes)
-        self.botaolimpar.setMinimumSize(QtCore.QSize(100, 30))
+        self.botaolimpar.setMinimumSize(QtCore.QSize(100, 35))
         self.hlayout4.addWidget(self.botaolimpar)
         self.hlayout4.setContentsMargins(9, 9, 9, 9)
         self.vlayout1.addWidget(self.framebotoes)
@@ -326,7 +328,7 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
         self.lineEditCEP.textChanged.connect(self.buscarDadosCEP)
         self.botaolimpar.clicked.connect(self.resetarTela)
         self.botaoSalvar.clicked.connect(self.salvarOrcamento)
-        self.botaoSalvareGerarPDF.clicked.connect(self.gerarPDF)
+        self.botaoSalvaresalvareGerarPDF.clicked.connect(self.salvareGerarPDF)
         self.comboBoxPessoa.currentIndexChanged.connect(self.escolherTipoPessoa)
         self.lineEditNomePeca.textChanged.connect(lambda: self.buscarPeca(self.lineEditNomePeca,self.comboBoxUn, self.lineEditValorPeca))
         self.lineEditNomeServico.textChanged.connect(lambda: self.buscarServico(self.lineEditNomeServico,self.lineEditValorServico))
@@ -344,7 +346,7 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
     def retranslateUi(self):
         _translate = QtCore.QCoreApplication.translate
         self.setWindowTitle(_translate("MainWindow", "Mecânica Pasetto"))
-        self.botaoSalvareGerarPDF.setText(_translate("MainWindow", "Salvar e Imprimir"))
+        self.botaoSalvaresalvareGerarPDF.setText(_translate("MainWindow", "Salvar e Gerar PDF"))
         self.botaoSalvar.setText(_translate("MainWindow", "Salvar"))
         self.botaolimpar.setText(_translate("MainWindow", "Limpar"))
         self.labelTitulo.setText(_translate("MainWindow", "Orçamentos"))
@@ -561,11 +563,13 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
             self.comboBoxMarca.findText(marca, QtCore.Qt.MatchFlag.MatchExactly))
 
     def setMarcas(self):
+        currentText = self.comboBoxMarca.currentText()
         self.comboBoxMarca.clear()
         marcas = self.marcaCtrl.listarMarcas()
         for marca in marcas:
             self.comboBoxMarca.addItem(marca['nome'])
-        self.comboBoxMarca.setCurrentIndex(-1)
+        self.comboBoxMarca.setCurrentIndex(
+            self.comboBoxMarca.findText(currentText, QtCore.Qt.MatchFlag.MatchExactly))
 
     def setCompleters(self):
         pecas = self.pecaCtrl.listarPecas()
@@ -787,8 +791,9 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
             if isinstance(r, Exception):
                 raise Exception(r)
             msg = QtWidgets.QMessageBox()
-            msg.setWindowTitle("Aviso")
+            msg.setWindowIcon(QtGui.QIcon('./resources/logo-icon.png'))
             msg.setIcon(QtWidgets.QMessageBox.Icon.Information)
+            msg.setWindowTitle("Aviso")
             msg.setText("Orçamento criado com sucesso!")
             msg.exec()
             #RESETA DADOS DA TELA
@@ -796,7 +801,7 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
             self.veiculoSelected = None
             self.valorTotal = 0
             self.setupUi()
-            return r
+            return r['idOrcamento']
         except Exception as e:
             msg = QtWidgets.QMessageBox()
             msg.setWindowIcon(QtGui.QIcon('./resources/logo-icon.png'))
@@ -804,28 +809,53 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
             msg.setWindowTitle("Erro")
             msg.setText(str(e))
             msg.exec()
+            return e
 
-    def gerarPDF(self):
-        orcamento = self.salvarOrcamento()
-        fones = self.clienteCtrl.listarFones(orcamento['cliente']['idCliente'])
-        if fones: fones = list(fones)
-        itemPecas = self.orcamentoCtrl.listarItemPecas(orcamento['idOrcamento'])
-        if itemPecas: 
-            for item in itemPecas:
-                item['descricao'] = self.pecaCtrl.getPeca(item['peca'])['descricao']
-            itemPecas = list(itemPecas)
-        itemServicos = self.orcamentoCtrl.listarItemServicos(orcamento['idOrcamento'])
-        if itemServicos: 
-            for item in itemServicos:
-                item['descricao'] = self.servicoCtrl.getServico(item['servico'])['descricao']
-            itemServicos = list(itemServicos)
+    def salvareGerarPDF(self):
+        try:
+            id = self.salvarOrcamento()
+            orcamento = self.orcamentoCtrl.getOrcamento(id)
+            if isinstance(orcamento, Exception):
+                return
+            fones = self.clienteCtrl.listarFones(orcamento['cliente']['idCliente'])
+            if fones: fones = list(fones)
+            itemPecas = self.orcamentoCtrl.listarItemPecas(orcamento['idOrcamento'])
+            if itemPecas:
+                for item in itemPecas:
+                    peca = self.pecaCtrl.getPeca(item['peca'])
+                    item['descricao'] = peca['descricao']
+                    item['un'] = peca['un']
+                itemPecas = list(itemPecas)
+            itemServicos = self.orcamentoCtrl.listarItemServicos(orcamento['idOrcamento'])
+            if itemServicos: 
+                for item in itemServicos:
+                    item['descricao'] = self.servicoCtrl.getServico(item['servico'])['descricao']
+                itemServicos = list(itemServicos)
+            msg = MessageBox()
+            r = msg.question('Deseja salvar o arquivo?')
+            if r == 'cancelar':
+                return
+            elif r == 'nao':
+                generatePDF(orcamento, fones, itemServicos, itemPecas)
+            else:
+                window = QtWidgets.QMainWindow()
+                fd = QtWidgets.QFileDialog()
+                path = fd.getExistingDirectory(window, 'Salvar como', './')
+                if path == '':
+                    return
+                generatePDF(orcamento, fones, itemServicos, itemPecas, path)
+        except Exception as e:    
+            msg = QtWidgets.QMessageBox()
+            msg.setWindowIcon(QtGui.QIcon('./resources/logo-icon.png'))
+            msg.setIcon(QtWidgets.QMessageBox.Icon.Critical)
+            msg.setWindowTitle("Erro")
+            msg.setText(str(e))
+            msg.exec()
 
     def telaBuscaCliente(self):
-        self.windowCliente = QtWidgets.QMainWindow()
-        self.windowCliente.setWindowIcon(QtGui.QIcon('./resources/logo-icon.png'))
-        self.telaCliente = TelaBuscaCliente(self.windowCliente)
+        self.telaCliente = TelaBuscaCliente()
         self.telaCliente.botaoSelecionar.clicked.connect(self.retornarDadosCliente)
-        self.windowCliente.show()
+        self.telaCliente.show()
 
     def retornarDadosCliente(self):
         linha = self.telaCliente.tabela.selectionModel().selectedRows()
@@ -846,14 +876,12 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
             self.setEndereco(cliente['cep'], cliente['endereco'], cliente['numero'], cliente['bairro'], cidade, uf)
             self.clienteSelected = id
             self.checkboxNovoCliente.setChecked(False)
-            self.windowCliente.close()
+            self.telaCliente.close()
 
     def telaBuscaVeiculo(self):
-        self.windowVeiculo = QtWidgets.QMainWindow()
-        self.windowVeiculo.setWindowIcon(QtGui.QIcon('./resources/logo-icon.png'))
-        self.telaVeiculo = TelaBuscaVeiculo(self.windowVeiculo)
+        self.telaVeiculo = TelaBuscaVeiculo()
         self.telaVeiculo.botaoSelecionar.clicked.connect(self.retornarDadosVeiculo)
-        self.windowVeiculo.show()
+        self.telaVeiculo.show()
 
     def retornarDadosVeiculo(self):
         linha = self.telaVeiculo.tabela.selectionModel().selectedRows()
@@ -863,7 +891,7 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
             self.setVeiculo(veiculo['marca']['nome'], veiculo['modelo'], veiculo['placa'], veiculo['ano'])
             self.veiculoSelected = id
             self.checkboxNovoVeiculo.setChecked(False)
-            self.windowVeiculo.close()
+            self.telaVeiculo.close()
 
     def buscarDadosCEP(self):
         cep = self.lineEditCEP.text()

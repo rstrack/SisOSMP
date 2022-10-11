@@ -48,34 +48,30 @@ class TelaConsultaVeiculo(QtWidgets.QMainWindow):
         self.filter = QtCore.QSortFilterProxyModel()
         self.filter.setFilterCaseSensitivity(
             QtCore.Qt.CaseSensitivity.CaseInsensitive)
-
         self.framebotoes = QtWidgets.QFrame(self.mainwidget)
         self.glayout.addWidget(self.framebotoes, 2, 0, 1, 1)
         self.hlayoutbotoes = QtWidgets.QHBoxLayout(self.framebotoes)
         self.botaoMarcas = QtWidgets.QPushButton(self.framebotoes)
-        self.botaoMarcas.setFixedSize(100, 25)
+        self.botaoMarcas.setFixedSize(100, 35)
         self.hlayoutbotoes.addWidget(self.botaoMarcas)
         spacer = QtWidgets.QSpacerItem(
             20, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
         self.hlayoutbotoes.addItem(spacer)
         self.botaoEditar = QtWidgets.QPushButton(self.framebotoes)
-        self.botaoEditar.setFixedSize(100, 25)
+        self.botaoEditar.setFixedSize(100, 35)
+        self.botaoEditar.setObjectName('botaoprincipal')
         self.hlayoutbotoes.addWidget(self.botaoEditar)
         self.botaoClientes = QtWidgets.QPushButton(self.framebotoes)
-        self.botaoClientes.setFixedSize(100, 25)
+        self.botaoClientes.setFixedSize(100, 35)
         self.hlayoutbotoes.addWidget(self.botaoClientes)
         self.botaoExcluir = QtWidgets.QPushButton(self.framebotoes)
         self.botaoExcluir.setObjectName('excluir')
-        self.botaoExcluir.setFixedSize(100, 25)
+        self.botaoExcluir.setFixedSize(100, 35)
         self.hlayoutbotoes.addWidget(self.botaoExcluir)
-        self.model = InfiniteScrollTableModel([{}])
-        self.filter.setSourceModel(self.model)
         self.filter.setFilterKeyColumn(-1)
         self.lineEditBusca.textChanged.connect(
             self.filter.setFilterRegularExpression)
         self.tabela.setModel(self.filter)
-        listaHeader = ['ID', 'Marca', 'Modelo', 'Placa', 'Ano', 'Clientes Vinculados']
-        self.model.setHorizontalHeaderLabels(listaHeader)
         self.setCentralWidget(self.mainwidget)
         self.retranslateUi()
         self.selectionModel = self.tabela.selectionModel()
@@ -106,31 +102,31 @@ class TelaConsultaVeiculo(QtWidgets.QMainWindow):
         if not veiculos:
             return
         maxLength = len(veiculos)
-        remainderRows = maxLength-self.linesShowed
+        remainderRows = maxLength-self.linhasCarregadas
         rowsToFetch=min(qtde, remainderRows)
         if rowsToFetch<=0:
             return
-        initLen = self.linesShowed
-        maxRows = self.linesShowed + rowsToFetch
-        while self.linesShowed < maxRows:
-            queryClientes = self.clienteCtrl.listarClientes(veiculos[self.linesShowed]['idVeiculo'])
+        initLen = self.linhasCarregadas
+        maxRows = self.linhasCarregadas + rowsToFetch
+        while self.linhasCarregadas < maxRows:
+            queryClientes = self.clienteCtrl.listarClientes(veiculos[self.linhasCarregadas]['idVeiculo'])
             if queryClientes:
                 nomes = []
                 for cliente in queryClientes:
                     nomes.append(cliente['nome'])
-                veiculos[self.linesShowed]['clientes'] = ', '.join(nomes)
-            else: veiculos[self.linesShowed]['clientes'] = ''
-            veiculos[self.linesShowed] = FlatDict(veiculos[self.linesShowed], delimiter='.')
-            self.linesShowed+=1
-        self.model.addData(veiculos[initLen:self.linesShowed])
+                veiculos[self.linhasCarregadas]['clientes'] = ', '.join(nomes)
+            else: veiculos[self.linhasCarregadas]['clientes'] = ''
+            veiculos[self.linhasCarregadas] = FlatDict(veiculos[self.linhasCarregadas], delimiter='.')
+            self.linhasCarregadas+=1
+        self.model.addData(veiculos[initLen:self.linhasCarregadas])
         colunas = ['idVeiculo', 'marca.nome', 'modelo', 'placa', 'ano', 'clientes']
         self.model.colunasDesejadas(colunas)
-        self.model.setRowCount(self.linesShowed)
+        self.model.setRowCount(self.linhasCarregadas)
         self.model.setColumnCount(len(colunas))
         self.tabela.hideColumn(0)
 
     def listarVeiculos(self):
-        self.linesShowed = 0
+        self.linhasCarregadas = 0
         self.model = InfiniteScrollTableModel([{}])
         listaHeader = ['ID', 'Marca', 'Modelo', 'Placa', 'Ano', 'Clientes Vinculados']
         self.model.setHorizontalHeaderLabels(listaHeader)
@@ -138,7 +134,7 @@ class TelaConsultaVeiculo(QtWidgets.QMainWindow):
         self.tabela.setModel(self.filter)
         self.tabela.setItemDelegateForColumn(4, self.delegateRight)
         self.maisVeiculos(50)
-        if self.linesShowed > 0:
+        if self.linhasCarregadas > 0:
             header = self.tabela.horizontalHeader()
             header.setSectionResizeMode(
                 QtWidgets.QHeaderView.ResizeMode.ResizeToContents)
@@ -168,13 +164,16 @@ class TelaConsultaVeiculo(QtWidgets.QMainWindow):
                     r = self.clienteCtrl.excluirVeiculo(id)
                     if isinstance(r, Exception):
                         raise Exception(r)
-                    if r:
+                    elif not r:
+                        raise Exception('Erro ao excluir')
+                    else:    
                         msg = QtWidgets.QMessageBox()
-                        msg.setWindowTitle("Aviso")
+                        msg.setWindowIcon(QtGui.QIcon('./resources/logo-icon.png'))
                         msg.setIcon(QtWidgets.QMessageBox.Icon.Information)
+                        msg.setWindowTitle("Aviso")
                         msg.setText(f"Veiculo excluído com sucesso!")
                         msg.exec()
-                    else: raise Exception('Erro ao excluir')
+                        self.listarVeiculos()
         except Exception as e:
             msg = QtWidgets.QMessageBox()
             msg.setWindowIcon(QtGui.QIcon('./resources/logo-icon.png'))

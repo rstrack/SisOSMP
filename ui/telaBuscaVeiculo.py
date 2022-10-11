@@ -4,15 +4,15 @@ from container import handleDeps
 from ui.infiniteScroll import AlignDelegate, InfiniteScrollTableModel
 from ui.telaClienteVeiculo import TelaClienteVeiculo
 
-class TelaBuscaVeiculo(QtWidgets.QWidget):
-    def __init__(self, MainWindow):
+class TelaBuscaVeiculo(QtWidgets.QMainWindow):
+    def __init__(self):
         super(TelaBuscaVeiculo, self).__init__()
         self.clienteCtrl = handleDeps.getDep('CLIENTECTRL')
-        self.setupUi(MainWindow)
+        self.setupUi()
 
-    def setupUi(self, MainWindow):
-        MainWindow.resize(800, 400)
-        self.mainwidget = QtWidgets.QWidget(MainWindow)
+    def setupUi(self):
+        self.resize(800, 400)
+        self.mainwidget = QtWidgets.QWidget(self)
         self.glayout = QtWidgets.QGridLayout(self.mainwidget)
         self.frameBusca = QtWidgets.QFrame(self.mainwidget)
         self.glayout.addWidget(self.frameBusca, 0, 0, 1, 1)
@@ -64,15 +64,11 @@ class TelaBuscaVeiculo(QtWidgets.QWidget):
         self.botaoExcluir.setObjectName('excluir')
         self.botaoExcluir.setFixedSize(100, 25)
         self.hlayoutbotoes.addWidget(self.botaoExcluir)
-        self.model = InfiniteScrollTableModel([{}])
-        self.filter.setSourceModel(self.model)
         self.filter.setFilterKeyColumn(-1)
         self.lineEditBusca.textChanged.connect(
             self.filter.setFilterRegularExpression)
         self.tabela.setModel(self.filter)
-        listaHeader = ['ID', 'Marca', 'Modelo', 'Placa', 'Ano', 'Clientes Vinculados']
-        self.model.setHorizontalHeaderLabels(listaHeader)
-        MainWindow.setCentralWidget(self.mainwidget)
+        self.setCentralWidget(self.mainwidget)
         self.retranslateUi()
         self.selectionModel = self.tabela.selectionModel()
 
@@ -84,7 +80,7 @@ class TelaBuscaVeiculo(QtWidgets.QWidget):
 
     def retranslateUi(self):
         _translate = QtCore.QCoreApplication.translate
-        self.setWindowTitle(_translate("MainWindow", "Busca"))
+        self.setWindowTitle(_translate("MainWindow", "Busca por Veículo"))
         self.botaoSelecionar.setText(_translate("MainWindow", "Selecionar"))
         self.botaoClientes.setText(_translate("MainWindow", "Clientes"))
         self.botaoExcluir.setText(_translate("MainWindow", "Excluir"))
@@ -99,31 +95,31 @@ class TelaBuscaVeiculo(QtWidgets.QWidget):
         if not veiculos:
             return
         maxLength = len(veiculos)
-        remainderRows = maxLength-self.linesShowed
+        remainderRows = maxLength-self.linhasCarregadas
         rowsToFetch=min(qtde, remainderRows)
         if rowsToFetch<=0:
             return
-        initLen = self.linesShowed
-        maxRows = self.linesShowed + rowsToFetch
-        while self.linesShowed < maxRows:
-            queryClientes = self.clienteCtrl.listarClientes(veiculos[self.linesShowed]['idVeiculo'])
+        initLen = self.linhasCarregadas
+        maxRows = self.linhasCarregadas + rowsToFetch
+        while self.linhasCarregadas < maxRows:
+            queryClientes = self.clienteCtrl.listarClientes(veiculos[self.linhasCarregadas]['idVeiculo'])
             if queryClientes:
                 nomes = []
                 for cliente in queryClientes:
                     nomes.append(cliente['nome'])
-                veiculos[self.linesShowed]['clientes'] = ', '.join(nomes)
-            else: veiculos[self.linesShowed]['clientes'] = ''
-            veiculos[self.linesShowed] = FlatDict(veiculos[self.linesShowed], delimiter='.')
-            self.linesShowed+=1
-        self.model.addData(veiculos[initLen:self.linesShowed])
+                veiculos[self.linhasCarregadas]['clientes'] = ', '.join(nomes)
+            else: veiculos[self.linhasCarregadas]['clientes'] = ''
+            veiculos[self.linhasCarregadas] = FlatDict(veiculos[self.linhasCarregadas], delimiter='.')
+            self.linhasCarregadas+=1
+        self.model.addData(veiculos[initLen:self.linhasCarregadas])
         colunas = ['idVeiculo', 'marca.nome', 'modelo', 'placa', 'ano', 'clientes']
         self.model.colunasDesejadas(colunas)
-        self.model.setRowCount(self.linesShowed)
+        self.model.setRowCount(self.linhasCarregadas)
         self.model.setColumnCount(len(colunas))
         self.tabela.hideColumn(0)
 
     def listarVeiculos(self):
-        self.linesShowed = 0
+        self.linhasCarregadas = 0
         self.model = InfiniteScrollTableModel([{}])
         listaHeader = ['ID', 'Marca', 'Modelo', 'Placa', 'Ano', 'Clientes Vinculados']
         self.model.setHorizontalHeaderLabels(listaHeader)
@@ -131,7 +127,7 @@ class TelaBuscaVeiculo(QtWidgets.QWidget):
         self.tabela.setModel(self.filter)
         self.tabela.setItemDelegateForColumn(4, self.delegateRight)
         self.maisVeiculos(50)
-        if self.linesShowed > 0:
+        if self.linhasCarregadas > 0:
             header = self.tabela.horizontalHeader()
             header.setSectionResizeMode(
                 QtWidgets.QHeaderView.ResizeMode.ResizeToContents)

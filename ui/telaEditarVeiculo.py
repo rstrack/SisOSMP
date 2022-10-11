@@ -1,5 +1,4 @@
-from PyQt6 import QtCore, QtWidgets
-from model.modelo import Veiculo
+from PyQt6 import QtCore, QtWidgets, QtGui
 from container import handleDeps
 
 SIGLAESTADOS = ['AC', 'AL', 'AP', 'AM', 'BA', 'CE', 'DF', 'ES', 'GO', 'MA', 'MT', 'MS',
@@ -130,11 +129,13 @@ class TelaEditarVeiculo(QtWidgets.QMainWindow):
             self.comboBoxMarca.findText(marca, QtCore.Qt.MatchFlag.MatchExactly))
 
     def setMarcas(self):
+        currentText = self.comboBoxMarca.currentText()
         self.comboBoxMarca.clear()
         marcas = self.marcaCtrl.listarMarcas()
         for marca in marcas:
             self.comboBoxMarca.addItem(marca['nome'])
-        self.comboBoxMarca.setCurrentIndex(-1)
+        self.comboBoxMarca.setCurrentIndex(
+            self.comboBoxMarca.findText(currentText, QtCore.Qt.MatchFlag.MatchExactly))
     
     def editar(self):
         try:
@@ -143,12 +144,16 @@ class TelaEditarVeiculo(QtWidgets.QMainWindow):
             if isinstance(r, Exception):
                 raise Exception(r)
             msg = QtWidgets.QMessageBox()
+            msg.setWindowIcon(QtGui.QIcon('./resources/logo-icon.png'))
+            msg.setIcon(QtWidgets.QMessageBox.Icon.Information)
             msg.setWindowTitle("Aviso")
             msg.setText('Veiculo editado com sucesso!')
             msg.exec()
             self.paraTelaConsulta.emit(1)
         except Exception as e:
             msg = QtWidgets.QMessageBox()
+            msg.setWindowIcon(QtGui.QIcon('./resources/logo-icon.png'))
+            msg.setIcon(QtWidgets.QMessageBox.Icon.Critical)
             msg.setWindowTitle("Erro")
             msg.setText(str(e))
             msg.exec()
