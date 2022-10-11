@@ -1,7 +1,7 @@
 from PyQt6 import QtCore, QtGui, QtWidgets
 
 from container import handleDeps
-from telaClienteVeiculo import TelaClienteVeiculo
+from ui.telaClienteVeiculo import TelaClienteVeiculo
 
 class TelaBuscaVeiculo(QtWidgets.QWidget):
     def __init__(self, MainWindow):

@@ -1,5 +1,5 @@
 from PyQt6 import QtCore, QtGui, QtWidgets
-from telaClienteVeiculo import TelaClienteVeiculo
+from ui.telaClienteVeiculo import TelaClienteVeiculo
 from ui.infiniteScroll import AlignDelegate, InfiniteScrollTableModel
 from container import handleDeps
 from flatdict import FlatDict

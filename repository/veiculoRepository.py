@@ -21,6 +21,12 @@ class VeiculoRepository():
     def findByID(self, id):
         return Veiculo.select().where(Veiculo.idVeiculo==id).get()
 
+    def findByMarca(self, idMarca):
+        veiculo = Veiculo.select().where(Veiculo.marca==idMarca)
+        if veiculo:
+            return veiculo
+        else: return None
+
     def findByPlaca(self, placa):
         veiculo = Veiculo.select().where(Veiculo.placa==placa)
         if veiculo:

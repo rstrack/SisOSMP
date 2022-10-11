@@ -1,8 +1,10 @@
 from PyQt6 import QtCore, QtGui, QtWidgets
 from container import handleDeps
-from telaClienteVeiculo import TelaClienteVeiculo
+from ui.telaClienteVeiculo import TelaClienteVeiculo
 from ui.infiniteScroll import AlignDelegate, InfiniteScrollTableModel
 from flatdict import FlatDict
+
+from ui.telaMarcas import TelaMarcas
 
 class TelaConsultaVeiculo(QtWidgets.QMainWindow):
     def __init__(self):
@@ -51,6 +53,9 @@ class TelaConsultaVeiculo(QtWidgets.QMainWindow):
         self.framebotoes = QtWidgets.QFrame(self.mainwidget)
         self.glayout.addWidget(self.framebotoes, 2, 0, 1, 1)
         self.hlayoutbotoes = QtWidgets.QHBoxLayout(self.framebotoes)
+        self.botaoMarcas = QtWidgets.QPushButton(self.framebotoes)
+        self.botaoMarcas.setFixedSize(100, 25)
+        self.hlayoutbotoes.addWidget(self.botaoMarcas)
         spacer = QtWidgets.QSpacerItem(
             20, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
         self.hlayoutbotoes.addItem(spacer)
@@ -78,6 +83,7 @@ class TelaConsultaVeiculo(QtWidgets.QMainWindow):
 
         self.listarVeiculos()
         self.botaoRefresh.clicked.connect(self.listarVeiculos)
+        self.botaoMarcas.clicked.connect(self.marcas)
         self.botaoClientes.clicked.connect(self.clientes)
         self.botaoExcluir.clicked.connect(self.excluirVeiculo)
         self.tabela.verticalScrollBar().valueChanged.connect(self.scrolled)
@@ -86,6 +92,7 @@ class TelaConsultaVeiculo(QtWidgets.QMainWindow):
     def retranslateUi(self):
         _translate = QtCore.QCoreApplication.translate
         self.setWindowTitle(_translate("MainWindow", "Busca"))
+        self.botaoMarcas.setText(_translate("MainWindow", "Marcas"))
         self.botaoEditar.setText(_translate("MainWindow", "Editar"))
         self.botaoClientes.setText(_translate("MainWindow", "Clientes"))
         self.botaoExcluir.setText(_translate("MainWindow", "Excluir"))
@@ -121,6 +128,7 @@ class TelaConsultaVeiculo(QtWidgets.QMainWindow):
         self.model.colunasDesejadas(colunas)
         self.model.setRowCount(self.linesShowed)
         self.model.setColumnCount(len(colunas))
+        self.tabela.hideColumn(0)
 
     def listarVeiculos(self):
         self.linesShowed = 0
@@ -183,6 +191,10 @@ class TelaConsultaVeiculo(QtWidgets.QMainWindow):
             self.telaClienteVeiculo = TelaClienteVeiculo()
             self.telaClienteVeiculo.renderClientes(id)
             self.telaClienteVeiculo.show()
+
+    def marcas(self):
+        self.telaMarcas = TelaMarcas()
+        self.telaMarcas.render()
 
 if __name__ == "__main__":
     import sys

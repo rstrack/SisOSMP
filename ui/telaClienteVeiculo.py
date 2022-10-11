@@ -1,12 +1,12 @@
-from PyQt6 import QtCore, QtGui, QtWidgets
+from PyQt6 import QtCore, QtWidgets
 from container import handleDeps
-from controller.clienteController import ClienteController
 
 class TelaClienteVeiculo(QtWidgets.QMainWindow):
 
     def __init__(self):
         super(TelaClienteVeiculo, self).__init__()
         self.clienteCtrl = handleDeps.getDep('CLIENTECTRL')
+        self.clienteID = None
         self.setupUi()
 
     def setupUi(self):
@@ -65,7 +65,7 @@ class TelaClienteVeiculo(QtWidgets.QMainWindow):
         if veiculos:
             self.tabela.setRowCount(len(veiculos))
             for veiculo in veiculos:
-                item1 = QtWidgets.QTableWidgetItem(veiculo['idVeiculo'])
+                item1 = QtWidgets.QTableWidgetItem(str(veiculo['idVeiculo']))
                 self.tabela.setItem(i, 0, item1)
                 item2 = QtWidgets.QTableWidgetItem(veiculo['marca']['nome'])
                 self.tabela.setItem(i, 1, item2)
@@ -87,21 +87,21 @@ class TelaClienteVeiculo(QtWidgets.QMainWindow):
         index = self.tabela.indexAt(button.pos())
         if index.isValid():
             linha = index.row()
-        id = self.tabela.model().index(linha, 0).data()
-        msgBox = QtWidgets.QMessageBox()
-        msgBox.setWindowTitle("Aviso")
-        msgBox.setText('Tem certeza?')
-        y = msgBox.addButton("Sim", QtWidgets.QMessageBox.ButtonRole.YesRole)
-        n = msgBox.addButton("Não", QtWidgets.QMessageBox.ButtonRole.NoRole)
-        y.setFixedWidth(60)
-        n.setFixedWidth(60)
-        msgBox.exec()
-        if msgBox.clickedButton() == y:
-            veiculo = self.clienteCtrl.getVeiculo(id)
-            r = self.clienteCtrl.excluirVeiculoCliente(veiculo['idVeiculo'], self.clienteID)
-            if isinstance(r, Exception):
-                raise Exception(r)
-        self.renderVeiculos(self.clienteID)
+            id = self.tabela.model().index(linha, 0).data()
+            msgBox = QtWidgets.QMessageBox()
+            msgBox.setWindowTitle("Aviso")
+            msgBox.setText('Tem certeza?')
+            y = msgBox.addButton("Sim", QtWidgets.QMessageBox.ButtonRole.YesRole)
+            n = msgBox.addButton("Não", QtWidgets.QMessageBox.ButtonRole.NoRole)
+            y.setFixedWidth(60)
+            n.setFixedWidth(60)
+            msgBox.exec()
+            if msgBox.clickedButton() == y:
+                veiculo = self.clienteCtrl.getVeiculo(id)
+                r = self.clienteCtrl.excluirVeiculoCliente(veiculo['idVeiculo'], self.clienteID)
+                if isinstance(r, Exception):
+                    raise Exception(r)
+            self.renderVeiculos(self.clienteID)
 
     def renderClientes(self, idVeiculo):
         self.tabela.setColumnCount(5)
@@ -122,7 +122,7 @@ class TelaClienteVeiculo(QtWidgets.QMainWindow):
         if clientes:
             self.tabela.setRowCount(len(clientes))
             for cliente in clientes:
-                item1 = QtWidgets.QTableWidgetItem(cliente['idCliente'])
+                item1 = QtWidgets.QTableWidgetItem(str(cliente['idCliente']))
                 self.tabela.setItem(i, 0, item1)
                 item2 = QtWidgets.QTableWidgetItem(cliente['nome'])
                 self.tabela.setItem(i, 1, item2)
@@ -150,21 +150,21 @@ class TelaClienteVeiculo(QtWidgets.QMainWindow):
         index = self.tabela.indexAt(button.pos())
         if index.isValid():
             linha = index.row()
-        id = self.tabela.model().index(linha, 0).data()
-        msgBox = QtWidgets.QMessageBox()
-        msgBox.setWindowTitle("Aviso")
-        msgBox.setText('Tem certeza?')
-        y = msgBox.addButton("Sim", QtWidgets.QMessageBox.ButtonRole.YesRole)
-        n = msgBox.addButton("Não", QtWidgets.QMessageBox.ButtonRole.NoRole)
-        y.setFixedWidth(60)
-        n.setFixedWidth(60)
-        msgBox.exec()
-        if msgBox.clickedButton() == y:
-            cliente = self.clienteCtrl.getCliente(id)
-            r = self.clienteCtrl.excluirVeiculoCliente(self.veiculoID, cliente['idCliente'])
-            if isinstance(r, Exception):
-                raise Exception(r)
-        self.renderClientes(self.veiculoID)
+            id = self.tabela.model().index(linha, 0).data()
+            msgBox = QtWidgets.QMessageBox()
+            msgBox.setWindowTitle("Aviso")
+            msgBox.setText('Tem certeza?')
+            y = msgBox.addButton("Sim", QtWidgets.QMessageBox.ButtonRole.YesRole)
+            n = msgBox.addButton("Não", QtWidgets.QMessageBox.ButtonRole.NoRole)
+            y.setFixedWidth(60)
+            n.setFixedWidth(60)
+            msgBox.exec()
+            if msgBox.clickedButton() == y:
+                cliente = self.clienteCtrl.getCliente(id)
+                r = self.clienteCtrl.excluirVeiculoCliente(self.veiculoID, cliente['idCliente'])
+                if isinstance(r, Exception):
+                    raise Exception(r)
+            self.renderClientes(self.veiculoID)
 
 
 if __name__ == "__main__":
@@ -172,7 +172,6 @@ if __name__ == "__main__":
     app = QtWidgets.QApplication(sys.argv)
     MainWindow = QtWidgets.QMainWindow()
     ui = TelaClienteVeiculo()
-    ui.clienteCtrl = ClienteController()
     ui.setupUi()
     style = open('./resources/styles.qss').read()
     app.setStyleSheet(style)
