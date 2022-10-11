@@ -55,10 +55,6 @@ class ClienteController():
                 cliente = self.salvarCliente(dadosCliente, dadosFone)
                 if isinstance(cliente, Exception):
                     raise Exception(cliente)
-                marca = self.marcaRep.findByNome(dadosVeiculo['marca'])
-                if not marca:
-                    marca = self.marcaRep.save({'nome':dadosVeiculo['marca']})
-                dadosVeiculo['marca'] = marca
                 qVeiculo = self.veiculoRep.findByPlaca(dadosVeiculo['placa'])
                 if qVeiculo:
                     question = MessageBox.question(f'Veiculo {qVeiculo.modelo} placa {qVeiculo.placa} já registrado. ' \
@@ -80,6 +76,7 @@ class ClienteController():
         with db.atomic() as transaction:
             try:
                 cliente['idCliente'] = idCliente
+                
                 if 'cidade' in cliente:
                     cidade = {}
                     cidade['nome'] = cliente.pop('cidade')
@@ -95,6 +92,10 @@ class ClienteController():
                         if not fone['fone'] in fonesTela:
                             self.foneRep.delete(_cliente, fone['fone'])
                     for fone in fonesTela:
+                        if fone != None:
+                            _fone = self.foneRep.findByFone(fone)
+                            if _fone.cliente != _cliente.idCliente:
+                                raise Exception('Fone já cadastrado por outro cliente!')
                         if fone != None and next((False for item in fonesBanco if item['fone']==fone), True):
                             self.foneRep.save(_cliente, fone)
                 else:
@@ -160,8 +161,9 @@ class ClienteController():
             try:
                 qVeiculo = self.veiculoRep.findByPlaca(veiculo['placa'])
                 if qVeiculo:
-                    raise Exception(f'Placa {qVeiculo.placa} já registrada para o veículo ' \
-                    +f'{self.marcaRep.findByID(qVeiculo.marca).nome} {qVeiculo.modelo}')
+                    if qVeiculo.idVeiculo != idVeiculo:
+                        raise Exception(f'Placa {qVeiculo.placa} já registrada para o veículo ' \
+                        +f'{self.marcaRep.findByID(qVeiculo.marca).nome} {qVeiculo.modelo}')
                 veiculo['idVeiculo'] = idVeiculo
                 marca = self.marcaRep.findByNome(veiculo['marca'])
                 if not marca:

@@ -22,5 +22,5 @@ class ClienteRepository():
         return Cliente.select().where(Cliente.idCliente==id).get()
 
     def findByDocumento(self, documento):
-        return Cliente.select().where(Cliente.documento==documento)
+        return Cliente.select().where(Cliente.documento==documento).get()
 

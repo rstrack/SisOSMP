@@ -323,7 +323,7 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
         self.botaoAddServicos.clicked.connect(self.addLinhaServico)
         self.botaobuscarCliente.clicked.connect(self.telaBuscaCliente)
         self.botaoBuscarVeiculo.clicked.connect(self.telaBuscaVeiculo)
-        self.lineEditCEP.editingFinished.connect(self.buscarDadosCEP)
+        self.lineEditCEP.textChanged.connect(self.buscarDadosCEP)
         self.botaolimpar.clicked.connect(self.resetarTela)
         self.botaoSalvar.clicked.connect(self.salvarOrcamento)
         self.botaoSalvareGerarPDF.clicked.connect(self.gerarPDF)
@@ -870,6 +870,8 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
         if len(cep) !=8:
             return
         dados = self.buscaCEP.buscarCEP(cep)
+        if dados == None:
+            return
         if 'erro' in dados:
             return
         self.lineEditEnder.setText(dados['logradouro'])

@@ -42,8 +42,11 @@ class TelaBuscaVeiculo(QtWidgets.QWidget):
             QtCore.Qt.CaseSensitivity.CaseInsensitive)
         self.framebotoes = QtWidgets.QFrame(self.mainwidget)
         self.vlayout.addWidget(
-            self.framebotoes, 0, QtCore.Qt.AlignmentFlag.AlignHCenter | QtCore.Qt.AlignmentFlag.AlignVCenter)
+            self.framebotoes)
         self.hlayoutbotoes = QtWidgets.QHBoxLayout(self.framebotoes)
+        spacer =  QtWidgets.QSpacerItem(
+            40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
+        self.hlayoutbotoes.addItem(spacer)
         self.botaoSelecionar = QtWidgets.QPushButton(self.framebotoes)
         self.botaoSelecionar.setFixedSize(100, 25)
         self.hlayoutbotoes.addWidget(self.botaoSelecionar)

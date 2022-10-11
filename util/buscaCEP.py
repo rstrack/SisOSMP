@@ -6,8 +6,8 @@ class BuscaCEP():
 
     def buscarCEP(self, cep):
         try:
-            request = requests.get('https://viacep.com.br/ws/{}/json/'.format(cep), timeout=1)
+            request = requests.get('https://viacep.com.br/ws/{}/json/'.format(cep), timeout=5)
             return request.json()
         except:
-            return
+            return None
 

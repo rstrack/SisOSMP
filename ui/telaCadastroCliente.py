@@ -223,6 +223,7 @@ class TelaCadastroCliente(QtWidgets.QMainWindow):
             msg.setWindowTitle("Aviso")
             msg.setText(string)
             msg.exec()
+            self.limparCampos()
         except Exception as e:
             msg = QtWidgets.QMessageBox()
             msg.setWindowTitle("Aviso")
@@ -378,6 +379,8 @@ class TelaCadastroCliente(QtWidgets.QMainWindow):
         if len(cep) !=8:
             return
         dados = self.buscaCEP.buscarCEP(cep)
+        if dados == None:
+            return
         if 'erro' in dados:
             return
         self.lineEditEnder.setText(dados['logradouro'])

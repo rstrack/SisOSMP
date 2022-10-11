@@ -179,7 +179,6 @@ class TelaCadastroPeca(QtWidgets.QMainWindow):
             msg.setText(f"Peça{s} cadastrada{s} com sucesso!")
             msg.exec()
             self.resetarTela()
-
         except Exception as e:
             msg = QtWidgets.QMessageBox()
             msg.setWindowIcon(QtGui.QIcon('./resources/logo-icon.png'))

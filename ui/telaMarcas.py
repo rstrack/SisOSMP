@@ -52,7 +52,10 @@ class TelaMarcas(QtWidgets.QMainWindow):
     def render(self):
         marcas = self.marcaCtrl.listarMarcas()
         if not marcas:
-            return
+            try:
+                self.close()
+            except:
+                return
         self.tabela.setColumnCount(4)
         self.tabela.setRowCount(len(marcas))
         header = ['ID', 'Marca', '', '']

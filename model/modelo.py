@@ -102,7 +102,7 @@ class ItemServico(BaseModel):
 
 class Fone(BaseModel):
     cliente = ForeignKeyField(Cliente, backref='clientes',null=False, on_delete='CASCADE')
-    fone = CharField(max_length=14,null=False, unique=True, constraints=[Check('len(fone)>=9')])
+    fone = CharField(max_length=14,null=False, unique=True, constraints=[Check('CHAR_LENGTH(fone)>=9')])
     class Meta:
         primary_key = CompositeKey('cliente', 'fone')
 
