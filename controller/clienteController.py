@@ -94,7 +94,9 @@ class ClienteController():
                     for fone in fonesTela:
                         if fone != None:
                             _fone = self.foneRep.findByFone(fone)
-                            if _fone.cliente != _cliente.idCliente:
+                            print(_fone.cliente)
+                            print(_cliente.idCliente)
+                            if str(_fone.cliente) != str(_cliente.idCliente):
                                 raise Exception('Fone já cadastrado por outro cliente!')
                         if fone != None and next((False for item in fonesBanco if item['fone']==fone), True):
                             self.foneRep.save(_cliente, fone)
@@ -154,7 +156,6 @@ class ClienteController():
             except Exception as e:
                 transaction.rollback()
                 return e
-
 
     def editarVeiculo(self, idVeiculo, veiculo):
         with db.atomic() as transaction:

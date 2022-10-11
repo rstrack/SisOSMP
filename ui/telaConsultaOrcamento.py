@@ -6,6 +6,7 @@ from ui.infiniteScroll import AlignDelegate, InfiniteScrollTableModel
 from ui.messageBox import MessageBox
 from util.gerar_pdf import generatePDF
 class TelaConsultaOrcamento(QtWidgets.QMainWindow):
+    orcamentoAprovado = QtCore.pyqtSignal(int)
     def __init__(self):
         super(TelaConsultaOrcamento, self).__init__()
         self.orcamentoCtrl = handleDeps.getDep('ORCAMENTOCTRL')
@@ -54,6 +55,9 @@ class TelaConsultaOrcamento(QtWidgets.QMainWindow):
         self.botaoEditar = QtWidgets.QPushButton(self.framebotoes)
         self.botaoEditar.setFixedSize(100, 25)
         self.hlayoutbotoes.addWidget(self.botaoEditar)
+        self.botaoAprovar = QtWidgets.QPushButton(self.framebotoes)
+        self.botaoAprovar.setFixedSize(100, 25)
+        self.hlayoutbotoes.addWidget(self.botaoAprovar)
         self.botaoGerarPDF = QtWidgets.QPushButton(self.framebotoes)
         self.botaoGerarPDF.setFixedSize(100, 25)
         self.hlayoutbotoes.addWidget(self.botaoGerarPDF)
@@ -62,6 +66,7 @@ class TelaConsultaOrcamento(QtWidgets.QMainWindow):
         self.setCentralWidget(self.mainwidget)
         self.retranslateUi()
         self.botaoRefresh.clicked.connect(self.listarOrcamentos)
+        self.botaoAprovar.clicked.connect(self.aprovar)
         self.botaoGerarPDF.clicked.connect(self.gerarPDF)
         self.listarOrcamentos()
 
@@ -69,6 +74,7 @@ class TelaConsultaOrcamento(QtWidgets.QMainWindow):
         _translate = QtCore.QCoreApplication.translate
         self.setWindowTitle(_translate("MainWindow", "Busca"))
         self.botaoEditar.setText(_translate("MainWindow", "Editar"))
+        self.botaoAprovar.setText(_translate("MainWindow", "Aprovar"))
         self.botaoGerarPDF.setText(_translate("MainWindow", "Gerar PDF"))
 
     def scrolled(self, value):
@@ -121,6 +127,25 @@ class TelaConsultaOrcamento(QtWidgets.QMainWindow):
         self.linha = self.tabela.selectionModel().selectedRows()
         if self.linha:
             return self.tabela.model().index(self.linha[0].row(), 0).data()
+
+    def aprovar(self):
+        try:
+            self.linha = self.tabela.selectionModel().selectedRows()
+            if self.linha:
+                id = self.tabela.model().index(self.linha[0].row(), 0).data()
+                r = self.orcamentoCtrl.aprovarOrcamento(id)
+                if isinstance(r, Exception):
+                    raise Exception(r)
+                msg = QtWidgets.QMessageBox()
+                msg.setWindowTitle("Aviso")
+                msg.setText("Orçamento aprovado com sucesso!")
+                msg.exec()
+                self.orcamentoAprovado.emit(1)
+        except Exception as e:
+            msg = QtWidgets.QMessageBox()
+            msg.setWindowTitle("Aviso")
+            msg.setText(str(e))
+            msg.exec()
 
     def excluirOrcamento(self):
         msgBox = QtWidgets.QMessageBox()

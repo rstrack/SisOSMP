@@ -8,7 +8,6 @@ class TelaConsultaCliente(QtWidgets.QMainWindow):
     def __init__(self):
         super(TelaConsultaCliente, self).__init__()
         self.clienteCtrl = handleDeps.getDep('CLIENTECTRL')
-        self.cidadeCtrl = handleDeps.getDep('CIDADECTRL')
         self.setupUi()
 
     def setupUi(self):

@@ -10,7 +10,6 @@ class TelaConsultaVeiculo(QtWidgets.QMainWindow):
     def __init__(self):
         super(TelaConsultaVeiculo, self).__init__()
         self.clienteCtrl = handleDeps.getDep('CLIENTECTRL')
-        self.marcaCtrl = handleDeps.getDep('MARCACTRL')
         self.setupUi()
 
     def setupUi(self):

@@ -146,6 +146,7 @@ class MainController():
         self.telaEditarVeiculo.paraTelaConsulta.connect(lambda: self.telaInicio.stackedWidget.setCurrentWidget(self.telaConsultaVeiculo))
         self.telaEditarOrcamento.paraTelaConsulta.connect(lambda: self.telaInicio.stackedWidget.setCurrentWidget(self.telaConsultaOrcamento))
         self.telaEditarOS.paraTelaConsulta.connect(lambda: self.telaInicio.stackedWidget.setCurrentWidget(self.telaConsultaOS))
+        self.telaConsultaOrcamento.orcamentoAprovado.connect(lambda: self.telaInicio.stackedWidget.setCurrentWidget(self.telaConsultaOS))
 
     # função que passa da tela de consulta para a tela de edição da respectiva entidade, passando id a ser alterado como parametro
     def consultaParaEditar(self, pagina, render, param):
@@ -175,6 +176,12 @@ class MainController():
                 self.telaConsultaOrcamento.listarOrcamentos()
             case self.telaConsultaOS:
                 self.telaConsultaOS.listarOS()
+            case self.telaEditarVeiculo:
+                self.telaEditarVeiculo.setMarcas()
+            case self.telaEditarOrcamento:
+                self.telaEditarOrcamento.setMarcas()
+            case self.telaEditarOS:
+                self.telaEditarOS.setMarcas()
             case _:
                 return
 
