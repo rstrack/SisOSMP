@@ -1,10 +1,10 @@
 from PyQt6 import QtCore, QtGui, QtWidgets
 from container import handleDeps
-from datetime import datetime
 from flatdict import FlatDict
 from ui.infiniteScroll import AlignDelegate, InfiniteScrollTableModel
 from ui.messageBox import MessageBox
 from util.gerar_pdf import generatePDF
+
 class TelaConsultaOrcamento(QtWidgets.QMainWindow):
     orcamentoAprovado = QtCore.pyqtSignal(int)
     def __init__(self):
@@ -13,6 +13,7 @@ class TelaConsultaOrcamento(QtWidgets.QMainWindow):
         self.clienteCtrl = handleDeps.getDep('CLIENTECTRL')
         self.pecaCtrl = handleDeps.getDep('PECACTRL')
         self.servicoCtrl = handleDeps.getDep('SERVICOCTRL')
+        self.busca = ''
         self.setupUi()
 
     def setupUi(self):
@@ -45,8 +46,6 @@ class TelaConsultaOrcamento(QtWidgets.QMainWindow):
         self.tabela.horizontalHeader().setHighlightSections(False)
         self.tabela.verticalHeader().setVisible(False)
         self.delegateRight = AlignDelegate(QtCore.Qt.AlignmentFlag.AlignRight | QtCore.Qt.AlignmentFlag.AlignVCenter)
-        self.filter = QtCore.QSortFilterProxyModel()
-        self.filter.setFilterCaseSensitivity(QtCore.Qt.CaseSensitivity.CaseInsensitive)
         self.framebotoes = QtWidgets.QFrame(self.mainwidget)
         self.glayout.addWidget(self.framebotoes, 2, 0, 1, 1)
         self.hlayoutbotoes = QtWidgets.QHBoxLayout(self.framebotoes)
@@ -66,14 +65,13 @@ class TelaConsultaOrcamento(QtWidgets.QMainWindow):
         self.botaoExcluir.setObjectName('excluir')
         self.botaoExcluir.setFixedSize(100, 35)
         self.hlayoutbotoes.addWidget(self.botaoExcluir)
-        self.filter.setFilterKeyColumn(-1)
-        self.lineEditBusca.textChanged.connect(self.filter.setFilterRegularExpression)
         self.setCentralWidget(self.mainwidget)
         self.retranslateUi()
         self.botaoRefresh.clicked.connect(self.listarOrcamentos)
         self.botaoAprovar.clicked.connect(self.aprovar)
         self.botaoGerarPDF.clicked.connect(self.gerarPDF)
         self.botaoExcluir.clicked.connect(self.excluirOrcamento)
+        self.lineEditBusca.textChanged.connect(self.buffer)
         self.listarOrcamentos()
 
     def retranslateUi(self):
@@ -87,9 +85,13 @@ class TelaConsultaOrcamento(QtWidgets.QMainWindow):
     def scrolled(self, value):
         if value == self.tabela.verticalScrollBar().maximum():
             self.maisOrcamentos(50)
+    
+    def buffer(self):
+        self.busca = self.lineEditBusca.text()
+        self.listarOrcamentos()
 
     def maisOrcamentos(self, qtde):
-        orcamentos = self.orcamentoCtrl.listarOrcamentos(aprovado=False, limit=self.linhasCarregadas+qtde)
+        orcamentos = self.orcamentoCtrl.buscarOrcamento(aprovado=False, input=self.busca, limit=self.linhasCarregadas+qtde)
         if not orcamentos:
             return
         maxLength = len(orcamentos)
@@ -116,10 +118,8 @@ class TelaConsultaOrcamento(QtWidgets.QMainWindow):
         self.model = InfiniteScrollTableModel([{}])
         listaHeader = ['ID', 'Data', 'Cliente', 'Marca', 'Modelo', 'Placa', 'Valor Total']
         self.model.setHorizontalHeaderLabels(listaHeader)
-        self.filter.setSourceModel(self.model)
-        self.tabela.setModel(self.filter)
-        self.tabela.setItemDelegateForColumn(5, self.delegateRight)
-        self.model.setHeaderData(1, QtCore.Qt.Orientation.Horizontal, 'tipo', 1)
+        self.tabela.setModel(self.model)
+        self.tabela.setItemDelegateForColumn(6, self.delegateRight)
         self.maisOrcamentos(50)
         if self.linhasCarregadas > 0:
             header = self.tabela.horizontalHeader()

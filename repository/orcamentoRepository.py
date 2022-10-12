@@ -1,4 +1,4 @@
-from model.modelo import Orcamento
+from model.modelo import Cliente, Fone, Marca, Orcamento, Veiculo
 
 class OrcamentoRepository():
     def __init__(self):
@@ -29,3 +29,25 @@ class OrcamentoRepository():
 
     def findByAprovado(self, aprovado, limit):
         return Orcamento.select().where(Orcamento.aprovado==aprovado).order_by(-Orcamento.dataOrcamento).limit(limit)
+    
+    def findByInput(self, aprovado, input, limit=None):
+        orcamentos = Orcamento.select()\
+                        .join(Cliente)\
+                        .join(Fone)\
+                        .switch(Orcamento)\
+                        .join(Veiculo)\
+                        .join(Marca)\
+                        .where((Orcamento.aprovado==aprovado)
+                            & ((Cliente.nome.contains(input))
+                            |(Cliente.documento.contains(input))
+                            |(Cliente.documento.contains(input))
+                            |((Cliente.idCliente==Fone.cliente) & (Fone.fone.contains(input)))
+                            |((Veiculo.marca==Marca.idMarca) & (Marca.nome.contains(input)))
+                            |(Veiculo.modelo.contains(input))
+                            |(Veiculo.placa.contains(input)))
+                        ).order_by(-Orcamento.dataOrcamento)\
+                        .limit(limit)\
+                        .distinct()
+        if orcamentos:
+            return orcamentos
+        else: return None

@@ -1,8 +1,4 @@
-import sys
 from peewee import *
-from util import trigger
-import os
-sys.path.insert(0, os.getcwd())
 
 NOMEBANCODEDADOS="dbpasetto"
 
@@ -110,6 +106,12 @@ class Fone(BaseModel):
 def create_tables(cursor):
     models = BaseModel.__subclasses__()
     db.create_tables(models)
-    tr1 = trigger.Trigger('orcamento', 'tr_set_data_aprovacao', 'before', 'update', 'new.aprovado=1', 'new.dataAprovacao=curdate()')
-    tr1.create_trigger(cursor)
+    cursor.execute('''CREATE TRIGGER `tr_set_data_aprovacao`
+BEFORE UPDATE ON `orcamento`
+FOR EACH ROW
+begin
+    if new.aprovado=1 then
+        set new.dataAprovacao=curdate();
+    end if;
+end''')
     

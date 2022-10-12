@@ -78,6 +78,17 @@ class PecaController():
                 transaction.rollback()
                 return e
 
+    def buscarPeca(self, input, limit=None):
+        with db.atomic() as transaction:
+            try:
+                pecas = self.pecaRep.findByInput(input, limit)
+                if pecas:
+                    return pecas.dicts()
+                else: return None
+            except Exception as e:
+                transaction.rollback()
+                return e
+
     def excluirPeca(self, id):
         with db.atomic() as transaction:
             try:

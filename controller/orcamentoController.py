@@ -194,6 +194,20 @@ class OrcamentoController():
         if itemServicos: return itemServicos.dicts()
         else: return None
 
+    def buscarOrcamento(self, aprovado, input, limit=None):
+        with db.atomic() as transaction:
+            try:
+                _orcamentos = []
+                orcamentos = self.orcamentoRep.findByInput(aprovado, input, limit)
+                if orcamentos:
+                    for orcamento in orcamentos:
+                        _orcamentos.append(model_to_dict(orcamento))
+                    return _orcamentos
+                else: return None
+            except Exception as e:
+                transaction.rollback()
+                return e
+
     def excluirOrcamento(self, idOrcamento):
         with db.atomic() as transaction:
             try:

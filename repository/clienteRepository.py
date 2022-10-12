@@ -1,4 +1,4 @@
-from model.modelo import Cliente
+from model.modelo import Cliente, Fone
 
 class ClienteRepository():
     def __init__(self):
@@ -23,4 +23,9 @@ class ClienteRepository():
 
     def findByDocumento(self, documento):
         return Cliente.select().where(Cliente.documento==documento).get()
+
+    def findByInput(self, input, limit=None):
+        return Cliente.select().join(Fone).where(Cliente.nome.contains(input) | 
+            (Cliente.documento.contains(input)) | (Cliente.idCliente==Fone.cliente) & 
+            (Fone.fone==input)).order_by(Cliente.nome).limit(limit).distinct()
 
