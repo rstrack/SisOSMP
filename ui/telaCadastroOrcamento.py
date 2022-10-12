@@ -814,9 +814,9 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
     def salvareGerarPDF(self):
         try:
             id = self.salvarOrcamento()
-            orcamento = self.orcamentoCtrl.getOrcamento(id)
-            if isinstance(orcamento, Exception):
+            if isinstance(id, Exception):
                 return
+            orcamento = self.orcamentoCtrl.getOrcamento(id)
             fones = self.clienteCtrl.listarFones(orcamento['cliente']['idCliente'])
             if fones: fones = list(fones)
             itemPecas = self.orcamentoCtrl.listarItemPecas(orcamento['idOrcamento'])

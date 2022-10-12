@@ -97,7 +97,7 @@ class TelaEditarPeca(QtWidgets.QMainWindow):
         dict['descricao'] = self.lineEditNomePeca.text()
         dict['un'] = self.comboboxun.currentText()
         if not self.lineEditValorPeca.text().replace(',','',1).replace('.','',1).isdigit():
-            raise Exception("Campo 'valor' deve possuir apenas números!")
+            raise Exception("Campo 'valor' inválido!")
         dict['valor'] = self.lineEditValorPeca.text().replace(',','.',1)
         return dict
 

@@ -151,7 +151,7 @@ class TelaCadastroServico(QtWidgets.QMainWindow):
                 dict = {}
                 dict['descricao'] = desc.text()
                 if not valor.text().replace(',','').replace('.','').isdigit():
-                    raise Exception("Campo 'valor' deve possuir apenas números!")
+                    raise Exception("Campo 'valor' inválido!")
                 dict['valor'] = valor.text().replace(',','.',1)
                 servicos.append(dict)
             elif desc.text() or valor.text():

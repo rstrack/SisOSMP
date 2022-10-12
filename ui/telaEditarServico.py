@@ -86,7 +86,7 @@ class TelaEditarServico(QtWidgets.QMainWindow):
         dict = {}
         dict['descricao'] = self.lineEditNomeServico.text()
         if not self.lineEditValorServico.text().replace(',','',1).replace('.','',1).isdigit():
-            raise Exception("Campo 'valor' deve possuir apenas números!")
+            raise Exception("Campo 'valor' inválido!")
         dict['valor'] = self.lineEditValorServico.text().replace(',','.',1)
         return dict
 

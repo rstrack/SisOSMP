@@ -160,7 +160,7 @@ class TelaCadastroPeca(QtWidgets.QMainWindow):
                 dict['descricao'] = desc.text()
                 dict['un'] = un.currentText()
                 if not valor.text().replace(',','',1).replace('.','',1).isdigit():
-                    raise Exception("Campo 'valor' deve possuir apenas números!")
+                    raise Exception("Campo 'valor' inválido!")
                 dict['valor'] = valor.text().replace(',','.',1)
                 pecas.append(dict)
             elif desc.text() or valor.text():
