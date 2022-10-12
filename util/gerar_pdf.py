@@ -1,5 +1,4 @@
-from sre_constants import _NamedIntConstant
-from string import whitespace
+from operator import le
 from tkinter import E
 from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.lib.units import inch
@@ -22,7 +21,7 @@ def draw_paragraph(self, msg, x, y, max_width, max_height):
     message_style = ParagraphStyle('Estilo do paragrafo de observacao', fontName='Helvetica',splitLongWords=False)
     message = msg.replace('\n', '<br />')
     message = Paragraph(message, style=message_style)
-    w, h = message.wrap(max_width, max_height)
+    _, h = message.wrap(max_width, max_height)
     message.drawOn(self, x, y - h)
 
 # DICT DO ORÇAMENTO GERADO AO SALVAR/EDITAR
@@ -31,8 +30,8 @@ def tabelas_pos(self, orcamento: dict, l, g):
     self.setFont('Helvetica-Bold', 10)
     self.drawString(428, l + 4, 'Valor Total')
     self.setFont('Helvetica', 10)
-    self.drawString(541 - (len(str(orcamento['valorTotal'])) * 7.1), l + 4,
-                    '{}'.format(locale.currency(orcamento['valorTotal'])))
+    print(len(str(orcamento['valorTotal'])))
+    self.drawRightString(550  , l + 4, str(locale.currency(orcamento['valorTotal'])))
     self.rect(425, l, 59, 15, fill=False, stroke=True)
     self.rect(484, l, 1 * inch, 15, fill=False, stroke=True)
     self.setFont('Helvetica-Bold', 10)
@@ -46,20 +45,20 @@ def tabelas_pos(self, orcamento: dict, l, g):
     self.rect(39, g - 44, 517, 60, fill=False, stroke=True)
 
 
-def formatar_cep(self):
-    if self:
-        cepformatado = '{}-{}'.format(self[0:5], self[5:])
+def formatar_cep(cep):
+    if cep:
+        cepformatado = '{}-{}'.format(cep[0:5], cep[5:])
         return cepformatado
     else:
         return str(' ')
 
 
-def formatar_fone(self):
-    if len(self) > 11:
-        return (phonenumbers.format_number(phonenumbers.parse("+" + str(self), None),
+def formatar_fone(fone):
+    if len(fone) > 11:
+        return (phonenumbers.format_number(phonenumbers.parse("+" + str(fone), None),
                                            phonenumbers.PhoneNumberFormat.NATIONAL))
     else:
-        return (phonenumbers.format_number(phonenumbers.parse(str(self), 'BR'),
+        return (phonenumbers.format_number(phonenumbers.parse(str(fone), 'BR'),
                                            phonenumbers.PhoneNumberFormat.NATIONAL))
 
 
