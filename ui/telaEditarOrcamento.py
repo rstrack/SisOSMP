@@ -668,13 +668,3 @@ class TelaEditarOrcamento(QtWidgets.QMainWindow):
         while len(self.linhasServico)>0:
             self.removerLinhaServico(1)
         self.limparCampos()
-
-if __name__ == "__main__":
-    import sys
-    app = QtWidgets.QApplication(sys.argv)
-    ui = TelaEditarOrcamento()
-    ui.setupUi()
-    ui.show()
-    style = open('./resources/styles.qss').read()
-    app.setStyleSheet(style)
-    sys.exit(app.exec())

@@ -32,5 +32,3 @@ class VeiculoRepository():
         if veiculo:
             return veiculo.get()
         else: return None
-
-    

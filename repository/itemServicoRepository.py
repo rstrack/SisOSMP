@@ -1,4 +1,4 @@
-from model.modelo import ItemServico, Orcamento, Servico
+from model.modelo import ItemServico
 
 class ItemServicoRepository():
     def __init__(self) -> None:

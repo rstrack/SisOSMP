@@ -1,5 +1,5 @@
-from model.modelo import  db
 from playhouse.shortcuts import model_to_dict
+from model.modelo import  db
 from repository.cidadeRepository import CidadeRepository
 from repository.foneRepository import FoneRepository
 from repository.itemPecaRepository import ItemPecaRepository

@@ -1,4 +1,4 @@
-from model.modelo import ItemPeca, Orcamento, Peca
+from model.modelo import ItemPeca
 
 class ItemPecaRepository():
     def __init__(self) -> None:

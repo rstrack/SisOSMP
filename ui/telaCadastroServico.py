@@ -183,15 +183,3 @@ class TelaCadastroServico(QtWidgets.QMainWindow):
     def limparCampos(self):
         for lineedit in self.framedados.findChildren(QtWidgets.QLineEdit):
             lineedit.clear()
-
-
-if __name__ == "__main__":
-    import sys
-    app = QtWidgets.QApplication(sys.argv)
-    MainWindow = QtWidgets.QMainWindow()
-    ui = TelaCadastroServico()
-    ui.setupUi()
-    style = open('./resources/styles.qss').read()
-    app.setStyleSheet(style)
-    ui.show()
-    sys.exit(app.exec())

@@ -166,16 +166,3 @@ class TelaClienteVeiculo(QtWidgets.QMainWindow):
                 if isinstance(r, Exception):
                     raise Exception(r)
             self.renderClientes(self.veiculoID)
-
-
-if __name__ == "__main__":
-    import sys
-    app = QtWidgets.QApplication(sys.argv)
-    MainWindow = QtWidgets.QMainWindow()
-    ui = TelaClienteVeiculo()
-    ui.setupUi()
-    style = open('./resources/styles.qss').read()
-    app.setStyleSheet(style)
-    ui.renderVeiculos(2)
-    ui.show()
-    sys.exit(app.exec())

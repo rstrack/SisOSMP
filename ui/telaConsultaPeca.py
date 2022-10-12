@@ -1,7 +1,6 @@
 from PyQt6 import QtCore, QtGui, QtWidgets
 from container import handleDeps
 from ui.infiniteScroll import AlignDelegate, InfiniteScrollTableModel
-from ui.telaCadastroPeca import TelaCadastroPeca
 
 class TelaConsultaPeca(QtWidgets.QMainWindow):
     def __init__(self):
@@ -43,10 +42,6 @@ class TelaConsultaPeca(QtWidgets.QMainWindow):
         self.tabela.horizontalHeader().setHighlightSections(False)
         self.tabela.verticalHeader().setVisible(False)
         self.delegateRight = AlignDelegate(QtCore.Qt.AlignmentFlag.AlignRight | QtCore.Qt.AlignmentFlag.AlignVCenter)
-        self.filter = QtCore.QSortFilterProxyModel()
-        self.filter.setFilterCaseSensitivity(
-            QtCore.Qt.CaseSensitivity.CaseInsensitive)
-
         self.framebotoes = QtWidgets.QFrame(self.mainwidget)
         self.glayout.addWidget(self.framebotoes, 2, 0, 1, 1)
         self.hlayoutbotoes = QtWidgets.QHBoxLayout(self.framebotoes)
@@ -61,17 +56,10 @@ class TelaConsultaPeca(QtWidgets.QMainWindow):
         self.botaoExcluir.setFixedSize(100, 35)
         self.botaoExcluir.setObjectName('excluir')
         self.hlayoutbotoes.addWidget(self.botaoExcluir)
-        self.filter.setFilterKeyColumn(-1)
-        self.lineEditBusca.textChanged.connect(
-            self.filter.setFilterRegularExpression)
-        self.tabela.setModel(self.filter)
         self.setCentralWidget(self.mainwidget)
         self.retranslateUi()
-        self.selectionModel = self.tabela.selectionModel()
-
         self.listarPecas()
-
-        #self.selectionModel.selectionChanged.connect(self.mostrarDetalhes)
+        # self.lineEditBusca.textChanged.connect()
         self.botaoRefresh.clicked.connect(self.listarPecas)
         self.botaoEditar.clicked.connect(self.editarPeca)
         self.botaoExcluir.clicked.connect(self.excluirPeca)
@@ -112,8 +100,7 @@ class TelaConsultaPeca(QtWidgets.QMainWindow):
         self.model = InfiniteScrollTableModel([{}])
         listaHeader = ['ID ', 'Descrição ', 'Un ', 'Valor ']
         self.model.setHorizontalHeaderLabels(listaHeader)
-        self.filter.setSourceModel(self.model)
-        self.tabela.setModel(self.filter)
+        self.tabela.setModel(self.model)
         self.tabela.setItemDelegateForColumn(3, self.delegateRight)
         self.maisPecas(50)
         if self.linhasCarregadas > 0:
@@ -163,16 +150,3 @@ class TelaConsultaPeca(QtWidgets.QMainWindow):
             msg.setWindowTitle("Erro")
             msg.setText(str(e))
             msg.exec()
-
-if __name__ == "__main__":
-    import sys
-    app = QtWidgets.QApplication(sys.argv)
-
-    ui = TelaConsultaPeca()
-    ui.setupUi()
-    ui.show()
-
-    style = open('./resources/styles.qss').read()
-    app.setStyleSheet(style)
-
-    sys.exit(app.exec())

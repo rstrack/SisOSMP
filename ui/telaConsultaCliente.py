@@ -195,18 +195,3 @@ class TelaConsultaCliente(QtWidgets.QMainWindow):
             self.telaClienteVeiculo = TelaClienteVeiculo()
             self.telaClienteVeiculo.renderVeiculos(id)
             self.telaClienteVeiculo.show()
-
-        
-
-if __name__ == "__main__":
-    import sys
-    app = QtWidgets.QApplication(sys.argv)
-
-    ui = TelaConsultaCliente()
-    ui.setupUi()
-    ui.show()
-
-    style = open('./resources/styles.qss').read()
-    app.setStyleSheet(style)
-
-    sys.exit(app.exec())

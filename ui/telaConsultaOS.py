@@ -12,6 +12,7 @@ class TelaConsultaOS(QtWidgets.QMainWindow):
         self.clienteCtrl = handleDeps.getDep('CLIENTECTRL')
         self.pecaCtrl = handleDeps.getDep('PECACTRL')
         self.servicoCtrl = handleDeps.getDep('SERVICOCTRL')
+        self.busca = ''
         self.setupUi()
 
     def setupUi(self):
@@ -44,8 +45,6 @@ class TelaConsultaOS(QtWidgets.QMainWindow):
         self.tabela.horizontalHeader().setHighlightSections(False)
         self.tabela.verticalHeader().setVisible(False)
         self.delegateRight = AlignDelegate(QtCore.Qt.AlignmentFlag.AlignRight | QtCore.Qt.AlignmentFlag.AlignVCenter)
-        self.filter = QtCore.QSortFilterProxyModel()
-        self.filter.setFilterCaseSensitivity(QtCore.Qt.CaseSensitivity.CaseInsensitive)
         self.framebotoes = QtWidgets.QFrame(self.mainwidget)
         self.glayout.addWidget(self.framebotoes, 2, 0, 1, 1)
         self.hlayoutbotoes = QtWidgets.QHBoxLayout(self.framebotoes)
@@ -63,18 +62,13 @@ class TelaConsultaOS(QtWidgets.QMainWindow):
         self.botaoExcluir.setObjectName('excluir')
         self.hlayoutbotoes.addWidget(self.botaoExcluir)
         self.model = QtGui.QStandardItemModel()
-        self.filter.setSourceModel(self.model)
-        self.filter.setFilterKeyColumn(-1)
-        self.lineEditBusca.textChanged.connect(self.filter.setFilterRegularExpression)
-        self.tabela.setModel(self.filter)
-        listaHeader = ['ID', 'Data do Orçamento', 'Data de aprovação', 'Cliente', 'Marca', 'Modelo', 'Placa', 'Valor Total']
-        self.model.setHorizontalHeaderLabels(listaHeader)
         self.setCentralWidget(self.mainwidget)
         self.retranslateUi()
         self.selectionModel = self.tabela.selectionModel()
         self.botaoRefresh.clicked.connect(self.listarOS)
         self.botaoGerarPDF.clicked.connect(self.gerarPDF)
         self.botaoExcluir.clicked.connect(self.excluirOS)
+        self.lineEditBusca.textChanged.connect(self.buffer)
         self.listarOS()
 
     def retranslateUi(self):
@@ -88,8 +82,12 @@ class TelaConsultaOS(QtWidgets.QMainWindow):
         if value == self.tabela.verticalScrollBar().maximum():
             self.maisOS(50)
 
+    def buffer(self):
+        self.busca = self.lineEditBusca.text()
+        self.listarOrcamentos()
+
     def maisOS(self, qtde):
-        orcamentos = self.orcamentoCtrl.listarOrcamentos(aprovado=True, limit=self.linhasCarregadas+qtde)
+        orcamentos = self.orcamentoCtrl.buscarOrcamento(aprovado=True, input=self.busca, limit=self.linhasCarregadas+qtde)
         if not orcamentos:
             return
         maxLength = len(orcamentos)
@@ -111,22 +109,23 @@ class TelaConsultaOS(QtWidgets.QMainWindow):
         self.model.setRowCount(self.linhasCarregadas)
         self.model.setColumnCount(len(colunas))
         self.tabela.hideColumn(0)
+        
 
     def listarOS(self):
         self.linhasCarregadas = 0
         self.model = InfiniteScrollTableModel([{}])
         listaHeader = ['ID', 'Data do Orçamento', 'Data de Aprovação', 'Cliente', 'Marca', 'Modelo', 'Placa', 'Valor Total']
         self.model.setHorizontalHeaderLabels(listaHeader)
-        self.filter.setSourceModel(self.model)
-        self.tabela.setModel(self.filter)
+        self.tabela.setModel(self.model)
         self.tabela.setItemDelegateForColumn(5, self.delegateRight)
         self.model.setHeaderData(1, QtCore.Qt.Orientation.Horizontal, 'tipo', 1)
         self.maisOS(50)
-        header = self.tabela.horizontalHeader()
-        header.setSectionResizeMode(
-            QtWidgets.QHeaderView.ResizeMode.ResizeToContents)
-        header.setSectionResizeMode(3, 
-            QtWidgets.QHeaderView.ResizeMode.Stretch)
+        if self.linhasCarregadas > 0:
+            header = self.tabela.horizontalHeader()
+            header.setSectionResizeMode(
+                QtWidgets.QHeaderView.ResizeMode.ResizeToContents)
+            header.setSectionResizeMode(3, 
+                QtWidgets.QHeaderView.ResizeMode.Stretch)
 
     def editarOS(self):
         self.linha = self.tabela.selectionModel().selectedRows()
@@ -193,49 +192,3 @@ class TelaConsultaOS(QtWidgets.QMainWindow):
                     msg.setText(f"Ordem de Serviço excluída com sucesso!")
                     msg.exec()
                     self.listarOS()
-
-if __name__ == "__main__":
-    import sys
-    app = QtWidgets.QApplication(sys.argv)
-    ui = TelaConsultaOS()
-    ui.setupUi()
-    ui.show()
-    style = open('./resources/styles.qss').read()
-    app.setStyleSheet(style)
-    sys.exit(app.exec())
-
-
-'''
-fonesTela
-fonesBanco
-
-for fone in fonesTela:
-    _fone = foneRep.findByFone(fone)
-    if _fone and not _fone.cliente == cliente:
-        raise Exception(f'Fone {_fone.fone} utilizado por outro cliente')
-    elif not _fone:
-
-
-
-
-for fone in fonesBanco:
-    if not fone['fone'] in fonesTela:
-        rep.delete(fone)
-
-for fone in fonesTela:
-    if not fone['fone'] in fonesBanco:
-        _fone = foneRep.findByFone(fone)
-        if _fone and _fone.cliente != cliente:
-            raise Exception(f'Fone {_fone.fone} utilizado por outro cliente')
-        rep.save(fone)
-
-
-
-
-
-
-
-
-
-
-'''

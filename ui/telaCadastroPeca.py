@@ -192,12 +192,3 @@ class TelaCadastroPeca(QtWidgets.QMainWindow):
         for lineedit in self.framedados.findChildren(QtWidgets.QLineEdit):
             lineedit.clear()
 
-
-if __name__ == "__main__":
-    import sys
-    app = QtWidgets.QApplication(sys.argv)
-    ui = TelaCadastroPeca()
-    ui.show()
-    style = open('./resources/styles.qss').read()
-    app.setStyleSheet(style)
-    sys.exit(app.exec())

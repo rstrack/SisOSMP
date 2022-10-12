@@ -392,14 +392,3 @@ class TelaCadastroCliente(QtWidgets.QMainWindow):
         self.comboBoxuf.setCurrentIndex(self.comboBoxuf.findText(dados['uf'], QtCore.Qt.MatchFlag.MatchExactly))
         return
 
-if __name__ == "__main__":
-    import sys
-    app = QtWidgets.QApplication(sys.argv)
-    ui = TelaCadastroCliente()
-
-    ui.show()
-
-    style = open('./resources/styles.qss').read()
-    app.setStyleSheet(style)
-
-    sys.exit(app.exec())

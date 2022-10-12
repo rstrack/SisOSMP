@@ -1,3 +1,4 @@
+from dateparser import parse
 from model.modelo import Cliente, Fone, Marca, Orcamento, Veiculo
 
 class OrcamentoRepository():
@@ -31,6 +32,10 @@ class OrcamentoRepository():
         return Orcamento.select().where(Orcamento.aprovado==aprovado).order_by(-Orcamento.dataOrcamento).limit(limit)
     
     def findByInput(self, aprovado, input, limit=None):
+        data = parse(input, date_formats=['%d/%m/%Y', '%d/%m/%y', '%d','%d/', '%d/%m', '%d/%m/'])
+        if data:
+            data = data.date()
+        else: data = None
         orcamentos = Orcamento.select()\
                         .join(Cliente)\
                         .join(Fone)\
@@ -38,7 +43,9 @@ class OrcamentoRepository():
                         .join(Veiculo)\
                         .join(Marca)\
                         .where((Orcamento.aprovado==aprovado)
-                            & ((Cliente.nome.contains(input))
+                            &((Orcamento.dataOrcamento==data)
+                            |(Orcamento.dataAprovacao==data)
+                            |(Cliente.nome.contains(input))
                             |(Cliente.documento.contains(input))
                             |(Cliente.documento.contains(input))
                             |((Cliente.idCliente==Fone.cliente) & (Fone.fone.contains(input)))

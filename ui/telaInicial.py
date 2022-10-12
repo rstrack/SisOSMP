@@ -1,6 +1,5 @@
 from PyQt6 import QtCore, QtGui, QtWidgets
 
-
 class TelaInicial(QtWidgets.QMainWindow):
 
     def __init__(self):
@@ -144,12 +143,3 @@ class TelaInicial(QtWidgets.QMainWindow):
         self.actionExportar_dados.setText(
             _translate("MainWindow", "Exportar dados"))
 
-
-if __name__ == "__main__":
-    import sys
-    app = QtWidgets.QApplication(sys.argv)
-    ui = TelaInicial()
-    ui.show()
-    style = open('./resources/styles.qss').read()
-    app.setStyleSheet(style)
-    sys.exit(app.exec())

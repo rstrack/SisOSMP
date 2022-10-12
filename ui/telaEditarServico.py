@@ -131,13 +131,3 @@ class TelaEditarServico(QtWidgets.QMainWindow):
     def limparCampos(self):
         for lineedit in self.framedados.findChildren(QtWidgets.QLineEdit):
             lineedit.clear()
-
-
-if __name__ == "__main__":
-    import sys
-    app = QtWidgets.QApplication(sys.argv)
-    ui = TelaEditarServico()
-    ui.show()
-    style = open('./resources/styles.qss').read()
-    app.setStyleSheet(style)
-    sys.exit(app.exec())

@@ -196,5 +196,3 @@ if __name__ == "__main__":
 
     c = MainController()
     c.run()
-
-

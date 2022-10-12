@@ -131,14 +131,3 @@ class TelaMarcas(QtWidgets.QMainWindow):
             msg.setText(str(e))
             msg.exec()
 
-if __name__ == "__main__":
-    import sys
-    app = QtWidgets.QApplication(sys.argv)
-    MainWindow = QtWidgets.QMainWindow()
-    ui = TelaMarcas()
-    ui.setupUi()
-    style = open('./resources/styles.qss').read()
-    app.setStyleSheet(style)
-    ui.renderVeiculos(2)
-    ui.show()
-    sys.exit(app.exec())

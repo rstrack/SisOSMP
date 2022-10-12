@@ -193,16 +193,3 @@ class TelaConsultaVeiculo(QtWidgets.QMainWindow):
     def marcas(self):
         self.telaMarcas = TelaMarcas()
         self.telaMarcas.render()
-
-if __name__ == "__main__":
-    import sys
-    app = QtWidgets.QApplication(sys.argv)
-
-    ui = TelaConsultaVeiculo()
-    
-    ui.show()
-
-    style = open('./resources/styles.qss').read()
-    app.setStyleSheet(style)
-
-    sys.exit(app.exec())

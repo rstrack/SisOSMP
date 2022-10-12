@@ -181,15 +181,3 @@ class TelaEditarVeiculo(QtWidgets.QMainWindow):
         self.VeiculoID = id
         veiculo = self.clienteCtrl.getVeiculo(id)
         self.setVeiculo(veiculo['marca']['nome'], veiculo['modelo'], veiculo['placa'], veiculo['ano'])
-
-if __name__ == "__main__":
-    import sys
-    app = QtWidgets.QApplication(sys.argv)
-    ui = TelaEditarVeiculo()
-
-    ui.show()
-
-    style = open('./resources/styles.qss').read()
-    app.setStyleSheet(style)
-
-    sys.exit(app.exec())

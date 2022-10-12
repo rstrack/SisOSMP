@@ -1,6 +1,5 @@
-from PyQt6 import QtWidgets
 from playhouse.shortcuts import model_to_dict
-from model.modelo import *
+from model.modelo import db
 from repository.itemServicoRepository import ItemServicoRepository
 from repository.servicoRepository import ServicoRepository
 
@@ -77,3 +76,4 @@ class ServicoController():
             except Exception as e:
                 transaction.rollback()
                 return e
+                

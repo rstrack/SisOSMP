@@ -1,7 +1,6 @@
 from PyQt6 import QtCore, QtGui, QtWidgets
 from container import handleDeps
 from ui.infiniteScroll import AlignDelegate, InfiniteScrollTableModel
-from ui.telaCadastroServico import TelaCadastroServico
 
 class TelaConsultaServico(QtWidgets.QMainWindow):
     def __init__(self):
@@ -162,16 +161,3 @@ class TelaConsultaServico(QtWidgets.QMainWindow):
             msg.setWindowTitle("Erro")
             msg.setText(str(e))
             msg.exec()
-
-if __name__ == "__main__":
-    import sys
-    app = QtWidgets.QApplication(sys.argv)
-
-    ui = TelaConsultaServico()
-    ui.setupUi()
-    ui.show()
-
-    style = open('./resources/styles.qss').read()
-    app.setStyleSheet(style)
-
-    sys.exit(app.exec())

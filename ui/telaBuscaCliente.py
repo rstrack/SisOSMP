@@ -158,12 +158,3 @@ class TelaBuscaCliente(QtWidgets.QMainWindow):
             self.telaClienteVeiculo.botaoConcluir.clicked.connect(self.listarClientes)
             self.telaClienteVeiculo.show()
 
-if __name__ == "__main__":
-    import sys
-    app = QtWidgets.QApplication(sys.argv)
-    MainWindow = QtWidgets.QMainWindow()
-    ui = TelaBuscaCliente(MainWindow)
-    MainWindow.show()
-    style = open('./resources/styles.qss').read()
-    app.setStyleSheet(style)
-    sys.exit(app.exec())

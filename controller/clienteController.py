@@ -94,8 +94,6 @@ class ClienteController():
                     for fone in fonesTela:
                         if fone != None:
                             _fone = self.foneRep.findByFone(fone)
-                            print(_fone.cliente)
-                            print(_cliente.idCliente)
                             if str(_fone.cliente) != str(_cliente.idCliente):
                                 raise Exception('Fone já cadastrado por outro cliente!')
                         if fone != None and next((False for item in fonesBanco if item['fone']==fone), True):
@@ -175,7 +173,6 @@ class ClienteController():
             except Exception as e:
                 transaction.rollback()
                 return e
-
 
     #listar todos os veiculos ou veiculos vinculados a um cliente
     def listarVeiculos(self, idCliente=None):

@@ -145,16 +145,3 @@ class TelaBuscaVeiculo(QtWidgets.QMainWindow):
             self.telaClienteVeiculo.show()
 
 
-if __name__ == "__main__":
-    import sys
-    app = QtWidgets.QApplication(sys.argv)
-
-    MainWindow = QtWidgets.QMainWindow()
-    ui = TelaBuscaVeiculo(MainWindow)
-    ui.setupUi(MainWindow)
-    MainWindow.show()
-
-    style = open('./ui/styles.qss').read()
-    app.setStyleSheet(style)
-
-    sys.exit(app.exec())

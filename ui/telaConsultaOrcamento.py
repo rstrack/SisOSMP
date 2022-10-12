@@ -226,15 +226,3 @@ class TelaConsultaOrcamento(QtWidgets.QMainWindow):
             if path == '':
                 return
             generatePDF(orcamento, fones, itemServicos, itemPecas, path)
-
-
-if __name__ == "__main__":
-    import sys
-    app = QtWidgets.QApplication(sys.argv)
-    ui = TelaConsultaOrcamento()
-    ui.setupUi()
-    ui.show()
-    style = open('./resources/styles.qss').read()
-    app.setStyleSheet(style)
-    sys.exit(app.exec())
-

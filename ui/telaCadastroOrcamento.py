@@ -921,13 +921,3 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
             self.removerLinhaServico(3)
         self.limparCampos()
 
-
-if __name__ == "__main__":
-    import sys
-    app = QtWidgets.QApplication(sys.argv)
-    ui = TelaCadastroOrcamento()
-    ui.setupUi()
-    ui.show()
-    style = open('./resources/styles.qss').read()
-    app.setStyleSheet(style)
-    sys.exit(app.exec())
