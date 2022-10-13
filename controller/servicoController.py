@@ -37,7 +37,8 @@ class ServicoController():
             try:
                 qServico = self.servicoRep.findByDescricao(servico['descricao'])
                 if qServico:
-                    raise Exception(f"O serviço {servico['descricao']} já está cadastrado!")
+                    if str(qServico.idServico) != str(id):
+                        raise Exception(f"O serviço {servico['descricao']} já está cadastrado!")
                 servico['idServico'] = id
                 _servico = self.servicoRep.update(servico)
                 return _servico

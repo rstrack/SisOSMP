@@ -81,7 +81,7 @@ class Orcamento(BaseModel):
 class ItemPeca(BaseModel):
     peca = ForeignKeyField(Peca, backref='pecas')
     orcamento = ForeignKeyField(Orcamento, backref='orcamentos', on_delete='CASCADE')
-    qtde = IntegerField()
+    qtde = FloatField(null=False)
     valor = DoubleField(constraints=[Check('valor>=0')],null=False)
     class Meta:
         primary_key = CompositeKey('peca', 'orcamento')
@@ -90,7 +90,7 @@ class ItemPeca(BaseModel):
 class ItemServico(BaseModel):
     servico = ForeignKeyField(Servico, backref='servicos',null=False)
     orcamento = ForeignKeyField(Orcamento, backref='orcamentos',null=False, on_delete='CASCADE')
-    qtde = IntegerField()
+    qtde = IntegerField(null=False)
     valor = DoubleField(constraints=[Check('valor>=0')], null=False)
     class Meta:
         primary_key = CompositeKey('servico', 'orcamento')

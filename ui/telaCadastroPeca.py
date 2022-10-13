@@ -1,3 +1,4 @@
+from decimal import Decimal
 from PyQt6 import QtCore, QtWidgets, QtGui
 from container import handleDeps
 from ui.telaCadastroOrcamento import UNIDADES
@@ -12,7 +13,6 @@ class TelaCadastroPeca(QtWidgets.QMainWindow):
 
     def setupUi(self):
         self.resize(1280, 760)
-        self.linhasPeca = []
         self.main_frame = QtWidgets.QFrame(self)
         self.main_frame.setObjectName("main_frame")
         self.vlayout6 = QtWidgets.QVBoxLayout(self.main_frame)
@@ -52,8 +52,7 @@ class TelaCadastroPeca(QtWidgets.QMainWindow):
         self.gridLayout.setColumnStretch(0, 6)
         self.gridLayout.setColumnStretch(2, 2)
         self.gridLayout.setColumnStretch(4, 1)
-        self.linhasPeca.append(
-            [self.lineEditNomePeca, self.comboboxun, self.lineEditValorPeca])
+        self.linhasPeca = [[self.lineEditNomePeca, self.comboboxun, self.lineEditValorPeca]]
         self.botaoadd = QtWidgets.QPushButton(self.framedados)
         self.botaoadd.setToolTip('Adicionar linha')
         self.botaoadd.setFixedSize(QtCore.QSize(26, 26))
@@ -162,8 +161,10 @@ class TelaCadastroPeca(QtWidgets.QMainWindow):
                 dict = {}
                 dict['descricao'] = desc.text()
                 dict['un'] = un.currentText()
-                if not valor.text().replace(',','',1).replace('.','',1).isdigit():
+                if not (valor.text().replace(',','',1).isnumeric() or valor.text().replace('.','',1).isnumeric()):
                     raise Exception("Campo 'valor' inválido!")
+                if -Decimal(valor.text().replace(',','.',1)).as_tuple().exponent > 2:
+                    raise Exception("Valores devem possuir no máximo duas casas decimais!")
                 dict['valor'] = valor.text().replace(',','.',1)
                 pecas.append(dict)
             elif desc.text() or valor.text():

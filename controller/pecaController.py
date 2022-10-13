@@ -35,9 +35,10 @@ class PecaController():
     def editarPeca(self, id, peca:dict):
         with db.atomic() as transaction:
             try:
-                _peca = self.pecaRep.findByDescricao(peca['descricao'])
-                if _peca:
-                    raise Exception(f"A peça {peca['descricao']} já está cadastrada!")
+                qPeca = self.pecaRep.findByDescricao(peca['descricao'])
+                if qPeca:
+                    if str(qPeca.idPeca) != str(id):
+                        raise Exception(f"A peça {peca['descricao']} já está cadastrada!")
                 peca['idPeca'] = id
                 _peca = self.pecaRep.update(peca)
                 return _peca

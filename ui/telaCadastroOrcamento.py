@@ -1,3 +1,4 @@
+from decimal import Decimal
 from PyQt6 import QtCore, QtWidgets, QtGui
 from container import handleDeps
 
@@ -697,6 +698,8 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
                 dict['un'] = un.currentText()
                 if not (valor.text().replace(',','',1).isnumeric() or valor.text().replace('.','',1).isnumeric()):
                     raise Exception("Campo 'valor' inválido!")
+                if -Decimal(valor.text().replace(',','.',1)).as_tuple().exponent > 2:
+                    raise Exception("Valores devem possuir no máximo duas casas decimais!")
                 dict['valor'] = valor.text().replace(',','.',1)
                 pecas.append(dict)
             elif desc.text() or valor.text():
@@ -713,11 +716,13 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
                 dict['descricao'] = desc.text()
                 if not qtde.text(): dict['qtde'] = 1
                 else:
-                    if not (qtde.text().replace(',','',1).isnumeric() or qtde.text().replace('.','',1).isnumeric()):
-                        raise Exception("Campo 'qtde' inválido!")
+                    if not qtde.text().isnumeric():
+                        raise Exception("Campo 'qtde' em 'serviços' deve ser um número inteiro!")
                     dict['qtde'] = qtde.text().replace(',','.',1)
                 if not (valor.text().replace(',','',1).isnumeric() or valor.text().replace('.','',1).isnumeric()):
                     raise Exception("Campo 'valor' inválido!")
+                if -Decimal(valor.text().replace(',','.',1)).as_tuple().exponent > 2:
+                    raise Exception("Valores devem possuir no máximo duas casas decimais!")
                 dict['valor'] = valor.text().replace(',','.',1)
                 servicos.append(dict)
             elif desc.text() or valor.text():
@@ -741,7 +746,29 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
         return orcamento
 
     def setValor(self):
-        self.valorTotal=0.00
+        try:
+            self.valorTotal=0.00
+            for desc, qtde, _, valor in self.linhasPeca:
+                if not desc.text() and not valor.text():
+                    continue
+                if qtde.text():
+                    self.valorTotal+=float(valor.text().replace(',','.',1))*float(qtde.text().replace(',','.',1))
+                else:
+                    self.valorTotal+=float(valor.text().replace(',','.',1))
+            for desc, qtde, valor in self.linhasServico:
+                if not desc.text() and not valor.text():
+                    continue
+                if qtde.text():
+                    self.valorTotal+=float(valor.text().replace(',','.',1))*float(qtde.text().replace(',','.',1))
+                else:
+                    self.valorTotal+=float(valor.text().replace(',','.',1))
+            self.valorTotal = round(self.valorTotal, 2)
+            self.labelValorTotal2.setText('{:.2f}'.format(self.valorTotal).replace('.',',',1))
+        except:
+            self.valorTotal=0.00
+            self.labelValorTotal2.setText('0,00')
+
+        '''self.valorTotal=0.00
         for _,qtde,_,valor in self.linhasPeca:
             if not valor.text():
                 continue
@@ -769,7 +796,8 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
                 self.valorTotal+=float(valor.text().replace(',','.',1))*float(qtde.text().replace(',','.',1))
             else:
                 self.valorTotal+=float(valor.text().replace(',','.',1))
-        self.labelValorTotal2.setText(('{:.2f}'.format(self.valorTotal)).replace('.',',',1))
+        self.valorTotal = round(self.valorTotal, 2)
+        self.labelValorTotal2.setText(str(self.valorTotal).replace('.',',',1))'''
 
     def buscarPeca(self, lineEditDesc, comboBoxUn, lineEditValor):
         qPeca = self.pecaCtrl.getPecaByDescricao(lineEditDesc.text())

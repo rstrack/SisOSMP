@@ -1,3 +1,4 @@
+from decimal import Decimal
 from PyQt6 import QtCore, QtWidgets, QtGui
 from container import handleDeps
 from ui.telaCadastroOrcamento import UNIDADES
@@ -97,8 +98,10 @@ class TelaEditarPeca(QtWidgets.QMainWindow):
         dict = {}
         dict['descricao'] = self.lineEditNomePeca.text()
         dict['un'] = self.comboboxun.currentText()
-        if not self.lineEditValorPeca.text().replace(',','',1).replace('.','',1).isdigit():
+        if not (self.lineEditValorPeca.text().replace(',','',1).isnumeric() or self.lineEditValorPeca.text().replace('.','',1).isnumeric()):
             raise Exception("Campo 'valor' inválido!")
+        if -Decimal(self.lineEditValorPeca.text().replace(',','.',1)).as_tuple().exponent > 2:
+            raise Exception("Valores devem possuir no máximo duas casas decimais!")
         dict['valor'] = self.lineEditValorPeca.text().replace(',','.',1)
         return dict
 

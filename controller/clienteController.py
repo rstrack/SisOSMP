@@ -41,7 +41,9 @@ class ClienteController():
                     if fone != None:
                         _fone = self.foneRep.findByFone(fone)
                         if _fone:
-                            raise Exception(f'Fone {_fone.get().fone} já cadastrado por outro cliente')
+                            if str(_fone.cliente) == str(_cliente.idCliente):
+                                raise Exception(f'Fones duplicados!')
+                            raise Exception(f'Fone {_fone.fone} já cadastrado por outro cliente')
                         self.foneRep.save(_cliente, fone)
                 return _cliente
             except Exception as e:
@@ -76,8 +78,12 @@ class ClienteController():
         with db.atomic() as transaction:
             try:
                 cliente['idCliente'] = idCliente
-                
-                if 'cidade' in cliente:
+                if cliente['documento']:
+                    qCliente = self.clienteRep.findByDocumento(cliente['documento'])
+                    if qCliente:
+                        if str(qCliente.idCliente) != str(idCliente):
+                            raise Exception(f'Documento já registrado para o cliente {qCliente.nome}')
+                if cliente['cidade'] != None:
                     cidade = {}
                     cidade['nome'] = cliente.pop('cidade')
                     cidade['uf'] = cliente.pop('uf')
@@ -94,8 +100,9 @@ class ClienteController():
                     for fone in fonesTela:
                         if fone != None:
                             _fone = self.foneRep.findByFone(fone)
-                            if str(_fone.cliente) != str(_cliente.idCliente):
-                                raise Exception('Fone já cadastrado por outro cliente!')
+                            if _fone:
+                                if str(_fone.cliente) != str(_cliente.idCliente):
+                                    raise Exception(f'Fone {_fone.fone} já cadastrado por outro cliente!')
                         if fone != None and next((False for item in fonesBanco if item['fone']==fone), True):
                             self.foneRep.save(_cliente, fone)
                 else:
@@ -160,7 +167,7 @@ class ClienteController():
             try:
                 qVeiculo = self.veiculoRep.findByPlaca(veiculo['placa'])
                 if qVeiculo:
-                    if qVeiculo.idVeiculo != idVeiculo:
+                    if str(qVeiculo.idVeiculo) != str(idVeiculo):
                         raise Exception(f'Placa {qVeiculo.placa} já registrada para o veículo ' \
                         +f'{self.marcaRep.findByID(qVeiculo.marca).nome} {qVeiculo.modelo}')
                 veiculo['idVeiculo'] = idVeiculo

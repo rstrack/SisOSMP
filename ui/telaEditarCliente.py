@@ -204,7 +204,7 @@ class TelaEditarCliente(QtWidgets.QMainWindow):
         lista.extend(self.groupBoxCliente.findChildren(QtWidgets.QLineEdit))
         lista.extend(self.groupBoxEnder.findChildren(QtWidgets.QLineEdit))
         if len(list(filter(lambda dados: dados.text(), lista))) == 0:
-            return None
+            raise Exception('Campos vazios!')
         dict = {}
         dict['tipo'] = self.comboBoxPessoa.currentIndex()
         if (self.lineEditDocumento.text()):

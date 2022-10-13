@@ -1,3 +1,4 @@
+from decimal import Decimal
 from PyQt6 import QtCore, QtGui, QtWidgets
 from container import handleDeps
 
@@ -154,8 +155,10 @@ class TelaCadastroServico(QtWidgets.QMainWindow):
             if desc.text() and valor.text():
                 dict = {}
                 dict['descricao'] = desc.text()
-                if not valor.text().replace(',','').replace('.','').isdigit():
+                if not (valor.text().replace(',','',1).isnumeric() or valor.text().replace('.','',1).isnumeric()):
                     raise Exception("Campo 'valor' inválido!")
+                if -Decimal(valor.text().replace(',','.',1)).as_tuple().exponent > 2:
+                    raise Exception("Valores devem possuir no máximo duas casas decimais!")
                 dict['valor'] = valor.text().replace(',','.',1)
                 servicos.append(dict)
             elif desc.text() or valor.text():

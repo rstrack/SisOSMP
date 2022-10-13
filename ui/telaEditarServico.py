@@ -1,3 +1,4 @@
+from decimal import Decimal
 from PyQt6 import QtCore, QtWidgets, QtGui
 from container import handleDeps
 
@@ -86,8 +87,10 @@ class TelaEditarServico(QtWidgets.QMainWindow):
             raise Exception("Preencha todos os campos!")
         dict = {}
         dict['descricao'] = self.lineEditNomeServico.text()
-        if not self.lineEditValorServico.text().replace(',','',1).replace('.','',1).isdigit():
+        if not (self.lineEditValorServico.text().replace(',','',1).isnumeric() or self.lineEditValorServico.text().replace('.','',1).isnumeric()):
             raise Exception("Campo 'valor' inválido!")
+        if -Decimal(self.lineEditValorServico.text().replace(',','.',1)).as_tuple().exponent > 2:
+            raise Exception("Valores devem possuir no máximo duas casas decimais!")
         dict['valor'] = self.lineEditValorServico.text().replace(',','.',1)
         return dict
 
