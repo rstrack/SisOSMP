@@ -118,10 +118,10 @@ class TelaEditarCliente(QtWidgets.QMainWindow):
         self.hlayout4.addWidget(self.labelLegenda)
         spacerItem5 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
         self.hlayout4.addItem(spacerItem5)
-        self.botaoEditar = QtWidgets.QPushButton(self.framebotoes)
-        self.botaoEditar.setMinimumSize(QtCore.QSize(100, 35))
-        self.botaoEditar.setObjectName('botaoprincipal')
-        self.hlayout4.addWidget(self.botaoEditar)
+        self.botaoSalvar = QtWidgets.QPushButton(self.framebotoes)
+        self.botaoSalvar.setMinimumSize(QtCore.QSize(100, 35))
+        self.botaoSalvar.setObjectName('botaoprincipal')
+        self.hlayout4.addWidget(self.botaoSalvar)
         self.botaoCancelar = QtWidgets.QPushButton(self.framebotoes)
         self.botaoCancelar.setMinimumSize(QtCore.QSize(100, 35))
         self.hlayout4.addWidget(self.botaoCancelar)
@@ -138,7 +138,7 @@ class TelaEditarCliente(QtWidgets.QMainWindow):
         self.lineEditCidade.setCompleter(self.completerCidade)
         self.retranslateUi()
         self.botaoCancelar.clicked.connect(self.cancelarEdicao)
-        self.botaoEditar.clicked.connect(self.editar)
+        self.botaoSalvar.clicked.connect(self.editar)
         self.comboBoxPessoa.currentIndexChanged.connect(self.escolherTipoPessoa)
         self.lineEditCEP.textChanged.connect(self.buscarDadosCEP)
 
@@ -159,7 +159,7 @@ class TelaEditarCliente(QtWidgets.QMainWindow):
         self.labelTel2.setText(_translate("MainWindow", "Fone 2"))
         self.labelLegenda.setText(_translate("MainWindow", "* Campos Obrigatórios"))
         self.botaoCancelar.setText(_translate("MainWindow", "Cancelar"))
-        self.botaoEditar.setText(_translate("MainWindow", "Editar"))
+        self.botaoSalvar.setText(_translate("MainWindow", "Salvar"))
     
     def editar(self):
         try:
@@ -255,14 +255,14 @@ class TelaEditarCliente(QtWidgets.QMainWindow):
         fones = []
         cont = 0
         if (self.lineEditFone1.text()):
-            if not self.lineEditFone1.text().isnumeric():
+            if not self.lineEditFone1.text().isnumeric() or len(self.lineEditFone1.text())<8:
                 raise Exception('Fone 1 inválido')
             fones.append(self.lineEditFone1.text())
             cont += 1
         else:
             fones.append(None)
         if (self.lineEditFone2.text()):
-            if not self.lineEditFone2.text().isnumeric():
+            if not self.lineEditFone2.text().isnumeric() or len(self.lineEditFone2.text())<8:
                 raise Exception('Fone 2 inválido')
             fones.append(self.lineEditFone2.text())
             cont += 1

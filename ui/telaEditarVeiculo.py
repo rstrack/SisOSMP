@@ -67,12 +67,12 @@ class TelaEditarVeiculo(QtWidgets.QMainWindow):
         spacerItem5 = QtWidgets.QSpacerItem(
             40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
         self.hlayout4.addItem(spacerItem5)
-        self.botaoEditar = QtWidgets.QPushButton(self.framebotoes)
-        self.botaoEditar.setMinimumSize(QtCore.QSize(120, 35))
-        self.botaoEditar.setObjectName('botaoprincipal')
-        self.hlayout4.addWidget(self.botaoEditar)
+        self.botaoSalvar = QtWidgets.QPushButton(self.framebotoes)
+        self.botaoSalvar.setMinimumSize(QtCore.QSize(100, 35))
+        self.botaoSalvar.setObjectName('botaoprincipal')
+        self.hlayout4.addWidget(self.botaoSalvar)
         self.botaoCancelar = QtWidgets.QPushButton(self.framebotoes)
-        self.botaoCancelar.setMinimumSize(QtCore.QSize(100, 30))
+        self.botaoCancelar.setMinimumSize(QtCore.QSize(100, 35))
         self.hlayout4.addWidget(self.botaoCancelar)
         self.vlayout6.addWidget(self.framebotoes)
         spacerItem6 = QtWidgets.QSpacerItem(
@@ -83,7 +83,7 @@ class TelaEditarVeiculo(QtWidgets.QMainWindow):
         self.retranslateUi()
 
         self.botaoCancelar.clicked.connect(self.cancelarEdicao)
-        self.botaoEditar.clicked.connect(self.editar)
+        self.botaoSalvar.clicked.connect(self.editar)
 
     def retranslateUi(self):
         _translate = QtCore.QCoreApplication.translate
@@ -95,7 +95,7 @@ class TelaEditarVeiculo(QtWidgets.QMainWindow):
         self.labelTitulo.setText(_translate("MainWindow", "Editar Veículo"))
         self.labelLegenda.setText(_translate("MainWindow", "* Campos Obrigatórios"))
         self.botaoCancelar.setText(_translate("MainWindow", "Cancelar"))
-        self.botaoEditar.setText(_translate("MainWindow", "Editar"))
+        self.botaoSalvar.setText(_translate("MainWindow", "Salvar"))
 
     def getDadosVeiculo(self):
         if len(list(filter(lambda dados: dados.text(), self.groupBoxVeiculo.findChildren(QtWidgets.QLineEdit)))) == 0:

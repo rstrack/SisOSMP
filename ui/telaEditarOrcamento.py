@@ -220,6 +220,7 @@ class TelaEditarOrcamento(QtWidgets.QMainWindow):
         self.hlayout4.addItem(spacerItem5)
         self.botaoSalvar = QtWidgets.QPushButton(self.framebotoes)
         self.botaoSalvar.setMinimumSize(QtCore.QSize(100, 35))
+        self.botaoSalvar.setObjectName('botaoprincipal')
         self.hlayout4.addWidget(self.botaoSalvar)
         self.botaoAprovar = QtWidgets.QPushButton(self.framebotoes)
         self.botaoAprovar.setMinimumSize(QtCore.QSize(100, 35))
@@ -510,7 +511,9 @@ class TelaEditarOrcamento(QtWidgets.QMainWindow):
         data = data.strftime("%Y-%m-%d")
         orcamento['dataOrcamento'] = data
         if self.lineEditKm.text():
-            orcamento['km'] = self.lineEditKm.text()
+            if self.lineEditKm.text() > '0' and self.lineEditKm.text().isnumeric():
+                orcamento['km'] = self.lineEditKm.text()
+            else: raise Exception("Quilometragem do veículo inválida!")
         else: raise Exception("Quilometragem do veículo obrigatória!")
         orcamento['observacoes']=self.textEdit.toPlainText()
         return orcamento

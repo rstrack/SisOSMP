@@ -647,21 +647,25 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
         return dict
 
     def getFones(self):
-        listaFones = []
-        fones = 0
+        fones = []
+        cont = 0
         if (self.lineEditFone1.text()):
-            listaFones.append(self.lineEditFone1.text())
-            fones+=1
+            if not self.lineEditFone1.text().isnumeric() or len(self.lineEditFone1.text())<8:
+                raise Exception('Fone 1 inválido')
+            fones.append(self.lineEditFone1.text())
+            cont += 1
         else:
-            listaFones.append(None)
+            fones.append(None)
         if (self.lineEditFone2.text()):
-            listaFones.append(self.lineEditFone2.text())
-            fones+=1
+            if not self.lineEditFone2.text().isnumeric() or len(self.lineEditFone2.text())<8:
+                raise Exception('Fone 2 inválido')
+            fones.append(self.lineEditFone2.text())
+            cont += 1
         else:
-            listaFones.append(None)
-        if fones==0:
-            raise Exception("Fone obrigatório!")
-        return listaFones
+            fones.append(None)
+        if cont == 0:
+            raise Exception('Fone obrigatório')
+        return fones
 
     def getDadosVeiculo(self):
         dict = {}
@@ -729,7 +733,9 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
         data = data.strftime("%Y-%m-%d")
         orcamento['dataOrcamento'] = data
         if self.lineEditKm.text():
-            orcamento['km'] = self.lineEditKm.text()
+            if self.lineEditKm.text() > '0' and self.lineEditKm.text().isnumeric():
+                orcamento['km'] = self.lineEditKm.text()
+            else: raise Exception("Quilometragem do veículo inválida!")
         else: raise Exception("Quilometragem do veículo obrigatória!")
         orcamento['observacoes']=self.textEdit.toPlainText()
         return orcamento

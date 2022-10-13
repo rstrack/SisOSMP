@@ -100,12 +100,12 @@ class TelaCadastroCliente(QtWidgets.QMainWindow):
         self.vlayout7 = QtWidgets.QVBoxLayout(self.groupBoxTel)
         self.labelTel1 = QtWidgets.QLabel(self.groupBoxTel)
         self.vlayout7.addWidget(self.labelTel1)
-        self.lineEditTel1 = QtWidgets.QLineEdit(self.groupBoxTel)
-        self.vlayout7.addWidget(self.lineEditTel1)
+        self.lineEditFone1 = QtWidgets.QLineEdit(self.groupBoxTel)
+        self.vlayout7.addWidget(self.lineEditFone1)
         self.labelTel2 = QtWidgets.QLabel(self.groupBoxTel)
         self.vlayout7.addWidget(self.labelTel2)
-        self.lineEditTel2 = QtWidgets.QLineEdit(self.groupBoxTel)
-        self.vlayout7.addWidget(self.lineEditTel2)
+        self.lineEditFone2 = QtWidgets.QLineEdit(self.groupBoxTel)
+        self.vlayout7.addWidget(self.lineEditFone2)
         # dados do veiculo
         self.groupBoxVeiculo = QtWidgets.QGroupBox(self.framedados)
         self.groupBoxVeiculo.setTitle("Dados do Veículo")
@@ -140,6 +140,8 @@ class TelaCadastroCliente(QtWidgets.QMainWindow):
         # botoes
         self.framebotoes = QtWidgets.QFrame(self.main_frame)
         self.hlayout4 = QtWidgets.QHBoxLayout(self.framebotoes)
+        self.labelLegenda = QtWidgets.QLabel(self.framebotoes)
+        self.hlayout4.addWidget(self.labelLegenda)
         spacerItem5 = QtWidgets.QSpacerItem(
             40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
         self.hlayout4.addItem(spacerItem5)
@@ -155,7 +157,6 @@ class TelaCadastroCliente(QtWidgets.QMainWindow):
             40, 20, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding)
         self.glayoutp.addItem(spacerItem6)
         self.setCentralWidget(self.main_frame)
-
         self.completerCidade = QtWidgets.QCompleter([])
         self.completerCidade.setMaxVisibleItems(5)
         self.completerCidade.setCaseSensitivity(
@@ -191,6 +192,7 @@ class TelaCadastroCliente(QtWidgets.QMainWindow):
         self.labelPlaca.setText(_translate("MainWindow", "Placa"))
         self.labelModelo.setText(_translate("MainWindow", "Modelo"))
         self.labelMarca.setText(_translate("MainWindow", "Marca"))
+        self.labelLegenda.setText(_translate("MainWindow", "* Campos Obrigatórios"))
         self.botaolimpar.setText(_translate("MainWindow", "Limpar"))
         self.botaoSalvar.setText(_translate("MainWindow", "Salvar"))
 
@@ -294,17 +296,17 @@ class TelaCadastroCliente(QtWidgets.QMainWindow):
     def getFones(self):
         fones = []
         cont = 0
-        if (self.lineEditTel1.text()):
-            if not self.lineEditTel1.text().isnumeric() or len(self.lineEditTel1.text())<9:
+        if (self.lineEditFone1.text()):
+            if not self.lineEditFone1.text().isnumeric() or len(self.lineEditFone1.text())<8:
                 raise Exception('Fone 1 inválido')
-            fones.append(self.lineEditTel1.text())
+            fones.append(self.lineEditFone1.text())
             cont += 1
         else:
             fones.append(None)
-        if (self.lineEditTel2.text()):
-            if not self.lineEditTel2.text().isnumeric() or len(self.lineEditTel2.text())<9:
+        if (self.lineEditFone2.text()):
+            if not self.lineEditFone2.text().isnumeric() or len(self.lineEditFone2.text())<8:
                 raise Exception('Fone 2 inválido')
-            fones.append(self.lineEditTel2.text())
+            fones.append(self.lineEditFone2.text())
             cont += 1
         else:
             fones.append(None)

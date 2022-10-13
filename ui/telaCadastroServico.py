@@ -58,6 +58,8 @@ class TelaCadastroServico(QtWidgets.QMainWindow):
         self.gridLayout.addItem(self.spacer, 2, 0, 1, 1)
         self.frameBotoes1 = QtWidgets.QFrame(self.main_frame)
         self.hlayout2 = QtWidgets.QHBoxLayout(self.frameBotoes1)
+        self.labelLegenda = QtWidgets.QLabel(self.frameBotoes1)
+        self.hlayout2.addWidget(self.labelLegenda)
         spacerItem3 = QtWidgets.QSpacerItem(
             40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
         self.hlayout2.addItem(spacerItem3)
@@ -85,9 +87,11 @@ class TelaCadastroServico(QtWidgets.QMainWindow):
             "MainWindow", "Descrição do serviço*"))
         self.labelvalor.setText(_translate("MainWindow", "Valor un*"))
         self.botaoadd.setText(_translate("MainWindow", "+"))
+        self.labelLegenda.setText(_translate("MainWindow", "* Campos Obrigatórios"))
         self.botaoLimpar.setText(_translate("MainWindow", "Limpar"))
         self.botaoSalvar.setText(_translate("MainWindow", "Salvar"))
-
+        
+        
     def addlinhaservico(self):
         label1 = QtWidgets.QLabel(text="Descrição do serviço*")
         label2 = QtWidgets.QLabel(text="Valor un*")

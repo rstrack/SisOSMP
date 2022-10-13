@@ -30,7 +30,6 @@ def tabelas_pos(self, orcamento: dict, l, g):
     self.setFont('Helvetica-Bold', 10)
     self.drawString(428, l + 4, 'Valor Total')
     self.setFont('Helvetica', 10)
-    print(len(str(orcamento['valorTotal'])))
     self.drawRightString(550  , l + 4, str(locale.currency(orcamento['valorTotal'])))
     self.rect(425, l, 59, 15, fill=False, stroke=True)
     self.rect(484, l, 1 * inch, 15, fill=False, stroke=True)

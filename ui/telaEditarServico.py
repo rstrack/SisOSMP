@@ -53,18 +53,19 @@ class TelaEditarServico(QtWidgets.QMainWindow):
         spacerItem3 = QtWidgets.QSpacerItem(
             40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
         self.hlayout2.addItem(spacerItem3)
-        self.botaoEditar = QtWidgets.QPushButton(self.framebotoes)
-        self.botaoEditar.setMinimumSize(QtCore.QSize(100, 30))
-        self.hlayout2.addWidget(self.botaoEditar)
+        self.botaoSalvar = QtWidgets.QPushButton(self.framebotoes)
+        self.botaoSalvar.setMinimumSize(QtCore.QSize(100, 35))
+        self.botaoSalvar.setObjectName('botaoprincipal')
+        self.hlayout2.addWidget(self.botaoSalvar)
         self.botaoCancelar = QtWidgets.QPushButton(self.framebotoes)
-        self.botaoCancelar.setMinimumSize(QtCore.QSize(100, 30))
+        self.botaoCancelar.setMinimumSize(QtCore.QSize(100, 35))
         self.hlayout2.addWidget(self.botaoCancelar)
         self.vlayout6.addWidget(self.framebotoes)
         self.setCentralWidget(self.main_frame)
         self.retranslateUi()
         # conexoes
         self.botaoCancelar.clicked.connect(self.cancelarEdicao)
-        self.botaoEditar.clicked.connect(self.editarServico)
+        self.botaoSalvar.clicked.connect(self.editarServico)
 
     def retranslateUi(self):
         _translate = QtCore.QCoreApplication.translate
@@ -75,7 +76,7 @@ class TelaEditarServico(QtWidgets.QMainWindow):
         self.labelvalor.setText(_translate("MainWindow", "Valor Un.*"))
         self.labelLegenda.setText(_translate("MainWindow", "* Campos Obrigatórios"))
         self.botaoCancelar.setText(_translate("MainWindow", "Cancelar"))
-        self.botaoEditar.setText(_translate("MainWindow", "Editar"))
+        self.botaoSalvar.setText(_translate("MainWindow", "Salvar"))
 
     def resetarTela(self):
         self.limparCampos()

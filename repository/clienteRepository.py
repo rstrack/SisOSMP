@@ -22,7 +22,10 @@ class ClienteRepository():
         return Cliente.select().where(Cliente.idCliente==id).get()
 
     def findByDocumento(self, documento):
-        return Cliente.select().where(Cliente.documento==documento).get()
+        cliente = Cliente.select().where(Cliente.documento==documento)
+        if cliente:
+            return cliente.get()
+        else: return None
 
     def findByInput(self, input, limit=None):
         return Cliente.select().join(Fone).where(Cliente.nome.contains(input) | 

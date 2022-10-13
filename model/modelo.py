@@ -71,7 +71,7 @@ class Orcamento(BaseModel):
     dataOrcamento = DateField(constraints=[SQL('DEFAULT (CURRENT_DATE)')], null=False)
     cliente = ForeignKeyField(Cliente, backref='clientes',null=False)
     veiculo = ForeignKeyField(Veiculo, backref='veiculos',null=False)
-    km = CharField(max_length=6,null=False)
+    km = CharField(max_length=6,constraints=[Check('km>0')], null=False)
     valorTotal = DoubleField(constraints=[Check('valorTotal>=0')],null=False)
     aprovado = BooleanField(constraints=[SQL('DEFAULT FALSE')], null=False)
     dataAprovacao = DateField(null=True)
@@ -98,7 +98,7 @@ class ItemServico(BaseModel):
 
 class Fone(BaseModel):
     cliente = ForeignKeyField(Cliente, backref='clientes',null=False, on_delete='CASCADE')
-    fone = CharField(max_length=14,null=False, unique=True, constraints=[Check('CHAR_LENGTH(fone)>=9')])
+    fone = CharField(max_length=14,null=False, unique=True, constraints=[Check('CHAR_LENGTH(fone)>=8')])
     class Meta:
         primary_key = CompositeKey('cliente', 'fone')
 
