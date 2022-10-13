@@ -245,6 +245,7 @@ class TelaCadastroCliente(QtWidgets.QMainWindow):
         lista = list()
         lista.extend(self.groupBoxCliente.findChildren(QtWidgets.QLineEdit))
         lista.extend(self.groupBoxEnder.findChildren(QtWidgets.QLineEdit))
+        lista.extend(self.groupBoxTel.findChildren(QtWidgets.QLineEdit))
         if len(list(filter(lambda dados: dados.text(), lista))) == 0:
             return None
         dict = {}
