@@ -151,6 +151,7 @@ class TelaCadastroServico(QtWidgets.QMainWindow):
 
     def getServicos(self):
         servicos = []
+        cont = 0
         for desc, valor in self.linhasServico:
             if desc.text() and valor.text():
                 dict = {}
@@ -161,8 +162,11 @@ class TelaCadastroServico(QtWidgets.QMainWindow):
                     raise Exception("Valores devem possuir no máximo duas casas decimais!")
                 dict['valor'] = valor.text().replace(',','.',1)
                 servicos.append(dict)
+                cont+=1
             elif desc.text() or valor.text():
                 raise Exception('Preencha todos os campos de cada serviço!')
+        if cont == 0:
+            raise Exception('Campos vazios!')
         return servicos
 
     def salvarServicos(self):

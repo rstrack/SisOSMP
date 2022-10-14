@@ -156,6 +156,7 @@ class TelaCadastroPeca(QtWidgets.QMainWindow):
 
     def getPecas(self):
         pecas = []
+        cont = 0
         for desc, un, valor in self.linhasPeca:
             if desc.text() and valor.text():
                 dict = {}
@@ -167,8 +168,11 @@ class TelaCadastroPeca(QtWidgets.QMainWindow):
                     raise Exception("Valores devem possuir no máximo duas casas decimais!")
                 dict['valor'] = valor.text().replace(',','.',1)
                 pecas.append(dict)
+                cont+=1
             elif desc.text() or valor.text():
                 raise Exception('Preencha todos os campos de cada peça!')
+        if cont == 0:
+            raise Exception('Campos vazios!')
         return pecas
 
     def salvarPecas(self):

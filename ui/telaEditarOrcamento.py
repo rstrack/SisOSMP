@@ -12,6 +12,7 @@ UNIDADES = ['CM', 'CM2', 'CM3', 'CX', 'DZ', 'G', 'KG',
 
 class TelaEditarOrcamento(QtWidgets.QMainWindow):
     paraTelaConsulta = QtCore.pyqtSignal(int)
+    orcamentoAprovado = QtCore.pyqtSignal(int)
     def __init__(self):
         super(TelaEditarOrcamento, self).__init__()
         self.orcamentoCtrl = handleDeps.getDep('ORCAMENTOCTRL')
@@ -48,8 +49,8 @@ class TelaEditarOrcamento(QtWidgets.QMainWindow):
         # dados do cliente
         self.groupBoxCliente = QtWidgets.QGroupBox(self.framedados)
         self.gridLayoutCliente = QtWidgets.QGridLayout(self.groupBoxCliente)
-        self.labelPessoa = QtWidgets.QLabel(self.groupBoxCliente)
-        self.gridLayoutCliente.addWidget(self.labelPessoa, 0, 0, 1, 1)
+        self.labelTipo = QtWidgets.QLabel(self.groupBoxCliente)
+        self.gridLayoutCliente.addWidget(self.labelTipo, 0, 0, 1, 1)
         self.labelDocumento = QtWidgets.QLabel(self.groupBoxCliente)
         self.gridLayoutCliente.addWidget(self.labelDocumento, 0, 1, 1, 1)
         self.labelNome = QtWidgets.QLabel(self.groupBoxCliente)
@@ -268,11 +269,11 @@ class TelaEditarOrcamento(QtWidgets.QMainWindow):
         self.botaoSalvar.setText(_translate("MainWindow", "Salvar"))
         self.botaoCancelar.setText(_translate("MainWindow", "Cancelar"))
         self.labelTitulo.setText(_translate("MainWindow", "Editar Orçamento"))
-        self.labelData.setText(_translate("MainWindow", "Data do Orçamento"))
+        self.labelData.setText(_translate("MainWindow", "Data do Orçamento*"))
         self.groupBoxCliente.setTitle(_translate("MainWindow", "Dados do Cliente"))
         self.labelNome.setText(_translate("MainWindow", "Nome*"))
         self.labelCEP.setText(_translate("MainWindow", "CEP"))
-        self.labelPessoa.setText(_translate("MainWindow", "Pessoa"))
+        self.labelTipo.setText(_translate("MainWindow", "Tipo"))
         self.labelDocumento.setText(_translate("MainWindow", "CPF"))
         self.labelUF.setText(_translate("MainWindow", "UF"))
         self.labelCidade.setText(_translate("MainWindow", "Cidade"))
@@ -646,6 +647,7 @@ class TelaEditarOrcamento(QtWidgets.QMainWindow):
             msg.setWindowTitle("Aviso")
             msg.setText("Orçamento aprovado com sucesso!")
             msg.exec()
+            self.orcamentoAprovado.emit(1)
         except Exception as e:
             msg = QtWidgets.QMessageBox()
             msg.setWindowIcon(QtGui.QIcon('./resources/logo-icon.png'))

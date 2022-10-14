@@ -155,7 +155,7 @@ class TelaEditarCliente(QtWidgets.QMainWindow):
         self.labelender.setText(_translate("MainWindow", "Endereço"))
         self.labelnumero.setText(_translate("MainWindow", "Nº"))
         self.labelUF.setText(_translate("MainWindow", "UF"))
-        self.labelTel1.setText(_translate("MainWindow", "Fone 1"))
+        self.labelTel1.setText(_translate("MainWindow", "Fone 1*"))
         self.labelTel2.setText(_translate("MainWindow", "Fone 2"))
         self.labelLegenda.setText(_translate("MainWindow", "* Campos Obrigatórios"))
         self.botaoCancelar.setText(_translate("MainWindow", "Cancelar"))
@@ -203,6 +203,7 @@ class TelaEditarCliente(QtWidgets.QMainWindow):
         lista = list()
         lista.extend(self.groupBoxCliente.findChildren(QtWidgets.QLineEdit))
         lista.extend(self.groupBoxEnder.findChildren(QtWidgets.QLineEdit))
+        lista.extend(self.groupBoxTel.findChildren(QtWidgets.QLineEdit))
         if len(list(filter(lambda dados: dados.text(), lista))) == 0:
             raise Exception('Campos vazios!')
         dict = {}
