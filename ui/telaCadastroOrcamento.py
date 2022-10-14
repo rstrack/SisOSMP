@@ -7,7 +7,7 @@ from ui.messageBox import MessageBox
 
 from ui.telaBuscaCliente import TelaBuscaCliente
 from ui.telaBuscaVeiculo import TelaBuscaVeiculo
-from util.gerar_pdf import generatePDF
+from util.gerar_pdf import GeraPDF
 
 SIGLAESTADOS = ['AC', 'AL', 'AP', 'AM', 'BA', 'CE', 'DF', 'ES', 'GO', 'MA', 'MT', 'MS',
                 'MG', 'PA', 'PB', 'PR', 'PE', 'PI', 'RJ', 'RN', 'RS', 'RO', 'RR', 'SC', 'SP', 'SE', 'TO']
@@ -888,14 +888,16 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
             if r == 'cancelar':
                 return
             elif r == 'nao':
-                generatePDF(orcamento, fones, itemServicos, itemPecas)
+                pdf = GeraPDF()
+                pdf.generatePDF(orcamento, fones, itemServicos, itemPecas)
             else:
                 window = QtWidgets.QMainWindow()
                 fd = QtWidgets.QFileDialog()
                 path = fd.getExistingDirectory(window, 'Salvar como', './')
                 if path == '':
                     return
-                generatePDF(orcamento, fones, itemServicos, itemPecas, path)
+                pdf = GeraPDF()
+                pdf.generatePDF(orcamento, fones, itemServicos, itemPecas, path)
         except Exception as e:    
             msg = QtWidgets.QMessageBox()
             msg.setWindowIcon(QtGui.QIcon('./resources/logo-icon.png'))

@@ -1,10 +1,10 @@
 from PyQt6 import QtCore, QtWidgets
 from container import handleDeps
 
-class TelaClienteVeiculo(QtWidgets.QMainWindow):
+class TelaVeiculoCliente(QtWidgets.QMainWindow):
 
     def __init__(self):
-        super(TelaClienteVeiculo, self).__init__()
+        super(TelaVeiculoCliente, self).__init__()
         self.clienteCtrl = handleDeps.getDep('CLIENTECTRL')
         self.clienteID = None
         self.veiculoID = None

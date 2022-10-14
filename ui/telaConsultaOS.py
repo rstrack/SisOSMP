@@ -3,7 +3,7 @@ from flatdict import FlatDict
 from container import handleDeps
 from ui.infiniteScroll import AlignDelegate, InfiniteScrollTableModel
 from ui.messageBox import MessageBox
-from util.gerar_pdf import generatePDF
+from util.gerar_pdf import GeraPDF
 
 class TelaConsultaOS(QtWidgets.QMainWindow):
     def __init__(self):
@@ -157,14 +157,16 @@ class TelaConsultaOS(QtWidgets.QMainWindow):
         if r == 'cancelar':
             return
         elif r == 'nao':
-            generatePDF(orcamento, fones, itemServicos, itemPecas)
+            pdf = GeraPDF()
+            pdf.generatePDF(orcamento, fones, itemServicos, itemPecas)
         else:
             window = QtWidgets.QMainWindow()
             fd = QtWidgets.QFileDialog()
             path = fd.getExistingDirectory(window, 'Salvar como', './')
             if path == '':
                 return
-            generatePDF(orcamento, fones, itemServicos, itemPecas, path)
+            pdf = GeraPDF()
+            pdf.generatePDF(orcamento, fones, itemServicos, itemPecas, path)
     
     def excluirOS(self):
         msgBox = QtWidgets.QMessageBox()

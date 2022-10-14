@@ -1,5 +1,5 @@
 from PyQt6 import QtCore, QtGui, QtWidgets
-from ui.telaClienteVeiculo import TelaClienteVeiculo
+from ui.telaVeiculoCliente import TelaVeiculoCliente
 from ui.infiniteScroll import AlignDelegate, InfiniteScrollTableModel
 from container import handleDeps
 from flatdict import FlatDict
@@ -192,6 +192,6 @@ class TelaConsultaCliente(QtWidgets.QMainWindow):
         linha = self.tabela.selectionModel().selectedRows()
         if linha:
             id = self.tabela.model().index(linha[0].row(), 0).data()
-            self.telaClienteVeiculo = TelaClienteVeiculo()
-            self.telaClienteVeiculo.renderVeiculos(id)
-            self.telaClienteVeiculo.show()
+            self.telaVeiculoCliente = TelaVeiculoCliente()
+            self.telaVeiculoCliente.renderVeiculos(id)
+            self.telaVeiculoCliente.show()
