@@ -32,14 +32,15 @@ class TelaCadastroServico(QtWidgets.QMainWindow):
         self.scrollarea.setWidget(self.framedados)
         self.gridLayout = QtWidgets.QGridLayout(self.framedados)
 
-        self.labelnome = QtWidgets.QLabel(self.framedados)
-        self.gridLayout.addWidget(self.labelnome, 0, 0, 1, 1)
+        self.labelDescricao = QtWidgets.QLabel(self.framedados)
+        self.gridLayout.addWidget(self.labelDescricao, 0, 0, 1, 1)
         self.labelvalor = QtWidgets.QLabel(self.framedados)
         self.gridLayout.addWidget(self.labelvalor, 0, 1, 1, 1)
-        self.lineEditnome = QtWidgets.QLineEdit(self.framedados)
-        self.lineEditnome.setMaximumWidth(200)
-        self.lineEditnome.setMaximumWidth(600)
-        self.gridLayout.addWidget(self.lineEditnome, 1, 0, 1, 1)
+        self.lineEditDescricao = QtWidgets.QLineEdit(self.framedados)
+        self.lineEditDescricao.setMaxLength(80)
+        self.lineEditDescricao.setMaximumWidth(200)
+        self.lineEditDescricao.setMaximumWidth(600)
+        self.gridLayout.addWidget(self.lineEditDescricao, 1, 0, 1, 1)
         self.lineEditvalor = QtWidgets.QLineEdit(self.framedados)
         self.lineEditvalor.setFixedWidth(80)
         self.gridLayout.addWidget(self.lineEditvalor, 1, 1, 1, 1)
@@ -49,7 +50,7 @@ class TelaCadastroServico(QtWidgets.QMainWindow):
         self.botaoadd = QtWidgets.QPushButton(self.framedados)
         self.botaoadd.setToolTip('Adicionar linha')
         self.botaoadd.setFixedSize(QtCore.QSize(26, 26))
-        self.linhasServico = [[self.lineEditnome, self.lineEditvalor]]
+        self.linhasServico = [[self.lineEditDescricao, self.lineEditvalor]]
         self.gridLayout.addWidget(self.botaoadd, 1, 2, 1, 1)
         spacerItem2 = QtWidgets.QSpacerItem(
             40, 20, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Minimum)
@@ -84,7 +85,7 @@ class TelaCadastroServico(QtWidgets.QMainWindow):
         self.setWindowTitle(_translate("MainWindow", "MainWindow"))
         self.labelTitulo.setText(_translate(
             "MainWindow", "Cadastro de serviços"))
-        self.labelnome.setText(_translate(
+        self.labelDescricao.setText(_translate(
             "MainWindow", "Descrição do serviço*"))
         self.labelvalor.setText(_translate("MainWindow", "Valor un*"))
         self.botaoadd.setText(_translate("MainWindow", "+"))
@@ -97,6 +98,7 @@ class TelaCadastroServico(QtWidgets.QMainWindow):
         label1 = QtWidgets.QLabel(text="Descrição do serviço*")
         label2 = QtWidgets.QLabel(text="Valor un*")
         lineedit1 = QtWidgets.QLineEdit()
+        lineedit1.setMaxLength(80)
         lineedit1.setMaximumWidth(200)
         lineedit1.setMaximumWidth(600)
         lineedit2 = QtWidgets.QLineEdit()

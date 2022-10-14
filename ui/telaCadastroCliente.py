@@ -46,8 +46,10 @@ class TelaCadastroCliente(QtWidgets.QMainWindow):
         self.comboBoxPessoa.addItems(["PESSOA FÍSICA", "PESSOA JURÍDICA", "ESTRANGEIRO"])
         self.gridLayout.addWidget(self.comboBoxPessoa, 1, 0, 1, 1)
         self.lineEditNomeCliente = QtWidgets.QLineEdit(self.groupBoxCliente)
+        self.lineEditNomeCliente.setMaxLength(80)
         self.gridLayout.addWidget(self.lineEditNomeCliente, 1, 1, 1, 1)
         self.lineEditDocumento = QtWidgets.QLineEdit(self.groupBoxCliente)
+        self.lineEditDocumento.setMaxLength(14)
         self.gridLayout.addWidget(self.lineEditDocumento, 1, 2, 1, 1)
         self.gridLayout.setColumnStretch(0, 1)
         self.gridLayout.setColumnStretch(1, 5)
@@ -68,10 +70,13 @@ class TelaCadastroCliente(QtWidgets.QMainWindow):
         self.labelnumero = QtWidgets.QLabel(self.groupBoxEnder)
         self.gridLayout2.addWidget(self.labelnumero, 0, 3, 1, 1)
         self.lineEditCEP = QtWidgets.QLineEdit(self.groupBoxEnder)
+        self.lineEditCEP.setMaxLength(8)
         self.gridLayout2.addWidget(self.lineEditCEP, 1, 0, 1, 1)
         self.lineEditEnder = QtWidgets.QLineEdit(self.groupBoxEnder)
+        self.lineEditEnder.setMaxLength(80)
         self.gridLayout2.addWidget(self.lineEditEnder, 1, 1, 1, 2)
         self.lineEditNumero = QtWidgets.QLineEdit(self.groupBoxEnder)
+        self.lineEditNumero.setMaxLength(6)
         self.gridLayout2.addWidget(self.lineEditNumero, 1, 3, 1, 1)
         self.labelBairro = QtWidgets.QLabel(self.groupBoxEnder)
         self.gridLayout2.addWidget(self.labelBairro, 2, 0, 1, 2)
@@ -80,8 +85,10 @@ class TelaCadastroCliente(QtWidgets.QMainWindow):
         self.labelUF = QtWidgets.QLabel(self.groupBoxEnder)
         self.gridLayout2.addWidget(self.labelUF, 2, 3, 1, 1)
         self.lineEditBairro = QtWidgets.QLineEdit(self.groupBoxEnder)
+        self.lineEditBairro.setMaxLength(50)
         self.gridLayout2.addWidget(self.lineEditBairro, 3, 0, 1, 2)
         self.lineEditCidade = QtWidgets.QLineEdit(self.groupBoxEnder)
+        self.lineEditCidade.setMaxLength(50)
         self.gridLayout2.addWidget(self.lineEditCidade, 3, 2, 1, 1)
         self.comboBoxuf = QtWidgets.QComboBox(self.groupBoxEnder)
         self.comboBoxuf.addItems(SIGLAESTADOS)
@@ -101,10 +108,12 @@ class TelaCadastroCliente(QtWidgets.QMainWindow):
         self.labelTel1 = QtWidgets.QLabel(self.groupBoxTel)
         self.vlayout7.addWidget(self.labelTel1)
         self.lineEditFone1 = QtWidgets.QLineEdit(self.groupBoxTel)
+        self.lineEditFone1.setMaxLength(14)
         self.vlayout7.addWidget(self.lineEditFone1)
         self.labelTel2 = QtWidgets.QLabel(self.groupBoxTel)
         self.vlayout7.addWidget(self.labelTel2)
         self.lineEditFone2 = QtWidgets.QLineEdit(self.groupBoxTel)
+        self.lineEditFone2.setMaxLength(14)
         self.vlayout7.addWidget(self.lineEditFone2)
         # dados do veiculo
         self.groupBoxVeiculo = QtWidgets.QGroupBox(self.framedados)
@@ -118,14 +127,18 @@ class TelaCadastroCliente(QtWidgets.QMainWindow):
         self.gridLayout4.addWidget(self.labelPlaca, 0, 2, 1, 1)
         self.comboBoxMarca = QtWidgets.QComboBox(self.groupBoxVeiculo)
         self.comboBoxMarca.setEditable(True)
+        self.comboBoxMarca.lineEdit().setMaxLength(50)
         self.gridLayout4.addWidget(self.comboBoxMarca, 1, 0, 1, 1)
         self.lineEditModelo = QtWidgets.QLineEdit(self.groupBoxVeiculo)
+        self.lineEditModelo.setMaxLength(30)
         self.gridLayout4.addWidget(self.lineEditModelo, 1, 1, 1, 1)
         self.lineEditPlaca = QtWidgets.QLineEdit(self.groupBoxVeiculo)
+        self.lineEditPlaca.setMaxLength(7)
         self.gridLayout4.addWidget(self.lineEditPlaca, 1, 2, 1, 1)
         self.labelAno = QtWidgets.QLabel(self.groupBoxVeiculo)
         self.gridLayout4.addWidget(self.labelAno, 2, 0, 1, 1)
         self.lineEditAno = QtWidgets.QLineEdit(self.groupBoxVeiculo)
+        self.lineEditAno.setMaxLength(4)
         self.gridLayout4.addWidget(self.lineEditAno, 3, 0, 1, 1)
         self.gridLayout4.setColumnStretch(0, 1)
         self.gridLayout4.setColumnStretch(1, 2)
@@ -254,24 +267,24 @@ class TelaCadastroCliente(QtWidgets.QMainWindow):
             if dict['tipo'] == 0:
                 documento = 'CPF'
                 if len(self.lineEditDocumento.text()) != 11:
-                    raise Exception('CPF inválido')
+                    raise Exception('CPF inválido!')
             elif dict['tipo'] == 1:
                 documento = 'CNPJ'
                 if len(self.lineEditDocumento.text()) != 14:
-                    raise Exception('CNPJ inválido')
+                    raise Exception('CNPJ inválido!')
             else: documento = 'Documento'
             if not self.lineEditDocumento.text().isnumeric():
-                raise Exception(f'Digite apenas números no campo {documento}')
+                raise Exception(f'Digite apenas números no campo {documento}!')
             dict['documento'] = self.lineEditDocumento.text()
         else:
             dict['documento'] = None
         if (self.lineEditNomeCliente.text()):
             dict['nome'] = self.lineEditNomeCliente.text().title()
         else:
-            raise Exception("Nome do cliente obrigatório")
+            raise Exception("Nome do cliente obrigatório!")
         if (self.lineEditCEP.text()):
             if len(self.lineEditCEP.text()) != 8:
-                raise Exception("CEP inválido")
+                raise Exception("CEP inválido!")
             dict['cep'] = self.lineEditCEP.text()
         else:
             dict['cep'] = None
@@ -299,20 +312,20 @@ class TelaCadastroCliente(QtWidgets.QMainWindow):
         cont = 0
         if (self.lineEditFone1.text()):
             if not self.lineEditFone1.text().isnumeric() or len(self.lineEditFone1.text())<8:
-                raise Exception('Fone 1 inválido')
+                raise Exception('Fone 1 inválido!')
             fones.append(self.lineEditFone1.text())
             cont += 1
         else:
             fones.append(None)
         if (self.lineEditFone2.text()):
             if not self.lineEditFone2.text().isnumeric() or len(self.lineEditFone2.text())<8:
-                raise Exception('Fone 2 inválido')
+                raise Exception('Fone 2 inválido!')
             fones.append(self.lineEditFone2.text())
             cont += 1
         else:
             fones.append(None)
         if cont == 0:
-            raise Exception('Fone obrigatório')
+            raise Exception('Fone obrigatório!')
         return fones
 
     def getDadosVeiculo(self):
@@ -321,20 +334,21 @@ class TelaCadastroCliente(QtWidgets.QMainWindow):
         dict = {}
         dict['marca'] = self.comboBoxMarca.currentText().title()
         if dict['marca'] == '':
-            raise Exception('Marca obrigatória')
-        if (self.lineEditModelo.text()):
+            raise Exception('Marca obrigatória!')
+        if self.lineEditModelo.text():
             dict['modelo'] = self.lineEditModelo.text()[0].upper() + self.lineEditModelo.text()[1:]
         else:
-            raise Exception('Modelo obrigatório')
-        if (self.lineEditPlaca.text()):
+            raise Exception('Modelo obrigatório!')
+        if self.lineEditPlaca.text():
             if not self.lineEditPlaca.text().isalnum():
-                raise Exception('Insira apenas letras e números na placa')
+                raise Exception('Insira apenas letras e números na placa!')
             dict['placa'] = self.lineEditPlaca.text().upper()
         else:
-            raise Exception('Placa obrigatória')
-        
-        if (self.lineEditAno.text()):
-            dict['ano'] = self.lineEditAno.text()
+            raise Exception('Placa obrigatória!')
+        if self.lineEditAno.text():
+            if self.lineEditAno.text() > '1900':
+                dict['ano'] = self.lineEditAno.text()
+            else: raise Exception('Ano do veículo inválido!')
         else:
             dict['ano'] = None
         return dict

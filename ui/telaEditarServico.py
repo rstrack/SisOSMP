@@ -31,14 +31,15 @@ class TelaEditarServico(QtWidgets.QMainWindow):
         self.framedados = QtWidgets.QFrame(self.scrollarea)
         self.scrollarea.setWidget(self.framedados)
         self.gridLayout = QtWidgets.QGridLayout(self.framedados)
-        self.labelnome = QtWidgets.QLabel(self.framedados)
-        self.gridLayout.addWidget(self.labelnome, 0, 0, 1, 1)
+        self.labelDescricao = QtWidgets.QLabel(self.framedados)
+        self.gridLayout.addWidget(self.labelDescricao, 0, 0, 1, 1)
         self.labelvalor = QtWidgets.QLabel(self.framedados)
         self.gridLayout.addWidget(self.labelvalor, 0, 1, 1, 1)
-        self.lineEditNomeServico = QtWidgets.QLineEdit(self.framedados)
-        self.lineEditNomeServico.setMaximumWidth(200)
-        self.lineEditNomeServico.setMaximumWidth(600)
-        self.gridLayout.addWidget(self.lineEditNomeServico, 1, 0, 1, 1)
+        self.lineEditDescricao = QtWidgets.QLineEdit(self.framedados)
+        self.lineEditDescricao.setMaxLength(80)
+        self.lineEditDescricao.setMaximumWidth(200)
+        self.lineEditDescricao.setMaximumWidth(600)
+        self.gridLayout.addWidget(self.lineEditDescricao, 1, 0, 1, 1)
         self.lineEditValorServico = QtWidgets.QLineEdit(self.framedados)
         self.lineEditValorServico.setFixedWidth(80)
         self.gridLayout.addWidget(self.lineEditValorServico, 1, 1, 1, 1)
@@ -73,7 +74,7 @@ class TelaEditarServico(QtWidgets.QMainWindow):
         self.setWindowTitle(_translate("MainWindow", "MainWindow"))
 
         self.labelTitulo.setText(_translate("MainWindow", "Editar Serviço"))
-        self.labelnome.setText(_translate("MainWindow", "Descrição do serviço*"))
+        self.labelDescricao.setText(_translate("MainWindow", "Descrição do serviço*"))
         self.labelvalor.setText(_translate("MainWindow", "Valor Un.*"))
         self.labelLegenda.setText(_translate("MainWindow", "* Campos Obrigatórios"))
         self.botaoCancelar.setText(_translate("MainWindow", "Cancelar"))
@@ -83,10 +84,10 @@ class TelaEditarServico(QtWidgets.QMainWindow):
         self.limparCampos()
         
     def getServico(self):
-        if not self.lineEditNomeServico.text() or not self.lineEditValorServico.text():
+        if not self.lineEditDescricao.text() or not self.lineEditValorServico.text():
             raise Exception("Preencha todos os campos!")
         dict = {}
-        dict['descricao'] = self.lineEditNomeServico.text()
+        dict['descricao'] = self.lineEditDescricao.text()
         if not (self.lineEditValorServico.text().replace(',','',1).isnumeric() or self.lineEditValorServico.text().replace('.','',1).isnumeric()):
             raise Exception("Campo 'valor' inválido!")
         if -Decimal(self.lineEditValorServico.text().replace(',','.',1)).as_tuple().exponent > 2:
@@ -129,7 +130,7 @@ class TelaEditarServico(QtWidgets.QMainWindow):
     def renderEditar(self, id):
         self.servicoID = id
         servico = self.servicoCtrl.getServico(id)
-        self.lineEditNomeServico.setText(servico['descricao'])
+        self.lineEditDescricao.setText(servico['descricao'])
         self.lineEditValorServico.setText(str(servico['valor']).replace('.',',',1))
 
     def limparCampos(self):

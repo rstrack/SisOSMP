@@ -33,16 +33,17 @@ class TelaEditarPeca(QtWidgets.QMainWindow):
         self.framedados = QtWidgets.QFrame(self.scrollarea)
         self.scrollarea.setWidget(self.framedados)
         self.gridLayout = QtWidgets.QGridLayout(self.framedados)
-        self.labelnome = QtWidgets.QLabel(self.framedados)
-        self.gridLayout.addWidget(self.labelnome, 0, 0, 1, 1)
+        self.labelDescricao = QtWidgets.QLabel(self.framedados)
+        self.gridLayout.addWidget(self.labelDescricao, 0, 0, 1, 1)
         self.labelUn = QtWidgets.QLabel(self.framedados)
         self.gridLayout.addWidget(self.labelUn, 0, 1, 1, 1)
         self.labelvalor = QtWidgets.QLabel(self.framedados)
         self.gridLayout.addWidget(self.labelvalor, 0, 2, 1, 1)
-        self.lineEditNomePeca = QtWidgets.QLineEdit(self.framedados)
-        self.lineEditNomePeca.setMaximumWidth(200)
-        self.lineEditNomePeca.setMaximumWidth(600)
-        self.gridLayout.addWidget(self.lineEditNomePeca, 1, 0, 1, 1)
+        self.lineEditDescricao = QtWidgets.QLineEdit(self.framedados)
+        self.lineEditDescricao.setMaxLength(80)
+        self.lineEditDescricao.setMaximumWidth(200)
+        self.lineEditDescricao.setMaximumWidth(600)
+        self.gridLayout.addWidget(self.lineEditDescricao, 1, 0, 1, 1)
         self.comboboxun = QtWidgets.QComboBox(self.framedados)
         self.comboboxun.addItems(UNIDADES)
         self.comboboxun.setCurrentIndex(15)
@@ -82,7 +83,7 @@ class TelaEditarPeca(QtWidgets.QMainWindow):
         self.setWindowTitle(_translate("MainWindow", "MainWindow"))
 
         self.labelTitulo.setText(_translate("MainWindow", "Editar Peça"))
-        self.labelnome.setText(_translate("MainWindow", "Descrição da peça*"))
+        self.labelDescricao.setText(_translate("MainWindow", "Descrição da peça*"))
         self.labelUn.setText(_translate("MainWindow", "Un"))
         self.labelvalor.setText(_translate("MainWindow", "Valor Un.*"))
         self.labelLegenda.setText(_translate("MainWindow", "* Campos Obrigatórios"))
@@ -93,10 +94,10 @@ class TelaEditarPeca(QtWidgets.QMainWindow):
         self.limparCampos()
         
     def getPeca(self):
-        if not self.lineEditNomePeca.text() or not self.lineEditValorPeca.text():
+        if not self.lineEditDescricao.text() or not self.lineEditValorPeca.text():
             raise Exception("Preencha todos os campos!")
         dict = {}
-        dict['descricao'] = self.lineEditNomePeca.text()
+        dict['descricao'] = self.lineEditDescricao.text()
         dict['un'] = self.comboboxun.currentText()
         if not (self.lineEditValorPeca.text().replace(',','',1).isnumeric() or self.lineEditValorPeca.text().replace('.','',1).isnumeric()):
             raise Exception("Campo 'valor' inválido!")
@@ -140,7 +141,7 @@ class TelaEditarPeca(QtWidgets.QMainWindow):
     def renderEditar(self, id):
         self.pecaID = id
         peca = self.pecaCtrl.getPeca(id)
-        self.lineEditNomePeca.setText(peca['descricao'])
+        self.lineEditDescricao.setText(peca['descricao'])
         self.lineEditValorPeca.setText(str(peca['valor']).replace('.',',',1))
 
     def limparCampos(self):

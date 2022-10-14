@@ -19,6 +19,7 @@ class TelaEditarMarca(QtWidgets.QMainWindow):
         self.label = QtWidgets.QLabel(self.framedados)
         self.gridLayout.addWidget(self.label, 0, 0, 1, 1)
         self.lineEdit = QtWidgets.QLineEdit(self.framedados)
+        self.lineEdit.setMaxLength(50)
         self.gridLayout.addWidget(self.lineEdit, 1, 0, 1, 1)
         self.framebotoes = QtWidgets.QFrame(self.main_frame)
         self.vlayout.addWidget(self.framebotoes)

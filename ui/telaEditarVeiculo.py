@@ -42,14 +42,18 @@ class TelaEditarVeiculo(QtWidgets.QMainWindow):
         self.gridLayout4.addWidget(self.labelPlaca, 0, 2, 1, 1)
         self.comboBoxMarca = QtWidgets.QComboBox(self.groupBoxVeiculo)
         self.comboBoxMarca.setEditable(True)
+        self.comboBoxMarca.lineEdit().setMaxLength(50)
         self.gridLayout4.addWidget(self.comboBoxMarca, 1, 0, 1, 1)
         self.lineEditModelo = QtWidgets.QLineEdit(self.groupBoxVeiculo)
+        self.lineEditModelo.setMaxLength(30)
         self.gridLayout4.addWidget(self.lineEditModelo, 1, 1, 1, 1)
         self.lineEditPlaca = QtWidgets.QLineEdit(self.groupBoxVeiculo)
+        self.lineEditPlaca.setMaxLength(7)
         self.gridLayout4.addWidget(self.lineEditPlaca, 1, 2, 1, 1)
         self.labelAno = QtWidgets.QLabel(self.groupBoxVeiculo)
         self.gridLayout4.addWidget(self.labelAno, 2, 0, 1, 1)
         self.lineEditAno = QtWidgets.QLineEdit(self.groupBoxVeiculo)
+        self.lineEditAno.setMaxLength(4)
         self.gridLayout4.addWidget(self.lineEditAno, 3, 0, 1, 1)
         self.gridLayout4.setColumnStretch(0, 1)
         self.gridLayout4.setColumnStretch(1, 2)
@@ -116,7 +120,9 @@ class TelaEditarVeiculo(QtWidgets.QMainWindow):
             raise Exception('Placa obrigatória')
         
         if (self.lineEditAno.text()):
-            dict['ano'] = self.lineEditAno.text()
+            if self.lineEditAno.text() > '1900':
+                dict['ano'] = self.lineEditAno.text()
+            else: raise Exception('Ano do veículo inválido!')
         else:
             dict['ano'] = None
         return dict
