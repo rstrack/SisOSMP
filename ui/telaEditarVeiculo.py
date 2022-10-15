@@ -18,16 +18,27 @@ class TelaEditarVeiculo(QtWidgets.QMainWindow):
         self.resize(1280, 760)
         self.main_frame = QtWidgets.QFrame(self)
         self.main_frame.setObjectName("main_frame")
-        self.vlayout6 = QtWidgets.QVBoxLayout(self.main_frame)
-        # frame titulo
-        self.frame_titulo = QtWidgets.QFrame(self.main_frame)
-        self.vlayout6.addWidget(self.frame_titulo)
-        self.labelTitulo = QtWidgets.QLabel(self.frame_titulo)
+        self.hlayout = QtWidgets.QHBoxLayout(self.main_frame)
+        spacer = QtWidgets.QSpacerItem(
+            20, 10, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Preferred)
+        self.hlayout.addItem(spacer)
+        self.framegeral = QtWidgets.QFrame(self.main_frame)
+        self.framegeral.setSizePolicy(QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Preferred)
+        self.framegeral.setMaximumWidth(int(QtGui.QGuiApplication.primaryScreen().size().width()*0.6) 
+            if QtGui.QGuiApplication.primaryScreen().size().width()> 1280 else QtGui.QGuiApplication.primaryScreen().size().width())
+        self.hlayout.addWidget(self.framegeral)
+        spacer = QtWidgets.QSpacerItem(
+            20, 10, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Preferred)
+        self.hlayout.addItem(spacer)
+        self.vlayout = QtWidgets.QVBoxLayout(self.framegeral)
+        self.vlayout.setContentsMargins(0,0,0,0)
+        self.vlayout.setSpacing(0)
+        # titulo
+        self.labelTitulo = QtWidgets.QLabel(self.framegeral)
+        self.labelTitulo.setFixedHeight(100)
         self.labelTitulo.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
         self.labelTitulo.setObjectName("titulo")
-        self.vlayout6.setContentsMargins(36, 18, 36, 18)
-        self.vlayout6.setSpacing(36)
-        self.vlayout6.addWidget(self.labelTitulo)
+        self.vlayout.addWidget(self.labelTitulo)
         self.framedados = QtWidgets.QFrame(self.main_frame)
         self.glayoutp = QtWidgets.QGridLayout(self.framedados)
         # dados do veiculo
@@ -62,7 +73,7 @@ class TelaEditarVeiculo(QtWidgets.QMainWindow):
         spacerItem4 = QtWidgets.QSpacerItem(
             20, 10, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Maximum)
         self.glayoutp.addItem(spacerItem4)
-        self.vlayout6.addWidget(self.framedados)
+        self.vlayout.addWidget(self.framedados)
         # botoes
         self.framebotoes = QtWidgets.QFrame(self.main_frame)
         self.hlayout4 = QtWidgets.QHBoxLayout(self.framebotoes)
@@ -78,7 +89,7 @@ class TelaEditarVeiculo(QtWidgets.QMainWindow):
         self.botaoCancelar = QtWidgets.QPushButton(self.framebotoes)
         self.botaoCancelar.setMinimumSize(QtCore.QSize(100, 35))
         self.hlayout4.addWidget(self.botaoCancelar)
-        self.vlayout6.addWidget(self.framebotoes)
+        self.vlayout.addWidget(self.framebotoes)
         spacerItem6 = QtWidgets.QSpacerItem(
             40, 20, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding)
         self.glayoutp.addItem(spacerItem6)
