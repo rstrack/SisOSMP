@@ -129,6 +129,7 @@ class TelaConsultaOrcamento(QtWidgets.QMainWindow):
                 QtWidgets.QHeaderView.ResizeMode.ResizeToContents)
             header.setSectionResizeMode(2, 
                 QtWidgets.QHeaderView.ResizeMode.Stretch)
+            self.model.setHeaderAlignment(6, QtCore.Qt.AlignmentFlag.AlignRight | QtCore.Qt.AlignmentFlag.AlignVCenter)
 
     def editarOrcamento(self):
         self.linha = self.tabela.selectionModel().selectedRows()

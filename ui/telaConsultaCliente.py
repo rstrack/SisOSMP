@@ -139,7 +139,6 @@ class TelaConsultaCliente(QtWidgets.QMainWindow):
         self.filter.setSourceModel(self.model)
         self.tabela.setModel(self.filter)
         self.tabela.setItemDelegateForColumn(5, self.delegateRight)
-        self.model.setHeaderData(1, QtCore.Qt.Orientation.Horizontal, 'tipo', 1)
         self.maisClientes(50)
         if self.linhasCarregadas > 0:
             header = self.tabela.horizontalHeader()

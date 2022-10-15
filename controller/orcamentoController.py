@@ -155,7 +155,7 @@ class OrcamentoController():
                         else:
                             _servico = self.servicoRep.save({'descricao': servico['descricao'], 'valor':servico['valor']})
                             self.itemServicoRep.save({'orcamento':_orcamento, 'servico': _servico, 'qtde':servico['qtde'], 'valor': servico['valor']})
-            
+                return model_to_dict(_orcamento)
             except Exception as e:
                 transaction.rollback()
                 return e

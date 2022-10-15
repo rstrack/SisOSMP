@@ -3,6 +3,8 @@ from PyQt6 import QtCore, QtWidgets, QtGui
 from datetime import datetime
 
 from container import handleDeps
+from ui.messageBox import MessageBox
+from util.gerar_pdf import GeraPDF
 
 SIGLAESTADOS = ['AC', 'AL', 'AP', 'AM', 'BA', 'CE', 'DF', 'ES', 'GO', 'MA', 'MT', 'MS',
                 'MG', 'PA', 'PB', 'PR', 'PE', 'PI', 'RJ', 'RN', 'RS', 'RO', 'RR', 'SC', 'SP', 'SE', 'TO']
@@ -225,6 +227,9 @@ class TelaEditarOrcamento(QtWidgets.QMainWindow):
         self.botaoSalvar.setMinimumSize(QtCore.QSize(100, 35))
         self.botaoSalvar.setObjectName('botaoprincipal')
         self.hlayout4.addWidget(self.botaoSalvar)
+        self.botaoSalvaresalvareGerarPDF = QtWidgets.QPushButton(self.framebotoes)
+        self.botaoSalvaresalvareGerarPDF.setMinimumSize(QtCore.QSize(150, 35))
+        self.hlayout4.addWidget(self.botaoSalvaresalvareGerarPDF)
         self.botaoAprovar = QtWidgets.QPushButton(self.framebotoes)
         self.botaoAprovar.setMinimumSize(QtCore.QSize(100, 35))
         self.hlayout4.addWidget(self.botaoAprovar)
@@ -256,6 +261,7 @@ class TelaEditarOrcamento(QtWidgets.QMainWindow):
         self.setMarcas()
         self.setCompleters()
         self.botaoSalvar.clicked.connect(self.editarOrcamento)
+        self.botaoSalvaresalvareGerarPDF.clicked.connect(self.salvareGerarPDF)
         self.botaoAprovar.clicked.connect(self.aprovarOrcamento)
         self.botaoCancelar.clicked.connect(self.cancelarEdicao)
 
@@ -268,6 +274,7 @@ class TelaEditarOrcamento(QtWidgets.QMainWindow):
         self.setWindowTitle(_translate("MainWindow", "Mecânica Pasetto"))
         self.botaoAprovar.setText(_translate("MainWindow", "Aprovar"))
         self.botaoSalvar.setText(_translate("MainWindow", "Salvar"))
+        self.botaoSalvaresalvareGerarPDF.setText(_translate("MainWindow", "Salvar e Gerar PDF"))
         self.botaoCancelar.setText(_translate("MainWindow", "Cancelar"))
         self.labelTitulo.setText(_translate("MainWindow", "Editar Orçamento"))
         self.labelData.setText(_translate("MainWindow", "Data do Orçamento*"))
@@ -670,6 +677,53 @@ class TelaEditarOrcamento(QtWidgets.QMainWindow):
         msgBox.exec()
         if msgBox.clickedButton() == y:
             self.paraTelaConsulta.emit(1)
+
+    def salvareGerarPDF(self):
+        try:
+            pecas = self.getPecas()
+            servicos  = self.getServicos()
+            orcamento = self.getDadosOrcamento()
+            orcamento['valorTotal'] = self.valorTotal
+            r = self.orcamentoCtrl.editarOrcamento(self.orcamentoID, orcamento, pecas, servicos)
+            if isinstance(id, Exception):
+                return
+            _orcamento = self.orcamentoCtrl.getOrcamento(r['idOrcamento'])
+            fones = self.clienteCtrl.listarFones(_orcamento['cliente']['idCliente'])
+            if fones: fones = list(fones)
+            itemPecas = self.orcamentoCtrl.listarItemPecas(_orcamento['idOrcamento'])
+            if itemPecas:
+                for item in itemPecas:
+                    peca = self.pecaCtrl.getPeca(item['peca'])
+                    item['descricao'] = peca['descricao']
+                    item['un'] = peca['un']
+                itemPecas = list(itemPecas)
+            itemServicos = self.orcamentoCtrl.listarItemServicos(_orcamento['idOrcamento'])
+            if itemServicos: 
+                for item in itemServicos:
+                    item['descricao'] = self.servicoCtrl.getServico(item['servico'])['descricao']
+                itemServicos = list(itemServicos)
+            msg = MessageBox()
+            r = msg.question('Deseja salvar o arquivo?')
+            if r == 'cancelar':
+                return
+            elif r == 'nao':
+                pdf = GeraPDF()
+                pdf.generatePDF(_orcamento, fones, itemServicos, itemPecas)
+            else:
+                window = QtWidgets.QMainWindow()
+                fd = QtWidgets.QFileDialog()
+                path = fd.getExistingDirectory(window, 'Salvar como', './')
+                if path == '':
+                    return
+                pdf = GeraPDF()
+                pdf.generatePDF(_orcamento, fones, itemServicos, itemPecas, path)
+        except Exception as e:    
+            msg = QtWidgets.QMessageBox()
+            msg.setWindowIcon(QtGui.QIcon('./resources/logo-icon.png'))
+            msg.setIcon(QtWidgets.QMessageBox.Icon.Critical)
+            msg.setWindowTitle("Erro")
+            msg.setText(str(e))
+            msg.exec()
 
     def limparCampos(self):
         for lineedit in self.framedados.findChildren(QtWidgets.QLineEdit):

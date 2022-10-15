@@ -27,8 +27,6 @@ class TelaEditarPeca(QtWidgets.QMainWindow):
         self.vlayout6.addWidget(self.labelTitulo)
         self.scrollarea = QtWidgets.QScrollArea(self.main_frame)
         self.scrollarea.setWidgetResizable(True)
-        self.scrollarea.setVerticalScrollBarPolicy(
-            QtCore.Qt.ScrollBarPolicy.ScrollBarAlwaysOn)
         self.vlayout6.addWidget(self.scrollarea)
         self.framedados = QtWidgets.QFrame(self.scrollarea)
         self.scrollarea.setWidget(self.framedados)

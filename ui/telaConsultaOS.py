@@ -100,7 +100,7 @@ class TelaConsultaOS(QtWidgets.QMainWindow):
         while self.linhasCarregadas < maxRows:
             orcamentos[self.linhasCarregadas]['dataOrcamento'] = orcamentos[self.linhasCarregadas]['dataOrcamento'].strftime("%d/%m/%Y")
             orcamentos[self.linhasCarregadas]['dataAprovacao'] = orcamentos[self.linhasCarregadas]['dataAprovacao'].strftime("%d/%m/%Y")
-
+            orcamentos[self.linhasCarregadas]['valorTotal'] = "R$ {:.2f}".format(orcamentos[self.linhasCarregadas]['valorTotal']).replace('.',',',1)
             orcamentos[self.linhasCarregadas] = FlatDict(orcamentos[self.linhasCarregadas], delimiter='.')
             self.linhasCarregadas+=1
         self.model.addData(orcamentos[initLen:self.linhasCarregadas])
@@ -117,8 +117,7 @@ class TelaConsultaOS(QtWidgets.QMainWindow):
         listaHeader = ['ID', 'Data do Orçamento', 'Data de Aprovação', 'Cliente', 'Marca', 'Modelo', 'Placa', 'Valor Total']
         self.model.setHorizontalHeaderLabels(listaHeader)
         self.tabela.setModel(self.model)
-        self.tabela.setItemDelegateForColumn(5, self.delegateRight)
-        self.model.setHeaderData(1, QtCore.Qt.Orientation.Horizontal, 'tipo', 1)
+        self.tabela.setItemDelegateForColumn(7, self.delegateRight)
         self.maisOS(50)
         if self.linhasCarregadas > 0:
             header = self.tabela.horizontalHeader()
@@ -126,6 +125,7 @@ class TelaConsultaOS(QtWidgets.QMainWindow):
                 QtWidgets.QHeaderView.ResizeMode.ResizeToContents)
             header.setSectionResizeMode(3, 
                 QtWidgets.QHeaderView.ResizeMode.Stretch)
+            self.model.setHeaderAlignment(7, QtCore.Qt.AlignmentFlag.AlignRight | QtCore.Qt.AlignmentFlag.AlignVCenter)
 
     def editarOS(self):
         self.linha = self.tabela.selectionModel().selectedRows()
