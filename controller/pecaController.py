@@ -84,7 +84,10 @@ class PecaController():
             try:
                 pecas = self.pecaRep.findByInput(input, limit)
                 if pecas:
-                    return pecas.dicts()
+                    _pecas = []
+                    for peca in pecas:
+                        _pecas.append(model_to_dict(peca))
+                    return _pecas
                 else: return None
             except Exception as e:
                 transaction.rollback()

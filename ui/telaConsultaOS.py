@@ -84,6 +84,8 @@ class TelaConsultaOS(QtWidgets.QMainWindow):
         self.botaoRefresh.clicked.connect(self.listarOS)
         self.botaoGerarPDF.clicked.connect(self.gerarPDF)
         self.botaoExcluir.clicked.connect(self.excluirOS)
+        self.tabela.verticalScrollBar().valueChanged.connect(self.scrolled)
+        self.tabela.verticalScrollBar().actionTriggered.connect(self.scrolled)
         self.lineEditBusca.textChanged.connect(self.buffer)
         self.listarOS()
 
@@ -100,7 +102,7 @@ class TelaConsultaOS(QtWidgets.QMainWindow):
 
     def buffer(self):
         self.busca = self.lineEditBusca.text()
-        self.listarOrcamentos()
+        self.listarOS()
 
     def maisOS(self, qtde):
         orcamentos = self.orcamentoCtrl.buscarOrcamento(aprovado=True, input=self.busca, limit=self.linhasCarregadas+qtde)
@@ -117,10 +119,17 @@ class TelaConsultaOS(QtWidgets.QMainWindow):
             orcamentos[self.linhasCarregadas]['dataOrcamento'] = orcamentos[self.linhasCarregadas]['dataOrcamento'].strftime("%d/%m/%Y")
             orcamentos[self.linhasCarregadas]['dataAprovacao'] = orcamentos[self.linhasCarregadas]['dataAprovacao'].strftime("%d/%m/%Y")
             orcamentos[self.linhasCarregadas]['valorTotal'] = "R$ {:.2f}".format(orcamentos[self.linhasCarregadas]['valorTotal']).replace('.',',',1)
+            queryFones = self.clienteCtrl.listarFones(orcamentos[self.linhasCarregadas]['cliente']['idCliente'])
+            if queryFones:
+                fones = []
+                for fone in queryFones:
+                    fones.append(fone['fone'])
+                orcamentos[self.linhasCarregadas]['fones'] = (', '.join(fones))
+            else: orcamentos[self.linhasCarregadas]['fones'] = ''
             orcamentos[self.linhasCarregadas] = FlatDict(orcamentos[self.linhasCarregadas], delimiter='.')
             self.linhasCarregadas+=1
         self.model.addData(orcamentos[initLen:self.linhasCarregadas])
-        colunas = ['idOrcamento', 'dataOrcamento', 'dataAprovacao', 'cliente.nome', 'veiculo.marca.nome', 'veiculo.modelo', 'veiculo.placa', 'valorTotal']
+        colunas = ['idOrcamento', 'dataOrcamento', 'dataAprovacao', 'cliente.nome', 'cliente.documento', 'fones', 'veiculo.marca.nome', 'veiculo.modelo', 'veiculo.placa', 'valorTotal']
         self.model.colunasDesejadas(colunas)
         self.model.setRowCount(self.linhasCarregadas)
         self.model.setColumnCount(len(colunas))
@@ -130,10 +139,10 @@ class TelaConsultaOS(QtWidgets.QMainWindow):
     def listarOS(self):
         self.linhasCarregadas = 0
         self.model = InfiniteScrollTableModel([{}])
-        listaHeader = ['ID', 'Data do Orçamento', 'Data de Aprovação', 'Cliente', 'Marca', 'Modelo', 'Placa', 'Valor Total']
+        listaHeader = ['ID', 'Data do Orçamento', 'Data de Aprovação', 'Cliente', ' Documento', 'Fones', 'Marca', 'Modelo', 'Placa', 'Valor Total']
         self.model.setHorizontalHeaderLabels(listaHeader)
         self.tabela.setModel(self.model)
-        self.tabela.setItemDelegateForColumn(7, self.delegateRight)
+        self.tabela.setItemDelegateForColumn(9, self.delegateRight)
         self.maisOS(50)
         if self.linhasCarregadas > 0:
             header = self.tabela.horizontalHeader()
@@ -141,7 +150,7 @@ class TelaConsultaOS(QtWidgets.QMainWindow):
                 QtWidgets.QHeaderView.ResizeMode.ResizeToContents)
             header.setSectionResizeMode(3, 
                 QtWidgets.QHeaderView.ResizeMode.Stretch)
-            self.model.setHeaderAlignment(7, QtCore.Qt.AlignmentFlag.AlignRight | QtCore.Qt.AlignmentFlag.AlignVCenter)
+            self.model.setHeaderAlignment(9, QtCore.Qt.AlignmentFlag.AlignRight | QtCore.Qt.AlignmentFlag.AlignVCenter)
 
     def editarOS(self):
         self.linha = self.tabela.selectionModel().selectedRows()

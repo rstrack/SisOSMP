@@ -853,17 +853,17 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
             r = self.orcamentoCtrl.salvarOrcamento(cliente, fones, self.clienteSelected, veiculo, self.veiculoSelected, orcamento, pecas, servicos)
             if isinstance(r, Exception):
                 raise Exception(r)
-            msg = QtWidgets.QMessageBox()
-            msg.setWindowIcon(QtGui.QIcon('./resources/logo-icon.png'))
-            msg.setIcon(QtWidgets.QMessageBox.Icon.Information)
-            msg.setWindowTitle("Aviso")
-            msg.setText("Orçamento criado com sucesso!")
-            msg.exec()
-            #RESETA DADOS DA TELA
-            self.clienteSelected = None
-            self.veiculoSelected = None
-            self.valorTotal = 0
-            self.setupUi()
+            # msg = QtWidgets.QMessageBox()
+            # msg.setWindowIcon(QtGui.QIcon('./resources/logo-icon.png'))
+            # msg.setIcon(QtWidgets.QMessageBox.Icon.Information)
+            # msg.setWindowTitle("Aviso")
+            # msg.setText("Orçamento criado com sucesso!")
+            # msg.exec()
+            # #RESETA DADOS DA TELA
+            # self.clienteSelected = None
+            # self.veiculoSelected = None
+            # self.valorTotal = 0
+            # self.setupUi()
             return r['idOrcamento']
         except Exception as e:
             msg = QtWidgets.QMessageBox()

@@ -1,4 +1,4 @@
-from model.modelo import Marca, Veiculo
+from model.modelo import Cliente, Marca, Veiculo, Veiculo_Cliente
 
 class VeiculoRepository():
     def __init__(self):
@@ -32,3 +32,18 @@ class VeiculoRepository():
         if veiculo:
             return veiculo.get()
         else: return None
+
+    def findByInput(self, input, limit=None):
+        veiculo = Veiculo.select().join(Marca).switch(Veiculo).join(Veiculo_Cliente).join(Cliente).where(
+            (Veiculo.modelo.contains(input))
+            |(Veiculo.ano.contains(input))
+            |(Veiculo.placa.contains(input))
+            |((Veiculo.marca==Marca.idMarca)&(Marca.nome.contains(input)))
+            |((Veiculo.idVeiculo==Veiculo_Cliente.veiculo)&(Veiculo_Cliente.cliente==Cliente.idCliente)&(Cliente.nome.contains(input)))
+            ).order_by(Marca.nome, Veiculo.modelo)\
+            .limit(limit)\
+            .distinct()
+        if veiculo:
+            return veiculo
+        else: 
+            return None

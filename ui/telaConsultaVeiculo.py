@@ -10,6 +10,7 @@ class TelaConsultaVeiculo(QtWidgets.QMainWindow):
     def __init__(self):
         super(TelaConsultaVeiculo, self).__init__()
         self.clienteCtrl = handleDeps.getDep('CLIENTECTRL')
+        self.busca = ''
         self.setupUi()
 
     def setupUi(self):
@@ -61,9 +62,6 @@ class TelaConsultaVeiculo(QtWidgets.QMainWindow):
         self.tabela.horizontalHeader().setHighlightSections(False)
         self.tabela.verticalHeader().setVisible(False)
         self.delegateRight = AlignDelegate(QtCore.Qt.AlignmentFlag.AlignRight | QtCore.Qt.AlignmentFlag.AlignVCenter)
-        self.filter = QtCore.QSortFilterProxyModel()
-        self.filter.setFilterCaseSensitivity(
-            QtCore.Qt.CaseSensitivity.CaseInsensitive)
         self.framebotoes = QtWidgets.QFrame(self.main_frame)
         self.vlayout.addWidget(self.framebotoes)
         self.hlayoutbotoes = QtWidgets.QHBoxLayout(self.framebotoes)
@@ -84,10 +82,6 @@ class TelaConsultaVeiculo(QtWidgets.QMainWindow):
         self.botaoExcluir.setObjectName('excluir')
         self.botaoExcluir.setFixedSize(100, 35)
         self.hlayoutbotoes.addWidget(self.botaoExcluir)
-        self.filter.setFilterKeyColumn(-1)
-        self.lineEditBusca.textChanged.connect(
-            self.filter.setFilterRegularExpression)
-        self.tabela.setModel(self.filter)
         self.setCentralWidget(self.main_frame)
         self.retranslateUi()
         self.selectionModel = self.tabela.selectionModel()
@@ -99,6 +93,7 @@ class TelaConsultaVeiculo(QtWidgets.QMainWindow):
         self.botaoExcluir.clicked.connect(self.excluirVeiculo)
         self.tabela.verticalScrollBar().valueChanged.connect(self.scrolled)
         self.tabela.verticalScrollBar().actionTriggered.connect(self.scrolled)
+        self.lineEditBusca.textChanged.connect(self.buffer)
 
     def retranslateUi(self):
         _translate = QtCore.QCoreApplication.translate
@@ -113,8 +108,12 @@ class TelaConsultaVeiculo(QtWidgets.QMainWindow):
             self.maisVeiculos(50)
             # threading.Thread(target=self.maisVeiculos, args=(100,)).start()
 
+    def buffer(self):
+        self.busca = self.lineEditBusca.text()
+        self.listarVeiculos()
+
     def maisVeiculos(self, qtde):
-        veiculos = self.clienteCtrl.listarVeiculos()
+        veiculos = self.clienteCtrl.buscarVeiculo(self.busca, self.linhasCarregadas+qtde)
         if not veiculos:
             return
         maxLength = len(veiculos)
@@ -146,8 +145,7 @@ class TelaConsultaVeiculo(QtWidgets.QMainWindow):
         self.model = InfiniteScrollTableModel([{}])
         listaHeader = ['ID', 'Marca', 'Modelo', 'Placa', 'Ano', 'Clientes Vinculados']
         self.model.setHorizontalHeaderLabels(listaHeader)
-        self.filter.setSourceModel(self.model)
-        self.tabela.setModel(self.filter)
+        self.tabela.setModel(self.model)
         self.tabela.setItemDelegateForColumn(4, self.delegateRight)
         self.maisVeiculos(50)
         if self.linhasCarregadas > 0:

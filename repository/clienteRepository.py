@@ -1,4 +1,4 @@
-from model.modelo import Cliente, Fone
+from model.modelo import Cliente, Fone, Veiculo, Veiculo_Cliente
 
 class ClienteRepository():
     def __init__(self):
@@ -28,7 +28,11 @@ class ClienteRepository():
         else: return None
 
     def findByInput(self, input, limit=None):
-        return Cliente.select().join(Fone).where(Cliente.nome.contains(input) | 
-            (Cliente.documento.contains(input)) | (Cliente.idCliente==Fone.cliente) & 
-            (Fone.fone==input)).order_by(Cliente.nome).limit(limit).distinct()
+        return Cliente.select().join(Fone).switch(Cliente).join(Veiculo_Cliente).join(Veiculo).where(
+            (Cliente.nome.contains(input)) 
+            |(Cliente.documento.contains(input)) 
+            |((Cliente.idCliente==Fone.cliente) & (Fone.fone.contains(input)))
+            |((Cliente.idCliente==Veiculo_Cliente.cliente)&(Veiculo_Cliente.veiculo==Veiculo.idVeiculo)&(Veiculo.modelo.contains(input)))
+            |((Cliente.idCliente==Veiculo_Cliente.cliente)&(Veiculo_Cliente.veiculo==Veiculo.idVeiculo)&(Veiculo.placa.contains(input)))
+            ).order_by(Cliente.nome).limit(limit).distinct()
 

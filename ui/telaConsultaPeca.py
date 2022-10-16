@@ -6,6 +6,7 @@ class TelaConsultaPeca(QtWidgets.QMainWindow):
     def __init__(self):
         super(TelaConsultaPeca, self).__init__()
         self.pecaCtrl = handleDeps.getDep('PECACTRL')
+        self.busca = ''
         self.setupUi()
 
     def setupUi(self):
@@ -75,10 +76,12 @@ class TelaConsultaPeca(QtWidgets.QMainWindow):
         self.setCentralWidget(self.main_frame)
         self.retranslateUi()
         self.listarPecas()
-        # self.lineEditBusca.textChanged.connect()
         self.botaoRefresh.clicked.connect(self.listarPecas)
         self.botaoEditar.clicked.connect(self.editarPeca)
         self.botaoExcluir.clicked.connect(self.excluirPeca)
+        self.tabela.verticalScrollBar().valueChanged.connect(self.scrolled)
+        self.tabela.verticalScrollBar().actionTriggered.connect(self.scrolled)
+        self.lineEditBusca.textChanged.connect(self.buffer)
 
     def retranslateUi(self):
         _translate = QtCore.QCoreApplication.translate
@@ -90,8 +93,12 @@ class TelaConsultaPeca(QtWidgets.QMainWindow):
         if value == self.tabela.verticalScrollBar().maximum():
             self.maisPecas(50)
 
+    def buffer(self):
+        self.busca = self.lineEditBusca.text()
+        self.listarPecas()
+
     def maisPecas(self, qtde):
-        pecas = self.pecaCtrl.listarPecas()
+        pecas = self.pecaCtrl.buscarPeca(self.busca, self.linhasCarregadas+qtde)
         if not pecas:
             return
         maxLength = len(pecas)

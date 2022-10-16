@@ -6,6 +6,7 @@ class TelaConsultaServico(QtWidgets.QMainWindow):
     def __init__(self):
         super(TelaConsultaServico, self).__init__()
         self.servicoCtrl = handleDeps.getDep('SERVICOCTRL')
+        self.busca = ''
         self.setupUi()
 
     def setupUi(self):
@@ -58,9 +59,6 @@ class TelaConsultaServico(QtWidgets.QMainWindow):
         self.tabela.horizontalHeader().setHighlightSections(False)
         self.tabela.verticalHeader().setVisible(False)
         self.delegateRight = AlignDelegate(QtCore.Qt.AlignmentFlag.AlignRight | QtCore.Qt.AlignmentFlag.AlignVCenter)
-        self.filter = QtCore.QSortFilterProxyModel()
-        self.filter.setFilterCaseSensitivity(
-            QtCore.Qt.CaseSensitivity.CaseInsensitive)
         self.framebotoes = QtWidgets.QFrame(self.main_frame)
         self.vlayout.addWidget(self.framebotoes)
         self.hlayoutbotoes = QtWidgets.QHBoxLayout(self.framebotoes)
@@ -75,17 +73,15 @@ class TelaConsultaServico(QtWidgets.QMainWindow):
         self.botaoExcluir.setFixedSize(100, 35)
         self.botaoExcluir.setObjectName('excluir')
         self.hlayoutbotoes.addWidget(self.botaoExcluir)
-        self.filter.setFilterKeyColumn(-1)
-        self.lineEditBusca.textChanged.connect(
-            self.filter.setFilterRegularExpression)
-        self.tabela.setModel(self.filter)
         self.setCentralWidget(self.main_frame)
         self.retranslateUi()
         self.selectionModel = self.tabela.selectionModel()
 
         self.listarServicos()
 
-        #self.selectionModel.selectionChanged.connect(self.mostrarDetalhes)
+        self.tabela.verticalScrollBar().valueChanged.connect(self.scrolled)
+        self.tabela.verticalScrollBar().actionTriggered.connect(self.scrolled)
+        self.lineEditBusca.textChanged.connect(self.buffer)
         self.botaoRefresh.clicked.connect(self.listarServicos)
         self.botaoEditar.clicked.connect(self.editarServico)
         self.botaoExcluir.clicked.connect(self.excluirServico)
@@ -100,8 +96,12 @@ class TelaConsultaServico(QtWidgets.QMainWindow):
         if value == self.tabela.verticalScrollBar().maximum():
             self.maisServicos(50)
 
+    def buffer(self):
+        self.busca = self.lineEditBusca.text()
+        self.listarServicos()
+
     def maisServicos(self, qtde):
-        servicos = self.servicoCtrl.listarServicos()
+        servicos = self.servicoCtrl.buscarServico(self.busca, self.linhasCarregadas+qtde)
         if not servicos:
             return
         maxLength = len(servicos)
@@ -126,8 +126,7 @@ class TelaConsultaServico(QtWidgets.QMainWindow):
         self.model = InfiniteScrollTableModel([{}])
         listaHeader = ['ID ', 'Descrição ', 'Valor ']
         self.model.setHorizontalHeaderLabels(listaHeader)
-        self.filter.setSourceModel(self.model)
-        self.tabela.setModel(self.filter)
+        self.tabela.setModel(self.model)
         self.tabela.setItemDelegateForColumn(2, self.delegateRight)
         self.maisServicos(50)
         if self.linhasCarregadas > 0:

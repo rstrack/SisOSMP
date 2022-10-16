@@ -131,6 +131,21 @@ class ClienteController():
                 return _clientes
             else: return None
 
+    #buscar clientes por uma string de alguma coluna (Ex.: nome, documento, telefone)
+    def buscarCliente(self, input, limit=None):
+        with db.atomic() as transaction:
+            try:
+                _clientes = []
+                clientes = self.clienteRep.findByInput(input, limit)
+                if clientes:
+                    for cliente in clientes:
+                        _clientes.append(model_to_dict(cliente))
+                    return _clientes
+                else: return None
+            except Exception as e:
+                transaction.rollback()
+                return e
+
     #listar cliente pelo id
     def getCliente(self, id):
         cliente = self.clienteRep.findByID(id)
@@ -208,6 +223,21 @@ class ClienteController():
         veiculo = self.veiculoRep.findByID(id)
         if veiculo: return model_to_dict(veiculo)
         else: return None
+
+    #buscar veiculos por uma string de alguma coluna (Ex.: marca, modelo, placa)
+    def buscarVeiculo(self, input, limit=None):
+        with db.atomic() as transaction:
+            try:
+                _veiculos = []
+                veiculos = self.veiculoRep.findByInput(input, limit)
+                if veiculos:
+                    for veiculo in veiculos:
+                        _veiculos.append(model_to_dict(veiculo))
+                    return _veiculos
+                else: return None
+            except Exception as e:
+                transaction.rollback()
+                return e
 
 
     def excluirCliente(self, id):

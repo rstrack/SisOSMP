@@ -64,6 +64,20 @@ class ServicoController():
             return model_to_dict(servico)
         else: return None
 
+    def buscarServico(self, input, limit=None):
+        with db.atomic() as transaction:
+            try:
+                servicos = self.servicoRep.findByInput(input, limit)
+                if servicos:
+                    _servicos = []
+                    for servico in servicos:
+                        _servicos.append(model_to_dict(servico))
+                    return _servicos
+                else: return None
+            except Exception as e:
+                transaction.rollback()
+                return e
+
     def excluirServico(self, id):
         with db.atomic() as transaction:
             try:

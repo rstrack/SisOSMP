@@ -26,3 +26,10 @@ class ServicoRepository():
         if servico:
             return servico.get()
         else: return None
+
+    def findByInput(self, input, limit=None):
+        _servico = Servico.select().where(Servico.descricao.contains(input)).order_by(Servico.descricao).limit(limit).distinct()
+        if _servico:
+            return _servico
+        else: 
+            return None

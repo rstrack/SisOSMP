@@ -114,7 +114,7 @@ class TelaEditarVeiculo(QtWidgets.QMainWindow):
 
     def getDadosVeiculo(self):
         if len(list(filter(lambda dados: dados.text(), self.groupBoxVeiculo.findChildren(QtWidgets.QLineEdit)))) == 0:
-            return None
+            raise Exception('Campos vazios!')
         dict = {}
         dict['marca'] = self.comboBoxMarca.currentText().title()
         if dict['marca'] == '':

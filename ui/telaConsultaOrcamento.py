@@ -87,6 +87,8 @@ class TelaConsultaOrcamento(QtWidgets.QMainWindow):
         self.botaoAprovar.clicked.connect(self.aprovar)
         self.botaoGerarPDF.clicked.connect(self.gerarPDF)
         self.botaoExcluir.clicked.connect(self.excluirOrcamento)
+        self.tabela.verticalScrollBar().valueChanged.connect(self.scrolled)
+        self.tabela.verticalScrollBar().actionTriggered.connect(self.scrolled)
         self.lineEditBusca.textChanged.connect(self.buffer)
         self.listarOrcamentos()
 
@@ -120,10 +122,17 @@ class TelaConsultaOrcamento(QtWidgets.QMainWindow):
         while self.linhasCarregadas < maxRows:
             orcamentos[self.linhasCarregadas]['dataOrcamento'] = orcamentos[self.linhasCarregadas]['dataOrcamento'].strftime("%d/%m/%Y")
             orcamentos[self.linhasCarregadas]['valorTotal'] = "R$ {:.2f}".format(orcamentos[self.linhasCarregadas]['valorTotal']).replace('.',',',1)
+            queryFones = self.clienteCtrl.listarFones(orcamentos[self.linhasCarregadas]['cliente']['idCliente'])
+            if queryFones:
+                fones = []
+                for fone in queryFones:
+                    fones.append(fone['fone'])
+                orcamentos[self.linhasCarregadas]['fones'] = (', '.join(fones))
+            else: orcamentos[self.linhasCarregadas]['fones'] = ''
             orcamentos[self.linhasCarregadas] = FlatDict(orcamentos[self.linhasCarregadas], delimiter='.')
             self.linhasCarregadas+=1
         self.model.addData(orcamentos[initLen:self.linhasCarregadas])
-        colunas = ['idOrcamento', 'dataOrcamento', 'cliente.nome', 'veiculo.marca.nome', 'veiculo.modelo', 'veiculo.placa', 'valorTotal']
+        colunas = ['idOrcamento', 'dataOrcamento', 'cliente.nome', 'cliente.documento', 'fones', 'veiculo.marca.nome', 'veiculo.modelo', 'veiculo.placa', 'valorTotal']
         self.model.colunasDesejadas(colunas)
         self.model.setRowCount(self.linhasCarregadas)
         self.model.setColumnCount(len(colunas))
@@ -132,20 +141,20 @@ class TelaConsultaOrcamento(QtWidgets.QMainWindow):
     def listarOrcamentos(self):
         self.linhasCarregadas = 0
         self.model = InfiniteScrollTableModel([{}])
-        listaHeader = ['ID', 'Data', 'Cliente', 'Marca', 'Modelo', 'Placa', 'Valor Total']
+        listaHeader = ['ID', 'Data', 'Cliente', 'Documento', 'Fones', 'Marca', 'Modelo', 'Placa', 'Valor Total']
         self.model.setHorizontalHeaderLabels(listaHeader)
         self.tabela.setModel(self.model)
-        self.tabela.setItemDelegateForColumn(6, self.delegateRight)
+        self.tabela.setItemDelegateForColumn(8, self.delegateRight)
         self.maisOrcamentos(50)
         if self.linhasCarregadas > 0:
             header = self.tabela.horizontalHeader()
             header.setSectionResizeMode(
-                QtWidgets.QHeaderView.ResizeMode.Interactive)
+                QtWidgets.QHeaderView.ResizeMode.ResizeToContents)
             header.setSectionResizeMode(1, 
                 QtWidgets.QHeaderView.ResizeMode.ResizeToContents)
             header.setSectionResizeMode(2, 
                 QtWidgets.QHeaderView.ResizeMode.Stretch)
-            self.model.setHeaderAlignment(6, QtCore.Qt.AlignmentFlag.AlignRight | QtCore.Qt.AlignmentFlag.AlignVCenter)
+            self.model.setHeaderAlignment(8, QtCore.Qt.AlignmentFlag.AlignRight | QtCore.Qt.AlignmentFlag.AlignVCenter)
 
     def editarOrcamento(self):
         self.linha = self.tabela.selectionModel().selectedRows()
