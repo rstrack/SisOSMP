@@ -27,8 +27,15 @@ class ServicoRepository():
             return servico.get()
         else: return None
 
-    def findByInput(self, input, limit=None):
-        _servico = Servico.select().where(Servico.descricao.contains(input)).order_by(Servico.descricao).limit(limit).distinct()
+    def findByInput(self, input, limit=None, orderBy = None):
+        match orderBy:
+            case 0:
+                order_by = Servico.descricao
+            case 1:
+                order_by = -Servico.descricao
+            case _:
+                order_by = Servico.descricao
+        _servico = Servico.select().where(Servico.descricao.contains(input)).order_by(order_by).limit(limit).distinct()
         if _servico:
             return _servico
         else: 

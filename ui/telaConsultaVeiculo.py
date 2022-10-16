@@ -38,7 +38,7 @@ class TelaConsultaVeiculo(QtWidgets.QMainWindow):
         self.hlayoutBusca = QtWidgets.QHBoxLayout(self.frameBusca)
         self.lineEditBusca = QtWidgets.QLineEdit(self.frameBusca)
         self.lineEditBusca.setFixedHeight(30)
-        self.lineEditBusca.setPlaceholderText("Pesquisar")
+        self.lineEditBusca.setPlaceholderText("Pesquisar por marca, modelo, placa, ano ou nome do cliente")
         self.lineEditBusca.setClearButtonEnabled(True)
         iconBusca = QtGui.QIcon("./resources/search-icon.png")
         self.lineEditBusca.addAction(iconBusca, QtWidgets.QLineEdit.ActionPosition.LeadingPosition)
@@ -55,6 +55,7 @@ class TelaConsultaVeiculo(QtWidgets.QMainWindow):
             20, 10, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Preferred)
         self.hlayoutOrdenacao.addItem(spacer)
         self.comboBoxOrdenacao = QtWidgets.QComboBox(self.frameOrdenacao)
+        self.comboBoxOrdenacao.setToolTip('Ordenar')
         self.comboBoxOrdenacao.addItems(['Marca (A-Z)', 'Marca (Z-A)', 'Modelo (A-Z)', 'Modelo (Z-A)'])
         self.hlayoutOrdenacao.addWidget(self.comboBoxOrdenacao)
         self.framedados = QtWidgets.QFrame(self.main_frame)
@@ -94,7 +95,6 @@ class TelaConsultaVeiculo(QtWidgets.QMainWindow):
         self.hlayoutbotoes.addWidget(self.botaoExcluir)
         self.setCentralWidget(self.main_frame)
         self.retranslateUi()
-        self.selectionModel = self.tabela.selectionModel()
 
         self.listarVeiculos()
         self.botaoRefresh.clicked.connect(self.listarVeiculos)
@@ -169,9 +169,9 @@ class TelaConsultaVeiculo(QtWidgets.QMainWindow):
             self.model.setHeaderAlignment(4, QtCore.Qt.AlignmentFlag.AlignRight | QtCore.Qt.AlignmentFlag.AlignVCenter)
 
     def editarVeiculo(self):
-        self.linha = self.tabela.selectionModel().selectedRows()
-        if self.linha:
-            return self.tabela.model().index(self.linha[0].row(), 0).data()
+        linha = self.tabela.selectionModel().selectedRows()
+        if linha:
+            return self.tabela.model().index(linha[0].row(), 0).data()
     
     def excluirVeiculo(self):
         try:

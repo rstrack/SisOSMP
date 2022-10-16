@@ -299,13 +299,11 @@ class TelaEditarCliente(QtWidgets.QMainWindow):
             self.lineEditDocumento.setText(documento)
             if tipo == '0':
                 self.labelDocumento.setText("CPF")
-                self.comboBoxPessoa.setCurrentIndex(0)
             elif tipo == '1':
                 self.labelDocumento.setText("CNPJ")
-                self.comboBoxPessoa.setCurrentIndex(1)
-            else:
+            elif tipo == '2':
                 self.labelDocumento.setText("Documento")
-                self.comboBoxPessoa.setCurrentIndex(2)
+        self.comboBoxPessoa.setCurrentIndex(int(tipo))
         self.lineEditFone1.setText(tel1)
         self.lineEditFone2.setText(tel2)
 

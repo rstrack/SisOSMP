@@ -7,6 +7,7 @@ class TelaConsultaPeca(QtWidgets.QMainWindow):
         super(TelaConsultaPeca, self).__init__()
         self.pecaCtrl = handleDeps.getDep('PECACTRL')
         self.busca = ''
+        self.orderBy = 0
         self.setupUi()
 
     def setupUi(self):
@@ -33,7 +34,7 @@ class TelaConsultaPeca(QtWidgets.QMainWindow):
         self.hlayoutBusca = QtWidgets.QHBoxLayout(self.frameBusca)
         self.lineEditBusca = QtWidgets.QLineEdit(self.frameBusca)
         self.lineEditBusca.setFixedHeight(30)
-        self.lineEditBusca.setPlaceholderText("Pesquisar")
+        self.lineEditBusca.setPlaceholderText("Pesquisar por descrição da peça")
         self.lineEditBusca.setClearButtonEnabled(True)
         iconBusca = QtGui.QIcon("./resources/search-icon.png")
         self.lineEditBusca.addAction(
@@ -44,6 +45,16 @@ class TelaConsultaPeca(QtWidgets.QMainWindow):
         self.botaoRefresh.setFixedSize(30,30)
         self.botaoRefresh.setIcon(QtGui.QIcon("./resources/refresh-icon.png"))
         self.hlayoutBusca.addWidget(self.botaoRefresh)
+        self.frameOrdenacao = QtWidgets.QFrame(self.main_frame)
+        self.vlayout.addWidget(self.frameOrdenacao)
+        self.hlayoutOrdenacao = QtWidgets.QHBoxLayout(self.frameOrdenacao)
+        spacer = QtWidgets.QSpacerItem(
+            20, 10, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Preferred)
+        self.hlayoutOrdenacao.addItem(spacer)
+        self.comboBoxOrdenacao = QtWidgets.QComboBox(self.frameOrdenacao)
+        self.comboBoxOrdenacao.setToolTip('Ordenar')
+        self.comboBoxOrdenacao.addItems(['Descrição (A-Z)', 'Descrição (Z-A)'])
+        self.hlayoutOrdenacao.addWidget(self.comboBoxOrdenacao)
         self.framedados = QtWidgets.QFrame(self.main_frame)
         self.framedados.setSizePolicy(QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Preferred)
         self.vlayout.addWidget(self.framedados)
@@ -82,6 +93,7 @@ class TelaConsultaPeca(QtWidgets.QMainWindow):
         self.tabela.verticalScrollBar().valueChanged.connect(self.scrolled)
         self.tabela.verticalScrollBar().actionTriggered.connect(self.scrolled)
         self.lineEditBusca.textChanged.connect(self.buffer)
+        self.comboBoxOrdenacao.currentIndexChanged.connect(self.buffer)
 
     def retranslateUi(self):
         _translate = QtCore.QCoreApplication.translate
@@ -95,10 +107,11 @@ class TelaConsultaPeca(QtWidgets.QMainWindow):
 
     def buffer(self):
         self.busca = self.lineEditBusca.text()
+        self.orderBy = self.comboBoxOrdenacao.currentIndex()
         self.listarPecas()
 
     def maisPecas(self, qtde):
-        pecas = self.pecaCtrl.buscarPeca(self.busca, self.linhasCarregadas+qtde)
+        pecas = self.pecaCtrl.buscarPeca(self.busca, self.linhasCarregadas+qtde, self.orderBy)
         if not pecas:
             return
         maxLength = len(pecas)

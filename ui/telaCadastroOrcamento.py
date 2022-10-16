@@ -900,8 +900,9 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
             cliente = self.clienteCtrl.getCliente(id)
             listaFones = [None, None]
             fones = self.clienteCtrl.listarFones(cliente['idCliente'])
-            for x in range(len(fones)):
-                listaFones[x] = fones[x]['fone']
+            if fones:
+                for x in range(len(fones)):
+                    listaFones[x] = fones[x]['fone']
             if cliente['cidade'] != None:
                 cidade = cliente['cidade']['nome']
                 uf = cliente['cidade']['uf']

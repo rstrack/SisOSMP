@@ -41,7 +41,7 @@ class TelaConsultaOrcamento(QtWidgets.QMainWindow):
         self.hlayoutBusca = QtWidgets.QHBoxLayout(self.frameBusca)
         self.lineEditBusca = QtWidgets.QLineEdit(self.frameBusca)
         self.lineEditBusca.setFixedHeight(30)
-        self.lineEditBusca.setPlaceholderText("Pesquisar")
+        self.lineEditBusca.setPlaceholderText("Pesquisar por data, dados do cliente ou dados do veículo")
         self.lineEditBusca.setClearButtonEnabled(True)
         iconBusca = QtGui.QIcon("./resources/search-icon.png")
         self.lineEditBusca.addAction(iconBusca, QtWidgets.QLineEdit.ActionPosition.LeadingPosition)
@@ -58,6 +58,7 @@ class TelaConsultaOrcamento(QtWidgets.QMainWindow):
             20, 10, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Preferred)
         self.hlayoutOrdenacao.addItem(spacer)
         self.comboBoxOrdenacao = QtWidgets.QComboBox(self.frameOrdenacao)
+        self.comboBoxOrdenacao.setToolTip('Ordenar')
         self.comboBoxOrdenacao.addItems(['Data do Orçamento (recente primeiro)', 'Data do Orçamento (antigo primeiro)'])
         self.hlayoutOrdenacao.addWidget(self.comboBoxOrdenacao)
         self.framedados = QtWidgets.QFrame(self.main_frame)
@@ -100,6 +101,7 @@ class TelaConsultaOrcamento(QtWidgets.QMainWindow):
         self.tabela.verticalScrollBar().valueChanged.connect(self.scrolled)
         self.tabela.verticalScrollBar().actionTriggered.connect(self.scrolled)
         self.lineEditBusca.textChanged.connect(self.buffer)
+        self.comboBoxOrdenacao.currentIndexChanged.connect(self.buffer)
         self.listarOrcamentos()
 
     def retranslateUi(self):
@@ -120,7 +122,7 @@ class TelaConsultaOrcamento(QtWidgets.QMainWindow):
         self.listarOrcamentos()
 
     def maisOrcamentos(self, qtde):
-        orcamentos = self.orcamentoCtrl.buscarOrcamento(aprovado=False, input=self.busca, limit=self.linhasCarregadas+qtde)
+        orcamentos = self.orcamentoCtrl.buscarOrcamento(False, self.busca, self.linhasCarregadas+qtde, self.orderBy)
         if not orcamentos:
             return
         maxLength = len(orcamentos)
@@ -168,15 +170,15 @@ class TelaConsultaOrcamento(QtWidgets.QMainWindow):
             self.model.setHeaderAlignment(8, QtCore.Qt.AlignmentFlag.AlignRight | QtCore.Qt.AlignmentFlag.AlignVCenter)
 
     def editarOrcamento(self):
-        self.linha = self.tabela.selectionModel().selectedRows()
-        if self.linha:
-            return self.tabela.model().index(self.linha[0].row(), 0).data()
+        linha = self.tabela.selectionModel().selectedRows()
+        if linha:
+            return self.tabela.model().index(linha[0].row(), 0).data()
 
     def aprovar(self):
         try:
-            self.linha = self.tabela.selectionModel().selectedRows()
-            if self.linha:
-                id = self.tabela.model().index(self.linha[0].row(), 0).data()
+            linha = self.tabela.selectionModel().selectedRows()
+            if linha:
+                id = self.tabela.model().index(linha[0].row(), 0).data()
                 r = self.orcamentoCtrl.aprovarOrcamento(id)
                 if isinstance(r, Exception):
                     raise Exception(r)
@@ -206,9 +208,9 @@ class TelaConsultaOrcamento(QtWidgets.QMainWindow):
             n.setFixedWidth(60)
             msgBox.exec()
             if msgBox.clickedButton() == y:
-                self.linha = self.tabela.selectionModel().selectedRows()
-                if self.linha:
-                    id = self.tabela.model().index(self.linha[0].row(), 0).data()
+                linha = self.tabela.selectionModel().selectedRows()
+                if linha:
+                    id = self.tabela.model().index(linha[0].row(), 0).data()
                     r = self.orcamentoCtrl.excluirOrcamento(id)
                     if isinstance(r, Exception):
                         raise Exception(r)
@@ -231,9 +233,9 @@ class TelaConsultaOrcamento(QtWidgets.QMainWindow):
             msg.exec()
         
     def gerarPDF(self):
-        self.linha = self.tabela.selectionModel().selectedRows()
-        if self.linha:
-            id = self.tabela.model().index(self.linha[0].row(), 0).data()
+        linha = self.tabela.selectionModel().selectedRows()
+        if linha:
+            id = self.tabela.model().index(linha[0].row(), 0).data()
         else: return
         orcamento = self.orcamentoCtrl.getOrcamento(id)
         fones = self.clienteCtrl.listarFones(orcamento['cliente']['idCliente'])

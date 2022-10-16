@@ -64,10 +64,10 @@ class ServicoController():
             return model_to_dict(servico)
         else: return None
 
-    def buscarServico(self, input, limit=None):
+    def buscarServico(self, input, limit=None, orderBy=None):
         with db.atomic() as transaction:
             try:
-                servicos = self.servicoRep.findByInput(input, limit)
+                servicos = self.servicoRep.findByInput(input, limit, orderBy)
                 if servicos:
                     _servicos = []
                     for servico in servicos:

@@ -40,7 +40,7 @@ class TelaConsultaOS(QtWidgets.QMainWindow):
         self.hlayoutBusca = QtWidgets.QHBoxLayout(self.frameBusca)
         self.lineEditBusca = QtWidgets.QLineEdit(self.frameBusca)
         self.lineEditBusca.setFixedHeight(30)
-        self.lineEditBusca.setPlaceholderText("Pesquisar")
+        self.lineEditBusca.setPlaceholderText("Pesquisar por data do orçamento ou de aprovação, dados do cliente ou dados do veículo")
         self.lineEditBusca.setClearButtonEnabled(True)
         iconBusca = QtGui.QIcon("./resources/search-icon.png")
         self.lineEditBusca.addAction(iconBusca, QtWidgets.QLineEdit.ActionPosition.LeadingPosition)
@@ -58,6 +58,7 @@ class TelaConsultaOS(QtWidgets.QMainWindow):
             20, 10, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Preferred)
         self.hlayoutOrdenacao.addItem(spacer)
         self.comboBoxOrdenacao = QtWidgets.QComboBox(self.frameOrdenacao)
+        self.comboBoxOrdenacao.setToolTip('Ordenar')
         self.comboBoxOrdenacao.addItems(['Data do Orçamento (recente primeiro)', 'Data do Orçamento (antigo primeiro)', 'Data de Aprovação (recente primeiro)', 'Data de Aprovação (antigo primeiro)'])
         self.hlayoutOrdenacao.addWidget(self.comboBoxOrdenacao)
         self.framedados = QtWidgets.QFrame(self.main_frame)
@@ -91,7 +92,6 @@ class TelaConsultaOS(QtWidgets.QMainWindow):
         self.model = QtGui.QStandardItemModel()
         self.setCentralWidget(self.main_frame)
         self.retranslateUi()
-        self.selectionModel = self.tabela.selectionModel()
         self.botaoRefresh.clicked.connect(self.listarOS)
         self.botaoGerarPDF.clicked.connect(self.gerarPDF)
         self.botaoExcluir.clicked.connect(self.excluirOS)
@@ -166,14 +166,14 @@ class TelaConsultaOS(QtWidgets.QMainWindow):
             self.model.setHeaderAlignment(9, QtCore.Qt.AlignmentFlag.AlignRight | QtCore.Qt.AlignmentFlag.AlignVCenter)
 
     def editarOS(self):
-        self.linha = self.tabela.selectionModel().selectedRows()
-        if self.linha:
-            return self.tabela.model().index(self.linha[0].row(), 0).data()
+        linha = self.tabela.selectionModel().selectedRows()
+        if linha:
+            return self.tabela.model().index(linha[0].row(), 0).data()
 
     def gerarPDF(self):
-        self.linha = self.tabela.selectionModel().selectedRows()
-        if self.linha:
-            id = self.tabela.model().index(self.linha[0].row(), 0).data()
+        linha = self.tabela.selectionModel().selectedRows()
+        if linha:
+            id = self.tabela.model().index(linha[0].row(), 0).data()
         else: return
         orcamento = self.orcamentoCtrl.getOrcamento(id)
         fones = self.clienteCtrl.listarFones(orcamento['cliente']['idCliente'])
@@ -216,9 +216,9 @@ class TelaConsultaOS(QtWidgets.QMainWindow):
         n.setFixedWidth(60)
         msgBox.exec()
         if msgBox.clickedButton() == y:
-            self.linha = self.tabela.selectionModel().selectedRows()
-            if self.linha:
-                id = self.tabela.model().index(self.linha[0].row(), 0).data()
+            linha = self.tabela.selectionModel().selectedRows()
+            if linha:
+                id = self.tabela.model().index(linha[0].row(), 0).data()
                 r = self.orcamentoCtrl.excluirOrcamento(id)
                 if isinstance(r, Exception):
                     raise Exception(r)

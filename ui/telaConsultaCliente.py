@@ -36,7 +36,7 @@ class TelaConsultaCliente(QtWidgets.QMainWindow):
         self.hlayoutBusca = QtWidgets.QHBoxLayout(self.frameBusca)
         self.lineEditBusca = QtWidgets.QLineEdit(self.frameBusca)
         self.lineEditBusca.setFixedHeight(30)
-        self.lineEditBusca.setPlaceholderText("Pesquise por nome, documento, fone, modelo ou placa de um veículo vinculado")
+        self.lineEditBusca.setPlaceholderText("Pesquisar por nome, documento, fone, modelo ou placa de um veículo vinculado")
         self.lineEditBusca.setClearButtonEnabled(True)
         iconBusca = QtGui.QIcon("./resources/search-icon.png")
         self.lineEditBusca.addAction(
@@ -54,6 +54,7 @@ class TelaConsultaCliente(QtWidgets.QMainWindow):
             20, 10, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Preferred)
         self.hlayoutOrdenacao.addItem(spacer)
         self.comboBoxOrdenacao = QtWidgets.QComboBox(self.frameOrdenacao)
+        self.comboBoxOrdenacao.setToolTip('Ordenar')
         self.comboBoxOrdenacao.addItems(['Nome: A-Z', 'Nome: Z-A'])
         self.hlayoutOrdenacao.addWidget(self.comboBoxOrdenacao)
         self.framedados = QtWidgets.QFrame(self.main_frame)

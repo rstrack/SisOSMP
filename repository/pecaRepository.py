@@ -27,8 +27,15 @@ class PecaRepository():
             return _peca.get()
         else: return None
 
-    def findByInput(self, input, limit=None):
-        _peca =  Peca.select().where(Peca.descricao.contains(input)).order_by(Peca.descricao).limit(limit).distinct()
+    def findByInput(self, input, limit=None, orderBy = None):
+        match orderBy:
+            case 0:
+                order_by = Peca.descricao
+            case 1:
+                order_by = -Peca.descricao
+            case _:
+                order_by = Peca.descricao
+        _peca =  Peca.select().where(Peca.descricao.contains(input)).order_by(order_by).limit(limit).distinct()
         if _peca:
             return _peca
         else: return None

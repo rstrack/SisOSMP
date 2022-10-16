@@ -79,10 +79,10 @@ class PecaController():
                 transaction.rollback()
                 return e
 
-    def buscarPeca(self, input, limit=None):
+    def buscarPeca(self, input, limit=None, orderBy=None):
         with db.atomic() as transaction:
             try:
-                pecas = self.pecaRep.findByInput(input, limit)
+                pecas = self.pecaRep.findByInput(input, limit, orderBy)
                 if pecas:
                     _pecas = []
                     for peca in pecas:

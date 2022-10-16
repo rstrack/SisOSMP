@@ -8,18 +8,20 @@ class TelaBuscaCliente(QtWidgets.QMainWindow):
     def __init__(self):
         super(TelaBuscaCliente, self).__init__()
         self.clienteCtrl = handleDeps.getDep('CLIENTECTRL')
+        self.busca = ''
+        self.orderBy = 0
         self.setupUi()
 
     def setupUi(self):
-        self.resize(800, 400)
+        self.resize(800, 600)
         self.mainwidget = QtWidgets.QWidget(self)
-        self.glayout = QtWidgets.QGridLayout(self.mainwidget)
+        self.vlayout = QtWidgets.QVBoxLayout(self.mainwidget)
         self.frameBusca = QtWidgets.QFrame(self.mainwidget)
-        self.glayout.addWidget(self.frameBusca, 0, 0, 1, 1)
+        self.vlayout.addWidget(self.frameBusca)
         self.hlayoutBusca = QtWidgets.QHBoxLayout(self.frameBusca)
         self.lineEditBusca = QtWidgets.QLineEdit(self.frameBusca)
         self.lineEditBusca.setFixedHeight(30)
-        self.lineEditBusca.setPlaceholderText("Pesquisar")
+        self.lineEditBusca.setPlaceholderText("Pesquisar por nome, documento, fone, modelo ou placa de um veículo vinculado")
         self.lineEditBusca.setClearButtonEnabled(True)
         iconBusca = QtGui.QIcon("./resources/search-icon.png")
         self.lineEditBusca.addAction(
@@ -30,9 +32,19 @@ class TelaBuscaCliente(QtWidgets.QMainWindow):
         self.botaoRefresh.setFixedSize(30,30)
         self.botaoRefresh.setIcon(QtGui.QIcon("./resources/refresh-icon.png"))
         self.hlayoutBusca.addWidget(self.botaoRefresh)
+        self.frameOrdenacao = QtWidgets.QFrame(self.mainwidget)
+        self.vlayout.addWidget(self.frameOrdenacao)
+        self.hlayoutOrdenacao = QtWidgets.QHBoxLayout(self.frameOrdenacao)
+        spacer = QtWidgets.QSpacerItem(
+            20, 10, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Preferred)
+        self.hlayoutOrdenacao.addItem(spacer)
+        self.comboBoxOrdenacao = QtWidgets.QComboBox(self.frameOrdenacao)
+        self.comboBoxOrdenacao.setToolTip('Ordenar')
+        self.comboBoxOrdenacao.addItems(['Nome: A-Z', 'Nome: Z-A'])
+        self.hlayoutOrdenacao.addWidget(self.comboBoxOrdenacao)
         self.framedados = QtWidgets.QFrame(self.mainwidget)
         self.framedados.setSizePolicy(QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Preferred)
-        self.glayout.addWidget(self.framedados, 1, 0, 1, 1)
+        self.vlayout.addWidget(self.framedados)
         self.vlayoutdados = QtWidgets.QVBoxLayout(self.framedados)
         self.tabela = QtWidgets.QTableView(self.framedados)
         self.vlayoutdados.addWidget(self.tabela)
@@ -43,16 +55,11 @@ class TelaBuscaCliente(QtWidgets.QMainWindow):
         self.tabela.setSelectionMode(
             QtWidgets.QAbstractItemView.SelectionMode.SingleSelection)
         self.tabela.horizontalHeader().setHighlightSections(False)
-        # self.delegateLeft = AlignDelegate(QtCore.Qt.AlignmentFlag.AlignLeft | QtCore.Qt.AlignmentFlag.AlignVCenter)
         self.delegateRight = AlignDelegate(QtCore.Qt.AlignmentFlag.AlignRight | QtCore.Qt.AlignmentFlag.AlignVCenter)
         self.tabela.horizontalHeader().setDefaultAlignment(QtCore.Qt.AlignmentFlag.AlignLeft | QtCore.Qt.AlignmentFlag.AlignVCenter)
         self.tabela.verticalHeader().setVisible(False)
-        self.filter = QtCore.QSortFilterProxyModel()
-        self.filter.setFilterCaseSensitivity(
-            QtCore.Qt.CaseSensitivity.CaseInsensitive)
-
         self.framebotoes = QtWidgets.QFrame(self.mainwidget)
-        self.glayout.addWidget(self.framebotoes, 2, 0, 1, 1)
+        self.vlayout.addWidget(self.framebotoes)
         self.hlayoutbotoes = QtWidgets.QHBoxLayout(self.framebotoes)
         spacer = QtWidgets.QSpacerItem(
             20, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
@@ -63,10 +70,6 @@ class TelaBuscaCliente(QtWidgets.QMainWindow):
         self.botaoVeiculos = QtWidgets.QPushButton(self.framebotoes)
         self.botaoVeiculos.setFixedSize(100, 25)
         self.hlayoutbotoes.addWidget(self.botaoVeiculos)
-        self.filter.setFilterKeyColumn(-1)
-        self.lineEditBusca.textChanged.connect(
-            self.filter.setFilterRegularExpression)
-        self.tabela.setModel(self.filter)
         self.setCentralWidget(self.mainwidget)
         self.retranslateUi()
         self.listarClientes()
@@ -74,6 +77,8 @@ class TelaBuscaCliente(QtWidgets.QMainWindow):
         self.botaoVeiculos.clicked.connect(self.veiculos)
         self.tabela.verticalScrollBar().valueChanged.connect(self.scrolled)
         self.tabela.verticalScrollBar().actionTriggered.connect(self.scrolled)
+        self.lineEditBusca.textChanged.connect(self.buffer)
+        self.comboBoxOrdenacao.currentIndexChanged.connect(self.buffer)
 
     def retranslateUi(self):
         _translate = QtCore.QCoreApplication.translate
@@ -85,8 +90,13 @@ class TelaBuscaCliente(QtWidgets.QMainWindow):
         if value == self.tabela.verticalScrollBar().maximum():
             self.maisClientes(50)
 
+    def buffer(self):
+        self.busca = self.lineEditBusca.text()
+        self.orderBy = self.comboBoxOrdenacao.currentIndex()
+        self.listarClientes()
+
     def maisClientes(self, qtde):
-        clientes = self.clienteCtrl.listarClientes(qtde=self.linhasCarregadas+qtde)
+        clientes = self.clienteCtrl.buscarCliente(self.busca, self.linhasCarregadas+qtde, self.orderBy)
         if not clientes:
             return
         maxLength = len(clientes)
@@ -119,7 +129,7 @@ class TelaBuscaCliente(QtWidgets.QMainWindow):
             clientes[self.linhasCarregadas] = FlatDict(clientes[self.linhasCarregadas], delimiter='.')
             self.linhasCarregadas+=1
         self.model.addData(clientes[initLen:self.linhasCarregadas])
-        colunas = ['idCliente', 'tipo', 'nome', 'documento', 'endereco', 'numero', 'bairro', 'cidade.nome', 'cidade.uf', 'fones', 'veiculos']
+        colunas = ['idCliente', 'tipo', 'nome', 'documento', 'fones', 'veiculos']
         self.model.colunasDesejadas(colunas)
         self.model.setRowCount(self.linhasCarregadas)
         self.model.setColumnCount(len(colunas))
@@ -128,20 +138,15 @@ class TelaBuscaCliente(QtWidgets.QMainWindow):
     def listarClientes(self):
         self.linhasCarregadas = 0
         self.model = InfiniteScrollTableModel([{}])
-        listaHeader = ['ID', 'Tipo', 'Nome', 'Documento', 'Endereço', 'Nº', 'Bairro', 'Cidade', 'UF', 'Telefones', 'Veículos']
+        listaHeader = ['ID', 'Tipo', 'Nome', 'Documento', 'Telefones', 'Veículos']
         self.model.setHorizontalHeaderLabels(listaHeader)
-        self.filter.setSourceModel(self.model)
-        self.tabela.setModel(self.filter)
-        self.tabela.setItemDelegateForColumn(5, self.delegateRight)
+        self.tabela.setModel(self.model)
         self.maisClientes(50)
         if self.linhasCarregadas > 0:
             header = self.tabela.horizontalHeader()
             header.setSectionResizeMode(
                 QtWidgets.QHeaderView.ResizeMode.ResizeToContents)
-            header.setSectionResizeMode(9, 
-                QtWidgets.QHeaderView.ResizeMode.Interactive)
             header.setStretchLastSection(True)
-            self.model.setHeaderAlignment(5, QtCore.Qt.AlignmentFlag.AlignRight | QtCore.Qt.AlignmentFlag.AlignVCenter)
 
     def veiculos(self):
         linha = self.tabela.selectionModel().selectedRows()
