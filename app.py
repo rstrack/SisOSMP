@@ -32,7 +32,7 @@ from controller.cidadeController import CidadeController
 from controller.orcamentoController import OrcamentoController
 
 #Classe que instancia views e controllers e faz conexão entre objetos
-class MainController():
+class APP():
 
     def __init__(self):
         self.app = QtWidgets.QApplication(sys.argv)
@@ -115,14 +115,12 @@ class MainController():
         self.telaInicio.botao_servicos.clicked.connect(lambda: self.telaInicio.stackedWidget.setCurrentWidget(self.telaCadastroServico))
         self.telaInicio.botao_clientes.clicked.connect(lambda: self.telaInicio.stackedWidget.setCurrentWidget(self.telaCadastroCliente))
         self.telaInicio.botao_orcamentos.clicked.connect(lambda: self.telaInicio.stackedWidget.setCurrentWidget(self.telaCadastroOrcamento))
-
         self.telaInicio.botao_pecas_2.clicked.connect(lambda: self.telaInicio.stackedWidget.setCurrentWidget(self.telaConsultaPeca))
         self.telaInicio.botao_servicos_2.clicked.connect(lambda: self.telaInicio.stackedWidget.setCurrentWidget(self.telaConsultaServico))
         self.telaInicio.botao_clientes_2.clicked.connect(lambda: self.telaInicio.stackedWidget.setCurrentWidget(self.telaConsultaCliente))
         self.telaInicio.botao_veiculos.clicked.connect(lambda: self.telaInicio.stackedWidget.setCurrentWidget(self.telaConsultaVeiculo))
         self.telaInicio.botao_orcamentos_2.clicked.connect(lambda: self.telaInicio.stackedWidget.setCurrentWidget(self.telaConsultaOrcamento))
-        self.telaInicio.botao_os.clicked.connect(lambda: self.telaInicio.stackedWidget.setCurrentWidget(self.telaConsultaOS))
-        
+        self.telaInicio.botao_os.clicked.connect(lambda: self.telaInicio.stackedWidget.setCurrentWidget(self.telaConsultaOS))    
         self.telaInicio.stackedWidget.currentChanged.connect(self.atualizarJanelas)
 
         # conectando seleção de edição com respectivas telas de edição
@@ -157,6 +155,7 @@ class MainController():
         render(p)
         self.telaInicio.stackedWidget.setCurrentWidget(pagina)
 
+    #função que analiza tela selecionada e as atualiza
     def atualizarJanelas(self):
         match self.telaInicio.stackedWidget.currentWidget():
             case self.telaCadastroCliente:
@@ -194,6 +193,5 @@ class MainController():
 
 
 if __name__ == "__main__":
-
-    c = MainController()
-    c.run()
+    app = APP()
+    app.run()
