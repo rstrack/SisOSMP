@@ -239,7 +239,7 @@ class TelaEditarCliente(QtWidgets.QMainWindow):
                     raise Exception('CNPJ inválido')
             else: documento = 'Documento'
             if not self.lineEditDocumento.text().isnumeric():
-                raise Exception(f'Digite apenas números no campo {documento}')
+                raise Exception(f'Digite apenas números no campo "{documento}"')
             dict['documento'] = self.lineEditDocumento.text()
         else:
             dict['documento'] = None

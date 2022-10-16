@@ -108,7 +108,7 @@ class TelaEditarPeca(QtWidgets.QMainWindow):
         dict['descricao'] = self.lineEditDescricao.text()
         dict['un'] = self.comboboxun.currentText()
         if not (self.lineEditValorPeca.text().replace(',','',1).isnumeric() or self.lineEditValorPeca.text().replace('.','',1).isnumeric()):
-            raise Exception("Campo 'valor' inválido!")
+            raise Exception('Campo "valor" inválido!')
         if -Decimal(self.lineEditValorPeca.text().replace(',','.',1)).as_tuple().exponent > 2:
             raise Exception("Valores devem possuir no máximo duas casas decimais!")
         dict['valor'] = self.lineEditValorPeca.text().replace(',','.',1)

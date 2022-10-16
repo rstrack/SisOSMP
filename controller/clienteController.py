@@ -24,7 +24,7 @@ class ClienteController():
         with db.atomic() as transaction:
             try:
                 if dados['nome'] == None:
-                    raise Exception("Campo 'Nome' obrigatório")
+                    raise Exception('Campo "Nome" obrigatório')
                 if dados['documento']:
                     cliente = self.clienteRep.findByDocumento(dados['documento'])
                     if cliente:

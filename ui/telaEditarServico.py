@@ -97,7 +97,7 @@ class TelaEditarServico(QtWidgets.QMainWindow):
         dict = {}
         dict['descricao'] = self.lineEditDescricao.text()
         if not (self.lineEditValorServico.text().replace(',','',1).isnumeric() or self.lineEditValorServico.text().replace('.','',1).isnumeric()):
-            raise Exception("Campo 'valor' inválido!")
+            raise Exception('Campo "valor" inválido!')
         if -Decimal(self.lineEditValorServico.text().replace(',','.',1)).as_tuple().exponent > 2:
             raise Exception("Valores devem possuir no máximo duas casas decimais!")
         dict['valor'] = self.lineEditValorServico.text().replace(',','.',1)

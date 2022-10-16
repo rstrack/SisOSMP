@@ -641,7 +641,7 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
                     raise Exception('CNPJ inválido')
             else: documento = 'Documento'
             if not self.lineEditDocumento.text().isnumeric():
-                raise Exception(f'Digite apenas números no campo {documento}')
+                raise Exception(f'Digite apenas números no campo "{documento}"')
             dict['documento'] = self.lineEditDocumento.text()
         else:
             dict['documento'] = None
@@ -701,13 +701,13 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
         dict = {}
         if self.comboBoxMarca.currentText():
             dict['marca'] = self.comboBoxMarca.currentText().title()
-        else: raise Exception("Campo 'Marca' obrigatório!")
+        else: raise Exception('Campo "Marca" obrigatório!')
         if (self.lineEditModelo.text()):
             dict['modelo'] = self.lineEditModelo.text()[0].upper() + self.lineEditModelo.text()[1:]
-        else: raise Exception("Campo 'Modelo' obrigatório!")
+        else: raise Exception('Campo "Modelo" obrigatório!')
         if (self.lineEditPlaca.text()):
             dict['placa'] = self.lineEditPlaca.text().upper()
-        else: raise Exception("Campo 'Placa' obrigatório!")
+        else: raise Exception('Campo "Placa" obrigatório!')
         if (self.lineEditAno.text()):
             dict['ano'] = self.lineEditAno.text()
         else: dict['ano'] = None
@@ -722,11 +722,11 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
                 if not qtde.text(): dict['qtde'] = 1
                 else:
                     if not (qtde.text().replace(',','',1).isnumeric() or qtde.text().replace('.','',1).isnumeric()):
-                        raise Exception("Campo 'qtde' inválido!")
+                        raise Exception('Campo "qtde" inválido!')
                     dict['qtde'] = qtde.text().replace(',','.',1)
                 dict['un'] = un.currentText()
                 if not (valor.text().replace(',','',1).isnumeric() or valor.text().replace('.','',1).isnumeric()):
-                    raise Exception("Campo 'valor' inválido!")
+                    raise Exception('Campo "valor" inválido!')
                 if -Decimal(valor.text().replace(',','.',1)).as_tuple().exponent > 2:
                     raise Exception("Valores devem possuir no máximo duas casas decimais!")
                 dict['valor'] = valor.text().replace(',','.',1)
@@ -746,12 +746,12 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
                 if not qtde.text(): dict['qtde'] = 1
                 else:
                     if not qtde.text().isnumeric():
-                        raise Exception("Campo 'qtde' em 'serviços' deve ser um número inteiro!")
+                        raise Exception('Campo "qtde" em "serviços" deve ser um número inteiro!')
                     dict['qtde'] = qtde.text().replace(',','.',1)
                 if not (valor.text().replace(',','',1).isnumeric() or valor.text().replace('.','',1).isnumeric()):
-                    raise Exception("Campo 'valor' inválido!")
+                    raise Exception('Campo "valor" inválido!')
                 if -Decimal(valor.text().replace(',','.',1)).as_tuple().exponent > 2:
-                    raise Exception("Valores devem possuir no máximo duas casas decimais!")
+                    raise Exception('Valores devem possuir no máximo duas casas decimais!')
                 dict['valor'] = valor.text().replace(',','.',1)
                 servicos.append(dict)
             elif desc.text() or valor.text():

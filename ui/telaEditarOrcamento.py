@@ -493,11 +493,11 @@ class TelaEditarOrcamento(QtWidgets.QMainWindow):
                 if not qtde.text(): dict['qtde'] = 1
                 else:
                     if not (qtde.text().replace(',','',1).isnumeric() or qtde.text().replace('.','',1).isnumeric()):
-                        raise Exception("Campo 'qtde' inválido!")
+                        raise Exception('Campo "qtde" inválido!')
                     dict['qtde'] = qtde.text().replace(',','.',1)
                 dict['un'] = un.currentText()
                 if not (valor.text().replace(',','',1).isnumeric() or valor.text().replace('.','',1).isnumeric()):
-                    raise Exception("Campo 'valor' inválido!")
+                    raise Exception('Campo "valor" inválido!')
                 if -Decimal(valor.text().replace(',','.',1)).as_tuple().exponent > 2:
                     raise Exception("Valores devem possuir no máximo duas casas decimais!")
                 dict['valor'] = valor.text().replace(',','.',1)
@@ -517,10 +517,10 @@ class TelaEditarOrcamento(QtWidgets.QMainWindow):
                 if not qtde.text(): dict['qtde'] = 1
                 else:
                     if not qtde.text().isnumeric():
-                        raise Exception("Campo 'qtde' em 'serviços' deve ser um número inteiro!")
+                        raise Exception('Campo "qtde" em "serviços" deve ser um número inteiro!')
                     dict['qtde'] = qtde.text().replace(',','.',1)
                 if not (valor.text().replace(',','',1).isnumeric() or valor.text().replace('.','',1).isnumeric()):
-                    raise Exception("Campo 'valor' inválido!")
+                    raise Exception('Campo "valor" inválido!')
                 if -Decimal(valor.text().replace(',','.',1)).as_tuple().exponent > 2:
                     raise Exception("Valores devem possuir no máximo duas casas decimais!")
                 dict['valor'] = valor.text().replace(',','.',1)

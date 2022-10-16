@@ -186,7 +186,7 @@ class TelaCadastroPeca(QtWidgets.QMainWindow):
                 dict['descricao'] = desc.text()
                 dict['un'] = un.currentText()
                 if not (valor.text().replace(',','',1).isnumeric() or valor.text().replace('.','',1).isnumeric()):
-                    raise Exception("Campo 'valor' inválido!")
+                    raise Exception('Campo "valor" inválido!')
                 if -Decimal(valor.text().replace(',','.',1)).as_tuple().exponent > 2:
                     raise Exception("Valores devem possuir no máximo duas casas decimais!")
                 dict['valor'] = valor.text().replace(',','.',1)
