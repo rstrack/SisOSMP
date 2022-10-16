@@ -2,7 +2,7 @@ from decimal import Decimal
 from PyQt6 import QtCore, QtWidgets, QtGui
 from container import handleDeps
 
-from datetime import datetime
+from datetime import date, datetime
 from ui.messageBox import MessageBox
 
 from ui.telaBuscaCliente import TelaBuscaCliente
@@ -764,6 +764,8 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
         orcamento = {}
         self.lineEditKm.text()
         data = datetime.strptime(self.lineEditData.text(), "%d/%m/%Y")
+        if data.date() > datetime.now().date():
+            raise Exception('Data do orçamento não deve ser no futuro!')
         data = data.strftime("%Y-%m-%d")
         orcamento['dataOrcamento'] = data
         if self.lineEditKm.text():
@@ -797,37 +799,6 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
             self.valorTotal=0.00
             self.labelValorTotal2.setText('0,00')
 
-        '''self.valorTotal=0.00
-        for _,qtde,_,valor in self.linhasPeca:
-            if not valor.text():
-                continue
-            if not (valor.text().replace(',','',1).isnumeric() or valor.text().replace('.','',1).isnumeric()):
-                self.labelValorTotal2.setText('0,00')
-                return
-            if qtde.text():
-                if not (qtde.text().replace(',','',1).isnumeric() or qtde.text().replace('.','',1).isnumeric()):
-                    self.labelValorTotal2.setText('0,00')
-                    return 
-                self.valorTotal+=float(valor.text().replace(',','.',1))*float(qtde.text().replace(',','.',1))
-            else:
-                self.valorTotal+=float(valor.text().replace(',','.',1))
-
-        for _,qtde,valor in self.linhasServico:
-            if not valor.text():
-                continue
-            if not (valor.text().replace(',','',1).isnumeric() or valor.text().replace('.','',1).isnumeric()):
-                self.labelValorTotal2.setText('0,00')
-                return
-            if qtde.text():
-                if not (qtde.text().replace(',','',1).isnumeric() or qtde.text().replace('.','',1).isnumeric()):
-                    self.labelValorTotal2.setText('0,00')
-                    return 
-                self.valorTotal+=float(valor.text().replace(',','.',1))*float(qtde.text().replace(',','.',1))
-            else:
-                self.valorTotal+=float(valor.text().replace(',','.',1))
-        self.valorTotal = round(self.valorTotal, 2)
-        self.labelValorTotal2.setText(str(self.valorTotal).replace('.',',',1))'''
-
     def buscarPeca(self, lineEditDesc, comboBoxUn, lineEditValor):
         qPeca = self.pecaCtrl.getPecaByDescricao(lineEditDesc.text())
         if qPeca:
@@ -853,17 +824,17 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
             r = self.orcamentoCtrl.salvarOrcamento(cliente, fones, self.clienteSelected, veiculo, self.veiculoSelected, orcamento, pecas, servicos)
             if isinstance(r, Exception):
                 raise Exception(r)
-            # msg = QtWidgets.QMessageBox()
-            # msg.setWindowIcon(QtGui.QIcon('./resources/logo-icon.png'))
-            # msg.setIcon(QtWidgets.QMessageBox.Icon.Information)
-            # msg.setWindowTitle("Aviso")
-            # msg.setText("Orçamento criado com sucesso!")
-            # msg.exec()
-            # #RESETA DADOS DA TELA
-            # self.clienteSelected = None
-            # self.veiculoSelected = None
-            # self.valorTotal = 0
-            # self.setupUi()
+            msg = QtWidgets.QMessageBox()
+            msg.setWindowIcon(QtGui.QIcon('./resources/logo-icon.png'))
+            msg.setIcon(QtWidgets.QMessageBox.Icon.Information)
+            msg.setWindowTitle("Aviso")
+            msg.setText("Orçamento criado com sucesso!")
+            msg.exec()
+            #RESETA DADOS DA TELA
+            self.clienteSelected = None
+            self.veiculoSelected = None
+            self.valorTotal = 0
+            self.setupUi()
             return r['idOrcamento']
         except Exception as e:
             msg = QtWidgets.QMessageBox()

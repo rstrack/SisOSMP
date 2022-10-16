@@ -535,6 +535,8 @@ class TelaEditarOrcamento(QtWidgets.QMainWindow):
         orcamento = {}
         self.lineEditKm.text()
         data = datetime.strptime(self.lineEditData.text(), "%d/%m/%Y")
+        if data.date() > datetime.now().date():
+            raise Exception('Data do orçamento não deve ser no futuro!')
         data = data.strftime("%Y-%m-%d")
         orcamento['dataOrcamento'] = data
         if self.lineEditKm.text():

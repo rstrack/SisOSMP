@@ -525,10 +525,21 @@ class TelaEditarOS(QtWidgets.QMainWindow):
     def getDadosOrcamento(self):
         orcamento = {}
         self.lineEditKm.text()
-        data = datetime.strptime(self.lineEditData.text(), "%d/%m/%Y")
-        data = data.strftime("%Y-%m-%d")
-        orcamento['dataOrcamento'] = data
-        orcamento['km'] = self.lineEditKm.text()
+        dataOrcamento = datetime.strptime(self.lineEditData.text(), "%d/%m/%Y")
+        if dataOrcamento.date() > datetime.now().date():
+            raise Exception('Data do orçamento não deve ser no futuro!')
+        orcamento['dataOrcamento'] = dataOrcamento.strftime("%Y-%m-%d")
+        dataAprovacao = datetime.strptime(self.lineEditDataAprovacao.text(), "%d/%m/%Y")
+        if dataAprovacao.date() > datetime.now().date():
+            raise Exception('Data de Aprovação não deve ser no futuro!')
+        if dataAprovacao.date() < dataOrcamento.date():
+            raise Exception('Data de Aprovação não pode ser antes da Data do Orçamento')
+        orcamento['dataAprovacao'] = dataAprovacao.strftime("%Y-%m-%d")
+        if self.lineEditKm.text():
+            if self.lineEditKm.text() > '0' and self.lineEditKm.text().isnumeric():
+                orcamento['km'] = self.lineEditKm.text()
+            else: raise Exception("Quilometragem do veículo inválida!")
+        else: raise Exception("Quilometragem do veículo obrigatória!")
         orcamento['observacoes']=self.textEdit.toPlainText()
         return orcamento
 
