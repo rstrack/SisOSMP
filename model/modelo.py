@@ -110,7 +110,7 @@ def create_tables(cursor):
 BEFORE UPDATE ON `orcamento`
 FOR EACH ROW
 begin
-    if new.aprovado=1 then
+    if new.aprovado=1 and old.aprovado=0 then
         set new.dataAprovacao=curdate();
     end if;
 end''')

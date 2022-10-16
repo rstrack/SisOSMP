@@ -194,11 +194,11 @@ class OrcamentoController():
         if itemServicos: return itemServicos.dicts()
         else: return None
 
-    def buscarOrcamento(self, aprovado, input, limit=None):
+    def buscarOrcamento(self, aprovado, input, limit=None, orderBy:int=None):
         with db.atomic() as transaction:
             try:
                 _orcamentos = []
-                orcamentos = self.orcamentoRep.findByInput(aprovado, input, limit)
+                orcamentos = self.orcamentoRep.findByInput(aprovado, input, limit, orderBy)
                 if orcamentos:
                     for orcamento in orcamentos:
                         _orcamentos.append(model_to_dict(orcamento))

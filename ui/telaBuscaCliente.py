@@ -63,10 +63,6 @@ class TelaBuscaCliente(QtWidgets.QMainWindow):
         self.botaoVeiculos = QtWidgets.QPushButton(self.framebotoes)
         self.botaoVeiculos.setFixedSize(100, 25)
         self.hlayoutbotoes.addWidget(self.botaoVeiculos)
-        self.botaoExcluir = QtWidgets.QPushButton(self.framebotoes)
-        self.botaoExcluir.setObjectName('excluir')
-        self.botaoExcluir.setFixedSize(100, 25)
-        self.hlayoutbotoes.addWidget(self.botaoExcluir)
         self.filter.setFilterKeyColumn(-1)
         self.lineEditBusca.textChanged.connect(
             self.filter.setFilterRegularExpression)
@@ -84,7 +80,6 @@ class TelaBuscaCliente(QtWidgets.QMainWindow):
         self.setWindowTitle(_translate("MainWindow", "Busca por Cliente"))
         self.botaoSelecionar.setText(_translate("MainWindow", "Selecionar"))
         self.botaoVeiculos.setText(_translate("MainWindow", "Veiculos"))
-        self.botaoExcluir.setText(_translate("MainWindow", "Excluir"))
 
     def scrolled(self, value):
         if value == self.tabela.verticalScrollBar().maximum():

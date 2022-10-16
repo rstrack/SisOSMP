@@ -13,6 +13,7 @@ class TelaConsultaOS(QtWidgets.QMainWindow):
         self.pecaCtrl = handleDeps.getDep('PECACTRL')
         self.servicoCtrl = handleDeps.getDep('SERVICOCTRL')
         self.busca = ''
+        self.orderBy = 0
         self.setupUi()
 
     def setupUi(self):
@@ -49,6 +50,16 @@ class TelaConsultaOS(QtWidgets.QMainWindow):
         self.botaoRefresh.setFixedSize(30,30)
         self.botaoRefresh.setIcon(QtGui.QIcon("./resources/refresh-icon.png"))
         self.hlayoutBusca.addWidget(self.botaoRefresh)
+
+        self.frameOrdenacao = QtWidgets.QFrame(self.main_frame)
+        self.vlayout.addWidget(self.frameOrdenacao)
+        self.hlayoutOrdenacao = QtWidgets.QHBoxLayout(self.frameOrdenacao)
+        spacer = QtWidgets.QSpacerItem(
+            20, 10, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Preferred)
+        self.hlayoutOrdenacao.addItem(spacer)
+        self.comboBoxOrdenacao = QtWidgets.QComboBox(self.frameOrdenacao)
+        self.comboBoxOrdenacao.addItems(['Data do Orçamento (recente primeiro)', 'Data do Orçamento (antigo primeiro)', 'Data de Aprovação (recente primeiro)', 'Data de Aprovação (antigo primeiro)'])
+        self.hlayoutOrdenacao.addWidget(self.comboBoxOrdenacao)
         self.framedados = QtWidgets.QFrame(self.main_frame)
         self.framedados.setSizePolicy(QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Preferred)
         self.vlayout.addWidget(self.framedados)
@@ -87,6 +98,7 @@ class TelaConsultaOS(QtWidgets.QMainWindow):
         self.tabela.verticalScrollBar().valueChanged.connect(self.scrolled)
         self.tabela.verticalScrollBar().actionTriggered.connect(self.scrolled)
         self.lineEditBusca.textChanged.connect(self.buffer)
+        self.comboBoxOrdenacao.currentIndexChanged.connect(self.buffer)
         self.listarOS()
 
     def retranslateUi(self):
@@ -102,10 +114,11 @@ class TelaConsultaOS(QtWidgets.QMainWindow):
 
     def buffer(self):
         self.busca = self.lineEditBusca.text()
+        self.orderBy = self.comboBoxOrdenacao.currentIndex()
         self.listarOS()
 
     def maisOS(self, qtde):
-        orcamentos = self.orcamentoCtrl.buscarOrcamento(aprovado=True, input=self.busca, limit=self.linhasCarregadas+qtde)
+        orcamentos = self.orcamentoCtrl.buscarOrcamento(True, self.busca, self.linhasCarregadas+qtde, self.orderBy)
         if not orcamentos:
             return
         maxLength = len(orcamentos)

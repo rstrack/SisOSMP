@@ -132,11 +132,11 @@ class ClienteController():
             else: return None
 
     #buscar clientes por uma string de alguma coluna (Ex.: nome, documento, telefone)
-    def buscarCliente(self, input, limit=None):
+    def buscarCliente(self, input, limit=None, orderBy=None):
         with db.atomic() as transaction:
             try:
                 _clientes = []
-                clientes = self.clienteRep.findByInput(input, limit)
+                clientes = self.clienteRep.findByInput(input, limit, orderBy)
                 if clientes:
                     for cliente in clientes:
                         _clientes.append(model_to_dict(cliente))
@@ -225,11 +225,11 @@ class ClienteController():
         else: return None
 
     #buscar veiculos por uma string de alguma coluna (Ex.: marca, modelo, placa)
-    def buscarVeiculo(self, input, limit=None):
+    def buscarVeiculo(self, input, limit=None, orderBy=None):
         with db.atomic() as transaction:
             try:
                 _veiculos = []
-                veiculos = self.veiculoRep.findByInput(input, limit)
+                veiculos = self.veiculoRep.findByInput(input, limit, orderBy)
                 if veiculos:
                     for veiculo in veiculos:
                         _veiculos.append(model_to_dict(veiculo))

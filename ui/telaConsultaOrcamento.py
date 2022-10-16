@@ -14,6 +14,7 @@ class TelaConsultaOrcamento(QtWidgets.QMainWindow):
         self.pecaCtrl = handleDeps.getDep('PECACTRL')
         self.servicoCtrl = handleDeps.getDep('SERVICOCTRL')
         self.busca = ''
+        self.orderBy = 0
         self.setupUi()
 
     def setupUi(self):
@@ -50,6 +51,15 @@ class TelaConsultaOrcamento(QtWidgets.QMainWindow):
         self.botaoRefresh.setFixedSize(30,30)
         self.botaoRefresh.setIcon(QtGui.QIcon("./resources/refresh-icon.png"))
         self.hlayoutBusca.addWidget(self.botaoRefresh)
+        self.frameOrdenacao = QtWidgets.QFrame(self.main_frame)
+        self.vlayout.addWidget(self.frameOrdenacao)
+        self.hlayoutOrdenacao = QtWidgets.QHBoxLayout(self.frameOrdenacao)
+        spacer = QtWidgets.QSpacerItem(
+            20, 10, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Preferred)
+        self.hlayoutOrdenacao.addItem(spacer)
+        self.comboBoxOrdenacao = QtWidgets.QComboBox(self.frameOrdenacao)
+        self.comboBoxOrdenacao.addItems(['Data do Orçamento (recente primeiro)', 'Data do Orçamento (antigo primeiro)'])
+        self.hlayoutOrdenacao.addWidget(self.comboBoxOrdenacao)
         self.framedados = QtWidgets.QFrame(self.main_frame)
         self.framedados.setSizePolicy(QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Preferred)
         self.vlayout.addWidget(self.framedados)
@@ -106,6 +116,7 @@ class TelaConsultaOrcamento(QtWidgets.QMainWindow):
     
     def buffer(self):
         self.busca = self.lineEditBusca.text()
+        self.orderBy = self.comboBoxOrdenacao.currentIndex()
         self.listarOrcamentos()
 
     def maisOrcamentos(self, qtde):

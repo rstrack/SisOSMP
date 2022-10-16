@@ -524,11 +524,11 @@ class TelaEditarOS(QtWidgets.QMainWindow):
 
     def getDadosOrcamento(self):
         orcamento = {}
-        self.lineEditKm.text()
         dataOrcamento = datetime.strptime(self.lineEditData.text(), "%d/%m/%Y")
         if dataOrcamento.date() > datetime.now().date():
             raise Exception('Data do orçamento não deve ser no futuro!')
         orcamento['dataOrcamento'] = dataOrcamento.strftime("%Y-%m-%d")
+
         dataAprovacao = datetime.strptime(self.lineEditDataAprovacao.text(), "%d/%m/%Y")
         if dataAprovacao.date() > datetime.now().date():
             raise Exception('Data de Aprovação não deve ser no futuro!')

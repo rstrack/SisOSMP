@@ -11,6 +11,7 @@ class TelaConsultaVeiculo(QtWidgets.QMainWindow):
         super(TelaConsultaVeiculo, self).__init__()
         self.clienteCtrl = handleDeps.getDep('CLIENTECTRL')
         self.busca = ''
+        self.orderBy = 0
         self.setupUi()
 
     def setupUi(self):
@@ -47,6 +48,15 @@ class TelaConsultaVeiculo(QtWidgets.QMainWindow):
         self.botaoRefresh.setFixedSize(30,30)
         self.botaoRefresh.setIcon(QtGui.QIcon("./resources/refresh-icon.png"))
         self.hlayoutBusca.addWidget(self.botaoRefresh)
+        self.frameOrdenacao = QtWidgets.QFrame(self.main_frame)
+        self.vlayout.addWidget(self.frameOrdenacao)
+        self.hlayoutOrdenacao = QtWidgets.QHBoxLayout(self.frameOrdenacao)
+        spacer = QtWidgets.QSpacerItem(
+            20, 10, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Preferred)
+        self.hlayoutOrdenacao.addItem(spacer)
+        self.comboBoxOrdenacao = QtWidgets.QComboBox(self.frameOrdenacao)
+        self.comboBoxOrdenacao.addItems(['Marca (A-Z)', 'Marca (Z-A)', 'Modelo (A-Z)', 'Modelo (Z-A)'])
+        self.hlayoutOrdenacao.addWidget(self.comboBoxOrdenacao)
         self.framedados = QtWidgets.QFrame(self.main_frame)
         self.framedados.setSizePolicy(QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Preferred)
         self.vlayout.addWidget(self.framedados)
@@ -94,6 +104,7 @@ class TelaConsultaVeiculo(QtWidgets.QMainWindow):
         self.tabela.verticalScrollBar().valueChanged.connect(self.scrolled)
         self.tabela.verticalScrollBar().actionTriggered.connect(self.scrolled)
         self.lineEditBusca.textChanged.connect(self.buffer)
+        self.comboBoxOrdenacao.currentIndexChanged.connect(self.buffer)
 
     def retranslateUi(self):
         _translate = QtCore.QCoreApplication.translate
@@ -110,10 +121,11 @@ class TelaConsultaVeiculo(QtWidgets.QMainWindow):
 
     def buffer(self):
         self.busca = self.lineEditBusca.text()
+        self.orderBy = self.comboBoxOrdenacao.currentIndex()
         self.listarVeiculos()
 
     def maisVeiculos(self, qtde):
-        veiculos = self.clienteCtrl.buscarVeiculo(self.busca, self.linhasCarregadas+qtde)
+        veiculos = self.clienteCtrl.buscarVeiculo(self.busca, self.linhasCarregadas+qtde, self.orderBy)
         if not veiculos:
             return
         maxLength = len(veiculos)

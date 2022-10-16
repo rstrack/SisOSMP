@@ -1,5 +1,6 @@
 from dateparser import parse
 from model.modelo import Cliente, Fone, Marca, Orcamento, Veiculo
+from peewee import JOIN
 
 class OrcamentoRepository():
     def __init__(self):
@@ -31,15 +32,26 @@ class OrcamentoRepository():
     def findByAprovado(self, aprovado, limit):
         return Orcamento.select().where(Orcamento.aprovado==aprovado).order_by(-Orcamento.dataOrcamento).limit(limit)
     
-    def findByInput(self, aprovado, input:str, limit=None):
+    def findByInput(self, aprovado, input:str, limit=None, orderBy=None):
+        match orderBy:
+            case 0:
+                order_by = -Orcamento.dataOrcamento
+            case 1:
+                order_by = +Orcamento.dataOrcamento
+            case 2:
+                order_by = -Orcamento.dataAprovacao
+            case 3:
+                order_by = +Orcamento.dataAprovacao
+            case _:
+                order_by = -Orcamento.dataOrcamento
         data = parse(input, date_formats=['%d/%m/%Y', '%d/%m/%y', '%d','%d/', '%d/%m', '%d/%m/'], locales=['pt-PT'])
         if data: 
             orcamentos = Orcamento.select()\
-                        .join(Cliente)\
-                        .join(Fone)\
+                        .join(Cliente, JOIN.LEFT_OUTER)\
+                        .join(Fone, JOIN.LEFT_OUTER)\
                         .switch(Orcamento)\
-                        .join(Veiculo)\
-                        .join(Marca)\
+                        .join(Veiculo, JOIN.LEFT_OUTER)\
+                        .join(Marca, JOIN.LEFT_OUTER)\
                         .where((Orcamento.aprovado==aprovado)
                             &((Orcamento.dataOrcamento==data.date())
                             |(Orcamento.dataAprovacao==data.date())
@@ -50,7 +62,7 @@ class OrcamentoRepository():
                             |((Veiculo.marca==Marca.idMarca) & (Marca.nome.contains(input)))
                             |(Veiculo.modelo.contains(input))
                             |(Veiculo.placa.contains(input)))
-                        ).order_by(-Orcamento.dataOrcamento)\
+                        ).order_by(order_by)\
                         .limit(limit)\
                         .distinct()
             if orcamentos:
@@ -71,7 +83,7 @@ class OrcamentoRepository():
                             |((Veiculo.marca==Marca.idMarca) & (Marca.nome.contains(input)))
                             |(Veiculo.modelo.contains(input))
                             |(Veiculo.placa.contains(input)))
-                        ).order_by(-Orcamento.dataOrcamento)\
+                        ).order_by(order_by)\
                         .limit(limit)\
                         .distinct()
             if orcamentos:
