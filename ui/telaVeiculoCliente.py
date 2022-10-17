@@ -1,5 +1,5 @@
 from PyQt6 import QtCore, QtWidgets
-from container import handleDeps
+from util.container import handleDeps
 
 class TelaVeiculoCliente(QtWidgets.QMainWindow):
 

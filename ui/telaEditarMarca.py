@@ -1,5 +1,5 @@
 from PyQt6 import QtWidgets, QtCore, QtGui
-from container import handleDeps
+from util.container import handleDeps
 
 class TelaEditarMarca(QtWidgets.QMainWindow):
     edicaoCompleta = QtCore.pyqtSignal(int)

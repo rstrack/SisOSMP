@@ -1,6 +1,6 @@
 from decimal import Decimal
 from PyQt6 import QtCore, QtWidgets, QtGui
-from container import handleDeps
+from util.container import handleDeps
 from ui.telaCadastroOrcamento import UNIDADES
 
 

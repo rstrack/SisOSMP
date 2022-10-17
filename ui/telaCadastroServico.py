@@ -1,6 +1,6 @@
 from decimal import Decimal
 from PyQt6 import QtCore, QtGui, QtWidgets
-from container import handleDeps
+from util.container import handleDeps
 
 class TelaCadastroServico(QtWidgets.QMainWindow):
 

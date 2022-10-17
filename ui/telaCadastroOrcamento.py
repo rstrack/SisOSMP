@@ -1,6 +1,7 @@
 from decimal import Decimal
+import threading
 from PyQt6 import QtCore, QtWidgets, QtGui
-from container import handleDeps
+from util.container import handleDeps
 
 from datetime import date, datetime
 from ui.messageBox import MessageBox
@@ -576,7 +577,9 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
         self.lineEditFone2.setText(tel2)
 
     def setEndereco(self, cep=None, ender=None, num=None, bairro=None, cidade=None, uf=None):
+        self.lineEditCEP.textChanged.disconnect()
         self.lineEditCEP.setText(cep)
+        self.lineEditCEP.textChanged.connect(self.buscarDadosCEP)
         self.lineEditEnder.setText(ender)
         self.lineEditNumero.setText(num)
         self.lineEditBairro.setText(bairro)
@@ -934,6 +937,10 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
         cep = self.lineEditCEP.text()
         if len(cep) !=8:
             return
+        t = threading.Thread(target=self.threadCEP, args=(cep,))
+        t.start()
+
+    def threadCEP(self, cep):
         dados = self.buscaCEP.buscarCEP(cep)
         if dados == None:
             return

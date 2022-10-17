@@ -1,5 +1,6 @@
 from PyQt6 import QtCore, QtWidgets, QtGui
-from container import handleDeps
+from util.container import handleDeps
+import threading
 
 SIGLAESTADOS = ['AC', 'AL', 'AP', 'AM', 'BA', 'CE', 'DF', 'ES', 'GO', 'MA', 'MT', 'MS',
                 'MG', 'PA', 'PB', 'PR', 'PE', 'PI', 'RJ', 'RN', 'RS', 'RO', 'RR', 'SC', 'SP', 'SE', 'TO']
@@ -409,6 +410,11 @@ class TelaCadastroCliente(QtWidgets.QMainWindow):
         cep = self.lineEditCEP.text()
         if len(cep) !=8:
             return
+        t = threading.Thread(target=self.threadCEP, args=(cep,))
+        t.start()
+
+
+    def threadCEP(self, cep):
         dados = self.buscaCEP.buscarCEP(cep)
         if dados == None:
             return
@@ -419,4 +425,3 @@ class TelaCadastroCliente(QtWidgets.QMainWindow):
         self.lineEditCidade.setText(dados['localidade'])
         self.comboBoxuf.setCurrentIndex(self.comboBoxuf.findText(dados['uf'], QtCore.Qt.MatchFlag.MatchExactly))
         return
-

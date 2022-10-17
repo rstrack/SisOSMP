@@ -1,7 +1,7 @@
 import sys
 from PyQt6 import QtWidgets, QtGui, QtCore
 
-from container import handleDeps
+from util.container import handleDeps
 from ui.telaConsultaCliente import TelaConsultaCliente
 from ui.telaConsultaOS import TelaConsultaOS
 from ui.telaConsultaVeiculo import TelaConsultaVeiculo

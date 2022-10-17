@@ -1,5 +1,5 @@
 from PyQt6 import QtCore, QtGui, QtWidgets
-from container import handleDeps
+from util.container import handleDeps
 from ui.infiniteScroll import AlignDelegate, InfiniteScrollTableModel
 
 class TelaConsultaPeca(QtWidgets.QMainWindow):

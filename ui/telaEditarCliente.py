@@ -1,5 +1,6 @@
+import threading
 from PyQt6 import QtCore, QtWidgets, QtGui
-from container import handleDeps
+from util.container import handleDeps
 
 SIGLAESTADOS = ['AC', 'AL', 'AP', 'AM', 'BA', 'CE', 'DF', 'ES', 'GO', 'MA', 'MT', 'MS',
                 'MG', 'PA', 'PB', 'PR', 'PE', 'PI', 'RJ', 'RN', 'RS', 'RO', 'RR', 'SC', 'SP', 'SE', 'TO']
@@ -309,7 +310,9 @@ class TelaEditarCliente(QtWidgets.QMainWindow):
 
     def setEndereco(self, cep=None, ender=None, numero=None, bairro=None, cidade=None, uf=None):
         if cep:
+            self.lineEditCEP.textChanged.disconnect()
             self.lineEditCEP.setText(cep)
+            self.lineEditCEP.textChanged.connect(self.buscarDadosCEP)
         if ender:
             self.lineEditEnder.setText(ender)
         if numero:
@@ -362,6 +365,11 @@ class TelaEditarCliente(QtWidgets.QMainWindow):
         cep = self.lineEditCEP.text()
         if len(cep) !=8:
             return
+        t = threading.Thread(target=self.threadCEP, args=(cep,))
+        t.start()
+
+
+    def threadCEP(self, cep):
         dados = self.buscaCEP.buscarCEP(cep)
         if dados == None:
             return

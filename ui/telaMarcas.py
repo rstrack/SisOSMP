@@ -1,5 +1,5 @@
 from PyQt6 import QtWidgets, QtCore, QtGui
-from container import handleDeps
+from util.container import handleDeps
 from ui.telaEditarMarca import TelaEditarMarca
 
 

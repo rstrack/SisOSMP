@@ -2,7 +2,7 @@ from decimal import Decimal
 from PyQt6 import QtCore, QtWidgets, QtGui
 from datetime import datetime
 
-from container import handleDeps
+from util.container import handleDeps
 from ui.messageBox import MessageBox
 from util.gerar_pdf import GeraPDF
 
