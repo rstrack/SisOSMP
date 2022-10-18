@@ -46,10 +46,11 @@ class TelaVeiculoCliente(QtWidgets.QMainWindow):
 
     def retranslateUi(self):
         _translate = QtCore.QCoreApplication.translate
-        self.setWindowTitle(_translate("MainWindow", "Veículos"))
+        self.setWindowTitle(_translate("MainWindow", "Veículos/Clientes"))
         self.botaoConcluir.setText(_translate("MainWindow", "Concluir"))
 
     def renderVeiculos(self, idCliente):
+        self.setWindowTitle("Veículos")
         self.tabela.setColumnCount(5)
         header = ['ID', 'Marca', 'Modelo', 'Placa', '']
         self.tabela.setHorizontalHeaderLabels(header)
@@ -105,6 +106,7 @@ class TelaVeiculoCliente(QtWidgets.QMainWindow):
             self.renderVeiculos(self.clienteID)
 
     def renderClientes(self, idVeiculo):
+        self.setWindowTitle("Clientes")
         self.tabela.setColumnCount(5)
         header = ['ID', 'Nome', 'Documento', 'Fones', '']
         self.tabela.setHorizontalHeaderLabels(header)
