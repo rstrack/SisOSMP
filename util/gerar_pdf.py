@@ -61,10 +61,11 @@ class GeraPDF():
 
     def generatePDF(self, orcamento: dict, listaFones: list[dict], listaServicos: list[dict], listaPecas: list[dict] = None,
                     path: str = None):
+        nomearquivo = f"{orcamento['veiculo']['modelo']}_{orcamento['veiculo']['placa']}_({orcamento['cliente']['nome']})_{orcamento['dataOrcamento'].strftime('%d-%m-%Y')}.pdf"
         if path:
-            pdf = canvas.Canvas(f"{path}\\teste.pdf", pagesize=A4)
+            pdf = canvas.Canvas(f"{path}\\{nomearquivo}", pagesize=A4)
         else:
-            pdf = canvas.Canvas(f"{os.path.expandvars('%LOCALAPPDATA%')}\Temp\\teste.pdf", pagesize=A4)
+            pdf = canvas.Canvas(f"{os.path.expandvars('%LOCALAPPDATA%')}\Temp\\{nomearquivo}", pagesize=A4)
         pdf.drawInlineImage(
             "./resources/logo2.png", 39, 740, 200, 100
         )
@@ -347,7 +348,7 @@ class GeraPDF():
                 s.drawOn(pdf, 39, z)
         pdf.save()
         if path:
-            os.startfile(f"{path}\\teste.pdf")
+            os.startfile(f"{path}\\{nomearquivo}")
         else:
-            os.startfile(f"{os.path.expandvars('%LOCALAPPDATA%')}\Temp\\teste.pdf")
+            os.startfile(f"{os.path.expandvars('%LOCALAPPDATA%')}\Temp\\{nomearquivo}")
 
