@@ -122,7 +122,7 @@ class TelaConsultaOrcamento(QtWidgets.QMainWindow):
         self.listarOrcamentos()
 
     def maisOrcamentos(self, qtde):
-        orcamentos = self.orcamentoCtrl.buscarOrcamento(False, self.busca, self.linhasCarregadas+qtde, self.orderBy)
+        orcamentos = self.orcamentoCtrl.buscarOrcamento(False, False, self.busca, self.linhasCarregadas+qtde, self.orderBy)
         if not orcamentos:
             return
         maxLength = len(orcamentos)

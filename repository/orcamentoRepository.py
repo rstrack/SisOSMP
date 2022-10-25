@@ -32,7 +32,7 @@ class OrcamentoRepository():
     def findByAprovado(self, aprovado, limit):
         return Orcamento.select().where(Orcamento.aprovado==aprovado).order_by(-Orcamento.dataOrcamento).limit(limit)
     
-    def findByInput(self, aprovado, input:str, limit=None, orderBy=None):
+    def findByInput(self, aprovado, finalizado, input:str, limit=None, orderBy=None):
         match orderBy:
             case 0:
                 order_by = -Orcamento.dataOrcamento
@@ -53,6 +53,7 @@ class OrcamentoRepository():
                         .join(Veiculo, JOIN.LEFT_OUTER)\
                         .join(Marca, JOIN.LEFT_OUTER)\
                         .where((Orcamento.aprovado==aprovado)
+                            &(Orcamento.finalizado==finalizado)
                             &((Orcamento.dataOrcamento==data.date())
                             |(Orcamento.dataAprovacao==data.date())
                             |(Cliente.nome.contains(input))
@@ -76,6 +77,7 @@ class OrcamentoRepository():
                         .join(Veiculo)\
                         .join(Marca)\
                         .where((Orcamento.aprovado==aprovado)
+                            &(Orcamento.finalizado==finalizado)
                             &((Cliente.nome.contains(input))
                             |(Cliente.documento.contains(input))
                             |(Cliente.documento.contains(input))

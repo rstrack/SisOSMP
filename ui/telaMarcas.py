@@ -4,7 +4,7 @@ from ui.telaEditarMarca import TelaEditarMarca
 
 
 class TelaMarcas(QtWidgets.QMainWindow):
-
+    janelaFechada = QtCore.pyqtSignal(int)
     def __init__(self):
         super(TelaMarcas, self).__init__()
         self.marcaCtrl = handleDeps.getDep('MARCACTRL')
@@ -130,4 +130,8 @@ class TelaMarcas(QtWidgets.QMainWindow):
             msg.setWindowTitle("Erro")
             msg.setText(str(e))
             msg.exec()
+
+    def closeEvent(self, event):
+        self.janelaFechada.emit(1)
+        event.accept()
 

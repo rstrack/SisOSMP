@@ -169,6 +169,15 @@ class OrcamentoController():
                 transaction.rollback()
                 return e
 
+    def finalizarOrcamento(self, idOrcamento):
+        with db.atomic() as transaction:
+            try:
+                r = self.orcamentoRep.update({'idOrcamento':idOrcamento, 'finalizado': True})
+                return r
+            except Exception as e:
+                transaction.rollback()
+                return e
+
     def listarOrcamentos(self, aprovado, limit=None):
         _orcamentos = []
         orcamentos = self.orcamentoRep.findByAprovado(aprovado, limit)
@@ -194,11 +203,11 @@ class OrcamentoController():
         if itemServicos: return itemServicos.dicts()
         else: return None
 
-    def buscarOrcamento(self, aprovado, input, limit=None, orderBy:int=None):
+    def buscarOrcamento(self, aprovado, finalizado, input, limit=None, orderBy:int=None):
         with db.atomic() as transaction:
             try:
                 _orcamentos = []
-                orcamentos = self.orcamentoRep.findByInput(aprovado, input, limit, orderBy)
+                orcamentos = self.orcamentoRep.findByInput(aprovado, finalizado, input, limit, orderBy)
                 if orcamentos:
                     for orcamento in orcamentos:
                         _orcamentos.append(model_to_dict(orcamento))

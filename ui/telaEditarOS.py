@@ -240,6 +240,9 @@ class TelaEditarOS(QtWidgets.QMainWindow):
         self.botaoSalvar.setMinimumSize(QtCore.QSize(100, 35))
         self.botaoSalvar.setObjectName('botaoprincipal')
         self.hlayout4.addWidget(self.botaoSalvar)
+        self.botaoFinalizar = QtWidgets.QPushButton(self.framebotoes)
+        self.botaoFinalizar.setMinimumSize(QtCore.QSize(100, 35))
+        self.hlayout4.addWidget(self.botaoFinalizar)
         self.botaoCancelar = QtWidgets.QPushButton(self.framebotoes)
         self.botaoCancelar.setMinimumSize(QtCore.QSize(100, 35))
         self.hlayout4.addWidget(self.botaoCancelar)
@@ -267,7 +270,8 @@ class TelaEditarOS(QtWidgets.QMainWindow):
         self.botaoAddServicos.clicked.connect(self.addLinhaServico)
         self.setMarcas()
         self.setCompleters()
-        self.botaoSalvar.clicked.connect(self.editarOrcamento)
+        self.botaoSalvar.clicked.connect(self.editarOS)
+        self.botaoFinalizar.clicked.connect(self.finalizarOS)
         self.botaoCancelar.clicked.connect(self.cancelarEdicao)
 
     ##############################################################################################################################
@@ -278,6 +282,7 @@ class TelaEditarOS(QtWidgets.QMainWindow):
         _translate = QtCore.QCoreApplication.translate
         self.setWindowTitle(_translate("MainWindow", "Mecânica Pasetto"))
         self.botaoSalvar.setText(_translate("MainWindow", "Salvar"))
+        self.botaoFinalizar.setText(_translate("MainWindow", "Finalizar OS"))
         self.botaoCancelar.setText(_translate("MainWindow", "Cancelar"))
         self.labelTitulo.setText(_translate("MainWindow", "Editar Ordem de Serviço"))
         self.labelData.setText(_translate("MainWindow", "Data do Orçamento*"))
@@ -626,14 +631,13 @@ class TelaEditarOS(QtWidgets.QMainWindow):
         self.textEdit.setText(orcamento['observacoes'])
         self.lineEditDataAprovacao.setDate(orcamento['dataAprovacao'])
 
-    # def editarOrcamento(self, id, orcamento:dict, pecas:list, servicos:list):
-    def editarOrcamento(self):
+    def editarOS(self):
         try:
             pecas = self.getPecas()
             servicos  = self.getServicos()
             orcamento = self.getDadosOrcamento()
             orcamento['valorTotal'] = self.valorTotal
-            r = self.orcamentoCtrl.editarOrcamento(self.orcamentoID, orcamento, pecas, servicos)
+            r = self.orcamentoCtrl.editarOS(self.orcamentoID, orcamento, pecas, servicos)
             if isinstance(r, Exception):
                 raise Exception(r)
             msg = QtWidgets.QMessageBox()
@@ -655,6 +659,18 @@ class TelaEditarOS(QtWidgets.QMainWindow):
             msg.setWindowTitle("Aviso")
             msg.setText(str(e))
             msg.exec()
+
+    def finalizarOS(self):
+        r = self.orcamentoCtrl.finalizarOrcamento(self.orcamentoID)
+        if isinstance(r, Exception):
+            raise Exception(r)
+        msg = QtWidgets.QMessageBox()
+        msg.setWindowIcon(QtGui.QIcon('./resources/logo-icon.png'))
+        msg.setIcon(QtWidgets.QMessageBox.Icon.Information)
+        msg.setWindowTitle("Aviso")
+        msg.setText("Ordem de serviço finalizada com sucesso!")
+        msg.exec()
+        self.paraTelaConsulta.emit(1)
 
     def cancelarEdicao(self):
         msgBox = QtWidgets.QMessageBox()

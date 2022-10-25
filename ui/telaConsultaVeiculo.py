@@ -219,4 +219,5 @@ class TelaConsultaVeiculo(QtWidgets.QMainWindow):
 
     def marcas(self):
         self.telaMarcas = TelaMarcas()
+        self.telaMarcas.janelaFechada.connect(self.listarVeiculos)
         self.telaMarcas.render()
