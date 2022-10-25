@@ -214,6 +214,7 @@ class TelaConsultaVeiculo(QtWidgets.QMainWindow):
             id = self.tabela.model().index(linha[0].row(), 0).data()
             self.telaVeiculoCliente = TelaVeiculoCliente()
             self.telaVeiculoCliente.renderClientes(id)
+            self.telaVeiculoCliente.janelaFechada.connect(self.listarVeiculos)
             self.telaVeiculoCliente.show()
 
     def marcas(self):

@@ -114,25 +114,27 @@ class TelaEditarVeiculo(QtWidgets.QMainWindow):
 
     def getDadosVeiculo(self):
         if len(list(filter(lambda dados: dados.text(), self.groupBoxVeiculo.findChildren(QtWidgets.QLineEdit)))) == 0:
-            raise Exception('Campos vazios!')
+            return None
         dict = {}
-        dict['marca'] = self.comboBoxMarca.currentText().title()
-        if dict['marca'] == '':
+        if self.comboBoxMarca.currentText():
+            dict['marca'] = self.comboBoxMarca.currentText().title()
+        else:
             raise Exception('Marca obrigatória!')
-        if (self.lineEditModelo.text()):
+        if self.lineEditModelo.text():
             dict['modelo'] = self.lineEditModelo.text()[0].upper() + self.lineEditModelo.text()[1:]
         else:
             raise Exception('Modelo obrigatório!')
-        if (self.lineEditPlaca.text()):
-            if not self.lineEditPlaca.text().isalnum():
-                raise Exception('Insira apenas letras e números na placa!')
+        if self.lineEditPlaca.text():
+            if not self.lineEditPlaca.text().isalnum() or len(self.lineEditPlaca.text()) != 7:
+                raise Exception('Placa inválida!')
             dict['placa'] = self.lineEditPlaca.text().upper()
         else:
-            raise Exception('Placa obrigatória')
-        
-        if (self.lineEditAno.text()):
-            if self.lineEditAno.text() > '1900':
-                dict['ano'] = self.lineEditAno.text()
+            raise Exception('Placa obrigatória!')
+        if self.lineEditAno.text():
+            if self.lineEditAno.text().isnumeric():
+                if int(self.lineEditAno.text()) > 1900:
+                    dict['ano'] = self.lineEditAno.text()
+                else: raise Exception('Ano do veículo inválido!')
             else: raise Exception('Ano do veículo inválido!')
         else:
             dict['ano'] = None

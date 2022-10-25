@@ -2,7 +2,7 @@ from PyQt6 import QtCore, QtWidgets
 from util.container import handleDeps
 
 class TelaVeiculoCliente(QtWidgets.QMainWindow):
-
+    janelaFechada = QtCore.pyqtSignal(int)
     def __init__(self):
         super(TelaVeiculoCliente, self).__init__()
         self.clienteCtrl = handleDeps.getDep('CLIENTECTRL')
@@ -82,7 +82,7 @@ class TelaVeiculoCliente(QtWidgets.QMainWindow):
                 i+=1
             self.tabela.hideColumn(0)
         else:
-            self.close()
+            self.tabela.setRowCount(0)
 
     def desvincularVeiculo(self):
         button = QtWidgets.QApplication.focusWidget()
@@ -146,7 +146,7 @@ class TelaVeiculoCliente(QtWidgets.QMainWindow):
                 i+=1
             self.tabela.hideColumn(0)
         else:
-            self.close()
+            self.tabela.setRowCount(0)
 
     def desvincularCliente(self):
         button = QtWidgets.QApplication.focusWidget()
@@ -168,3 +168,7 @@ class TelaVeiculoCliente(QtWidgets.QMainWindow):
                 if isinstance(r, Exception):
                     raise Exception(r)
             self.renderClientes(self.veiculoID)
+
+    def closeEvent(self, event):
+        self.janelaFechada.emit(1)
+        event.accept()

@@ -390,7 +390,7 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
         self.labelDocumento.setText(_translate("MainWindow", "CPF"))
         self.labelUF.setText(_translate("MainWindow", "UF"))
         self.labelCidade.setText(_translate("MainWindow", "Cidade"))
-        self.labelEnder.setText(_translate("MainWindow", "Endereço"))
+        self.labelEnder.setText(_translate("MainWindow", "Logradouro"))
         self.labelNumero.setText(_translate("MainWindow", "Número"))
         self.labelBairro.setText(_translate("MainWindow", "Bairro"))
         self.labelFone1.setText(_translate("MainWindow", "Fone 1*"))
@@ -704,16 +704,26 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
         dict = {}
         if self.comboBoxMarca.currentText():
             dict['marca'] = self.comboBoxMarca.currentText().title()
-        else: raise Exception('Campo "Marca" obrigatório!')
-        if (self.lineEditModelo.text()):
+        else:
+            raise Exception('Marca obrigatória!')
+        if self.lineEditModelo.text():
             dict['modelo'] = self.lineEditModelo.text()[0].upper() + self.lineEditModelo.text()[1:]
-        else: raise Exception('Campo "Modelo" obrigatório!')
-        if (self.lineEditPlaca.text()):
+        else:
+            raise Exception('Modelo obrigatório!')
+        if self.lineEditPlaca.text():
+            if not self.lineEditPlaca.text().isalnum() or len(self.lineEditPlaca.text()) != 7:
+                raise Exception('Placa inválida!')
             dict['placa'] = self.lineEditPlaca.text().upper()
-        else: raise Exception('Campo "Placa" obrigatório!')
-        if (self.lineEditAno.text()):
-            dict['ano'] = self.lineEditAno.text()
-        else: dict['ano'] = None
+        else:
+            raise Exception('Placa obrigatória!')
+        if self.lineEditAno.text():
+            if self.lineEditAno.text().isnumeric():
+                if int(self.lineEditAno.text()) > 1900:
+                    dict['ano'] = self.lineEditAno.text()
+                else: raise Exception('Ano do veículo inválido!')
+            else: raise Exception('Ano do veículo inválido!')
+        else:
+            dict['ano'] = None
         return dict
 
     def getPecas(self):

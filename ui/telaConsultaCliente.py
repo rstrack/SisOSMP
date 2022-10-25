@@ -203,6 +203,7 @@ class TelaConsultaCliente(QtWidgets.QMainWindow):
                         msg.setWindowTitle("Aviso")
                         msg.setText(f"Cliente excluído com sucesso!")
                         msg.exec()
+                        self.listarClientes
                     else: raise Exception('Erro ao excluir')
         except Exception as e:
             msg = QtWidgets.QMessageBox()
@@ -218,4 +219,5 @@ class TelaConsultaCliente(QtWidgets.QMainWindow):
             id = self.tabela.model().index(linha[0].row(), 0).data()
             self.telaVeiculoCliente = TelaVeiculoCliente()
             self.telaVeiculoCliente.renderVeiculos(id)
+            self.telaVeiculoCliente.janelaFechada.connect(self.listarClientes)
             self.telaVeiculoCliente.show()

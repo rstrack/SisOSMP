@@ -201,14 +201,14 @@ class TelaCadastroCliente(QtWidgets.QMainWindow):
     def retranslateUi(self):
         _translate = QtCore.QCoreApplication.translate
         self.setWindowTitle(_translate("MainWindow", "Mecânica Pasetto"))
-        self.labelTitulo.setText(_translate("MainWindow", "Cadastro de Clientes"))
+        self.labelTitulo.setText(_translate("MainWindow", "Cadastro de Clientes e/ou Veículos"))
         self.labelTipo.setText(_translate("MainWindow", "Tipo"))
         self.labelNomeCliente.setText(_translate("MainWindow", "Nome*"))
         self.labelDocumento.setText(_translate("MainWindow", "CPF"))
         self.labelCidade.setText(_translate("MainWindow", "Cidade"))
         self.labelcep.setText(_translate("MainWindow", "CEP"))
         self.labelBairro.setText(_translate("MainWindow", "Bairro"))
-        self.labelender.setText(_translate("MainWindow", "Endereço"))
+        self.labelender.setText(_translate("MainWindow", "Logradouro"))
         self.labelnumero.setText(_translate("MainWindow", "Nº"))
         self.labelUF.setText(_translate("MainWindow", "UF"))
         self.labelTel1.setText(_translate("MainWindow", "Fone 1*"))
@@ -344,22 +344,25 @@ class TelaCadastroCliente(QtWidgets.QMainWindow):
         if len(list(filter(lambda dados: dados.text(), self.groupBoxVeiculo.findChildren(QtWidgets.QLineEdit)))) == 0:
             return None
         dict = {}
-        dict['marca'] = self.comboBoxMarca.currentText().title()
-        if dict['marca'] == '':
+        if self.comboBoxMarca.currentText():
+            dict['marca'] = self.comboBoxMarca.currentText().title()
+        else:
             raise Exception('Marca obrigatória!')
         if self.lineEditModelo.text():
             dict['modelo'] = self.lineEditModelo.text()[0].upper() + self.lineEditModelo.text()[1:]
         else:
             raise Exception('Modelo obrigatório!')
         if self.lineEditPlaca.text():
-            if not self.lineEditPlaca.text().isalnum():
-                raise Exception('Insira apenas letras e números na placa!')
+            if not self.lineEditPlaca.text().isalnum() or len(self.lineEditPlaca.text()) != 7:
+                raise Exception('Placa inválida!')
             dict['placa'] = self.lineEditPlaca.text().upper()
         else:
             raise Exception('Placa obrigatória!')
         if self.lineEditAno.text():
-            if self.lineEditAno.text() > '1900':
-                dict['ano'] = self.lineEditAno.text()
+            if self.lineEditAno.text().isnumeric():
+                if int(self.lineEditAno.text()) > 1900:
+                    dict['ano'] = self.lineEditAno.text()
+                else: raise Exception('Ano do veículo inválido!')
             else: raise Exception('Ano do veículo inválido!')
         else:
             dict['ano'] = None

@@ -283,7 +283,7 @@ class TelaEditarOrcamento(QtWidgets.QMainWindow):
     def retranslateUi(self):
         _translate = QtCore.QCoreApplication.translate
         self.setWindowTitle(_translate("MainWindow", "Mecânica Pasetto"))
-        self.botaoAprovar.setText(_translate("MainWindow", "Aprovar"))
+        self.botaoAprovar.setText(_translate("MainWindow", "Editar e Aprovar"))
         self.botaoSalvar.setText(_translate("MainWindow", "Salvar"))
         self.botaoSalvaresalvareGerarPDF.setText(_translate("MainWindow", "Salvar e Gerar PDF"))
         self.botaoCancelar.setText(_translate("MainWindow", "Cancelar"))
@@ -296,7 +296,7 @@ class TelaEditarOrcamento(QtWidgets.QMainWindow):
         self.labelDocumento.setText(_translate("MainWindow", "CPF"))
         self.labelUF.setText(_translate("MainWindow", "UF"))
         self.labelCidade.setText(_translate("MainWindow", "Cidade"))
-        self.labelEnder.setText(_translate("MainWindow", "Endereço"))
+        self.labelEnder.setText(_translate("MainWindow", "Logradouro"))
         self.labelNumero.setText(_translate("MainWindow", "Número"))
         self.labelBairro.setText(_translate("MainWindow", "Bairro"))
         self.labelFone1.setText(_translate("MainWindow", "Fone 1*"))
@@ -661,6 +661,13 @@ class TelaEditarOrcamento(QtWidgets.QMainWindow):
 
     def aprovarOrcamento(self):
         try:
+            pecas = self.getPecas()
+            servicos  = self.getServicos()
+            orcamento = self.getDadosOrcamento()
+            orcamento['valorTotal'] = self.valorTotal
+            r = self.orcamentoCtrl.editarOrcamento(self.orcamentoID, orcamento, pecas, servicos)
+            if isinstance(r, Exception):
+                raise Exception(r)
             r = self.orcamentoCtrl.aprovarOrcamento(self.orcamentoID)
             if isinstance(r, Exception):
                 raise Exception(r)
@@ -668,7 +675,7 @@ class TelaEditarOrcamento(QtWidgets.QMainWindow):
             msg.setWindowIcon(QtGui.QIcon('./resources/logo-icon.png'))
             msg.setIcon(QtWidgets.QMessageBox.Icon.Information)
             msg.setWindowTitle("Aviso")
-            msg.setText("Orçamento aprovado com sucesso!")
+            msg.setText("Orçamento editado e aprovado com sucesso!")
             msg.exec()
             self.orcamentoAprovado.emit(1)
         except Exception as e:
@@ -718,7 +725,12 @@ class TelaEditarOrcamento(QtWidgets.QMainWindow):
             msg = MessageBox()
             r = msg.question('Deseja salvar o arquivo?')
             if r == 'cancelar':
-                return
+                msg = QtWidgets.QMessageBox()
+                msg.setWindowIcon(QtGui.QIcon('./resources/logo-icon.png'))
+                msg.setIcon(QtWidgets.QMessageBox.Icon.Information)
+                msg.setWindowTitle("Aviso")
+                msg.setText("Geração do PDF cancelada")
+                msg.exec()
             elif r == 'nao':
                 pdf = GeraPDF()
                 pdf.generatePDF(_orcamento, fones, itemServicos, itemPecas)
@@ -730,6 +742,7 @@ class TelaEditarOrcamento(QtWidgets.QMainWindow):
                     return
                 pdf = GeraPDF()
                 pdf.generatePDF(_orcamento, fones, itemServicos, itemPecas, path)
+            self.paraTelaConsulta.emit(1)
         except Exception as e:    
             msg = QtWidgets.QMessageBox()
             msg.setWindowIcon(QtGui.QIcon('./resources/logo-icon.png'))

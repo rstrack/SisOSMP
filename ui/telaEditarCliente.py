@@ -173,7 +173,7 @@ class TelaEditarCliente(QtWidgets.QMainWindow):
         self.labelCidade.setText(_translate("MainWindow", "Cidade"))
         self.labelcep.setText(_translate("MainWindow", "CEP"))
         self.labelBairro.setText(_translate("MainWindow", "Bairro"))
-        self.labelender.setText(_translate("MainWindow", "Endereço"))
+        self.labelender.setText(_translate("MainWindow", "Logradouro"))
         self.labelnumero.setText(_translate("MainWindow", "Nº"))
         self.labelUF.setText(_translate("MainWindow", "UF"))
         self.labelTel1.setText(_translate("MainWindow", "Fone 1*"))
