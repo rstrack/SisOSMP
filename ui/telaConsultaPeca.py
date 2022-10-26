@@ -48,6 +48,9 @@ class TelaConsultaPeca(QtWidgets.QMainWindow):
         self.frameOrdenacao = QtWidgets.QFrame(self.main_frame)
         self.vlayout.addWidget(self.frameOrdenacao)
         self.hlayoutOrdenacao = QtWidgets.QHBoxLayout(self.frameOrdenacao)
+        self.labelTitulo = QtWidgets.QLabel(self.frameOrdenacao)
+        self.labelTitulo.setObjectName('boldText')
+        self.hlayoutOrdenacao.addWidget(self.labelTitulo)
         spacer = QtWidgets.QSpacerItem(
             20, 10, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Preferred)
         self.hlayoutOrdenacao.addItem(spacer)
@@ -98,6 +101,7 @@ class TelaConsultaPeca(QtWidgets.QMainWindow):
     def retranslateUi(self):
         _translate = QtCore.QCoreApplication.translate
         self.setWindowTitle(_translate("MainWindow", "Busca"))
+        self.labelTitulo.setText(_translate("MainWindow", "Peças"))
         self.botaoEditar.setText(_translate("MainWindow", "Editar"))
         self.botaoExcluir.setText(_translate("MainWindow", "Excluir"))
 

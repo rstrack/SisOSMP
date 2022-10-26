@@ -139,7 +139,7 @@ class TelaEditarServico(QtWidgets.QMainWindow):
         self.servicoID = id
         servico = self.servicoCtrl.getServico(id)
         self.lineEditDescricao.setText(servico['descricao'])
-        self.lineEditValorServico.setText(str(servico['valor']).replace('.',',',1))
+        self.lineEditValorServico.setText('{:.2f}'.format(servico['valor']).replace('.',',',1))
 
     def limparCampos(self):
         for lineedit in self.framedados.findChildren(QtWidgets.QLineEdit):

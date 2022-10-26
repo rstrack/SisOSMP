@@ -111,6 +111,8 @@ class TelaEditarPeca(QtWidgets.QMainWindow):
             raise Exception('Campo "valor" inválido!')
         if -Decimal(self.lineEditValorPeca.text().replace(',','.',1)).as_tuple().exponent > 2:
             raise Exception("Valores devem possuir no máximo duas casas decimais!")
+        if float(self.lineEditValorPeca.text().replace(',','.',1)) <= 0:
+            raise Exception('Campo "valor" deve ser maior que zero!')
         dict['valor'] = self.lineEditValorPeca.text().replace(',','.',1)
         return dict
 
@@ -150,7 +152,7 @@ class TelaEditarPeca(QtWidgets.QMainWindow):
         self.pecaID = id
         peca = self.pecaCtrl.getPeca(id)
         self.lineEditDescricao.setText(peca['descricao'])
-        self.lineEditValorPeca.setText(str(peca['valor']).replace('.',',',1))
+        self.lineEditValorPeca.setText('{:.2f}'.format(peca['valor']).replace('.',',',1))
 
     def limparCampos(self):
         for lineedit in self.framedados.findChildren(QtWidgets.QLineEdit):

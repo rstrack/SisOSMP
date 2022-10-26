@@ -189,6 +189,8 @@ class TelaCadastroPeca(QtWidgets.QMainWindow):
                     raise Exception('Campo "valor" inválido!')
                 if -Decimal(valor.text().replace(',','.',1)).as_tuple().exponent > 2:
                     raise Exception("Valores devem possuir no máximo duas casas decimais!")
+                if float(valor.text().replace(',','.',1)) <= 0:
+                    raise Exception('Campo "valor" deve ser maior que zero!')
                 dict['valor'] = valor.text().replace(',','.',1)
                 pecas.append(dict)
                 cont+=1
