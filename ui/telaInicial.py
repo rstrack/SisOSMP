@@ -27,7 +27,7 @@ class TelaInicial(QtWidgets.QMainWindow):
         # logo
         self.logo_label = QtWidgets.QLabel(self.logo_frame)
         self.logo_label.setMaximumHeight(150)
-        self.logo_label.setPixmap(QtGui.QPixmap("./resources/logo.png"))
+        self.logo_label.setPixmap(QtGui.QPixmap("resources/logo.png"))
         self.logo_label.setScaledContents(True)
         self.vlayout2.addWidget(self.logo_label)
         self.vlayout1.addWidget(self.logo_frame)

@@ -67,7 +67,7 @@ class GeraPDF():
         else:
             pdf = canvas.Canvas(f"{os.path.expandvars('%LOCALAPPDATA%')}\Temp\\{nomearquivo}", pagesize=A4)
         pdf.drawInlineImage(
-            "./resources/logo2.png", 39, 740, 200, 100
+            "resources/logo2.png", 39, 740, 200, 100
         )
         pdf.setFont('Helvetica-Bold', 10)
         stylesheet = getSampleStyleSheet()

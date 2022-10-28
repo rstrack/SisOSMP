@@ -117,7 +117,7 @@ class TelaEditarServico(QtWidgets.QMainWindow):
             self.paraTelaConsulta.emit(1)
         except Exception as e:
             msg = QtWidgets.QMessageBox()
-            msg.setWindowIcon(QtGui.QIcon('./resources/logo-icon.png'))
+            msg.setWindowIcon(QtGui.QIcon('resources/logo-icon.png'))
             msg.setIcon(QtWidgets.QMessageBox.Icon.Critical)
             msg.setWindowTitle("Erro")
             msg.setText(str(e))

@@ -22,7 +22,7 @@ class CidadeRepository():
         return Cidade.select().where(Cidade.idCidade==id).get()
 
     def findCidadeByNomeAndUF(self, nome, uf):
-        cidade = Cidade.select().where(Cidade.nome==nome & Cidade.uf==uf)
+        cidade = Cidade.select().where((Cidade.nome==nome) & (Cidade.uf==uf))
         if cidade: return cidade.get()
         else: return None
 

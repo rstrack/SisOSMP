@@ -640,7 +640,7 @@ class TelaEditarOrcamento(QtWidgets.QMainWindow):
             if isinstance(r, Exception):
                 raise Exception(r)
             msg = QtWidgets.QMessageBox()
-            msg.setWindowIcon(QtGui.QIcon('./resources/logo-icon.png'))
+            msg.setWindowIcon(QtGui.QIcon('resources/logo-icon.png'))
             msg.setIcon(QtWidgets.QMessageBox.Icon.Information)
             msg.setWindowTitle("Aviso")
             msg.setText("Orçamento editado com sucesso!")
@@ -653,7 +653,7 @@ class TelaEditarOrcamento(QtWidgets.QMainWindow):
             self.paraTelaConsulta.emit(1)
         except Exception as e:
             msg = QtWidgets.QMessageBox()
-            msg.setWindowIcon(QtGui.QIcon('./resources/logo-icon.png'))
+            msg.setWindowIcon(QtGui.QIcon('resources/logo-icon.png'))
             msg.setIcon(QtWidgets.QMessageBox.Icon.Critical)
             msg.setWindowTitle("Erro")
             msg.setText(str(e))
@@ -672,7 +672,7 @@ class TelaEditarOrcamento(QtWidgets.QMainWindow):
             if isinstance(r, Exception):
                 raise Exception(r)
             msg = QtWidgets.QMessageBox()
-            msg.setWindowIcon(QtGui.QIcon('./resources/logo-icon.png'))
+            msg.setWindowIcon(QtGui.QIcon('resources/logo-icon.png'))
             msg.setIcon(QtWidgets.QMessageBox.Icon.Information)
             msg.setWindowTitle("Aviso")
             msg.setText("Orçamento editado e aprovado com sucesso!")
@@ -680,7 +680,7 @@ class TelaEditarOrcamento(QtWidgets.QMainWindow):
             self.orcamentoAprovado.emit(1)
         except Exception as e:
             msg = QtWidgets.QMessageBox()
-            msg.setWindowIcon(QtGui.QIcon('./resources/logo-icon.png'))
+            msg.setWindowIcon(QtGui.QIcon('resources/logo-icon.png'))
             msg.setIcon(QtWidgets.QMessageBox.Icon.Critical)
             msg.setWindowTitle("Aviso")
             msg.setText(str(e))
@@ -726,7 +726,7 @@ class TelaEditarOrcamento(QtWidgets.QMainWindow):
             r = msg.question('Deseja salvar o arquivo?')
             if r == 'cancelar':
                 msg = QtWidgets.QMessageBox()
-                msg.setWindowIcon(QtGui.QIcon('./resources/logo-icon.png'))
+                msg.setWindowIcon(QtGui.QIcon('resources/logo-icon.png'))
                 msg.setIcon(QtWidgets.QMessageBox.Icon.Information)
                 msg.setWindowTitle("Aviso")
                 msg.setText("Geração do PDF cancelada")
@@ -745,7 +745,7 @@ class TelaEditarOrcamento(QtWidgets.QMainWindow):
             self.paraTelaConsulta.emit(1)
         except Exception as e:    
             msg = QtWidgets.QMessageBox()
-            msg.setWindowIcon(QtGui.QIcon('./resources/logo-icon.png'))
+            msg.setWindowIcon(QtGui.QIcon('resources/logo-icon.png'))
             msg.setIcon(QtWidgets.QMessageBox.Icon.Critical)
             msg.setWindowTitle("Erro")
             msg.setText(str(e))

@@ -59,7 +59,7 @@ class TelaEditarMarca(QtWidgets.QMainWindow):
             if isinstance(r, Exception):
                 raise Exception(r)
             msg = QtWidgets.QMessageBox()
-            msg.setWindowIcon(QtGui.QIcon('./resources/logo-icon.png'))
+            msg.setWindowIcon(QtGui.QIcon('resources/logo-icon.png'))
             msg.setIcon(QtWidgets.QMessageBox.Icon.Information)
             msg.setWindowTitle("Aviso")
             msg.setText('Marca editada com sucesso!')
@@ -68,7 +68,7 @@ class TelaEditarMarca(QtWidgets.QMainWindow):
             self.close()
         except Exception as e:
             msg = QtWidgets.QMessageBox()
-            msg.setWindowIcon(QtGui.QIcon('./resources/logo-icon.png'))
+            msg.setWindowIcon(QtGui.QIcon('resources/logo-icon.png'))
             msg.setIcon(QtWidgets.QMessageBox.Icon.Critical)
             msg.setWindowTitle("Erro")
             msg.setText(str(e))

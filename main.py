@@ -28,7 +28,7 @@ warnings.filterwarnings(
 def excepthook(type_, value, traceback_):
     sys.__excepthook__(type_, value, traceback_)
     msg = QtWidgets.QMessageBox()
-    msg.setWindowIcon(QtGui.QIcon('./resources/logo-icon.png'))
+    msg.setWindowIcon(QtGui.QIcon('resources/logo-icon.png'))
     msg.setIcon(QtWidgets.QMessageBox.Icon.Critical)
     msg.setWindowTitle("Erro")
     msg.setText('Ocorreu um erro.\nEntre em contato com o desenvolvedor')
