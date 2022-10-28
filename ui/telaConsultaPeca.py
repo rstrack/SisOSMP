@@ -49,7 +49,7 @@ class TelaConsultaPeca(QtWidgets.QMainWindow):
         self.vlayout.addWidget(self.frameOrdenacao)
         self.hlayoutOrdenacao = QtWidgets.QHBoxLayout(self.frameOrdenacao)
         self.labelTitulo = QtWidgets.QLabel(self.frameOrdenacao)
-        self.labelTitulo.setObjectName('boldText')
+        self.labelTitulo.setObjectName('tituloConsulta')
         self.hlayoutOrdenacao.addWidget(self.labelTitulo)
         spacer = QtWidgets.QSpacerItem(
             20, 10, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Preferred)

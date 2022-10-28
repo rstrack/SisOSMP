@@ -55,6 +55,9 @@ class TelaConsultaOS(QtWidgets.QMainWindow):
         self.frameOrdenacao = QtWidgets.QFrame(self.main_frame)
         self.vlayout.addWidget(self.frameOrdenacao)
         self.hlayoutOrdenacao = QtWidgets.QHBoxLayout(self.frameOrdenacao)
+        self.labelTitulo = QtWidgets.QLabel(self.frameOrdenacao)
+        self.labelTitulo.setObjectName('tituloConsulta')
+        self.hlayoutOrdenacao.addWidget(self.labelTitulo)
         spacer = QtWidgets.QSpacerItem(
             20, 10, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Preferred)
         self.hlayoutOrdenacao.addItem(spacer)
@@ -109,6 +112,7 @@ class TelaConsultaOS(QtWidgets.QMainWindow):
 
     def retranslateUi(self):
         _translate = QtCore.QCoreApplication.translate
+        self.labelTitulo.setText(_translate("MainWindow", "Ordens de Serviço"))
         self.setWindowTitle(_translate("MainWindow", "Busca"))
         self.botaoEditar.setText(_translate("MainWindow", "Editar"))
         self.botaoGerarPDF.setText(_translate("MainWindow", "Gerar PDF"))
@@ -168,8 +172,7 @@ class TelaConsultaOS(QtWidgets.QMainWindow):
             header = self.tabela.horizontalHeader()
             header.setSectionResizeMode(
                 QtWidgets.QHeaderView.ResizeMode.ResizeToContents)
-            header.setSectionResizeMode(3, 
-                QtWidgets.QHeaderView.ResizeMode.Stretch)
+            header.setStretchLastSection(True)
             self.model.setHeaderAlignment(9, QtCore.Qt.AlignmentFlag.AlignRight | QtCore.Qt.AlignmentFlag.AlignVCenter)
 
     def editarOS(self):

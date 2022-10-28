@@ -13,6 +13,11 @@ QFrame #main_frame{
 
 }
 
+QLabel#tituloConsulta{
+    font-weight: bold;
+    font-size: 20px;
+}
+
 QLabel#boldText{
     font-weight: bold;
     font-size: 16px;

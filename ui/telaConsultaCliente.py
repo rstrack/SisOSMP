@@ -50,6 +50,9 @@ class TelaConsultaCliente(QtWidgets.QMainWindow):
         self.frameOrdenacao = QtWidgets.QFrame(self.main_frame)
         self.vlayout.addWidget(self.frameOrdenacao)
         self.hlayoutOrdenacao = QtWidgets.QHBoxLayout(self.frameOrdenacao)
+        self.labelTitulo = QtWidgets.QLabel(self.frameOrdenacao)
+        self.labelTitulo.setObjectName('tituloConsulta')
+        self.hlayoutOrdenacao.addWidget(self.labelTitulo)
         spacer = QtWidgets.QSpacerItem(
             20, 10, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Preferred)
         self.hlayoutOrdenacao.addItem(spacer)
@@ -104,6 +107,7 @@ class TelaConsultaCliente(QtWidgets.QMainWindow):
     def retranslateUi(self):
         _translate = QtCore.QCoreApplication.translate
         self.setWindowTitle(_translate("MainWindow", "Busca"))
+        self.labelTitulo.setText(_translate("MainWindow", "Clientes"))
         self.botaoEditar.setText(_translate("MainWindow", "Editar"))
         self.botaoVeiculos.setText(_translate("MainWindow", "Veiculos"))
         self.botaoExcluir.setText(_translate("MainWindow", "Excluir"))
@@ -148,10 +152,9 @@ class TelaConsultaCliente(QtWidgets.QMainWindow):
                     nomes.append(': '.join([veiculo['modelo'], veiculo['placa']]))
                 clientes[self.linhasCarregadas]['veiculos'] = ', '.join(nomes)
             else: clientes[self.linhasCarregadas]['veiculos'] = ''
-            clientes[self.linhasCarregadas] = FlatDict(clientes[self.linhasCarregadas], delimiter='.')
             self.linhasCarregadas+=1
         self.model.addData(clientes[initLen:self.linhasCarregadas])
-        colunas = ['idCliente', 'tipo', 'nome', 'documento', 'endereco', 'numero', 'bairro', 'cidade.nome', 'cidade.uf', 'fones', 'veiculos']
+        colunas = ['idCliente', 'tipo', 'nome', 'documento', 'fones', 'veiculos']
         self.model.colunasDesejadas(colunas)
         self.model.setRowCount(self.linhasCarregadas)
         self.model.setColumnCount(len(colunas))
@@ -160,19 +163,15 @@ class TelaConsultaCliente(QtWidgets.QMainWindow):
     def listarClientes(self):
         self.linhasCarregadas = 0
         self.model = InfiniteScrollTableModel([{}])
-        listaHeader = ['ID', 'Tipo', 'Nome', 'Documento', 'Endereço', 'Nº', 'Bairro', 'Cidade', 'UF', 'Telefones', 'Veículos']
+        listaHeader = ['ID', 'Tipo', 'Nome', 'Documento', 'Telefones', 'Veículos']
         self.model.setHorizontalHeaderLabels(listaHeader)
         self.tabela.setModel(self.model)
-        self.tabela.setItemDelegateForColumn(5, self.delegateRight)
         self.maisClientes(50)
         if self.linhasCarregadas > 0:
             header = self.tabela.horizontalHeader()
             header.setSectionResizeMode(
                 QtWidgets.QHeaderView.ResizeMode.ResizeToContents)
-            header.setSectionResizeMode(9, 
-                QtWidgets.QHeaderView.ResizeMode.Interactive)
             header.setStretchLastSection(True)
-            self.model.setHeaderAlignment(5, QtCore.Qt.AlignmentFlag.AlignRight | QtCore.Qt.AlignmentFlag.AlignVCenter)
 
     def editarCliente(self):
         linha = self.tabela.selectionModel().selectedRows()
