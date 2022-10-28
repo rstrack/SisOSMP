@@ -51,17 +51,19 @@ class GeraPDF():
 
 
     def formatar_fone(self, fone):
-        if len(fone) > 11:
-            return (phonenumbers.format_number(phonenumbers.parse("+" + str(fone), None),
-                                            phonenumbers.PhoneNumberFormat.NATIONAL))
-        else:
-            return (phonenumbers.format_number(phonenumbers.parse(str(fone), 'BR'),
-                                            phonenumbers.PhoneNumberFormat.NATIONAL))
-
+        try:
+            if len(fone) > 11:
+                return (phonenumbers.format_number(phonenumbers.parse("+" + str(fone), None),
+                                                phonenumbers.PhoneNumberFormat.NATIONAL))
+            else:
+                return (phonenumbers.format_number(phonenumbers.parse(str(fone), 'BR'),
+                                                phonenumbers.PhoneNumberFormat.NATIONAL))
+        except:
+            return fone
 
     def generatePDF(self, orcamento: dict, listaFones: list[dict], listaServicos: list[dict], listaPecas: list[dict] = None,
                     path: str = None):
-        nomearquivo = f"{orcamento['veiculo']['modelo']}_{orcamento['veiculo']['placa']}_({orcamento['cliente']['nome']})_{orcamento['dataOrcamento'].strftime('%d-%m-%Y')}.pdf"
+        nomearquivo = f"{orcamento['veiculo']['modelo']} {orcamento['veiculo']['placa']} ({orcamento['cliente']['nome']}) {orcamento['dataOrcamento'].strftime('%d-%m-%Y')}.pdf"
         if path:
             pdf = canvas.Canvas(f"{path}\\{nomearquivo}", pagesize=A4)
         else:
@@ -346,6 +348,7 @@ class GeraPDF():
                 f.wrapOn(pdf, width, height)
                 f.drawOn(pdf, 39, y)
                 s.drawOn(pdf, 39, z)
+        pdf.setTitle(nomearquivo)
         pdf.save()
         if path:
             os.startfile(f"{path}\\{nomearquivo}")
