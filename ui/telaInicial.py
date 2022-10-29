@@ -1,3 +1,4 @@
+import os
 from PyQt6 import QtCore, QtGui, QtWidgets
 
 class TelaInicial(QtWidgets.QMainWindow):
@@ -109,8 +110,8 @@ class TelaInicial(QtWidgets.QMainWindow):
         self.label_inicio.setObjectName("bemvindo")
         self.label_inicio.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
         self.stackedWidget.addWidget(self.label_inicio)
-        # barra de menu
         self.setCentralWidget(self.mainwidget)
+        # barra de menu
         self.menubar = QtWidgets.QMenuBar(self)
         self.menubar.setGeometry(QtCore.QRect(0, 0, 948, 21))
         self.menubar.setDefaultUp(False)
@@ -121,6 +122,8 @@ class TelaInicial(QtWidgets.QMainWindow):
         self.menuFerramentas.addAction(self.actionImportar_dados)
         self.menuFerramentas.addAction(self.actionExportar_dados)
         self.menubar.addAction(self.menuFerramentas.menuAction())
+        self.actionImportar_dados.triggered.connect(self.importar)
+        self.actionExportar_dados.triggered.connect(self.exportar)
         self.retranslateUi()
 
     def retranslateUi(self):
@@ -143,3 +146,41 @@ class TelaInicial(QtWidgets.QMainWindow):
         self.actionExportar_dados.setText(
             _translate("MainWindow", "Exportar dados"))
 
+    def importar(self):
+        try:
+            window = QtWidgets.QMainWindow()
+            fd = QtWidgets.QFileDialog()
+            path = fd.getOpenFileName(window, 'Importar', './')
+            if path[0] == '':
+                return
+            if os.path.exists("C:/Program Files/MySQL/MySQL Server 8.0/bin"):
+                mysqldump_path = "C:/Program Files/MySQL/MySQL Server 8.0/bin"
+            else: mysqldump_path = "bin/"
+            print('"%s/"mysql -u %s -p%s %s < %s' % (mysqldump_path, "root", "admin", "dbpasetto", path[0]))
+            os.popen('"%s/mysql" -u %s -p%s %s < %s' % (mysqldump_path, "root", "admin", "dbpasetto", path[0]))
+        except Exception as e:
+            msg = QtWidgets.QMessageBox()
+            msg.setWindowIcon(QtGui.QIcon('resources/logo-icon.png'))
+            msg.setIcon(QtWidgets.QMessageBox.Icon.Critical)
+            msg.setWindowTitle("Erro")
+            msg.setText(str(e))
+            msg.exec()
+
+    def exportar(self):
+        try:
+            window = QtWidgets.QMainWindow()
+            fd = QtWidgets.QFileDialog()
+            path = fd.getSaveFileName(window, 'Exportar como', './', "Arquivos SQL (*.sql)")
+            if path[0] == '':
+                return
+            if os.path.exists("C:/Program Files/MySQL/MySQL Server 8.0/bin"):
+                mysqldump_path = "C:/Program Files/MySQL/MySQL Server 8.0/bin"
+            else: mysqldump_path = "bin/"
+            os.popen('"%s/"mysqldump -u %s -p%s %s > %s' % (mysqldump_path, "root", "admin", "dbpasetto", path[0]))
+        except Exception as e:
+            msg = QtWidgets.QMessageBox()
+            msg.setWindowIcon(QtGui.QIcon('resources/logo-icon.png'))
+            msg.setIcon(QtWidgets.QMessageBox.Icon.Critical)
+            msg.setWindowTitle("Erro")
+            msg.setText(str(e))
+            msg.exec()
