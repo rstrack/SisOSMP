@@ -2,7 +2,6 @@ from PyQt6 import QtCore, QtGui, QtWidgets
 from ui.telaVeiculoCliente import TelaVeiculoCliente
 from ui.infiniteScroll import AlignDelegate, InfiniteScrollTableModel
 from util.container import handleDeps
-from flatdict import FlatDict
 
 class TelaConsultaCliente(QtWidgets.QMainWindow):
     def __init__(self):

@@ -156,8 +156,7 @@ class TelaInicial(QtWidgets.QMainWindow):
             if os.path.exists("C:/Program Files/MySQL/MySQL Server 8.0/bin"):
                 mysqldump_path = "C:/Program Files/MySQL/MySQL Server 8.0/bin"
             else: mysqldump_path = "bin/"
-            print('"%s/"mysql -u %s -p%s %s < %s' % (mysqldump_path, "root", "admin", "dbpasetto", path[0]))
-            os.popen('"%s/mysql" -u %s -p%s %s < %s' % (mysqldump_path, "root", "admin", "dbpasetto", path[0]))
+            os.popen('"%s/mysql" -u %s -p%s %s < "%s"' % (mysqldump_path, "root", "admin", "dbpasetto", path[0]))
         except Exception as e:
             msg = QtWidgets.QMessageBox()
             msg.setWindowIcon(QtGui.QIcon('resources/logo-icon.png'))
@@ -176,7 +175,7 @@ class TelaInicial(QtWidgets.QMainWindow):
             if os.path.exists("C:/Program Files/MySQL/MySQL Server 8.0/bin"):
                 mysqldump_path = "C:/Program Files/MySQL/MySQL Server 8.0/bin"
             else: mysqldump_path = "bin/"
-            os.popen('"%s/"mysqldump -u %s -p%s %s > %s' % (mysqldump_path, "root", "admin", "dbpasetto", path[0]))
+            os.popen('"%s/mysqldump" -u %s -p%s %s > "%s"' % (mysqldump_path, "root", "admin", "dbpasetto", path[0]))
         except Exception as e:
             msg = QtWidgets.QMessageBox()
             msg.setWindowIcon(QtGui.QIcon('resources/logo-icon.png'))

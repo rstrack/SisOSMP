@@ -927,10 +927,11 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
             self.clienteSelected = id
             self.checkboxNovoCliente.setChecked(False)
             veiculos = self.clienteCtrl.listarVeiculos(cliente['idCliente'])
-            if len(veiculos) == 1:
-                self.setVeiculo(veiculos[0]['marca']['nome'], veiculos[0]['modelo'], veiculos[0]['placa'], veiculos[0]['ano'])
-                self.veiculoSelected = veiculos[0]['idVeiculo']
-                self.checkboxNovoVeiculo.setChecked(False)
+            if veiculos:
+                if len(veiculos) == 1:
+                    self.setVeiculo(veiculos[0]['marca']['nome'], veiculos[0]['modelo'], veiculos[0]['placa'], veiculos[0]['ano'])
+                    self.veiculoSelected = veiculos[0]['idVeiculo']
+                    self.checkboxNovoVeiculo.setChecked(False)
             self.telaCliente.close()
 
     def telaBuscaVeiculo(self):
