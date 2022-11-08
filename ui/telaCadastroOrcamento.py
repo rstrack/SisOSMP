@@ -419,10 +419,6 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
         self.labelValorTotal1.setText(_translate("MainWindow", "VALOR TOTAL: R$"))
 
     def addLinhaPeca(self):
-        label1 = QtWidgets.QLabel(text="Peça*")
-        label2 = QtWidgets.QLabel(text="Qtde*")
-        label3 = QtWidgets.QLabel(text="Un*")
-        label4 = QtWidgets.QLabel(text="Valor un.*")
         lineedit1 = QtWidgets.QLineEdit()
         lineedit1.setMaxLength(80)
         lineedit1.setCompleter(self.completerPeca)
@@ -435,50 +431,35 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
         botaoRemoverLinha.setToolTip('Remover linha')
         botaoRemoverLinha.setText("-")
         botaoRemoverLinha.setObjectName('excluir')
-        self.gridLayoutPecas.addWidget(label1, len(self.linhasPeca)*2, 0, 1, 1)
-        self.gridLayoutPecas.addWidget(label2, len(self.linhasPeca)*2, 1, 1, 1)
-        self.gridLayoutPecas.addWidget(label3, len(self.linhasPeca)*2, 2, 1, 1)
-        self.gridLayoutPecas.addWidget(label4, len(self.linhasPeca)*2, 3, 1, 1)
-        self.gridLayoutPecas.addWidget(lineedit1, len(self.linhasPeca)*2+1, 0, 1, 1)
-        self.gridLayoutPecas.addWidget(lineedit2, len(self.linhasPeca)*2+1, 1, 1, 1)
-        self.gridLayoutPecas.addWidget(comboBox, len(self.linhasPeca)*2+1, 2, 1, 1)
-        self.gridLayoutPecas.addWidget(lineedit4, len(self.linhasPeca)*2+1, 3, 1, 1)
-        self.gridLayoutPecas.addWidget(botaoRemoverLinha, len(self.linhasPeca)*2+1, 4, 1, 1)
+        self.gridLayoutPecas.addWidget(lineedit1, len(self.linhasPeca)+1, 0, 1, 1)
+        self.gridLayoutPecas.addWidget(lineedit2, len(self.linhasPeca)+1, 1, 1, 1)
+        self.gridLayoutPecas.addWidget(comboBox, len(self.linhasPeca)+1, 2, 1, 1)
+        self.gridLayoutPecas.addWidget(lineedit4, len(self.linhasPeca)+1, 3, 1, 1)
+        self.gridLayoutPecas.addWidget(botaoRemoverLinha, len(self.linhasPeca)+1, 4, 1, 1)
         self.linhasPeca.append([lineedit1, lineedit2, comboBox, lineedit4])
         self.gridLayoutPecas.removeItem(self.spacerpeca)
-        self.gridLayoutPecas.addItem(self.spacerpeca, len(self.linhasPeca)*2, 0, 1, 1)
+        self.gridLayoutPecas.addItem(self.spacerpeca, len(self.linhasPeca)+1, 0, 1, 1)
         lineedit2.textChanged.connect(self.setValor)
         lineedit4.textChanged.connect(self.setValor)
         lineedit1.textChanged.connect(lambda: self.buscarPeca(lineedit1, comboBox, lineedit4))
         botaoRemoverLinha.clicked.connect(lambda: self.removerLinhaPeca(self.gridLayoutPecas.getItemPosition(self.gridLayoutPecas.indexOf(botaoRemoverLinha))[0]))
 
     def removerLinhaPeca(self, linha):
-        for x in range(4):
-            w1 = self.gridLayoutPecas.itemAtPosition(linha-1, x).widget()
-            w1.hide()
-            w1.setParent(None)
-            w1.deleteLater()
+        for x in range(5):
             w2 = self.gridLayoutPecas.itemAtPosition(linha, x).widget()
             w2.hide()
             w2.setParent(None)
             w2.deleteLater()
-        w = self.gridLayoutPecas.itemAtPosition(linha, 4).widget()
-        w.hide()
-        w.setParent(None)
-        w.deleteLater()
         for x in range(self.gridLayoutPecas.rowCount()):
             if x > linha:
                 for y in range(5):
                     if not isinstance(self.gridLayoutPecas.itemAtPosition(x, y), QtWidgets.QSpacerItem) and self.gridLayoutPecas.itemAtPosition(x, y) != None:
-                        self.gridLayoutPecas.addWidget(self.gridLayoutPecas.itemAtPosition(x, y).widget(), x-2, y, 1, 1)
-        del self.linhasPeca[int((linha-1)/2)]
+                        self.gridLayoutPecas.addWidget(self.gridLayoutPecas.itemAtPosition(x, y).widget(), x-1, y, 1, 1)
+        del self.linhasPeca[linha-1]
         self.gridLayoutPecas.removeItem(self.spacerpeca)
-        self.gridLayoutPecas.addItem(self.spacerpeca, len(self.linhasPeca)*2, 0, 1, 1)
+        self.gridLayoutPecas.addItem(self.spacerpeca, len(self.linhasPeca), 0, 1, 1)
 
     def addLinhaServico(self):
-        label1 = QtWidgets.QLabel(text="Serviço*")
-        label2 = QtWidgets.QLabel(text="Qtde*")
-        label3 = QtWidgets.QLabel(text="Valor un.*")
         lineedit1 = QtWidgets.QLineEdit()
         lineedit1.setMaxLength(80)
         lineedit1.setCompleter(self.completerServico)
@@ -488,41 +469,30 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
         botaoRemoverLinha.setToolTip('Remover linha')
         botaoRemoverLinha.setText("-")
         botaoRemoverLinha.setObjectName('excluir')
-        self.gridLayoutServicos.addWidget(label1, len(self.linhasServico)*2, 0, 1, 1)
-        self.gridLayoutServicos.addWidget(label2, len(self.linhasServico)*2, 1, 1, 1)
-        self.gridLayoutServicos.addWidget(label3, len(self.linhasServico)*2, 2, 1, 1)
-        self.gridLayoutServicos.addWidget(lineedit1, len(self.linhasServico)*2+1, 0, 1, 1)
-        self.gridLayoutServicos.addWidget(lineedit2, len(self.linhasServico)*2+1, 1, 1, 1)
-        self.gridLayoutServicos.addWidget(lineedit3, len(self.linhasServico)*2+1, 2, 1, 1)
-        self.gridLayoutServicos.addWidget(botaoRemoverLinha, len(self.linhasServico)*2+1, 3, 1, 1)
+        self.gridLayoutServicos.addWidget(lineedit1, len(self.linhasServico)+1, 0, 1, 1)
+        self.gridLayoutServicos.addWidget(lineedit2, len(self.linhasServico)+1, 1, 1, 1)
+        self.gridLayoutServicos.addWidget(lineedit3, len(self.linhasServico)+1, 2, 1, 1)
+        self.gridLayoutServicos.addWidget(botaoRemoverLinha, len(self.linhasServico)+1, 3, 1, 1)
         self.linhasServico.append([lineedit1, lineedit2, lineedit3])
         self.gridLayoutServicos.removeItem(self.spacerservico)
-        self.gridLayoutServicos.addItem(self.spacerservico, len(self.linhasServico)*2, 0, 1, 1)
+        self.gridLayoutServicos.addItem(self.spacerservico, len(self.linhasServico)+1, 0, 1, 1)
         lineedit2.textChanged.connect(self.setValor)
         lineedit3.textChanged.connect(self.setValor)
         lineedit1.textChanged.connect(lambda: self.buscarServico(lineedit1, lineedit3))
         botaoRemoverLinha.clicked.connect(lambda: self.removerLinhaServico(self.gridLayoutServicos.getItemPosition(self.gridLayoutServicos.indexOf(botaoRemoverLinha))[0]))
 
     def removerLinhaServico(self, linha):
-        for x in range(3):
-            w1 = self.gridLayoutServicos.itemAtPosition(linha-1, x).widget()
-            w1.hide()
-            w1.setParent(None)
-            w1.deleteLater()
+        for x in range(4):
             w2 = self.gridLayoutServicos.itemAtPosition(linha, x).widget()
             w2.hide()
             w2.setParent(None)
             w2.deleteLater()
-        w = self.gridLayoutServicos.itemAtPosition(linha, 3).widget()
-        w.hide()
-        w.setParent(None)
-        w.deleteLater()
         for x in range(self.gridLayoutServicos.rowCount()):
             if x > linha:
                 for y in range(4):
                     if not isinstance(self.gridLayoutServicos.itemAtPosition(x, y), QtWidgets.QSpacerItem) and self.gridLayoutServicos.itemAtPosition(x, y) != None:
-                        self.gridLayoutServicos.addWidget(self.gridLayoutServicos.itemAtPosition(x, y).widget(), x-2, y, 1, 1)
-        del self.linhasServico[int((linha-1)/2)]
+                        self.gridLayoutServicos.addWidget(self.gridLayoutServicos.itemAtPosition(x, y).widget(), x-1, y, 1, 1)
+        del self.linhasServico[linha-1]
         self.gridLayoutServicos.removeItem(self.spacerservico)
         self.gridLayoutServicos.addItem(self.spacerservico, len(self.linhasServico)*2, 0, 1, 1)
 
