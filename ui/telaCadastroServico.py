@@ -114,8 +114,6 @@ class TelaCadastroServico(QtWidgets.QMainWindow):
         
         
     def addlinhaservico(self):
-        label1 = QtWidgets.QLabel(text="Descrição do serviço*")
-        label2 = QtWidgets.QLabel(text="Valor un*")
         lineedit1 = QtWidgets.QLineEdit()
         lineedit1.setMaxLength(80)
         lineedit1.setMaximumWidth(200)
@@ -128,42 +126,32 @@ class TelaCadastroServico(QtWidgets.QMainWindow):
         botaoRemoverLinha.setText("-")
         botaoRemoverLinha.setObjectName('excluir')
         botaoRemoverLinha.clicked.connect(lambda: self.removerLinha(self.gridLayout.getItemPosition(self.gridLayout.indexOf(botaoRemoverLinha))[0]))
-        self.gridLayout.addWidget(label1, len(self.linhasServico)*2, 0, 1, 1)
-        self.gridLayout.addWidget(label2, len(self.linhasServico)*2, 1, 1, 1)
         self.gridLayout.addWidget(lineedit1, len(
-            self.linhasServico)*2+1, 0, 1, 1)
+            self.linhasServico)+1, 0, 1, 1)
         self.gridLayout.addWidget(lineedit2, len(
-            self.linhasServico)*2+1, 1, 1, 1)
+            self.linhasServico)+1, 1, 1, 1)
         self.gridLayout.addWidget(botaoRemoverLinha, len(
-            self.linhasServico)*2+1, 2, 1, 1)
+            self.linhasServico)+1, 2, 1, 1)
         self.linhasServico.append([lineedit1, lineedit2])
         self.gridLayout.removeItem(self.spacer)
         self.gridLayout.addItem(self.spacer, len(
-            self.linhasServico)*2, 0, 1, 1)
+            self.linhasServico)+1, 0, 1, 1)
 
     def removerLinha(self, linha):
-        for x in range(2):
-            w1 = self.gridLayout.itemAtPosition(linha-1, x).widget()
-            w1.hide()
-            w1.setParent(None)
-            w1.deleteLater()
-            w2 = self.gridLayout.itemAtPosition(linha, x).widget()
-            w2.hide()
-            w2.setParent(None)
-            w2.deleteLater()
-        w = self.gridLayout.itemAtPosition(linha, 2).widget()
-        w.hide()
-        w.setParent(None)
-        w.deleteLater()
+        for x in range(3):
+            w = self.gridLayout.itemAtPosition(linha, x).widget()
+            w.hide()
+            w.setParent(None)
+            w.deleteLater()
         for x in range(self.gridLayout.rowCount()):
             if x > linha:
                 for y in range(3):
                     if not isinstance(self.gridLayout.itemAtPosition(x, y), QtWidgets.QSpacerItem) and self.gridLayout.itemAtPosition(x, y) != None:
-                        self.gridLayout.addWidget(self.gridLayout.itemAtPosition(x, y).widget(), x-2, y, 1, 1)
+                        self.gridLayout.addWidget(self.gridLayout.itemAtPosition(x, y).widget(), x-1, y, 1, 1)
         
-        del self.linhasServico[int((linha-1)/2)]
+        del self.linhasServico[linha-1]
         self.gridLayout.removeItem(self.spacer)
-        self.gridLayout.addItem(self.spacer, len(self.linhasServico)*2, 0, 1, 1)
+        self.gridLayout.addItem(self.spacer, len(self.linhasServico)+1, 0, 1, 1)
 
     def resetarTela(self):
         while len(self.linhasServico)>1:

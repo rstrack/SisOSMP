@@ -26,7 +26,7 @@ class TelaCadastroPeca(QtWidgets.QMainWindow):
         self.scrollarea = QtWidgets.QScrollArea(self.main_frame)
         self.scrollarea.setWidgetResizable(True)
         self.vlayout.addWidget(self.scrollarea)
-        self.framegeral = QtWidgets.QFrame(self.main_frame)
+        self.framegeral = QtWidgets.QFrame(self.scrollarea)
         self.scrollarea.setWidget(self.framegeral)
         self.hlayout1 = QtWidgets.QHBoxLayout(self.framegeral)
         spacer = QtWidgets.QSpacerItem(
@@ -118,16 +118,13 @@ class TelaCadastroPeca(QtWidgets.QMainWindow):
         self.botaosalvar.setText(_translate("MainWindow", "Salvar"))
 
     def addLinhaPeca(self):
-        label1 = QtWidgets.QLabel(text="Nome da peça*")
         lineedit1 = QtWidgets.QLineEdit()
         lineedit1.setMaxLength(80)
         lineedit1.setMaximumWidth(200)
         lineedit1.setMaximumWidth(600)
-        labelcb = QtWidgets.QLabel(text="Un")
         comboBox = QtWidgets.QComboBox()
         comboBox.addItems(UNIDADES)
         comboBox.setCurrentIndex(15)
-        label2 = QtWidgets.QLabel(text="Valor un*")
         lineedit2 = QtWidgets.QLineEdit()
         lineedit2.setFixedWidth(80)
         botaoRemoverLinha = QtWidgets.QPushButton()
@@ -136,40 +133,29 @@ class TelaCadastroPeca(QtWidgets.QMainWindow):
         botaoRemoverLinha.setText("-")
         botaoRemoverLinha.setObjectName('excluir')
         botaoRemoverLinha.clicked.connect(lambda: self.removerLinha(self.gridLayout.getItemPosition(self.gridLayout.indexOf(botaoRemoverLinha))[0]))
-        self.gridLayout.addWidget(label1, len(self.linhasPeca)*2, 0, 1, 1)
-        self.gridLayout.addWidget(labelcb, len(self.linhasPeca)*2, 1, 1, 1)
-        self.gridLayout.addWidget(label2, len(self.linhasPeca)*2, 2, 1, 1)
-        self.gridLayout.addWidget(lineedit1, len(self.linhasPeca)*2+1, 0, 1, 1)
-        self.gridLayout.addWidget(comboBox, len(self.linhasPeca)*2+1, 1, 1, 1)
-        self.gridLayout.addWidget(lineedit2, len(self.linhasPeca)*2+1, 2, 1, 1)
+        self.gridLayout.addWidget(lineedit1, len(self.linhasPeca)+1, 0, 1, 1)
+        self.gridLayout.addWidget(comboBox, len(self.linhasPeca)+1, 1, 1, 1)
+        self.gridLayout.addWidget(lineedit2, len(self.linhasPeca)+1, 2, 1, 1)
         self.gridLayout.addWidget(botaoRemoverLinha, len(
-            self.linhasPeca)*2+1, 3, 1, 1)
+            self.linhasPeca)+1, 3, 1, 1)
         self.linhasPeca.append([lineedit1, comboBox, lineedit2])
         self.gridLayout.removeItem(self.spacer)
-        self.gridLayout.addItem(self.spacer, len(self.linhasPeca)*2+1, 0, 1, 1)
+        self.gridLayout.addItem(self.spacer, len(self.linhasPeca)+1, 0, 1, 1)
 
     def removerLinha(self, linha):
-        for x in range(3):
-            w1 = self.gridLayout.itemAtPosition(linha-1, x).widget()
-            w1.hide()
-            w1.setParent(None)
-            w1.deleteLater()
-            w2 = self.gridLayout.itemAtPosition(linha, x).widget()
-            w2.hide()
-            w2.setParent(None)
-            w2.deleteLater()
-        w = self.gridLayout.itemAtPosition(linha, 3).widget()
-        w.hide()
-        w.setParent(None)
-        w.deleteLater()
+        for x in range(4):
+            w = self.gridLayout.itemAtPosition(linha, x).widget()
+            w.hide()
+            w.setParent(None)
+            w.deleteLater()
         for x in range(self.gridLayout.rowCount()):
             if x > linha:
                 for y in range(4):
                     if not isinstance(self.gridLayout.itemAtPosition(x, y), QtWidgets.QSpacerItem) and self.gridLayout.itemAtPosition(x, y) != None:
-                        self.gridLayout.addWidget(self.gridLayout.itemAtPosition(x, y).widget(), x-2, y, 1, 1)
-        del self.linhasPeca[int((linha-1)/2)]
+                        self.gridLayout.addWidget(self.gridLayout.itemAtPosition(x, y).widget(), x-1, y, 1, 1)
+        del self.linhasPeca[linha-1]
         self.gridLayout.removeItem(self.spacer)
-        self.gridLayout.addItem(self.spacer, len(self.linhasPeca)*2, 0, 1, 1)
+        self.gridLayout.addItem(self.spacer, len(self.linhasPeca)+1, 0, 1, 1)
 
     def resetarTela(self):
         while len(self.linhasPeca)>1:

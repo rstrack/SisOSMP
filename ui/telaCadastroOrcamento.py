@@ -1,6 +1,7 @@
 from decimal import Decimal
 import threading
 from PyQt6 import QtCore, QtWidgets, QtGui
+from regex import W
 from util.container import handleDeps
 
 from datetime import date, datetime
@@ -446,10 +447,10 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
 
     def removerLinhaPeca(self, linha):
         for x in range(5):
-            w2 = self.gridLayoutPecas.itemAtPosition(linha, x).widget()
-            w2.hide()
-            w2.setParent(None)
-            w2.deleteLater()
+            w = self.gridLayoutPecas.itemAtPosition(linha, x).widget()
+            w.hide()
+            w.setParent(None)
+            w.deleteLater()
         for x in range(self.gridLayoutPecas.rowCount()):
             if x > linha:
                 for y in range(5):
@@ -457,7 +458,7 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
                         self.gridLayoutPecas.addWidget(self.gridLayoutPecas.itemAtPosition(x, y).widget(), x-1, y, 1, 1)
         del self.linhasPeca[linha-1]
         self.gridLayoutPecas.removeItem(self.spacerpeca)
-        self.gridLayoutPecas.addItem(self.spacerpeca, len(self.linhasPeca), 0, 1, 1)
+        self.gridLayoutPecas.addItem(self.spacerpeca, len(self.linhasPeca)+1, 0, 1, 1)
 
     def addLinhaServico(self):
         lineedit1 = QtWidgets.QLineEdit()
@@ -483,10 +484,10 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
 
     def removerLinhaServico(self, linha):
         for x in range(4):
-            w2 = self.gridLayoutServicos.itemAtPosition(linha, x).widget()
-            w2.hide()
-            w2.setParent(None)
-            w2.deleteLater()
+            w = self.gridLayoutServicos.itemAtPosition(linha, x).widget()
+            w.hide()
+            w.setParent(None)
+            w.deleteLater()
         for x in range(self.gridLayoutServicos.rowCount()):
             if x > linha:
                 for y in range(4):
@@ -494,7 +495,7 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
                         self.gridLayoutServicos.addWidget(self.gridLayoutServicos.itemAtPosition(x, y).widget(), x-1, y, 1, 1)
         del self.linhasServico[linha-1]
         self.gridLayoutServicos.removeItem(self.spacerservico)
-        self.gridLayoutServicos.addItem(self.spacerservico, len(self.linhasServico)*2, 0, 1, 1)
+        self.gridLayoutServicos.addItem(self.spacerservico, len(self.linhasServico)+1, 0, 1, 1)
 
     def limparDadosCliente(self):
         self.lineEditNomeCliente.clear()

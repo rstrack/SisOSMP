@@ -5,12 +5,24 @@
 
 QFrame{
     
-    /* border: 1px solid red; */
+    border: 1px solid red;
    
 }
 
 QFrame #main_frame{
 
+}
+
+QFrame #framemenu{
+    background-color: #3498DB;
+}
+
+QFrame #framemenu QPushButton{
+    text-align: left;
+}
+
+QFrame #framelogo{
+    background-color: #3498DB;
 }
 
 QLabel#tituloConsulta{
@@ -23,16 +35,13 @@ QLabel#boldText{
     font-size: 16px;
 }
 
-
 QFrame#framemenu QLabel{
-    padding-left: 6px;
     font-weight: bold;
     color: white;
     background-color: #1276B9;
     height:60px;
-    border-top-right-radius:4px;
+    padding-left: 8px;
 }
-
 QFrame#main_frame QLabel{
     color: black;
 }
@@ -40,7 +49,6 @@ QFrame#main_frame QLabel{
 QPushButton{
     font-size: 14px;
     font-weight: bold;
-    width: 20px;
     height: 20px;
     border-radius: 3px;
     background-color: #3498DB;
@@ -54,6 +62,20 @@ QPushButton:hover{
 
 QPushButton#botaoprincipal{
     background-color: #1276B9;
+}
+
+QFrame#framemenu QPushButton{
+    font-size: 14px;
+    height: 30px;
+    font-weight: bold;
+    background-color: #3498DB;
+    color:#FFFFFF;
+    border-radius: 0;
+    padding-left: 10px;
+}
+
+QFrame#framemenu QPushButton:hover{
+    background-color: #1276B9
 }
 
 QPushButton#botaoprincipal:hover{
