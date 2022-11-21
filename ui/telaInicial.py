@@ -18,10 +18,9 @@ class TelaInicial(QtWidgets.QMainWindow):
         self.framelateral.setMaximumWidth(250)
         self.framelateral.setObjectName("framelateral")
         shadow = QtWidgets.QGraphicsDropShadowEffect()
-        shadow.setBlurRadius(30)
-        shadow.setXOffset(2)
+        shadow.setBlurRadius(20)
+        shadow.setXOffset(1)
         shadow.setYOffset(0)
-        shadow
         self.framelateral.setGraphicsEffect(shadow)
         self.vlayout1 = QtWidgets.QVBoxLayout(self.framelateral)
         self.vlayout1.setContentsMargins(0, 0, 0, 0)
@@ -55,19 +54,26 @@ class TelaInicial(QtWidgets.QMainWindow):
         self.vlayout3.addWidget(self.framemenu4)
         # aba "cadastro"
         self.labelcadastro = QtWidgets.QLabel(self.framemenu1)
+        self.labelcadastro.setObjectName('labelmenu')
         self.labelcadastro.setText("CADASTRO")
         self.labelcadastro.setFixedHeight(40)
-        self.vlayoutlabel1 = QtWidgets.QVBoxLayout(self.framemenu1)
+        self.hline1 = QtWidgets.QFrame(self.framemenu3)
+        self.hline1.setObjectName("hline")
+        self.hline1.setFrameShape(QtWidgets.QFrame.Shape.HLine)
+        self.hline1.setFrameShadow(QtWidgets.QFrame.Shadow.Plain)
+        '''self.vlayoutlabel1 = QtWidgets.QVBoxLayout(self.framemenu1)
         self.vlayoutlabel1.setSizeConstraint(
             QtWidgets.QLayout.SizeConstraint.SetDefaultConstraint)
         self.vlayoutlabel1.setSpacing(0)
         self.vlayoutlabel1.setContentsMargins(0,0,0,0)
-        self.vlayoutlabel1.addWidget(self.labelcadastro)
+        self.vlayoutlabel1.addWidget(self.labelcadastro)'''
         self.vlayout4 = QtWidgets.QVBoxLayout(self.framemenu2)
         self.vlayout4.setContentsMargins(0,0,0,0)
         self.vlayout4.setSpacing(0)
         self.vlayout4.setSizeConstraint(
             QtWidgets.QLayout.SizeConstraint.SetDefaultConstraint)
+        self.vlayout4.addWidget(self.labelcadastro)
+        #self.vlayout4.addWidget(self.hline1)
         # opçoes da aba
         self.botao_pecas = QtWidgets.QPushButton(self.framemenu2)
         self.vlayout4.addWidget(self.botao_pecas)
@@ -79,17 +85,24 @@ class TelaInicial(QtWidgets.QMainWindow):
         self.vlayout4.addWidget(self.botao_orcamentos)
         # aba "consulta"
         self.labelconsulta = QtWidgets.QLabel(self.framemenu3)
+        self.labelconsulta.setObjectName('labelmenu')
         self.labelconsulta.setText("CONSULTA")
         self.labelconsulta.setFixedHeight(40)
-        self.vlayoutlabel2 = QtWidgets.QVBoxLayout(self.framemenu3)
+        self.hline2 = QtWidgets.QFrame(self.framemenu3)
+        self.hline2.setObjectName("hline")
+        self.hline2.setFrameShape(QtWidgets.QFrame.Shape.HLine)
+        self.hline2.setFrameShadow(QtWidgets.QFrame.Shadow.Plain)
+        '''self.vlayoutlabel2 = QtWidgets.QVBoxLayout(self.framemenu3)
         self.vlayoutlabel2.setSizeConstraint(
             QtWidgets.QLayout.SizeConstraint.SetDefaultConstraint)
         self.vlayoutlabel2.setSpacing(0)
         self.vlayoutlabel2.setContentsMargins(0,0,0,0)
-        self.vlayoutlabel2.addWidget(self.labelconsulta)
+        self.vlayoutlabel2.addWidget(self.labelconsulta)'''
         self.vlayout5 = QtWidgets.QVBoxLayout(self.framemenu4)
         self.vlayout5.setContentsMargins(0,0,0,0)
         self.vlayout5.setSpacing(0)
+        self.vlayout5.addWidget(self.labelconsulta)
+        #self.vlayout5.addWidget(self.hline2)
         # opçoes da aba
         self.botao_pecas_2 = QtWidgets.QPushButton(self.framemenu4)
         self.vlayout5.addWidget(self.botao_pecas_2)

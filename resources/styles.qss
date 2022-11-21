@@ -5,12 +5,20 @@
 
 QFrame{
     
-    border: 1px solid red;
+    /* border: 1px solid red; */
    
 }
 
-QFrame #main_frame{
+QScrollArea {
+    background: transparent; 
+}
 
+QScrollArea > QWidget > QWidget { 
+    background: transparent; 
+}
+
+QScrollArea > QWidget > QScrollBar {
+    background: palette(base); 
 }
 
 QFrame #framemenu{
@@ -19,6 +27,27 @@ QFrame #framemenu{
 
 QFrame #framemenu QPushButton{
     text-align: left;
+    font-size: 14px;
+    height: 30px;
+    font-weight: bold;
+    background-color: #3498DB;
+    color:#FFFFFF;
+    border-radius: 0;
+    padding-left: 20px;
+}
+
+QFrame#framemenu QPushButton:hover{
+    background-color: #1276B9;
+}
+
+QFrame#framemenu QLabel{
+    font-weight: bold;
+    color: white;
+    background-color: #3498DB;
+    height:60px;
+    border-bottom: 2px solid #FFFFFF;
+    padding-left: -5px;
+    margin: 0 15 5 15;
 }
 
 QFrame #framelogo{
@@ -35,13 +64,6 @@ QLabel#boldText{
     font-size: 16px;
 }
 
-QFrame#framemenu QLabel{
-    font-weight: bold;
-    color: white;
-    background-color: #1276B9;
-    height:60px;
-    padding-left: 8px;
-}
 QFrame#main_frame QLabel{
     color: black;
 }
@@ -64,19 +86,6 @@ QPushButton#botaoprincipal{
     background-color: #1276B9;
 }
 
-QFrame#framemenu QPushButton{
-    font-size: 14px;
-    height: 30px;
-    font-weight: bold;
-    background-color: #3498DB;
-    color:#FFFFFF;
-    border-radius: 0;
-    padding-left: 10px;
-}
-
-QFrame#framemenu QPushButton:hover{
-    background-color: #1276B9
-}
 
 QPushButton#botaoprincipal:hover{
     background-color: #0266A9;

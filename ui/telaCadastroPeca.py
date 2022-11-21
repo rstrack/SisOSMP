@@ -24,9 +24,10 @@ class TelaCadastroPeca(QtWidgets.QMainWindow):
         self.labelTitulo.setObjectName("titulo")
         self.vlayout.addWidget(self.labelTitulo)
         self.scrollarea = QtWidgets.QScrollArea(self.main_frame)
+        #self.scrollarea.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarPolicy.ScrollBarAlwaysOn)
         self.scrollarea.setWidgetResizable(True)
-        self.vlayout.addWidget(self.scrollarea)
         self.framegeral = QtWidgets.QFrame(self.scrollarea)
+        self.vlayout.addWidget(self.scrollarea)
         self.scrollarea.setWidget(self.framegeral)
         self.hlayout1 = QtWidgets.QHBoxLayout(self.framegeral)
         spacer = QtWidgets.QSpacerItem(
@@ -34,7 +35,7 @@ class TelaCadastroPeca(QtWidgets.QMainWindow):
         self.hlayout1.addItem(spacer)
         self.framedados = QtWidgets.QFrame(self.scrollarea)
         self.framedados.setSizePolicy(QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Preferred)
-        self.framedados.setMaximumWidth(int(QtGui.QGuiApplication.primaryScreen().size().width()*0.6) 
+        self.framedados.setMaximumWidth(int(QtGui.QGuiApplication.primaryScreen().size().width()*0.7) 
             if QtGui.QGuiApplication.primaryScreen().size().width()> 1280 else QtGui.QGuiApplication.primaryScreen().size().width())
         self.hlayout1.addWidget(self.framedados)
         spacer = QtWidgets.QSpacerItem(
@@ -78,7 +79,7 @@ class TelaCadastroPeca(QtWidgets.QMainWindow):
         self.hlayout2.addItem(spacer)
         self.frameBotoes = QtWidgets.QFrame(self.main_frame)
         self.frameBotoes.setSizePolicy(QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Preferred)
-        self.frameBotoes.setMaximumWidth(int(QtGui.QGuiApplication.primaryScreen().size().width()*0.6) 
+        self.frameBotoes.setMaximumWidth(int(QtGui.QGuiApplication.primaryScreen().size().width()*0.7) 
             if QtGui.QGuiApplication.primaryScreen().size().width()> 1280 else QtGui.QGuiApplication.primaryScreen().size().width())
         self.hlayout2.addWidget(self.frameBotoes)
         spacer = QtWidgets.QSpacerItem(

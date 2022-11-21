@@ -43,7 +43,7 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
         self.hlayout.addItem(spacer)
         self.framegeral = QtWidgets.QFrame(self.main_frame)
         self.framegeral.setSizePolicy(QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Preferred)
-        self.framegeral.setMaximumWidth(int(QtGui.QGuiApplication.primaryScreen().size().width()*0.6) 
+        self.framegeral.setMaximumWidth(int(QtGui.QGuiApplication.primaryScreen().size().width()*0.7) 
             if QtGui.QGuiApplication.primaryScreen().size().width()> 1280 else QtGui.QGuiApplication.primaryScreen().size().width())
         self.hlayout.addWidget(self.framegeral)
         spacer = QtWidgets.QSpacerItem(
@@ -224,6 +224,7 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
         self.lineEditValorPeca = QtWidgets.QLineEdit(self.framegroupboxpecas)
         self.gridLayoutPecas.addWidget(self.lineEditValorPeca, 1, 3, 1, 1)
         self.botaoAddPecas = QtWidgets.QPushButton(self.framegroupboxpecas)
+        self.botaoAddPecas.setFixedSize(25, 25)
         self.botaoAddPecas.setToolTip('Adicionar linha')
         self.gridLayoutPecas.addWidget(self.botaoAddPecas, 1, 4, 1, 1)
         self.linhasPeca = [
@@ -263,6 +264,7 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
         self.lineEditValorServico = QtWidgets.QLineEdit(self.framegroupboxservicos)
         self.gridLayoutServicos.addWidget(self.lineEditValorServico, 1, 2, 1, 1)
         self.botaoAddServicos = QtWidgets.QPushButton(self.framegroupboxservicos)
+        self.botaoAddServicos.setFixedSize(25, 25)
         self.botaoAddServicos.setToolTip('Adicionar linha')
         self.gridLayoutServicos.addWidget(self.botaoAddServicos, 1, 3, 1, 1)
         self.linhasServico = [[self.lineEditNomeServico, self.lineEditQtdeS, self.lineEditValorServico]]
