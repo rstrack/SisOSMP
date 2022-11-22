@@ -9,15 +9,6 @@ QFrame{
    
 }
 
-QMessageBox QLabel{
-    margin: 5px;
-}
-
-QMessageBox QPushButton{
-    height: 25px;
-    width: 35px;
-}
-
 QScrollArea {
     background: transparent; 
 }
@@ -208,4 +199,13 @@ QHeaderView::section{
 QToolTip{
     background-color: #FFFFFF;
     padding: 2px;
+}
+
+QDialog#helpMessageBox QLabel{
+    margin: 5px;
+}
+
+QDialog#helpMessageBox QPushButton{
+    height: 25px;
+    width: 35px;
 }

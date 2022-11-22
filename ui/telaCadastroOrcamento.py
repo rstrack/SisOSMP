@@ -10,6 +10,7 @@ from ui.telaBuscaCliente import TelaBuscaCliente
 from ui.telaBuscaVeiculo import TelaBuscaVeiculo
 from ui.hoverButton import HoverButton
 from ui.explanationBalloon import ExplanationBalloon
+from ui.helpMessageBox import HelpMessageBox
 from util.gerar_pdf import GeraPDF
 
 SIGLAESTADOS = ['AC', 'AL', 'AP', 'AM', 'BA', 'CE', 'DF', 'ES', 'GO', 'MA', 'MT', 'MS',
@@ -971,12 +972,9 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
         self.limparCampos()
 
     def helpCliente(self):
-        msg = QtWidgets.QMessageBox()
-        msg.setWindowIcon(QtGui.QIcon('resources/logo-icon.png'))
+        msg = HelpMessageBox()
         # msg.setIcon(QtWidgets.QMessageBox.Icon.Information)
-        msg.setWindowTitle("Ajuda")
-        msg.setText(\
-'''Insira dados de um novo cliente ou 
+        msg.setMessage('''Insira dados de um novo cliente ou 
 escolha um cliente já existente. 
 
 Caso escolha um já existente, é 
