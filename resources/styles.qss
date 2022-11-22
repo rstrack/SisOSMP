@@ -9,6 +9,15 @@ QFrame{
    
 }
 
+QMessageBox QLabel{
+    margin: 5px;
+}
+
+QMessageBox QPushButton{
+    height: 25px;
+    width: 35px;
+}
+
 QScrollArea {
     background: transparent; 
 }
@@ -86,10 +95,18 @@ QPushButton#botaoprincipal{
     background-color: #1276B9;
 }
 
-
 QPushButton#botaoprincipal:hover{
     background-color: #0266A9;
 }
+
+QPushButton#botaohelp{
+    background-color: transparent;
+}
+
+QPushButton#botaohelp:hover{
+    background-color: transparent;
+}
+
 
 QPushButton#atual{
     background-color: #1276B9;

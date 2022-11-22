@@ -1,7 +1,6 @@
 from decimal import Decimal
 import threading
 from PyQt6 import QtCore, QtWidgets, QtGui
-from regex import W
 from util.container import handleDeps
 
 from datetime import date, datetime
@@ -9,6 +8,8 @@ from ui.messageBox import MessageBox
 
 from ui.telaBuscaCliente import TelaBuscaCliente
 from ui.telaBuscaVeiculo import TelaBuscaVeiculo
+from ui.hoverButton import HoverButton
+from ui.explanationBalloon import ExplanationBalloon
 from util.gerar_pdf import GeraPDF
 
 SIGLAESTADOS = ['AC', 'AL', 'AP', 'AM', 'BA', 'CE', 'DF', 'ES', 'GO', 'MA', 'MT', 'MS',
@@ -43,7 +44,7 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
         self.hlayout.addItem(spacer)
         self.framegeral = QtWidgets.QFrame(self.main_frame)
         self.framegeral.setSizePolicy(QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Preferred)
-        self.framegeral.setMaximumWidth(int(QtGui.QGuiApplication.primaryScreen().size().width()*0.7) 
+        self.framegeral.setMaximumWidth(int(QtGui.QGuiApplication.primaryScreen().size().width()*0.65) 
             if QtGui.QGuiApplication.primaryScreen().size().width()> 1280 else QtGui.QGuiApplication.primaryScreen().size().width())
         self.hlayout.addWidget(self.framegeral)
         spacer = QtWidgets.QSpacerItem(
@@ -60,11 +61,24 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
         self.vlayout.addWidget(self.labelTitulo)
         self.framedados = QtWidgets.QFrame(self.main_frame)
         self.gridLayoutGeral = QtWidgets.QGridLayout(self.framedados)
-        self.gridLayoutGeral.setVerticalSpacing(6)
-        self.gridLayoutGeral.setHorizontalSpacing(9)
+        self.gridLayoutGeral.setVerticalSpacing(0)
+        self.gridLayoutGeral.setHorizontalSpacing(0)
         self.vlayout.addWidget(self.framedados)
         
         # dados do cliente
+        self.frameHelpCliente = QtWidgets.QFrame(self.framedados)
+        self.hlayouthelp1 = QtWidgets.QHBoxLayout(self.frameHelpCliente)
+        self.hlayouthelp1.setContentsMargins(0,0,0,0)
+        self.labelGBCliente = QtWidgets.QLabel(self.frameHelpCliente)
+        self.labelGBCliente.setText('Dados do Cliente')
+        self.hlayouthelp1.addWidget(self.labelGBCliente)
+        self.botaoHelpCliente = HoverButton("", "./resources/help-icon1.png", "./resources/help-icon2.png", self.frameHelpCliente)
+        self.botaoHelpCliente.setObjectName('botaohelp')
+        self.hlayouthelp1.addWidget(self.botaoHelpCliente)
+        spacer = QtWidgets.QSpacerItem(
+            40, 10, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
+        self.hlayouthelp1.addItem(spacer)
+        self.gridLayoutGeral.addWidget(self.frameHelpCliente, 0, 0, 1, 1)
         self.groupBoxCliente = QtWidgets.QGroupBox(self.framedados)
         self.gridLayoutCliente = QtWidgets.QGridLayout(self.groupBoxCliente)
         self.framebotoesCliente = QtWidgets.QFrame(self.groupBoxCliente)
@@ -141,7 +155,7 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
         self.gridLayoutCliente.setColumnStretch(4, 6)
         self.gridLayoutCliente.setColumnStretch(5, 6)
         self.gridLayoutCliente.setColumnStretch(6, 2)
-        self.gridLayoutGeral.addWidget(self.groupBoxCliente, 1, 0, 1, -1)
+        self.gridLayoutGeral.addWidget(self.groupBoxCliente, 2, 0, 1, -1)
         # dados do veiculo
         self.groupBoxVeiculo = QtWidgets.QGroupBox(self.framedados)
         self.gridLayoutVeiculo = QtWidgets.QGridLayout(self.groupBoxVeiculo)
@@ -183,7 +197,7 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
         self.lineEditKm = QtWidgets.QLineEdit(self.groupBoxVeiculo)
         self.lineEditKm.setMaxLength(6)
         self.gridLayoutVeiculo.addWidget(self.lineEditKm, 2, 4, 1, 1)
-        self.gridLayoutGeral.addWidget(self.groupBoxVeiculo, 2, 0, 1, -1)
+        self.gridLayoutGeral.addWidget(self.groupBoxVeiculo, 3, 0, 1, -1)
         self.gridLayoutVeiculo.setColumnStretch(0, 3)
         self.gridLayoutVeiculo.setColumnStretch(1, 5)
         self.gridLayoutVeiculo.setColumnStretch(2, 1)
@@ -232,7 +246,7 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
         self.spacerpeca = QtWidgets.QSpacerItem(
             40, 20, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding)
         self.gridLayoutPecas.addItem(self.spacerpeca, 2, 0, 1, 1)
-        self.gridLayoutGeral.addWidget(self.groupBoxPecas, 3, 0, 1, 1)
+        self.gridLayoutGeral.addWidget(self.groupBoxPecas, 4, 0, 1, 1)
         self.gridLayoutPecas.setColumnStretch(0, 6)
         self.gridLayoutPecas.setColumnStretch(1, 1)
         self.gridLayoutPecas.setColumnStretch(3, 1)
@@ -270,7 +284,7 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
         self.linhasServico = [[self.lineEditNomeServico, self.lineEditQtdeS, self.lineEditValorServico]]
         self.spacerservico = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding)
         self.gridLayoutServicos.addItem(self.spacerservico, 2, 0, 1, 1)
-        self.gridLayoutGeral.addWidget(self.groupBoxServicos, 3, 1, 1, 1)
+        self.gridLayoutGeral.addWidget(self.groupBoxServicos, 4, 1, 1, 1)
         self.gridLayoutServicos.setColumnStretch(0, 6)
         self.gridLayoutServicos.setColumnStretch(1, 1)
         self.gridLayoutServicos.setColumnStretch(2, 1)
@@ -295,7 +309,7 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
         self.labelValorTotal2.setText('0,00')
         self.gridLayoutOrcamento.addWidget(self.labelValorTotal1, 0, 2, -1, 1)
         self.gridLayoutOrcamento.addWidget(self.labelValorTotal2, 0, 3, -1, 1)
-        self.gridLayoutGeral.addWidget(self.groupBoxOrcamento, 4, 0, 1, -1)
+        self.gridLayoutGeral.addWidget(self.groupBoxOrcamento, 5, 0, 1, -1)
         # campo de observações
         self.groupBoxObs = QtWidgets.QGroupBox(self.framedados)
         self.vlayout2 = QtWidgets.QVBoxLayout(self.groupBoxObs)
@@ -304,8 +318,8 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
         self.vlayout2.addWidget(self.textEdit)
         self.gridLayoutGeral.setColumnStretch(0,1)
         self.gridLayoutGeral.setColumnStretch(1,1)
-        self.gridLayoutGeral.addWidget(self.groupBoxObs, 5, 0, 1, -1)
-        self.gridLayoutGeral.setRowStretch(3, 10)
+        self.gridLayoutGeral.addWidget(self.groupBoxObs, 6, 0, 1, -1)
+        self.gridLayoutGeral.setRowStretch(4, 10)
         # botoes
         self.framebotoes = QtWidgets.QFrame(self.main_frame)
         self.hlayout4 = QtWidgets.QHBoxLayout(self.framebotoes)
@@ -371,6 +385,14 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
         self.checkboxNovoCliente.stateChanged.connect(self.verificarCamposCliente)
         self.checkboxNovoVeiculo.stateChanged.connect(self.verificarCamposVeiculo)
 
+        '''self.eb = ExplanationBalloon(self.botaoHelpCliente, 200, 100, 'This is explanation balloon made out of PyQt')
+        self.eb.setFont(QtGui.QFont('Arial', 14))
+        self.eb.setBackgroundColor(QtGui.QColor(255,255,255, 255))
+        self.botaoHelpCliente.clicked.connect(self.eb.show)
+        self.botaoHelpCliente.pos().x()'''
+
+        self.botaoHelpCliente.clicked.connect(self.helpCliente)
+
     ##############################################################################################################################
                                                             #FUNÇÕES
     ##############################################################################################################################
@@ -383,8 +405,6 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
         self.botaolimpar.setText(_translate("MainWindow", "Limpar"))
         self.labelTitulo.setText(_translate("MainWindow", "Orçamentos"))
         self.labelData.setText(_translate("MainWindow", "Data do Orçamento*"))
-        self.groupBoxOrcamento.setTitle(_translate("MainWindow", "Dados do Orçamento"))
-        self.groupBoxCliente.setTitle(_translate("MainWindow", "Dados do Cliente"))
         self.botaobuscarCliente.setText(_translate("MainWindow", "Selecionar Cliente"))
         self.checkboxNovoCliente.setText(_translate("MainWindow", "Novo Cliente"))
         self.labelNome.setText(_translate("MainWindow", "Nome*"))
@@ -398,7 +418,6 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
         self.labelBairro.setText(_translate("MainWindow", "Bairro"))
         self.labelFone1.setText(_translate("MainWindow", "Fone 1*"))
         self.labelFone2.setText(_translate("MainWindow", "Fone 2"))
-        self.groupBoxVeiculo.setTitle(_translate("MainWindow", "Dados do veículo"))
         self.botaoBuscarVeiculo.setText(_translate("MainWindow", "Selecionar Veículo"))
         self.checkboxNovoVeiculo.setText(_translate("MainWindow", "Novo Veículo"))
         self.labelMarca.setText(_translate("MainWindow", "Marca*"))
@@ -406,13 +425,10 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
         self.labelAno.setText(_translate("MainWindow", "Ano"))
         self.labelModelo.setText(_translate("MainWindow", "Modelo*"))
         self.labelKm.setText(_translate("MainWindow", "Km*"))
-        self.groupBoxServicos.setTitle(_translate("MainWindow", "Serviços"))
         self.botaoAddServicos.setText(_translate("MainWindow", "+"))
         self.labelValorServico.setText(_translate("MainWindow", "Valor un.*"))
         self.labelNomeServico.setText(_translate("MainWindow", "Serviço*"))
         self.labelQtdeS.setText(_translate("MainWindow", "Qtde*"))
-        self.groupBoxObs.setTitle(_translate("MainWindow", "Observações (Max. 200 caracteres)"))
-        self.groupBoxPecas.setTitle(_translate("MainWindow", "Peças"))
         self.labelQtde.setText(_translate("MainWindow", "Qtde*"))
         self.labelUn.setText(_translate("MainWindow", "Un*"))
         self.botaoAddPecas.setText(_translate("MainWindow", "+"))
@@ -954,3 +970,15 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
             self.removerLinhaServico(3)
         self.limparCampos()
 
+    def helpCliente(self):
+        msg = QtWidgets.QMessageBox()
+        msg.setWindowIcon(QtGui.QIcon('resources/logo-icon.png'))
+        # msg.setIcon(QtWidgets.QMessageBox.Icon.Information)
+        msg.setWindowTitle("Ajuda")
+        msg.setText(\
+'''Insira dados de um novo cliente ou 
+escolha um cliente já existente. 
+
+Caso escolha um já existente, é 
+possível alterar os dados.''')
+        msg.exec()

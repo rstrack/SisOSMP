@@ -35,7 +35,7 @@ class TelaCadastroPeca(QtWidgets.QMainWindow):
         self.hlayout1.addItem(spacer)
         self.framedados = QtWidgets.QFrame(self.scrollarea)
         self.framedados.setSizePolicy(QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Preferred)
-        self.framedados.setMaximumWidth(int(QtGui.QGuiApplication.primaryScreen().size().width()*0.7) 
+        self.framedados.setMaximumWidth(int(QtGui.QGuiApplication.primaryScreen().size().width()*0.65) 
             if QtGui.QGuiApplication.primaryScreen().size().width()> 1280 else QtGui.QGuiApplication.primaryScreen().size().width())
         self.hlayout1.addWidget(self.framedados)
         spacer = QtWidgets.QSpacerItem(
@@ -79,7 +79,7 @@ class TelaCadastroPeca(QtWidgets.QMainWindow):
         self.hlayout2.addItem(spacer)
         self.frameBotoes = QtWidgets.QFrame(self.main_frame)
         self.frameBotoes.setSizePolicy(QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Preferred)
-        self.frameBotoes.setMaximumWidth(int(QtGui.QGuiApplication.primaryScreen().size().width()*0.7) 
+        self.frameBotoes.setMaximumWidth(int(QtGui.QGuiApplication.primaryScreen().size().width()*0.65) 
             if QtGui.QGuiApplication.primaryScreen().size().width()> 1280 else QtGui.QGuiApplication.primaryScreen().size().width())
         self.hlayout2.addWidget(self.frameBotoes)
         spacer = QtWidgets.QSpacerItem(
