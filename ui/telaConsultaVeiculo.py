@@ -7,6 +7,7 @@ from flatdict import FlatDict
 from ui.telaMarcas import TelaMarcas
 
 class TelaConsultaVeiculo(QtWidgets.QMainWindow):
+    novoVeiculo = QtCore.pyqtSignal(int)
     def __init__(self):
         super(TelaConsultaVeiculo, self).__init__()
         self.clienteCtrl = handleDeps.getDep('CLIENTECTRL')
@@ -59,7 +60,12 @@ class TelaConsultaVeiculo(QtWidgets.QMainWindow):
         spacer = QtWidgets.QSpacerItem(
             20, 10, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Preferred)
         self.hlayoutOrdenacao.addItem(spacer)
+
+        self.botaoNovo = QtWidgets.QPushButton(self.frameOrdenacao)
+        self.botaoNovo.setFixedSize(80,25)
+        self.hlayoutOrdenacao.addWidget(self.botaoNovo)
         self.comboBoxOrdenacao = QtWidgets.QComboBox(self.frameOrdenacao)
+        self.comboBoxOrdenacao.setFixedHeight(25)
         self.comboBoxOrdenacao.setToolTip('Ordenar')
         self.comboBoxOrdenacao.addItems(['Marca (A-Z)', 'Marca (Z-A)', 'Modelo (A-Z)', 'Modelo (Z-A)'])
         self.hlayoutOrdenacao.addWidget(self.comboBoxOrdenacao)
@@ -100,8 +106,8 @@ class TelaConsultaVeiculo(QtWidgets.QMainWindow):
         self.hlayoutbotoes.addWidget(self.botaoExcluir)
         self.setCentralWidget(self.main_frame)
         self.retranslateUi()
-
         self.listarVeiculos()
+
         self.botaoRefresh.clicked.connect(self.listarVeiculos)
         self.botaoMarcas.clicked.connect(self.marcas)
         self.botaoClientes.clicked.connect(self.clientes)
@@ -110,11 +116,13 @@ class TelaConsultaVeiculo(QtWidgets.QMainWindow):
         self.tabela.verticalScrollBar().actionTriggered.connect(self.scrolled)
         self.lineEditBusca.textChanged.connect(self.buffer)
         self.comboBoxOrdenacao.currentIndexChanged.connect(self.buffer)
+        self.botaoNovo.clicked.connect(lambda: self.novoVeiculo.emit(1))
 
     def retranslateUi(self):
         _translate = QtCore.QCoreApplication.translate
         self.setWindowTitle(_translate("MainWindow", "Busca"))
         self.labelTitulo.setText(_translate("MainWindow", "Veículos"))
+        self.botaoNovo.setText(_translate("MainWindow", "+ Novo"))
         self.botaoMarcas.setText(_translate("MainWindow", "Marcas"))
         self.botaoEditar.setText(_translate("MainWindow", "Editar"))
         self.botaoClientes.setText(_translate("MainWindow", "Clientes"))

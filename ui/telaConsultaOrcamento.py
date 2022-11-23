@@ -7,6 +7,7 @@ from util.gerar_pdf import GeraPDF
 
 class TelaConsultaOrcamento(QtWidgets.QMainWindow):
     orcamentoAprovado = QtCore.pyqtSignal(int)
+    novoOrcamento = QtCore.pyqtSignal(int)
     def __init__(self):
         super(TelaConsultaOrcamento, self).__init__()
         self.orcamentoCtrl = handleDeps.getDep('ORCAMENTOCTRL')
@@ -62,7 +63,11 @@ class TelaConsultaOrcamento(QtWidgets.QMainWindow):
         spacer = QtWidgets.QSpacerItem(
             20, 10, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Preferred)
         self.hlayoutOrdenacao.addItem(spacer)
+        self.botaoNovo = QtWidgets.QPushButton(self.frameOrdenacao)
+        self.botaoNovo.setFixedSize(80,25)
+        self.hlayoutOrdenacao.addWidget(self.botaoNovo)
         self.comboBoxOrdenacao = QtWidgets.QComboBox(self.frameOrdenacao)
+        self.comboBoxOrdenacao.setFixedHeight(25)
         self.comboBoxOrdenacao.setToolTip('Ordenar')
         self.comboBoxOrdenacao.addItems(['Data do Orçamento (recente primeiro)', 'Data do Orçamento (antigo primeiro)'])
         self.hlayoutOrdenacao.addWidget(self.comboBoxOrdenacao)
@@ -107,11 +112,13 @@ class TelaConsultaOrcamento(QtWidgets.QMainWindow):
         self.tabela.verticalScrollBar().actionTriggered.connect(self.scrolled)
         self.lineEditBusca.textChanged.connect(self.buffer)
         self.comboBoxOrdenacao.currentIndexChanged.connect(self.buffer)
+        self.botaoNovo.clicked.connect(lambda: self.novoOrcamento.emit(1))
         self.listarOrcamentos()
 
     def retranslateUi(self):
         _translate = QtCore.QCoreApplication.translate
         self.setWindowTitle(_translate("MainWindow", "Busca"))
+        self.botaoNovo.setText(_translate("MainWindow", "+ Novo"))
         self.labelTitulo.setText(_translate("MainWindow", "Orçamentos"))
         self.botaoEditar.setText(_translate("MainWindow", "Editar"))
         self.botaoAprovar.setText(_translate("MainWindow", "Aprovar"))

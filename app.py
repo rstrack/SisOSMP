@@ -147,6 +147,13 @@ class APP():
         self.telaConsultaOrcamento.orcamentoAprovado.connect(lambda: self.telaInicio.stackedWidget.setCurrentWidget(self.telaConsultaOS))
         self.telaEditarOrcamento.orcamentoAprovado.connect(lambda: self.telaInicio.stackedWidget.setCurrentWidget(self.telaConsultaOS))
 
+        #consulta para cadastro
+        self.telaConsultaPeca.novaPeca.connect(lambda: self.telaInicio.stackedWidget.setCurrentWidget(self.telaCadastroPeca))
+        self.telaConsultaServico.novoServico.connect(lambda: self.telaInicio.stackedWidget.setCurrentWidget(self.telaCadastroServico))
+        self.telaConsultaCliente.novoCliente.connect(lambda: self.telaInicio.stackedWidget.setCurrentWidget(self.telaCadastroCliente))
+        self.telaConsultaVeiculo.novoVeiculo.connect(lambda: self.telaInicio.stackedWidget.setCurrentWidget(self.telaCadastroCliente))
+        self.telaConsultaOrcamento.novoOrcamento.connect(lambda: self.telaInicio.stackedWidget.setCurrentWidget(self.telaCadastroOrcamento))
+
     # função que passa da tela de consulta para a tela de edição da respectiva entidade, passando id a ser alterado como parametro
     def consultaParaEditar(self, pagina, render, param):
         p = param()

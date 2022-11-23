@@ -3,6 +3,7 @@ from util.container import handleDeps
 from ui.infiniteScroll import AlignDelegate, InfiniteScrollTableModel
 
 class TelaConsultaPeca(QtWidgets.QMainWindow):
+    novaPeca = QtCore.pyqtSignal(int)
     def __init__(self):
         super(TelaConsultaPeca, self).__init__()
         self.pecaCtrl = handleDeps.getDep('PECACTRL')
@@ -56,7 +57,11 @@ class TelaConsultaPeca(QtWidgets.QMainWindow):
         spacer = QtWidgets.QSpacerItem(
             20, 10, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Preferred)
         self.hlayoutOrdenacao.addItem(spacer)
+        self.botaoNovo = QtWidgets.QPushButton(self.frameOrdenacao)
+        self.botaoNovo.setFixedSize(80,25)
+        self.hlayoutOrdenacao.addWidget(self.botaoNovo)
         self.comboBoxOrdenacao = QtWidgets.QComboBox(self.frameOrdenacao)
+        self.comboBoxOrdenacao.setFixedHeight(25)
         self.comboBoxOrdenacao.setToolTip('Ordenar')
         self.comboBoxOrdenacao.addItems(['Descrição (A-Z)', 'Descrição (Z-A)'])
         self.hlayoutOrdenacao.addWidget(self.comboBoxOrdenacao)
@@ -99,10 +104,12 @@ class TelaConsultaPeca(QtWidgets.QMainWindow):
         self.tabela.verticalScrollBar().actionTriggered.connect(self.scrolled)
         self.lineEditBusca.textChanged.connect(self.buffer)
         self.comboBoxOrdenacao.currentIndexChanged.connect(self.buffer)
+        self.botaoNovo.clicked.connect(lambda: self.novaPeca.emit(1))
 
     def retranslateUi(self):
         _translate = QtCore.QCoreApplication.translate
         self.setWindowTitle(_translate("MainWindow", "Busca"))
+        self.botaoNovo.setText(_translate("MainWindow", "+ Novo"))
         self.labelTitulo.setText(_translate("MainWindow", "Peças"))
         self.botaoEditar.setText(_translate("MainWindow", "Editar"))
         self.botaoExcluir.setText(_translate("MainWindow", "Excluir"))
