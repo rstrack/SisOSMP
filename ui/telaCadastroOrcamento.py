@@ -9,7 +9,6 @@ from ui.messageBox import MessageBox
 from ui.telaBuscaCliente import TelaBuscaCliente
 from ui.telaBuscaVeiculo import TelaBuscaVeiculo
 from ui.hoverButton import HoverButton
-from ui.explanationBalloon import ExplanationBalloon
 from ui.helpMessageBox import HelpMessageBox
 from util.gerar_pdf import GeraPDF
 
@@ -385,12 +384,6 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
         self.lineEditValorServico.textChanged.connect(self.setValor)
         self.checkboxNovoCliente.stateChanged.connect(self.verificarCamposCliente)
         self.checkboxNovoVeiculo.stateChanged.connect(self.verificarCamposVeiculo)
-
-        '''self.eb = ExplanationBalloon(self.botaoHelpCliente, 200, 100, 'This is explanation balloon made out of PyQt')
-        self.eb.setFont(QtGui.QFont('Arial', 14))
-        self.eb.setBackgroundColor(QtGui.QColor(255,255,255, 255))
-        self.botaoHelpCliente.clicked.connect(self.eb.show)
-        self.botaoHelpCliente.pos().x()'''
 
         self.botaoHelpCliente.clicked.connect(self.helpCliente)
 
@@ -975,7 +968,7 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
         msg = HelpMessageBox()
         # msg.setIcon(QtWidgets.QMessageBox.Icon.Information)
         msg.setMessage('''Insira dados de um novo cliente ou 
-escolha um cliente já existente. 
+escolha um cliente já existente.
 
 Caso escolha um já existente, é 
 possível alterar os dados.''')

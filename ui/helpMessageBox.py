@@ -12,7 +12,7 @@ class HelpMessageBox(QtWidgets.QDialog):
         self.buttonBox.accepted.connect(self.accept)
 
         self.layout = QtWidgets.QVBoxLayout()
-        self.message =  "<p style= ' line-height:150% ' >\n"
+        self.message =  ""
         self.label = QtWidgets.QLabel()
         self.layout.addWidget(self.label)
         self.layout.addWidget(self.buttonBox)
@@ -20,9 +20,8 @@ class HelpMessageBox(QtWidgets.QDialog):
         # self.setFixedSize(400,400)
 
     def setMessage(self, str: str):
-        self.message += f"{str} </p>"
+        self.message += str
         self.label.setText(str)
-        print(self.message)
 
 if __name__=="__main__":
     app = QtWidgets.QApplication(sys.argv)
