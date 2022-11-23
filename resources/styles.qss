@@ -1,6 +1,6 @@
 
 *{
-    font-family:'Helvetica'
+    font-family:'Helvetica';
 }
 
 QFrame{
@@ -67,6 +67,12 @@ QLabel#boldText{
 QFrame#main_frame QLabel{
     color: black;
 }
+
+QFrame#framehelp{
+    padding: 8 0 -5 0 px;
+}
+
+
 
 QPushButton{
     font-size: 14px;

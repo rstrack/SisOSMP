@@ -171,11 +171,11 @@ class TelaCadastroCliente(QtWidgets.QMainWindow):
             40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
         self.hlayout4.addItem(spacerItem5)
         self.botaoSalvar = QtWidgets.QPushButton(self.framebotoes)
-        self.botaoSalvar.setMinimumSize(QtCore.QSize(100, 35))
+        self.botaoSalvar.setMinimumSize(100, 35)
         self.botaoSalvar.setObjectName('botaoprincipal')
         self.hlayout4.addWidget(self.botaoSalvar)
         self.botaolimpar = QtWidgets.QPushButton(self.framebotoes)
-        self.botaolimpar.setMinimumSize(QtCore.QSize(100, 35))
+        self.botaolimpar.setMinimumSize(100, 35)
         self.hlayout4.addWidget(self.botaolimpar)
         self.vlayout.addWidget(self.framebotoes)
         spacerItem6 = QtWidgets.QSpacerItem(

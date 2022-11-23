@@ -83,11 +83,11 @@ class TelaEditarVeiculo(QtWidgets.QMainWindow):
             40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
         self.hlayout4.addItem(spacerItem5)
         self.botaoSalvar = QtWidgets.QPushButton(self.framebotoes)
-        self.botaoSalvar.setMinimumSize(QtCore.QSize(100, 35))
+        self.botaoSalvar.setMinimumSize(100, 35)
         self.botaoSalvar.setObjectName('botaoprincipal')
         self.hlayout4.addWidget(self.botaoSalvar)
         self.botaoCancelar = QtWidgets.QPushButton(self.framebotoes)
-        self.botaoCancelar.setMinimumSize(QtCore.QSize(100, 35))
+        self.botaoCancelar.setMinimumSize(100, 35)
         self.hlayout4.addWidget(self.botaoCancelar)
         self.vlayout.addWidget(self.framebotoes)
         spacerItem6 = QtWidgets.QSpacerItem(
