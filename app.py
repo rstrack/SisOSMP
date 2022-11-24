@@ -38,7 +38,7 @@ class APP():
         self.app = QtWidgets.QApplication(sys.argv)
         self.app.setStyle('Fusion')
         self.app.setEffectEnabled(QtCore.Qt.UIEffect.UI_AnimateCombo, False)
-        self.splash = QtWidgets.QSplashScreen(QtGui.QPixmap('resources/logo-icon.png').scaled(400,300))
+        self.splash = QtWidgets.QSplashScreen(QtGui.QPixmap('resources/logo-menu.png').scaled(400,250))
         self.splash.show()
         style = open('resources/styles.qss').read()
         self.app.setStyleSheet(style)

@@ -32,11 +32,14 @@ class TelaInicial(QtWidgets.QMainWindow):
         self.vlayout2.setContentsMargins(9, 0, 9, 0)
         self.vlayout2.setSpacing(0)
         # logo
-        self.logo_label = QtWidgets.QLabel(self.logo_frame)
-        self.logo_label.setMaximumHeight(180)
-        self.logo_label.setPixmap(QtGui.QPixmap("resources/logo-icon.png"))
-        self.logo_label.setScaledContents(True)
-        self.vlayout2.addWidget(self.logo_label)
+        self.botaoLogo = QtWidgets.QPushButton(self.logo_frame)
+        self.botaoLogo.setFixedHeight(150)
+        self.botaoLogo.setIcon(QtGui.QIcon("resources/logo-menu.png"))
+        self.botaoLogo.setIconSize(QtCore.QSize(250,150))
+        self.botaoLogo.setStyleSheet('''
+            QPushButton{margin-top:10px;}
+            QPushButton:hover{background-color:transparent;}''')
+        self.vlayout2.addWidget(self.botaoLogo)
         self.vlayout1.addWidget(self.logo_frame)
         # frame do menu(dentro do frame lateral)
         self.framemenu = QtWidgets.QFrame(self.framelateral)
@@ -127,8 +130,11 @@ class TelaInicial(QtWidgets.QMainWindow):
         self.vlayout6 = QtWidgets.QVBoxLayout(self.main_frame)
         self.vlayout6.setContentsMargins(0, 0, 0, 0)
         self.vlayout6.setSpacing(0)
+        self.scrollarea = QtWidgets.QScrollArea(self.main_frame)
+        self.scrollarea.setWidgetResizable(True)
+        self.vlayout6.addWidget(self.scrollarea)
         self.stackedWidget = QtWidgets.QStackedWidget(self.main_frame)
-        self.vlayout6.addWidget(self.stackedWidget)
+        self.scrollarea.setWidget(self.stackedWidget)
         # página inicial
         self.label_inicio = QtWidgets.QLabel(self.stackedWidget)
         self.label_inicio.setObjectName("bemvindo")
@@ -149,6 +155,8 @@ class TelaInicial(QtWidgets.QMainWindow):
         self.actionImportar_dados.triggered.connect(self.importar)
         self.actionExportar_dados.triggered.connect(self.exportar)
         self.retranslateUi()
+
+        self.botaoLogo.clicked.connect(lambda: self.stackedWidget.setCurrentWidget(self.label_inicio))
 
     def retranslateUi(self):
         _translate = QtCore.QCoreApplication.translate

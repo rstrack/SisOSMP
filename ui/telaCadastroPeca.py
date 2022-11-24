@@ -1,5 +1,6 @@
 from decimal import Decimal
 from PyQt6 import QtCore, QtWidgets, QtGui
+from ui.hoverButton import HoverButton
 from util.container import handleDeps
 from ui.telaCadastroOrcamento import UNIDADES
 
@@ -18,11 +19,22 @@ class TelaCadastroPeca(QtWidgets.QMainWindow):
         self.vlayout = QtWidgets.QVBoxLayout(self.main_frame)
         self.vlayout.setContentsMargins(0,0,0,0)
         self.vlayout.setSpacing(0)
-        self.labelTitulo = QtWidgets.QLabel(self.main_frame)
+        self.frameTitulo = QtWidgets.QFrame(self.main_frame)
+        self.vlayout.addWidget(self.frameTitulo)
+        self.hlayouttitulo = QtWidgets.QHBoxLayout(self.frameTitulo)
+        self.hlayouttitulo.setContentsMargins(0,0,0,0)
+        self.hlayouttitulo.setSpacing(0)
+        self.hlayouttitulo.setAlignment(QtCore.Qt.AlignmentFlag.AlignHCenter)
+        self.labelTitulo = QtWidgets.QLabel(self.frameTitulo)
         self.labelTitulo.setFixedHeight(120)
         self.labelTitulo.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
         self.labelTitulo.setObjectName("titulo")
-        self.vlayout.addWidget(self.labelTitulo)
+        self.hlayouttitulo.addWidget(self.labelTitulo)
+        self.botaoHelp = HoverButton("", "./resources/help-icon1.png", "./resources/help-icon2.png", self.frameTitulo)
+        self.botaoHelp.setToolTip('Ajuda sobre veículo')
+        self.botaoHelp.setObjectName('botaohelp')
+        self.botaoHelp.setHelpIconSize(20,20)
+        self.hlayouttitulo.addWidget(self.botaoHelp)
         self.scrollarea = QtWidgets.QScrollArea(self.main_frame)
         #self.scrollarea.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarPolicy.ScrollBarAlwaysOn)
         self.scrollarea.setWidgetResizable(True)
@@ -109,7 +121,7 @@ class TelaCadastroPeca(QtWidgets.QMainWindow):
         _translate = QtCore.QCoreApplication.translate
         self.setWindowTitle(_translate("MainWindow", "MainWindow"))
 
-        self.labelTitulo.setText(_translate("MainWindow", "Cadastro de peças"))
+        self.labelTitulo.setText(_translate("MainWindow", "Cadastro de peças "))
         self.labelDescricao.setText(_translate("MainWindow", "Nome da peça*"))
         self.labelUn.setText(_translate("MainWindow", "Un"))
         self.labelvalor.setText(_translate("MainWindow", "Valor un*"))
