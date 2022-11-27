@@ -31,7 +31,7 @@ class TelaCadastroPeca(QtWidgets.QMainWindow):
         self.labelTitulo.setObjectName("titulo")
         self.hlayouttitulo.addWidget(self.labelTitulo)
         self.botaoHelp = HoverButton("", "./resources/help-icon1.png", "./resources/help-icon2.png", self.frameTitulo)
-        self.botaoHelp.setToolTip('Ajuda sobre veículo')
+        self.botaoHelp.setToolTip('Ajuda')
         self.botaoHelp.setObjectName('botaohelp')
         self.botaoHelp.setHelpIconSize(20,20)
         self.hlayouttitulo.addWidget(self.botaoHelp)

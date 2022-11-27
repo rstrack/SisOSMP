@@ -12,7 +12,7 @@ class TelaConsultaOS(QtWidgets.QMainWindow):
         self.clienteCtrl = handleDeps.getDep('CLIENTECTRL')
         self.pecaCtrl = handleDeps.getDep('PECACTRL')
         self.servicoCtrl = handleDeps.getDep('SERVICOCTRL')
-        self.finalizada = False
+        self.status = '2'
         self.busca = ''
         self.orderBy = 0
         self.setupUi()
@@ -63,9 +63,9 @@ class TelaConsultaOS(QtWidgets.QMainWindow):
         spacer = QtWidgets.QSpacerItem(
             20, 10, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Preferred)
         self.hlayoutOrdenacao.addItem(spacer)
-        self.comboBoxFinalizado = QtWidgets.QComboBox(self.frameOrdenacao)
-        self.comboBoxFinalizado.addItems(['Não finalizadas', 'Finalizadas'])
-        self.hlayoutOrdenacao.addWidget(self.comboBoxFinalizado)
+        self.comboBoxStatus = QtWidgets.QComboBox(self.frameOrdenacao)
+        self.comboBoxStatus.addItems(['Não finalizadas', 'Finalizadas'])
+        self.hlayoutOrdenacao.addWidget(self.comboBoxStatus)
         self.comboBoxOrdenacao = QtWidgets.QComboBox(self.frameOrdenacao)
         self.comboBoxOrdenacao.setToolTip('Ordenar')
         self.comboBoxOrdenacao.addItems(['Data do Orçamento (recente primeiro)', 'Data do Orçamento (antigo primeiro)', 'Data de Aprovação (recente primeiro)', 'Data de Aprovação (antigo primeiro)'])
@@ -108,8 +108,8 @@ class TelaConsultaOS(QtWidgets.QMainWindow):
         self.tabela.verticalScrollBar().actionTriggered.connect(self.scrolled)
         self.lineEditBusca.textChanged.connect(self.buffer)
         self.comboBoxOrdenacao.currentIndexChanged.connect(self.buffer)
-        self.comboBoxFinalizado.currentIndexChanged.connect(self.buffer)
-        self.comboBoxFinalizado.currentIndexChanged.connect(self.renderBotoes)
+        self.comboBoxStatus.currentIndexChanged.connect(self.buffer)
+        self.comboBoxStatus.currentIndexChanged.connect(self.renderBotoes)
         self.listarOS()
 
     def retranslateUi(self):
@@ -127,11 +127,11 @@ class TelaConsultaOS(QtWidgets.QMainWindow):
     def buffer(self):
         self.busca = self.lineEditBusca.text()
         self.orderBy = self.comboBoxOrdenacao.currentIndex()
-        self.finalizada = True if self.comboBoxFinalizado.currentIndex() == 1 else False
+        self.status = '3' if self.comboBoxStatus.currentIndex() == 1 else '2'
         self.listarOS()
 
     def maisOS(self, qtde):
-        orcamentos = self.orcamentoCtrl.buscarOrcamento(True, self.finalizada, self.busca, self.linhasCarregadas+qtde, self.orderBy)
+        orcamentos = self.orcamentoCtrl.buscarOrcamento(self.status, self.busca, self.linhasCarregadas+qtde, self.orderBy)
         if not orcamentos:
             return
         maxLength = len(orcamentos)
@@ -246,7 +246,7 @@ class TelaConsultaOS(QtWidgets.QMainWindow):
                     self.listarOS()
 
     def renderBotoes(self):
-        if self.comboBoxFinalizado.currentIndex() == 1:
+        if self.comboBoxStatus.currentIndex() == 1:
             self.botaoEditar.hide()
             self.botaoExcluir.hide()
         else:

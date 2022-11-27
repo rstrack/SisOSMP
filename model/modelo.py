@@ -73,11 +73,17 @@ class Orcamento(BaseModel):
     veiculo = ForeignKeyField(Veiculo, backref='veiculos',null=False)
     km = CharField(max_length=6,constraints=[Check('km>0')], null=False)
     valorTotal = DoubleField(constraints=[Check('valorTotal>=0')],null=False)
-    aprovado = BooleanField(constraints=[SQL('DEFAULT FALSE')], null=False)
+    # aprovado = BooleanField(constraints=[SQL('DEFAULT FALSE')], null=False)
     dataAprovacao = DateField(null=True)
-    finalizado = BooleanField(constraints=[SQL('DEFAULT FALSE')], null=False)
+    status = CharField(constraints=[SQL("DEFAULT '0'"), Check("status in ('0','1','2','3')")], null=False)
     observacoes = CharField(max_length=200, null=True)
 
+'''status:
+0 = Aguardando aprovação
+1 = Não aprovado
+2 = Aprovado
+3 = Finalizado
+'''
 
 class ItemPeca(BaseModel):
     peca = ForeignKeyField(Peca, backref='pecas')
@@ -111,7 +117,7 @@ def create_tables(cursor):
 BEFORE UPDATE ON `orcamento`
 FOR EACH ROW
 begin
-    if new.aprovado=1 and old.aprovado=0 then
+    if new.status='2' and old.status='0' then
         set new.dataAprovacao=curdate();
     end if;
 end''')

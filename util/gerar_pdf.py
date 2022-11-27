@@ -145,7 +145,7 @@ class GeraPDF():
         pdf.drawString(375, 568, 'KM: {}'.format(orcamento['km']))
         pdf.rect(370, 564, 186, 15, fill=False, stroke=True)
         pdf.setFont('Helvetica-Bold', 12)
-        if orcamento['aprovado']:
+        if orcamento['status'] in ['2', '3']:
             pdf.setFont('Helvetica-Bold', 15)
             pdf.drawString(243, 729, 'Ordem de serviço')
             pdf.setFont('Helvetica', 10)

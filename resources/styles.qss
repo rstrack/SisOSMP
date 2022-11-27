@@ -141,6 +141,9 @@ QLineEdit{
 
 QComboBox{
     font-size: 13px;
+    /* border-radius: 2px;
+    height: 20px;
+    border:1px solid gray; */
     combobox-popup: 0;
 }
 
@@ -209,7 +212,6 @@ QToolTip{
 
 QDialog#helpMessageBox QLabel{
     margin: 5px;
-    line-height:150%;
 }
 
 QDialog#helpMessageBox QPushButton{

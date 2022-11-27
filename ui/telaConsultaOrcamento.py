@@ -15,6 +15,7 @@ class TelaConsultaOrcamento(QtWidgets.QMainWindow):
         self.pecaCtrl = handleDeps.getDep('PECACTRL')
         self.servicoCtrl = handleDeps.getDep('SERVICOCTRL')
         self.busca = ''
+        self.status = '0'
         self.orderBy = 0
         self.setupUi()
 
@@ -66,6 +67,10 @@ class TelaConsultaOrcamento(QtWidgets.QMainWindow):
         self.botaoNovo = QtWidgets.QPushButton(self.frameOrdenacao)
         self.botaoNovo.setFixedSize(80,25)
         self.hlayoutOrdenacao.addWidget(self.botaoNovo)
+        self.comboBoxStatus = QtWidgets.QComboBox(self.frameOrdenacao)
+        self.comboBoxStatus.setFixedHeight(25)
+        self.comboBoxStatus.addItems(['Aguardando aprovação', 'Não aprovado'])
+        self.hlayoutOrdenacao.addWidget(self.comboBoxStatus)
         self.comboBoxOrdenacao = QtWidgets.QComboBox(self.frameOrdenacao)
         self.comboBoxOrdenacao.setFixedHeight(25)
         self.comboBoxOrdenacao.setToolTip('Ordenar')
@@ -112,6 +117,7 @@ class TelaConsultaOrcamento(QtWidgets.QMainWindow):
         self.tabela.verticalScrollBar().actionTriggered.connect(self.scrolled)
         self.lineEditBusca.textChanged.connect(self.buffer)
         self.comboBoxOrdenacao.currentIndexChanged.connect(self.buffer)
+        self.comboBoxStatus.currentIndexChanged.connect(self.buffer)
         self.botaoNovo.clicked.connect(lambda: self.novoOrcamento.emit(1))
         self.listarOrcamentos()
 
@@ -132,10 +138,11 @@ class TelaConsultaOrcamento(QtWidgets.QMainWindow):
     def buffer(self):
         self.busca = self.lineEditBusca.text()
         self.orderBy = self.comboBoxOrdenacao.currentIndex()
+        self.status = '1' if self.comboBoxStatus.currentIndex() == 1 else '0'
         self.listarOrcamentos()
 
     def maisOrcamentos(self, qtde):
-        orcamentos = self.orcamentoCtrl.buscarOrcamento(False, False, self.busca, self.linhasCarregadas+qtde, self.orderBy)
+        orcamentos = self.orcamentoCtrl.buscarOrcamento(self.status, self.busca, self.linhasCarregadas+qtde, self.orderBy)
         if not orcamentos:
             return
         maxLength = len(orcamentos)

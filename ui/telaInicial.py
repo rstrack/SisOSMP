@@ -29,7 +29,7 @@ class TelaInicial(QtWidgets.QMainWindow):
         self.logo_frame = QtWidgets.QFrame(self.framelateral)
         self.logo_frame.setObjectName('framelogo')
         self.vlayout2 = QtWidgets.QVBoxLayout(self.logo_frame)
-        self.vlayout2.setContentsMargins(9, 0, 9, 0)
+        self.vlayout2.setContentsMargins(6, 0, 6, 0)
         self.vlayout2.setSpacing(0)
         # logo
         self.botaoLogo = QtWidgets.QPushButton(self.logo_frame)
@@ -64,12 +64,6 @@ class TelaInicial(QtWidgets.QMainWindow):
         self.hline1.setObjectName("hline")
         self.hline1.setFrameShape(QtWidgets.QFrame.Shape.HLine)
         self.hline1.setFrameShadow(QtWidgets.QFrame.Shadow.Plain)
-        '''self.vlayoutlabel1 = QtWidgets.QVBoxLayout(self.framemenu1)
-        self.vlayoutlabel1.setSizeConstraint(
-            QtWidgets.QLayout.SizeConstraint.SetDefaultConstraint)
-        self.vlayoutlabel1.setSpacing(0)
-        self.vlayoutlabel1.setContentsMargins(0,0,0,0)
-        self.vlayoutlabel1.addWidget(self.labelcadastro)'''
         self.vlayout4 = QtWidgets.QVBoxLayout(self.framemenu2)
         self.vlayout4.setContentsMargins(0,0,0,0)
         self.vlayout4.setSpacing(0)
@@ -95,12 +89,6 @@ class TelaInicial(QtWidgets.QMainWindow):
         self.hline2.setObjectName("hline")
         self.hline2.setFrameShape(QtWidgets.QFrame.Shape.HLine)
         self.hline2.setFrameShadow(QtWidgets.QFrame.Shadow.Plain)
-        '''self.vlayoutlabel2 = QtWidgets.QVBoxLayout(self.framemenu3)
-        self.vlayoutlabel2.setSizeConstraint(
-            QtWidgets.QLayout.SizeConstraint.SetDefaultConstraint)
-        self.vlayoutlabel2.setSpacing(0)
-        self.vlayoutlabel2.setContentsMargins(0,0,0,0)
-        self.vlayoutlabel2.addWidget(self.labelconsulta)'''
         self.vlayout5 = QtWidgets.QVBoxLayout(self.framemenu4)
         self.vlayout5.setContentsMargins(0,0,0,0)
         self.vlayout5.setSpacing(0)

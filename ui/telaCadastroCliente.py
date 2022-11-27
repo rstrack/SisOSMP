@@ -42,94 +42,97 @@ class TelaCadastroCliente(QtWidgets.QMainWindow):
         self.labelTitulo.setObjectName("titulo")
         self.vlayout.addWidget(self.labelTitulo)
         self.framedados = QtWidgets.QFrame(self.main_frame)
-        self.glayoutp = QtWidgets.QGridLayout(self.framedados)
-        # dados do cliente
+        self.vlayout2 = QtWidgets.QVBoxLayout(self.framedados)
+        self.vlayout2.setSpacing(9)
         self.groupBoxCliente = QtWidgets.QGroupBox(self.framedados)
-        self.groupBoxCliente.setTitle("Dados de Identificação")
-        self.glayoutp.addWidget(self.groupBoxCliente, 0, 0, 1, -1)
-        self.gridLayout = QtWidgets.QGridLayout(self.groupBoxCliente)
-        self.labelTipo = QtWidgets.QLabel(self.groupBoxCliente)
-        self.gridLayout.addWidget(self.labelTipo, 0, 0, 1, 1)
-        self.labelNomeCliente = QtWidgets.QLabel(self.groupBoxCliente)
-        self.gridLayout.addWidget(self.labelNomeCliente, 0, 1, 1, 1)
-        self.labelDocumento = QtWidgets.QLabel(self.groupBoxCliente)
-        self.gridLayout.addWidget(self.labelDocumento, 0, 2, 1, 1)
-        self.comboBoxPessoa = QtWidgets.QComboBox(self.groupBoxCliente)
+        self.groupBoxCliente.setTitle("Dados do Cliente")
+        self.groupBoxCliente.setCheckable(True)
+        self.vlayout2.addWidget(self.groupBoxCliente)
+        self.glayoutp = QtWidgets.QGridLayout(self.groupBoxCliente)
+        # dados do cliente
+        self.frameDadosCliente = QtWidgets.QFrame(self.groupBoxCliente)
+        self.glayoutp.addWidget(self.frameDadosCliente, 0, 0, 1, -1)
+        self.gridLayoutCliente = QtWidgets.QGridLayout(self.frameDadosCliente)
+        self.labelTipo = QtWidgets.QLabel(self.frameDadosCliente)
+        self.gridLayoutCliente.addWidget(self.labelTipo, 0, 0, 1, 1)
+        self.labelNomeCliente = QtWidgets.QLabel(self.frameDadosCliente)
+        self.gridLayoutCliente.addWidget(self.labelNomeCliente, 0, 1, 1, 1)
+        self.labelDocumento = QtWidgets.QLabel(self.frameDadosCliente)
+        self.gridLayoutCliente.addWidget(self.labelDocumento, 0, 2, 1, 1)
+        self.comboBoxPessoa = QtWidgets.QComboBox(self.frameDadosCliente)
         self.comboBoxPessoa.addItems(["PESSOA FÍSICA", "PESSOA JURÍDICA", "ESTRANGEIRO"])
-        self.gridLayout.addWidget(self.comboBoxPessoa, 1, 0, 1, 1)
-        self.lineEditNomeCliente = QtWidgets.QLineEdit(self.groupBoxCliente)
+        self.gridLayoutCliente.addWidget(self.comboBoxPessoa, 1, 0, 1, 1)
+        self.lineEditNomeCliente = QtWidgets.QLineEdit(self.frameDadosCliente)
         self.lineEditNomeCliente.setMaxLength(80)
-        self.gridLayout.addWidget(self.lineEditNomeCliente, 1, 1, 1, 1)
-        self.lineEditDocumento = QtWidgets.QLineEdit(self.groupBoxCliente)
+        self.gridLayoutCliente.addWidget(self.lineEditNomeCliente, 1, 1, 1, 1)
+        self.lineEditDocumento = QtWidgets.QLineEdit(self.frameDadosCliente)
         self.lineEditDocumento.setMaxLength(14)
-        self.gridLayout.addWidget(self.lineEditDocumento, 1, 2, 1, 1)
-        self.gridLayout.setColumnStretch(0, 1)
-        self.gridLayout.setColumnStretch(1, 5)
-        self.gridLayout.setColumnStretch(2, 1)
-        spacerItem2 = QtWidgets.QSpacerItem(
-            20, 10, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Maximum)
-        self.glayoutp.addItem(spacerItem2)
-        # dados de endereço
-        self.groupBoxEnder = QtWidgets.QGroupBox(self.framedados)
-        self.groupBoxEnder.setTitle("Endereço")
-        self.glayoutp.addWidget(self.groupBoxEnder, 1, 0)
-        self.gridLayout2 = QtWidgets.QGridLayout(self.groupBoxEnder)
-        self.groupBoxEnder.setLayout(self.gridLayout2)
-        self.labelcep = QtWidgets.QLabel(self.groupBoxEnder)
+        self.gridLayoutCliente.addWidget(self.lineEditDocumento, 1, 2, 1, 1)
+        self.gridLayoutCliente.setColumnStretch(0, 1)
+        self.gridLayoutCliente.setColumnStretch(1, 5)
+        self.gridLayoutCliente.setColumnStretch(2, 1)
+        self.frameEnder = QtWidgets.QFrame(self.groupBoxCliente)
+        self.glayoutp.addWidget(self.frameEnder, 1, 0)
+        self.gridLayout2 = QtWidgets.QGridLayout(self.frameEnder)
+        self.frameEnder.setLayout(self.gridLayout2)
+        self.labelcep = QtWidgets.QLabel(self.frameEnder)
         self.gridLayout2.addWidget(self.labelcep, 0, 0, 1, 1)
-        self.labelender = QtWidgets.QLabel(self.groupBoxEnder)
+        self.labelender = QtWidgets.QLabel(self.frameEnder)
         self.gridLayout2.addWidget(self.labelender, 0, 1, 1, 2)
-        self.labelnumero = QtWidgets.QLabel(self.groupBoxEnder)
+        self.labelnumero = QtWidgets.QLabel(self.frameEnder)
         self.gridLayout2.addWidget(self.labelnumero, 0, 3, 1, 1)
-        self.lineEditCEP = QtWidgets.QLineEdit(self.groupBoxEnder)
+        self.lineEditCEP = QtWidgets.QLineEdit(self.frameEnder)
         self.lineEditCEP.setMaxLength(8)
         self.gridLayout2.addWidget(self.lineEditCEP, 1, 0, 1, 1)
-        self.lineEditEnder = QtWidgets.QLineEdit(self.groupBoxEnder)
+        self.lineEditEnder = QtWidgets.QLineEdit(self.frameEnder)
         self.lineEditEnder.setMaxLength(80)
         self.gridLayout2.addWidget(self.lineEditEnder, 1, 1, 1, 2)
-        self.lineEditNumero = QtWidgets.QLineEdit(self.groupBoxEnder)
+        self.lineEditNumero = QtWidgets.QLineEdit(self.frameEnder)
         self.lineEditNumero.setMaxLength(6)
         self.gridLayout2.addWidget(self.lineEditNumero, 1, 3, 1, 1)
-        self.labelBairro = QtWidgets.QLabel(self.groupBoxEnder)
+        self.labelBairro = QtWidgets.QLabel(self.frameEnder)
         self.gridLayout2.addWidget(self.labelBairro, 2, 0, 1, 2)
-        self.labelCidade = QtWidgets.QLabel(self.groupBoxEnder)
+        self.labelCidade = QtWidgets.QLabel(self.frameEnder)
         self.gridLayout2.addWidget(self.labelCidade, 2, 2, 1, 1)
-        self.labelUF = QtWidgets.QLabel(self.groupBoxEnder)
+        self.labelUF = QtWidgets.QLabel(self.frameEnder)
         self.gridLayout2.addWidget(self.labelUF, 2, 3, 1, 1)
-        self.lineEditBairro = QtWidgets.QLineEdit(self.groupBoxEnder)
+        self.lineEditBairro = QtWidgets.QLineEdit(self.frameEnder)
         self.lineEditBairro.setMaxLength(50)
         self.gridLayout2.addWidget(self.lineEditBairro, 3, 0, 1, 2)
-        self.lineEditCidade = QtWidgets.QLineEdit(self.groupBoxEnder)
+        self.lineEditCidade = QtWidgets.QLineEdit(self.frameEnder)
         self.lineEditCidade.setMaxLength(50)
         self.gridLayout2.addWidget(self.lineEditCidade, 3, 2, 1, 1)
-        self.comboBoxuf = QtWidgets.QComboBox(self.groupBoxEnder)
+        self.comboBoxuf = QtWidgets.QComboBox(self.frameEnder)
         self.comboBoxuf.addItems(SIGLAESTADOS)
         self.comboBoxuf.setCurrentText('PR')
         self.gridLayout2.addWidget(self.comboBoxuf, 3, 3, 1, 1)
         self.gridLayout2.setColumnStretch(1, 2)
         self.gridLayout2.setColumnStretch(2, 5)
         self.gridLayout2.setColumnStretch(3, 1)
-        spacerItem3 = QtWidgets.QSpacerItem(
-            20, 10, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Maximum)
-        self.glayoutp.addItem(spacerItem3)
-        # telefone
-        self.groupBoxTel = QtWidgets.QGroupBox(self.framedados)
-        self.groupBoxTel.setTitle("Contato")
-        self.glayoutp.addWidget(self.groupBoxTel, 1, 1)
-        self.vlayout7 = QtWidgets.QVBoxLayout(self.groupBoxTel)
-        self.labelTel1 = QtWidgets.QLabel(self.groupBoxTel)
+        self.frameTel = QtWidgets.QFrame(self.groupBoxCliente)
+        self.glayoutp.addWidget(self.frameTel, 1, 1)
+        self.vlayout7 = QtWidgets.QVBoxLayout(self.frameTel)
+        self.labelTel1 = QtWidgets.QLabel(self.frameTel)
         self.vlayout7.addWidget(self.labelTel1)
-        self.lineEditFone1 = QtWidgets.QLineEdit(self.groupBoxTel)
+        self.lineEditFone1 = QtWidgets.QLineEdit(self.frameTel)
         self.lineEditFone1.setMaxLength(14)
         self.vlayout7.addWidget(self.lineEditFone1)
-        self.labelTel2 = QtWidgets.QLabel(self.groupBoxTel)
+        self.labelTel2 = QtWidgets.QLabel(self.frameTel)
         self.vlayout7.addWidget(self.labelTel2)
-        self.lineEditFone2 = QtWidgets.QLineEdit(self.groupBoxTel)
+        self.lineEditFone2 = QtWidgets.QLineEdit(self.frameTel)
         self.lineEditFone2.setMaxLength(14)
         self.vlayout7.addWidget(self.lineEditFone2)
+        #DIVISÃO
+        self.hline = QtWidgets.QFrame(self.framedados)
+        self.hline.setFrameShape(QtWidgets.QFrame.Shape.HLine)
+        self.hline.setFrameShadow(QtWidgets.QFrame.Shadow.Plain)
+        # self.hline.setStyleSheet('border:none;background-color: gray')
+        self.hline.setStyleSheet('color: gray')
+        self.vlayout2.addWidget(self.hline)
         # dados do veiculo
         self.groupBoxVeiculo = QtWidgets.QGroupBox(self.framedados)
         self.groupBoxVeiculo.setTitle("Dados do Veículo")
+        self.groupBoxVeiculo.setCheckable(True)
         self.gridLayout4 = QtWidgets.QGridLayout(self.groupBoxVeiculo)
         self.labelMarca = QtWidgets.QLabel(self.groupBoxVeiculo)
         self.gridLayout4.addWidget(self.labelMarca, 0, 0, 1, 1)
@@ -155,11 +158,11 @@ class TelaCadastroCliente(QtWidgets.QMainWindow):
         self.gridLayout4.setColumnStretch(0, 1)
         self.gridLayout4.setColumnStretch(1, 2)
         self.gridLayout4.setColumnStretch(2, 1)
-        self.glayoutp.addWidget(self.groupBoxVeiculo, 2, 0, 1, -1)
-        spacerItem4 = QtWidgets.QSpacerItem(
-            20, 10, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Maximum)
-        self.glayoutp.addItem(spacerItem4)
+        self.vlayout2.addWidget(self.groupBoxVeiculo)
         self.vlayout.addWidget(self.framedados)
+        spacerItem4 = QtWidgets.QSpacerItem(
+            20, 10, QtWidgets.QSizePolicy.Policy.Maximum, QtWidgets.QSizePolicy.Policy.Expanding)
+        self.vlayout.addItem(spacerItem4)
         self.glayoutp.setColumnStretch(0, 3)
         self.glayoutp.setColumnStretch(1, 1)
         # botoes
@@ -178,9 +181,9 @@ class TelaCadastroCliente(QtWidgets.QMainWindow):
         self.botaolimpar.setMinimumSize(100, 35)
         self.hlayout4.addWidget(self.botaolimpar)
         self.vlayout.addWidget(self.framebotoes)
-        spacerItem6 = QtWidgets.QSpacerItem(
+        '''spacerItem6 = QtWidgets.QSpacerItem(
             40, 20, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding)
-        self.glayoutp.addItem(spacerItem6)
+        self.glayoutp.addItem(spacerItem6)'''
         self.setCentralWidget(self.main_frame)
         self.completerCidade = QtWidgets.QCompleter([])
         self.completerCidade.setMaxVisibleItems(5)
@@ -197,6 +200,8 @@ class TelaCadastroCliente(QtWidgets.QMainWindow):
         self.botaoSalvar.clicked.connect(self.salvar)
         self.comboBoxPessoa.currentIndexChanged.connect(self.escolherTipoPessoa)
         self.lineEditCEP.textChanged.connect(self.buscarDadosCEP)
+        self.groupBoxCliente.clicked.connect(self.checkBoxes)
+        self.groupBoxVeiculo.clicked.connect(self.checkBoxes)
 
     def retranslateUi(self):
         _translate = QtCore.QCoreApplication.translate
@@ -258,20 +263,27 @@ class TelaCadastroCliente(QtWidgets.QMainWindow):
             msg.setText(str(e))
             msg.exec()
 
-    def limparCampos(self):
-        for lineedit in self.framedados.findChildren(QtWidgets.QLineEdit):
+    def limparCliente(self):
+        for lineedit in self.groupBoxCliente.findChildren(QtWidgets.QLineEdit):
+            lineedit.clear()
+
+    def limparVeiculo(self):
+        for lineedit in self.groupBoxVeiculo.findChildren(QtWidgets.QLineEdit):
             lineedit.clear()
 
     def resetarTela(self):
-        self.limparCampos()
+        self.limparCliente()
+        self.limparVeiculo()
         self.setMarcas()
 
+    def checkBoxes(self):
+        if self.groupBoxCliente.isChecked() == False:
+            self.limparCliente()
+        if self.groupBoxVeiculo.isChecked() == False:
+            self.limparVeiculo()
+
     def getDadosCliente(self):
-        lista = list()
-        lista.extend(self.groupBoxCliente.findChildren(QtWidgets.QLineEdit))
-        lista.extend(self.groupBoxEnder.findChildren(QtWidgets.QLineEdit))
-        lista.extend(self.groupBoxTel.findChildren(QtWidgets.QLineEdit))
-        if len(list(filter(lambda dados: dados.text(), lista))) == 0:
+        if self.groupBoxCliente.isChecked()==False:
             return None
         dict = {}
         dict['tipo'] = self.comboBoxPessoa.currentIndex()
@@ -341,7 +353,7 @@ class TelaCadastroCliente(QtWidgets.QMainWindow):
         return fones
 
     def getDadosVeiculo(self):
-        if len(list(filter(lambda dados: dados.text(), self.groupBoxVeiculo.findChildren(QtWidgets.QLineEdit)))) == 0:
+        if self.groupBoxVeiculo.isChecked()==False:
             return None
         dict = {}
         if self.comboBoxMarca.currentText():

@@ -49,6 +49,19 @@ Caso escolha um já existente, é
 possível alterar os dados.
 '''
 
+HELPORCAMENTO = \
+'''\t\tCadastro de orçamento de manutenção de veículos. Cadastre um novo cliente e/ou veículo ou selecione um já existente. Ao selecionar, é possível editar seus dados.
+
+\t\tSelecione ou cadastre um novo veículo. Ao selecionar, é possível editar seus dados.
+
+\t\tAdicione peças e serviços ao orçamento. Necessário pelo menos um serviço. Para adicionar mais peças ou serviços, clique no botão "+" disponível em suas respectivas seções.
+
+\t\tUtilize o campo de observações para anotações referentes ao orçamento.
+
+\t\tApós concluir, selecione a opção de salvar somente ou salvar e gerar o arquivo PDF para visualização do orçamento
+
+'''
+
 class TelaCadastroOrcamento(QtWidgets.QMainWindow):
 
     def __init__(self):
@@ -85,11 +98,29 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
         self.vlayout.setContentsMargins(0,0,0,0)
         self.vlayout.setSpacing(0)
         # titulo
-        self.labelTitulo = QtWidgets.QLabel(self.framegeral)
+        self.frameTitulo = QtWidgets.QFrame(self.framegeral)
+        self.vlayout.addWidget(self.frameTitulo)
+        self.hlayouttitulo = QtWidgets.QHBoxLayout(self.frameTitulo)
+        self.hlayouttitulo.setContentsMargins(0,0,0,0)
+        self.hlayouttitulo.setSpacing(0)
+        self.hlayouttitulo.setAlignment(QtCore.Qt.AlignmentFlag.AlignHCenter)
+        self.labelTitulo = QtWidgets.QLabel(self.frameTitulo)
+        self.labelTitulo.setFixedHeight(60)
+        self.labelTitulo.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
+        self.labelTitulo.setObjectName("titulo")
+        self.hlayouttitulo.addWidget(self.labelTitulo)
+        self.botaoHelp = HoverButton("", "./resources/help-icon1.png", "./resources/help-icon2.png", self.frameTitulo)
+        self.botaoHelp.setToolTip('Ajuda')
+        self.botaoHelp.setObjectName('botaohelp')
+        self.botaoHelp.setHelpIconSize(20,20)
+        self.hlayouttitulo.addWidget(self.botaoHelp)
+
+        '''self.labelTitulo = QtWidgets.QLabel(self.framegeral)
         self.labelTitulo.setFixedHeight(40)
         self.labelTitulo.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
         self.labelTitulo.setObjectName("titulo")
-        self.vlayout.addWidget(self.labelTitulo)
+        self.vlayout.addWidget(self.labelTitulo)'''
+
         self.framedados = QtWidgets.QFrame(self.main_frame)
         self.gridLayoutGeral = QtWidgets.QGridLayout(self.framedados)
         self.gridLayoutGeral.setVerticalSpacing(0)
@@ -391,26 +422,6 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
         self.hlayoutValor.addItem(spacer)
         self.hlayoutValor.addWidget(self.labelValorTotal1)
         self.hlayoutValor.addWidget(self.labelValorTotal2)
-
-        '''self.groupBoxOrcamento = QtWidgets.QGroupBox(self.framedados)
-        self.gridLayoutOrcamento = QtWidgets.QGridLayout(self.groupBoxOrcamento)
-        self.labelData = QtWidgets.QLabel(self.groupBoxOrcamento)
-        self.lineEditData = QtWidgets.QDateEdit(self.groupBoxOrcamento)
-        self.lineEditData.setFixedWidth(125)
-        self.lineEditData.setCalendarPopup(True)
-        self.lineEditData.setDateTime(QtCore.QDateTime.currentDateTime())
-        self.gridLayoutOrcamento.addWidget(self.labelData, 0, 0, 1, 1)
-        self.gridLayoutOrcamento.addWidget(self.lineEditData, 1, 0, 1, 1)
-        spacer = QtWidgets.QSpacerItem(20,20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
-        self.gridLayoutOrcamento.addItem(spacer, 0, 1, 1, 1)
-        self.labelValorTotal1 = QtWidgets.QLabel(self.groupBoxOrcamento)
-        self.labelValorTotal1.setObjectName('boldText')
-        self.labelValorTotal2 = QtWidgets.QLabel(self.groupBoxOrcamento)
-        self.labelValorTotal2.setObjectName('boldText')
-        self.labelValorTotal2.setText('0,00')
-        self.gridLayoutOrcamento.addWidget(self.labelValorTotal1, 0, 2, -1, 1)
-        self.gridLayoutOrcamento.addWidget(self.labelValorTotal2, 0, 3, -1, 1)
-        self.gridLayoutGeral.addWidget(self.groupBoxOrcamento, 7, 0, 1, -1)'''
         # campo de observações
         self.groupBoxObs = QtWidgets.QGroupBox(self.framedados)
         self.vlayout2 = QtWidgets.QVBoxLayout(self.groupBoxObs)
@@ -486,6 +497,8 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
         self.checkboxNovoCliente.stateChanged.connect(self.verificarCamposCliente)
         self.checkboxNovoVeiculo.stateChanged.connect(self.verificarCamposVeiculo)
 
+
+        self.botaoHelp.clicked.connect(lambda: self.helpMsg('Ajuda - Cadastro de Orçamentos', HELPORCAMENTO))
         self.botaoHelpCliente.clicked.connect(lambda: self.helpMsg('Ajuda - Dados do Cliente', HELPCLIENTE))
         self.botaoHelpVeiculo.clicked.connect(lambda: self.helpMsg('Ajuda - Dados do Veículo', HELPVEICULO))
         self.botaoHelpPecas.clicked.connect(lambda: self.helpMsg('Ajuda - Peças', HELPPECAS))
@@ -501,7 +514,7 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
         self.botaoSalvaresalvareGerarPDF.setText(_translate("MainWindow", "Salvar e Gerar PDF"))
         self.botaoSalvar.setText(_translate("MainWindow", "Salvar"))
         self.botaolimpar.setText(_translate("MainWindow", "Limpar"))
-        self.labelTitulo.setText(_translate("MainWindow", "Orçamentos"))
+        self.labelTitulo.setText(_translate("MainWindow", "Cadastro de Orçamentos"))
         self.labelData.setText(_translate("MainWindow", "Data do Orçamento*"))
         self.botaobuscarCliente.setText(_translate("MainWindow", "Selecionar Cliente"))
         self.checkboxNovoCliente.setText(_translate("MainWindow", "Novo Cliente"))

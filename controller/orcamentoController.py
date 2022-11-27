@@ -159,11 +159,20 @@ class OrcamentoController():
             except Exception as e:
                 transaction.rollback()
                 return e
+
+    def rejeitarOrcamento(self, idOrcamento):
+        with db.atomic() as transaction:
+            try:
+                r = self.orcamentoRep.update({'idOrcamento':idOrcamento, 'status': '1'})
+                return r
+            except Exception as e:
+                transaction.rollback()
+                return e
     
     def aprovarOrcamento(self, idOrcamento):
         with db.atomic() as transaction:
             try:
-                r = self.orcamentoRep.update({'idOrcamento':idOrcamento, 'aprovado': True})
+                r = self.orcamentoRep.update({'idOrcamento':idOrcamento, 'status': '2'})
                 return r
             except Exception as e:
                 transaction.rollback()
@@ -172,15 +181,15 @@ class OrcamentoController():
     def finalizarOrcamento(self, idOrcamento):
         with db.atomic() as transaction:
             try:
-                r = self.orcamentoRep.update({'idOrcamento':idOrcamento, 'finalizado': True})
+                r = self.orcamentoRep.update({'idOrcamento':idOrcamento, 'status': '3'})
                 return r
             except Exception as e:
                 transaction.rollback()
                 return e
 
-    def listarOrcamentos(self, aprovado, limit=None):
+    def listarOrcamentos(self, status, limit=None):
         _orcamentos = []
-        orcamentos = self.orcamentoRep.findByAprovado(aprovado, limit)
+        orcamentos = self.orcamentoRep.findByStatus(status, limit)
         if orcamentos:
             for orcamento in orcamentos:
                 _orcamentos.append(model_to_dict(orcamento))
@@ -203,11 +212,11 @@ class OrcamentoController():
         if itemServicos: return itemServicos.dicts()
         else: return None
 
-    def buscarOrcamento(self, aprovado, finalizado, input, limit=None, orderBy:int=None):
+    def buscarOrcamento(self, status, input, limit=None, orderBy:int=None):
         with db.atomic() as transaction:
             try:
                 _orcamentos = []
-                orcamentos = self.orcamentoRep.findByInput(aprovado, finalizado, input, limit, orderBy)
+                orcamentos = self.orcamentoRep.findByInput(status, input, limit, orderBy)
                 if orcamentos:
                     for orcamento in orcamentos:
                         _orcamentos.append(model_to_dict(orcamento))
