@@ -10,6 +10,7 @@ class TelaEditarMarca(QtWidgets.QMainWindow):
 
     def setupUi(self):
         self.resize(400, 150)
+        self.setWindowModality(QtCore.Qt.WindowModality.ApplicationModal)
         self.main_frame = QtWidgets.QFrame(self)
         self.main_frame.setObjectName("main_frame")
         self.vlayout = QtWidgets.QVBoxLayout(self.main_frame)
@@ -39,7 +40,7 @@ class TelaEditarMarca(QtWidgets.QMainWindow):
 
     def retranslateUi(self):
         _translate = QtCore.QCoreApplication.translate
-        self.setWindowTitle(_translate("MainWindow", "Marcas"))
+        self.setWindowTitle(_translate("MainWindow", "Editar Marca"))
         self.label.setText(_translate("MainWindow", "Marca"))
         self.botaoEditar.setText(_translate("MainWindow", "Editar"))
         self.botaoCancelar.setText(_translate("MainWindow", "Cancelar"))

@@ -6,7 +6,7 @@ class HelpMessageBox(QtWidgets.QDialog):
         super().__init__()
         self.setObjectName('helpMessageBox')
         self.setWindowTitle("Ajuda")
-        self.setWindowIcon(QtGui.QIcon('./resources/logo-icon.png'))
+        self.setWindowIcon(QtGui.QIcon('./resources/help-icon1.png'))
         self.setWindowModality(QtCore.Qt.WindowModality.ApplicationModal)
         QBtn = QtWidgets.QDialogButtonBox.StandardButton.Ok
         self.buttonBox = QtWidgets.QDialogButtonBox(QBtn)
