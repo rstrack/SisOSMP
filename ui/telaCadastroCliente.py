@@ -1,4 +1,5 @@
 from PyQt6 import QtCore, QtWidgets, QtGui
+from ui.help import HELPCADASTROCLIENTE, help
 from ui.hoverButton import HoverButton
 from util.container import handleDeps
 import threading
@@ -214,6 +215,7 @@ class TelaCadastroCliente(QtWidgets.QMainWindow):
         self.lineEditCEP.textChanged.connect(self.buscarDadosCEP)
         self.groupBoxCliente.clicked.connect(self.checkBoxes)
         self.groupBoxVeiculo.clicked.connect(self.checkBoxes)
+        self.botaoHelp.clicked.connect(lambda: help('Ajuda - Cadastro de Orçamentos', HELPCADASTROCLIENTE))
 
     def retranslateUi(self):
         _translate = QtCore.QCoreApplication.translate

@@ -1,5 +1,6 @@
 from PyQt6 import QtCore, QtGui, QtWidgets
 from ui.hoverButton import HoverButton
+from ui.help import HELPCONSULTACLIENTE, help
 from ui.telaVeiculoCliente import TelaVeiculoCliente
 from ui.infiniteScroll import AlignDelegate, InfiniteScrollTableModel
 from util.container import handleDeps
@@ -127,6 +128,7 @@ class TelaConsultaCliente(QtWidgets.QMainWindow):
         self.lineEditBusca.textChanged.connect(self.buffer)
         self.comboBoxOrdenacao.currentIndexChanged.connect(self.buffer)
         self.botaoNovo.clicked.connect(lambda: self.novoCliente.emit(1))
+        self.botaoHelp.clicked.connect(lambda: help('Ajuda - Cadastro de Orçamentos', HELPCONSULTACLIENTE))
 
     def retranslateUi(self):
         _translate = QtCore.QCoreApplication.translate

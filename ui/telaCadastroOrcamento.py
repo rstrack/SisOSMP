@@ -392,8 +392,6 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
         self.lineEditValorServico.textChanged.connect(self.setValor)
         self.checkboxNovoCliente.stateChanged.connect(self.verificarCamposCliente)
         self.checkboxNovoVeiculo.stateChanged.connect(self.verificarCamposVeiculo)
-
-
         self.botaoHelp.clicked.connect(lambda: help('Ajuda - Cadastro de Orçamentos', HELPCADASTROORCAMENTO))
 
     ##############################################################################################################################

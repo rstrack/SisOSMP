@@ -3,6 +3,7 @@ from PyQt6 import QtCore, QtWidgets, QtGui
 from datetime import datetime
 
 from util.container import handleDeps
+from ui.help import HELPEDITARORCAMENTO, help
 from ui.messageBox import MessageBox
 from ui.hoverButton import HoverButton
 from util.gerar_pdf import GeraPDF
@@ -258,29 +259,6 @@ class TelaEditarOrcamento(QtWidgets.QMainWindow):
         self.hlayoutValor.addItem(spacer)
         self.hlayoutValor.addWidget(self.labelValorTotal1)
         self.hlayoutValor.addWidget(self.labelValorTotal2)
-
-        '''self.groupBoxOrcamento = QtWidgets.QGroupBox(self.framedados)
-        self.gridLayoutOrcamento = QtWidgets.QGridLayout(self.groupBoxOrcamento)
-        self.labelData = QtWidgets.QLabel(self.groupBoxOrcamento)
-
-        self.lineEditData = QtWidgets.QDateEdit(self.groupBoxOrcamento)
-        self.lineEditData.setFixedWidth(125)
-        self.lineEditData.setCalendarPopup(True)
-        self.lineEditData.setDateTime(QtCore.QDateTime.currentDateTime())
-        self.gridLayoutOrcamento.addWidget(self.labelData, 0, 0, 1, 1)
-        self.gridLayoutOrcamento.addWidget(self.lineEditData, 1, 0, 1, 1)
-        spacer = QtWidgets.QSpacerItem(20,20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
-        self.gridLayoutOrcamento.addItem(spacer, 0, 1, 1, 1)
-        self.labelValorTotal1 = QtWidgets.QLabel(self.groupBoxOrcamento)
-        #self.labelValorTotal1.setAlignment(QtCore.Qt.AlignmentFlag.AlignRight | QtCore.Qt.AlignmentFlag.AlignVCenter)
-        self.labelValorTotal1.setObjectName('boldText')
-        self.labelValorTotal2 = QtWidgets.QLabel(self.groupBoxOrcamento)
-        #self.labelValorTotal2.setAlignment(QtCore.Qt.AlignmentFlag.AlignLeft | QtCore.Qt.AlignmentFlag.AlignVCenter)
-        self.labelValorTotal2.setObjectName('boldText')
-        self.labelValorTotal2.setText('0,00')
-        self.gridLayoutOrcamento.addWidget(self.labelValorTotal1, 0, 2, -1, 1)
-        self.gridLayoutOrcamento.addWidget(self.labelValorTotal2, 0, 3, -1, 1)
-        self.gridLayoutGeral.addWidget(self.groupBoxOrcamento, 6, 0, 1, -1)'''
         self.gridLayoutGeral.setRowStretch(5, 10)
         self.gridLayoutGeral.setRowStretch(6, 0)
         # campo de observações
@@ -343,6 +321,7 @@ class TelaEditarOrcamento(QtWidgets.QMainWindow):
         self.botaoAprovar.clicked.connect(self.aprovarOrcamento)
         self.botaoReprovar.clicked.connect(self.reprovarOrcamento)
         self.botaoCancelar.clicked.connect(self.cancelarEdicao)
+        self.botaoHelp.clicked.connect(lambda: help('Ajuda - Cadastro de Orçamentos', HELPEDITARORCAMENTO))
 
     ##############################################################################################################################
                                                             #FUNÇÕES

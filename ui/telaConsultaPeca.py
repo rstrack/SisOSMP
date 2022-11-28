@@ -1,6 +1,7 @@
 from PyQt6 import QtCore, QtGui, QtWidgets
-from ui.hoverButton import HoverButton
 from util.container import handleDeps
+from ui.help import HELPCONSULTAPECA, help
+from ui.hoverButton import HoverButton
 from ui.infiniteScroll import AlignDelegate, InfiniteScrollTableModel
 
 class TelaConsultaPeca(QtWidgets.QMainWindow):
@@ -117,6 +118,7 @@ class TelaConsultaPeca(QtWidgets.QMainWindow):
         self.lineEditBusca.textChanged.connect(self.buffer)
         self.comboBoxOrdenacao.currentIndexChanged.connect(self.buffer)
         self.botaoNovo.clicked.connect(lambda: self.novaPeca.emit(1))
+        self.botaoHelp.clicked.connect(lambda: help('Ajuda - Cadastro de Orçamentos', HELPCONSULTAPECA))
 
     def retranslateUi(self):
         _translate = QtCore.QCoreApplication.translate

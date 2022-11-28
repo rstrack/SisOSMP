@@ -1,7 +1,8 @@
 from decimal import Decimal
 from PyQt6 import QtCore, QtWidgets, QtGui
-from ui.hoverButton import HoverButton
 from util.container import handleDeps
+from ui.help import HELPEDITARPECA, help
+from ui.hoverButton import HoverButton
 from ui.telaCadastroOrcamento import UNIDADES
 
 

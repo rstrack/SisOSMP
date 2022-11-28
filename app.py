@@ -154,6 +154,8 @@ class APP():
         self.telaConsultaVeiculo.novoVeiculo.connect(lambda: self.telaInicio.stackedWidget.setCurrentWidget(self.telaCadastroCliente))
         self.telaConsultaOrcamento.novoOrcamento.connect(lambda: self.telaInicio.stackedWidget.setCurrentWidget(self.telaCadastroOrcamento))
 
+        self.telaInicio.ajudaSolicitada.connect(self.ajuda)
+
     # função que passa da tela de consulta para a tela de edição da respectiva entidade, passando id a ser alterado como parametro
     def consultaParaEditar(self, pagina, render, param):
         p = param()
@@ -189,6 +191,45 @@ class APP():
                 self.telaEditarOrcamento.setMarcas()
             case self.telaEditarOS:
                 self.telaEditarOS.setMarcas()
+            case _:
+                return
+
+    def ajuda(self):
+        match self.telaInicio.stackedWidget.currentWidget():
+            case self.telaCadastroPeca:
+                self.telaCadastroPeca.botaoHelp.click()
+            case self.telaCadastroServico:
+                self.telaCadastroServico.botaoHelp.click()
+            case self.telaCadastroCliente:
+                self.telaCadastroCliente.botaoHelp.click()
+            case self.telaCadastroOrcamento:
+                self.telaCadastroOrcamento.botaoHelp.click()
+            case self.telaConsultaPeca:
+                self.telaConsultaPeca.botaoHelp.click()
+            case self.telaConsultaServico:
+                self.telaConsultaServico.botaoHelp.click()
+            case self.telaConsultaCliente:
+                self.telaConsultaCliente.botaoHelp.click()
+            case self.telaConsultaVeiculo:
+                self.telaConsultaVeiculo.botaoHelp.click()
+            case self.telaConsultaOrcamento:
+                self.telaConsultaOrcamento.botaoHelp.click()
+            case self.telaConsultaOS:
+                self.telaConsultaOS.botaoHelp.click()
+
+            case self.telaEditarPeca:
+                self.telaEditarPeca.botaoHelp.click()
+            case self.telaEditarServico:
+                self.telaEditarServico.botaoHelp.click()
+            case self.telaEditarCliente:
+                self.telaEditarCliente.botaoHelp.click()
+            case self.telaEditarVeiculo:
+                self.telaEditarVeiculo.botaoHelp.click()
+            case self.telaEditarOrcamento:
+                self.telaEditarOrcamento.botaoHelp.click()
+            case self.telaEditarOS:
+                self.telaEditarOS.botaoHelp.click()
+               
             case _:
                 return
 

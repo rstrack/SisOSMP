@@ -2,7 +2,7 @@ import os
 from PyQt6 import QtCore, QtGui, QtWidgets
 
 class TelaInicial(QtWidgets.QMainWindow):
-
+    ajudaSolicitada = QtCore.pyqtSignal(int)
     def __init__(self):
         super(TelaInicial, self).__init__()
         self.setupUi()
@@ -203,3 +203,7 @@ class TelaInicial(QtWidgets.QMainWindow):
             msg.setWindowTitle("Erro")
             msg.setText(str(e))
             msg.exec()
+
+    def keyPressEvent(self, event) -> None:
+        if event.key() == QtCore.Qt.Key.Key_F1:
+            self.ajudaSolicitada.emit(1)

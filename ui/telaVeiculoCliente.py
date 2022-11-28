@@ -1,4 +1,5 @@
 from PyQt6 import QtCore, QtWidgets
+from ui.help import HELPVEICULOCLIENTE, help
 from ui.hoverButton import HoverButton
 from util.container import handleDeps
 

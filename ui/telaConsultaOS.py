@@ -1,7 +1,8 @@
 from PyQt6 import QtCore, QtGui, QtWidgets
 from flatdict import FlatDict
-from ui.hoverButton import HoverButton
 from util.container import handleDeps
+from ui.help import HELPCONSULTAOS, help
+from ui.hoverButton import HoverButton
 from ui.infiniteScroll import AlignDelegate, InfiniteScrollTableModel
 from ui.messageBox import MessageBox
 from util.gerar_pdf import GeraPDF
@@ -129,6 +130,7 @@ class TelaConsultaOS(QtWidgets.QMainWindow):
         self.comboBoxOrdenacao.currentIndexChanged.connect(self.buffer)
         self.comboBoxStatus.currentIndexChanged.connect(self.buffer)
         self.comboBoxStatus.currentIndexChanged.connect(self.renderBotoes)
+        self.botaoHelp.clicked.connect(lambda: help('Ajuda - Cadastro de Orçamentos', HELPCONSULTAOS))
         self.listarOS()
 
     def retranslateUi(self):

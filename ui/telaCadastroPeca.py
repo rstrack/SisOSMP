@@ -1,5 +1,6 @@
 from decimal import Decimal
 from PyQt6 import QtCore, QtWidgets, QtGui
+from ui.help import HELPCADASTROPECA, help
 from ui.hoverButton import HoverButton
 from util.container import handleDeps
 from ui.telaCadastroOrcamento import UNIDADES
@@ -116,6 +117,7 @@ class TelaCadastroPeca(QtWidgets.QMainWindow):
         self.botaoadd.clicked.connect(self.addLinhaPeca)
         self.botaolimpar.clicked.connect(self.resetarTela)
         self.botaosalvar.clicked.connect(self.salvarPecas)
+        self.botaoHelp.clicked.connect(lambda: help('Ajuda - Cadastro de Orçamentos', HELPCADASTROPECA))
 
     def retranslateUi(self):
         _translate = QtCore.QCoreApplication.translate

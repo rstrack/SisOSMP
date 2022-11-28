@@ -1,5 +1,6 @@
 from decimal import Decimal
 from PyQt6 import QtCore, QtGui, QtWidgets
+from ui.help import HELPCADASTROSERVICO, help
 from ui.hoverButton import HoverButton
 from util.container import handleDeps
 
@@ -110,6 +111,7 @@ class TelaCadastroServico(QtWidgets.QMainWindow):
         self.botaoadd.clicked.connect(self.addlinhaservico)
         self.botaoLimpar.clicked.connect(self.resetarTela)
         self.botaoSalvar.clicked.connect(self.salvarServicos)
+        self.botaoHelp.clicked.connect(lambda: help('Ajuda - Cadastro de Orçamentos', HELPCADASTROSERVICO))
 
     def retranslateUi(self):
         _translate = QtCore.QCoreApplication.translate

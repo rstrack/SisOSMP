@@ -1,7 +1,8 @@
 from PyQt6 import QtCore, QtGui, QtWidgets
 from flatdict import FlatDict
-from ui.hoverButton import HoverButton
 from util.container import handleDeps
+from ui.help import HELPBUSCACLIENTE, help
+from ui.hoverButton import HoverButton
 from ui.infiniteScroll import AlignDelegate, InfiniteScrollTableModel
 from ui.telaVeiculoCliente import TelaVeiculoCliente
 
@@ -111,6 +112,8 @@ class TelaBuscaCliente(QtWidgets.QMainWindow):
         self.tabela.verticalScrollBar().actionTriggered.connect(self.scrolled)
         self.lineEditBusca.textChanged.connect(self.buffer)
         self.comboBoxOrdenacao.currentIndexChanged.connect(self.buffer)
+        self.botaoHelp.clicked.connect(lambda: help())
+        self.botaoHelp.clicked.connect(lambda: help('Ajuda - Cadastro de Orçamentos', HELPBUSCACLIENTE))
 
     def retranslateUi(self):
         _translate = QtCore.QCoreApplication.translate

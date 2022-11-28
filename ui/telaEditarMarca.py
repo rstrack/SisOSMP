@@ -36,7 +36,7 @@ class TelaEditarMarca(QtWidgets.QMainWindow):
         self.setCentralWidget(self.main_frame)
         self.retranslateUi()
         self.botaoEditar.clicked.connect(self.editarMarca)
-        self.botaoCancelar.clicked.connect(self.cancelarEdicao) 
+        self.botaoCancelar.clicked.connect(self.cancelarEdicao)
 
     def retranslateUi(self):
         _translate = QtCore.QCoreApplication.translate

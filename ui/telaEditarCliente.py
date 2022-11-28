@@ -1,5 +1,6 @@
 import threading
 from PyQt6 import QtCore, QtWidgets, QtGui
+from ui.help import HELPEDITARCLIENTE, help
 from ui.hoverButton import HoverButton
 from util.container import handleDeps
 
@@ -174,6 +175,7 @@ class TelaEditarCliente(QtWidgets.QMainWindow):
         self.botaoSalvar.clicked.connect(self.editar)
         self.comboBoxPessoa.currentIndexChanged.connect(self.escolherTipoPessoa)
         self.lineEditCEP.textChanged.connect(self.buscarDadosCEP)
+        self.botaoHelp.clicked.connect(lambda: help('Ajuda - Cadastro de Orçamentos', HELPEDITARCLIENTE))
 
     def retranslateUi(self):
         _translate = QtCore.QCoreApplication.translate

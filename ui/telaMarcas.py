@@ -1,6 +1,7 @@
 from PyQt6 import QtWidgets, QtCore, QtGui
-from ui.hoverButton import HoverButton
 from util.container import handleDeps
+from ui.help import HELPMARCAS, help
+from ui.hoverButton import HoverButton
 from ui.telaEditarMarca import TelaEditarMarca
 
 
