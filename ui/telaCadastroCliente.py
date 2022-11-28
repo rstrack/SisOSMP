@@ -1,4 +1,5 @@
 from PyQt6 import QtCore, QtWidgets, QtGui
+from ui.hoverButton import HoverButton
 from util.container import handleDeps
 import threading
 
@@ -36,11 +37,23 @@ class TelaCadastroCliente(QtWidgets.QMainWindow):
         self.vlayout.setContentsMargins(0,0,0,0)
         self.vlayout.setSpacing(0)
         # titulo
-        self.labelTitulo = QtWidgets.QLabel(self.framegeral)
+        self.frameTitulo = QtWidgets.QFrame(self.framegeral)
+        self.vlayout.addWidget(self.frameTitulo)
+        self.hlayouttitulo = QtWidgets.QHBoxLayout(self.frameTitulo)
+        self.hlayouttitulo.setContentsMargins(0,0,0,0)
+        self.hlayouttitulo.setSpacing(0)
+        self.hlayouttitulo.setAlignment(QtCore.Qt.AlignmentFlag.AlignHCenter)
+        self.labelTitulo = QtWidgets.QLabel(self.frameTitulo)
         self.labelTitulo.setFixedHeight(100)
         self.labelTitulo.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
         self.labelTitulo.setObjectName("titulo")
-        self.vlayout.addWidget(self.labelTitulo)
+        self.hlayouttitulo.addWidget(self.labelTitulo)
+        self.botaoHelp = HoverButton("", "./resources/help-icon1.png", "./resources/help-icon2.png", self.frameTitulo)
+        self.botaoHelp.setToolTip('Ajuda')
+        self.botaoHelp.setObjectName('botaohelp')
+        self.botaoHelp.setHelpIconSize(20,20)
+        self.hlayouttitulo.addWidget(self.botaoHelp)
+        # dados do cliente
         self.framedados = QtWidgets.QFrame(self.main_frame)
         self.vlayout2 = QtWidgets.QVBoxLayout(self.framedados)
         self.vlayout2.setSpacing(9)
@@ -49,7 +62,6 @@ class TelaCadastroCliente(QtWidgets.QMainWindow):
         self.groupBoxCliente.setCheckable(True)
         self.vlayout2.addWidget(self.groupBoxCliente)
         self.glayoutp = QtWidgets.QGridLayout(self.groupBoxCliente)
-        # dados do cliente
         self.frameDadosCliente = QtWidgets.QFrame(self.groupBoxCliente)
         self.glayoutp.addWidget(self.frameDadosCliente, 0, 0, 1, -1)
         self.gridLayoutCliente = QtWidgets.QGridLayout(self.frameDadosCliente)
@@ -225,7 +237,6 @@ class TelaCadastroCliente(QtWidgets.QMainWindow):
         self.labelLegenda.setText(_translate("MainWindow", "* Campos Obrigatórios"))
         self.botaolimpar.setText(_translate("MainWindow", "Limpar"))
         self.botaoSalvar.setText(_translate("MainWindow", "Salvar"))
-
 
     def salvar(self):
         try:
@@ -427,7 +438,6 @@ class TelaCadastroCliente(QtWidgets.QMainWindow):
             return
         t = threading.Thread(target=self.threadCEP, args=(cep,))
         t.start()
-
 
     def threadCEP(self, cep):
         dados = self.buscaCEP.buscarCEP(cep)

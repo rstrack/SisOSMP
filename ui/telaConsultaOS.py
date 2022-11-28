@@ -1,5 +1,6 @@
 from PyQt6 import QtCore, QtGui, QtWidgets
 from flatdict import FlatDict
+from ui.hoverButton import HoverButton
 from util.container import handleDeps
 from ui.infiniteScroll import AlignDelegate, InfiniteScrollTableModel
 from ui.messageBox import MessageBox
@@ -36,11 +37,29 @@ class TelaConsultaOS(QtWidgets.QMainWindow):
         self.vlayout = QtWidgets.QVBoxLayout(self.framegeral)
         self.vlayout.setContentsMargins(0,0,0,0)
         self.vlayout.setSpacing(0)
-        self.labelTitulo = QtWidgets.QLabel(self.framegeral)
+
+        self.frameTitulo = QtWidgets.QFrame(self.framegeral)
+        self.vlayout.addWidget(self.frameTitulo)
+        self.hlayouttitulo = QtWidgets.QHBoxLayout(self.frameTitulo)
+        self.hlayouttitulo.setContentsMargins(0,0,0,0)
+        self.hlayouttitulo.setSpacing(0)
+        self.hlayouttitulo.setAlignment(QtCore.Qt.AlignmentFlag.AlignHCenter)
+        self.labelTitulo = QtWidgets.QLabel(self.frameTitulo)
+        self.labelTitulo.setFixedHeight(80)
+        self.labelTitulo.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
+        self.labelTitulo.setObjectName("titulo")
+        self.hlayouttitulo.addWidget(self.labelTitulo)
+        self.botaoHelp = HoverButton("", "./resources/help-icon1.png", "./resources/help-icon2.png", self.frameTitulo)
+        self.botaoHelp.setToolTip('Ajuda')
+        self.botaoHelp.setObjectName('botaohelp')
+        self.botaoHelp.setHelpIconSize(20,20)
+        self.hlayouttitulo.addWidget(self.botaoHelp)
+
+        '''self.labelTitulo = QtWidgets.QLabel(self.framegeral)
         self.labelTitulo.setFixedHeight(80)
         self.labelTitulo.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
         self.labelTitulo.setObjectName('titulo')
-        self.vlayout.addWidget(self.labelTitulo)
+        self.vlayout.addWidget(self.labelTitulo)'''
         self.frameBusca = QtWidgets.QFrame(self.main_frame)
         self.vlayout.addWidget(self.frameBusca)
         self.hlayoutBusca = QtWidgets.QHBoxLayout(self.frameBusca)

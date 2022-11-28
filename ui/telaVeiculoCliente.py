@@ -1,4 +1,5 @@
 from PyQt6 import QtCore, QtWidgets
+from ui.hoverButton import HoverButton
 from util.container import handleDeps
 
 class TelaVeiculoCliente(QtWidgets.QMainWindow):
@@ -11,17 +12,30 @@ class TelaVeiculoCliente(QtWidgets.QMainWindow):
         self.setupUi()
 
     def setupUi(self):
-        self.resize(500, 300)
+        # self.resize(400, 400)
         self.main_frame = QtWidgets.QFrame(self)
         self.main_frame.setObjectName("main_frame")
         self.vlayout = QtWidgets.QVBoxLayout(self.main_frame)
+        self.frameTitulo = QtWidgets.QFrame(self.main_frame)
+        self.vlayout.addWidget(self.frameTitulo)
+        self.hlayouttitulo = QtWidgets.QHBoxLayout(self.frameTitulo)
+        self.hlayouttitulo.setContentsMargins(0,0,0,0)
+        self.hlayouttitulo.setSpacing(0)
+        self.hlayouttitulo.setAlignment(QtCore.Qt.AlignmentFlag.AlignHCenter)
+        self.labelTitulo = QtWidgets.QLabel(self.frameTitulo)
+        self.labelTitulo.setFixedHeight(40)
+        self.labelTitulo.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
+        self.labelTitulo.setObjectName("boldText")
+        self.hlayouttitulo.addWidget(self.labelTitulo)
+        self.botaoHelp = HoverButton("", "./resources/help-icon1.png", "./resources/help-icon2.png", self.frameTitulo)
+        self.botaoHelp.setToolTip('Ajuda')
+        self.botaoHelp.setObjectName('botaohelp')
+        self.botaoHelp.setHelpIconSize(18,18)
+        self.hlayouttitulo.addWidget(self.botaoHelp)
         self.framedados = QtWidgets.QFrame(self.main_frame)
         self.vlayout.addWidget(self.framedados)
         # self.gridLayout = QtWidgets.QGridLayout(self.framedados)
         self.vlayout2 = QtWidgets.QVBoxLayout(self.framedados)
-        self.labelDetalhes = QtWidgets.QLabel(self.framedados)
-        self.labelDetalhes.setObjectName('boldText')
-        self.vlayout2.addWidget(self.labelDetalhes)
         self.tabela = QtWidgets.QTableWidget(self.framedados)
         self.vlayout2.addWidget(self.tabela)
         self.tabela.verticalHeader().setVisible(False)
@@ -62,7 +76,7 @@ class TelaVeiculoCliente(QtWidgets.QMainWindow):
         self.clienteID = idCliente
         i = 0
         cliente = self.clienteCtrl.getCliente(idCliente)
-        self.labelDetalhes.setText(f"Veículos vinculados ao cliente {cliente['nome']}")
+        self.labelTitulo.setText(f"Veículos vinculados ao cliente\n{cliente['nome']}")
         veiculos = self.clienteCtrl.listarVeiculos(idCliente)
         if veiculos:
             self.tabela.setRowCount(len(veiculos))
@@ -81,6 +95,12 @@ class TelaVeiculoCliente(QtWidgets.QMainWindow):
                 self.tabela.setCellWidget(i, 4, botao)
                 i+=1
             self.tabela.hideColumn(0)
+            self.resize(self.tabela.sizeHintForColumn(0) + 
+                self.tabela.sizeHintForColumn(1) +
+                self.tabela.sizeHintForColumn(2) +
+                self.tabela.sizeHintForColumn(3) +
+                self.tabela.sizeHintForColumn(4) + 30,
+                400)
         else:
             self.tabela.setRowCount(0)
 
@@ -120,7 +140,7 @@ class TelaVeiculoCliente(QtWidgets.QMainWindow):
         self.veiculoID = idVeiculo
         i = 0
         veiculo = self.clienteCtrl.getVeiculo(idVeiculo)
-        self.labelDetalhes.setText(f"Clientes vinculados ao veículo {veiculo['marca']['nome']} {veiculo['modelo']}")
+        self.labelTitulo.setText(f"Clientes vinculados ao veículo\n{veiculo['marca']['nome']} {veiculo['modelo']}")
         clientes = self.clienteCtrl.listarClientes(idVeiculo)
         if clientes:
             self.tabela.setRowCount(len(clientes))
@@ -145,6 +165,12 @@ class TelaVeiculoCliente(QtWidgets.QMainWindow):
                 self.tabela.setCellWidget(i, 4, botao)
                 i+=1
             self.tabela.hideColumn(0)
+            self.resize(self.tabela.sizeHintForColumn(0) + 
+                self.tabela.sizeHintForColumn(1) +
+                self.tabela.sizeHintForColumn(2) +
+                self.tabela.sizeHintForColumn(3) +
+                self.tabela.sizeHintForColumn(4) + 30,
+                400)
         else:
             self.tabela.setRowCount(0)
 

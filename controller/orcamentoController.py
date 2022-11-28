@@ -160,7 +160,7 @@ class OrcamentoController():
                 transaction.rollback()
                 return e
 
-    def rejeitarOrcamento(self, idOrcamento):
+    def reprovarOrcamento(self, idOrcamento):
         with db.atomic() as transaction:
             try:
                 r = self.orcamentoRep.update({'idOrcamento':idOrcamento, 'status': '1'})

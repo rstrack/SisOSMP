@@ -1,5 +1,6 @@
 from decimal import Decimal
 from PyQt6 import QtCore, QtWidgets, QtGui
+from ui.hoverButton import HoverButton
 from util.container import handleDeps
 
 class TelaEditarServico(QtWidgets.QMainWindow):
@@ -29,11 +30,22 @@ class TelaEditarServico(QtWidgets.QMainWindow):
         self.vlayout = QtWidgets.QVBoxLayout(self.framegeral)
         self.vlayout.setContentsMargins(0,0,0,0)
         # titulo
-        self.labelTitulo = QtWidgets.QLabel(self.framegeral)
+        self.frameTitulo = QtWidgets.QFrame(self.framegeral)
+        self.vlayout.addWidget(self.frameTitulo)
+        self.hlayouttitulo = QtWidgets.QHBoxLayout(self.frameTitulo)
+        self.hlayouttitulo.setContentsMargins(0,0,0,0)
+        self.hlayouttitulo.setSpacing(0)
+        self.hlayouttitulo.setAlignment(QtCore.Qt.AlignmentFlag.AlignHCenter)
+        self.labelTitulo = QtWidgets.QLabel(self.frameTitulo)
         self.labelTitulo.setFixedHeight(100)
         self.labelTitulo.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
         self.labelTitulo.setObjectName("titulo")
-        self.vlayout.addWidget(self.labelTitulo)
+        self.hlayouttitulo.addWidget(self.labelTitulo)
+        self.botaoHelp = HoverButton("", "./resources/help-icon1.png", "./resources/help-icon2.png", self.frameTitulo)
+        self.botaoHelp.setToolTip('Ajuda')
+        self.botaoHelp.setObjectName('botaohelp')
+        self.botaoHelp.setHelpIconSize(20,20)
+        self.hlayouttitulo.addWidget(self.botaoHelp)
         self.framedados = QtWidgets.QFrame(self.main_frame)
         self.vlayout.addWidget(self.framedados)
         self.gridLayout = QtWidgets.QGridLayout(self.framedados)

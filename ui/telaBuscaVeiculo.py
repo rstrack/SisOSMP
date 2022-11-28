@@ -1,5 +1,6 @@
 from PyQt6 import QtCore, QtGui, QtWidgets
 from flatdict import FlatDict
+from ui.hoverButton import HoverButton
 from util.container import handleDeps
 from ui.infiniteScroll import AlignDelegate, InfiniteScrollTableModel
 from ui.telaVeiculoCliente import TelaVeiculoCliente
@@ -14,9 +15,40 @@ class TelaBuscaVeiculo(QtWidgets.QMainWindow):
 
     def setupUi(self):
         self.resize(800, 600)
-        self.mainwidget = QtWidgets.QWidget(self)
-        self.vlayout = QtWidgets.QVBoxLayout(self.mainwidget)
-        self.frameBusca = QtWidgets.QFrame(self.mainwidget)
+        self.main_frame = QtWidgets.QFrame(self)
+        self.main_frame.setObjectName("main_frame")
+        self.hlayout = QtWidgets.QHBoxLayout(self.main_frame)
+        spacer = QtWidgets.QSpacerItem(
+            20, 10, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Preferred)
+        self.hlayout.addItem(spacer)
+        self.framegeral = QtWidgets.QFrame(self.main_frame)
+        self.framegeral.setSizePolicy(QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Preferred)
+        self.framegeral.setMaximumWidth(int(QtGui.QGuiApplication.primaryScreen().size().width()*0.65) 
+            if QtGui.QGuiApplication.primaryScreen().size().width()> 1280 else QtGui.QGuiApplication.primaryScreen().size().width())
+        self.hlayout.addWidget(self.framegeral)
+        spacer = QtWidgets.QSpacerItem(
+            20, 10, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Preferred)
+        self.hlayout.addItem(spacer)
+        self.vlayout = QtWidgets.QVBoxLayout(self.framegeral)
+        self.vlayout.setContentsMargins(0,0,0,0)
+        self.vlayout.setSpacing(0)
+        self.frameTitulo = QtWidgets.QFrame(self.framegeral)
+        self.vlayout.addWidget(self.frameTitulo)
+        self.hlayouttitulo = QtWidgets.QHBoxLayout(self.frameTitulo)
+        self.hlayouttitulo.setContentsMargins(0,0,0,0)
+        self.hlayouttitulo.setSpacing(0)
+        self.hlayouttitulo.setAlignment(QtCore.Qt.AlignmentFlag.AlignHCenter)
+        self.labelTitulo = QtWidgets.QLabel(self.frameTitulo)
+        self.labelTitulo.setFixedHeight(60)
+        self.labelTitulo.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
+        self.labelTitulo.setObjectName("titulo")
+        self.hlayouttitulo.addWidget(self.labelTitulo)
+        self.botaoHelp = HoverButton("", "./resources/help-icon1.png", "./resources/help-icon2.png", self.frameTitulo)
+        self.botaoHelp.setToolTip('Ajuda')
+        self.botaoHelp.setObjectName('botaohelp')
+        self.botaoHelp.setHelpIconSize(20,20)
+        self.hlayouttitulo.addWidget(self.botaoHelp)
+        self.frameBusca = QtWidgets.QFrame(self.main_frame)
         self.vlayout.addWidget(self.frameBusca)
         self.hlayoutBusca = QtWidgets.QHBoxLayout(self.frameBusca)
         self.lineEditBusca = QtWidgets.QLineEdit(self.frameBusca)
@@ -31,7 +63,7 @@ class TelaBuscaVeiculo(QtWidgets.QMainWindow):
         self.botaoRefresh.setFixedSize(30,30)
         self.botaoRefresh.setIcon(QtGui.QIcon("resources/refresh-icon.png"))
         self.hlayoutBusca.addWidget(self.botaoRefresh)
-        self.frameOrdenacao = QtWidgets.QFrame(self.mainwidget)
+        self.frameOrdenacao = QtWidgets.QFrame(self.main_frame)
         self.vlayout.addWidget(self.frameOrdenacao)
         self.hlayoutOrdenacao = QtWidgets.QHBoxLayout(self.frameOrdenacao)
         spacer = QtWidgets.QSpacerItem(
@@ -41,7 +73,7 @@ class TelaBuscaVeiculo(QtWidgets.QMainWindow):
         self.comboBoxOrdenacao.setToolTip('Ordenar')
         self.comboBoxOrdenacao.addItems(['Marca (A-Z)', 'Marca (Z-A)', 'Modelo (A-Z)', 'Modelo (Z-A)'])
         self.hlayoutOrdenacao.addWidget(self.comboBoxOrdenacao)
-        self.framedados = QtWidgets.QFrame(self.mainwidget)
+        self.framedados = QtWidgets.QFrame(self.main_frame)
         self.framedados.setSizePolicy(QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Preferred)
         self.vlayout.addWidget(self.framedados)
         self.vlayoutdados = QtWidgets.QVBoxLayout(self.framedados)
@@ -56,7 +88,7 @@ class TelaBuscaVeiculo(QtWidgets.QMainWindow):
         self.tabela.horizontalHeader().setHighlightSections(False)
         self.tabela.verticalHeader().setVisible(False)
         self.delegateRight = AlignDelegate(QtCore.Qt.AlignmentFlag.AlignRight | QtCore.Qt.AlignmentFlag.AlignVCenter)
-        self.framebotoes = QtWidgets.QFrame(self.mainwidget)
+        self.framebotoes = QtWidgets.QFrame(self.main_frame)
         self.vlayout.addWidget(self.framebotoes)
         self.hlayoutbotoes = QtWidgets.QHBoxLayout(self.framebotoes)
         spacer = QtWidgets.QSpacerItem(
@@ -68,7 +100,7 @@ class TelaBuscaVeiculo(QtWidgets.QMainWindow):
         self.botaoClientes = QtWidgets.QPushButton(self.framebotoes)
         self.botaoClientes.setFixedSize(100, 25)
         self.hlayoutbotoes.addWidget(self.botaoClientes)
-        self.setCentralWidget(self.mainwidget)
+        self.setCentralWidget(self.main_frame)
         self.retranslateUi()
         self.listarVeiculos()
         self.botaoRefresh.clicked.connect(self.listarVeiculos)
@@ -81,6 +113,7 @@ class TelaBuscaVeiculo(QtWidgets.QMainWindow):
     def retranslateUi(self):
         _translate = QtCore.QCoreApplication.translate
         self.setWindowTitle(_translate("MainWindow", "Busca por Veículo"))
+        self.labelTitulo.setText(_translate("MainWindow", "Veículos"))
         self.botaoSelecionar.setText(_translate("MainWindow", "Selecionar"))
         self.botaoClientes.setText(_translate("MainWindow", "Clientes"))
 

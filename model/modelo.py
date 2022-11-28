@@ -73,7 +73,6 @@ class Orcamento(BaseModel):
     veiculo = ForeignKeyField(Veiculo, backref='veiculos',null=False)
     km = CharField(max_length=6,constraints=[Check('km>0')], null=False)
     valorTotal = DoubleField(constraints=[Check('valorTotal>=0')],null=False)
-    # aprovado = BooleanField(constraints=[SQL('DEFAULT FALSE')], null=False)
     dataAprovacao = DateField(null=True)
     status = CharField(constraints=[SQL("DEFAULT '0'"), Check("status in ('0','1','2','3')")], null=False)
     observacoes = CharField(max_length=200, null=True)

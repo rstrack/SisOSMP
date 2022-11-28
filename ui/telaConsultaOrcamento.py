@@ -1,4 +1,5 @@
 from PyQt6 import QtCore, QtGui, QtWidgets
+from ui.hoverButton import HoverButton
 from util.container import handleDeps
 from flatdict import FlatDict
 from ui.infiniteScroll import AlignDelegate, InfiniteScrollTableModel
@@ -38,11 +39,28 @@ class TelaConsultaOrcamento(QtWidgets.QMainWindow):
         self.vlayout = QtWidgets.QVBoxLayout(self.framegeral)
         self.vlayout.setContentsMargins(0,0,0,0)
         self.vlayout.setSpacing(0)
-        self.labelTitulo = QtWidgets.QLabel(self.framegeral)
+        
+        self.frameTitulo = QtWidgets.QFrame(self.framegeral)
+        self.vlayout.addWidget(self.frameTitulo)
+        self.hlayouttitulo = QtWidgets.QHBoxLayout(self.frameTitulo)
+        self.hlayouttitulo.setContentsMargins(0,0,0,0)
+        self.hlayouttitulo.setSpacing(0)
+        self.hlayouttitulo.setAlignment(QtCore.Qt.AlignmentFlag.AlignHCenter)
+        self.labelTitulo = QtWidgets.QLabel(self.frameTitulo)
+        self.labelTitulo.setFixedHeight(80)
+        self.labelTitulo.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
+        self.labelTitulo.setObjectName("titulo")
+        self.hlayouttitulo.addWidget(self.labelTitulo)
+        self.botaoHelp = HoverButton("", "./resources/help-icon1.png", "./resources/help-icon2.png", self.frameTitulo)
+        self.botaoHelp.setToolTip('Ajuda')
+        self.botaoHelp.setObjectName('botaohelp')
+        self.botaoHelp.setHelpIconSize(20,20)
+        self.hlayouttitulo.addWidget(self.botaoHelp)
+        '''self.labelTitulo = QtWidgets.QLabel(self.framegeral)
         self.labelTitulo.setFixedHeight(80)
         self.labelTitulo.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
         self.labelTitulo.setObjectName('titulo')
-        self.vlayout.addWidget(self.labelTitulo)
+        self.vlayout.addWidget(self.labelTitulo)'''
         self.frameBusca = QtWidgets.QFrame(self.main_frame)
         self.vlayout.addWidget(self.frameBusca)
         self.hlayoutBusca = QtWidgets.QHBoxLayout(self.frameBusca)
@@ -69,7 +87,7 @@ class TelaConsultaOrcamento(QtWidgets.QMainWindow):
         self.hlayoutOrdenacao.addWidget(self.botaoNovo)
         self.comboBoxStatus = QtWidgets.QComboBox(self.frameOrdenacao)
         self.comboBoxStatus.setFixedHeight(25)
-        self.comboBoxStatus.addItems(['Aguardando aprovação', 'Não aprovado'])
+        self.comboBoxStatus.addItems(['Aguardando aprovação', 'Não aprovados'])
         self.hlayoutOrdenacao.addWidget(self.comboBoxStatus)
         self.comboBoxOrdenacao = QtWidgets.QComboBox(self.frameOrdenacao)
         self.comboBoxOrdenacao.setFixedHeight(25)
@@ -100,6 +118,9 @@ class TelaConsultaOrcamento(QtWidgets.QMainWindow):
         self.botaoAprovar = QtWidgets.QPushButton(self.framebotoes)
         self.botaoAprovar.setFixedSize(100, 35)
         self.hlayoutbotoes.addWidget(self.botaoAprovar)
+        self.botaoReprovar = QtWidgets.QPushButton(self.framebotoes)
+        self.botaoReprovar.setFixedSize(100, 35)
+        self.hlayoutbotoes.addWidget(self.botaoReprovar)
         self.botaoGerarPDF = QtWidgets.QPushButton(self.framebotoes)
         self.botaoGerarPDF.setFixedSize(100, 35)
         self.hlayoutbotoes.addWidget(self.botaoGerarPDF)
@@ -111,6 +132,7 @@ class TelaConsultaOrcamento(QtWidgets.QMainWindow):
         self.retranslateUi()
         self.botaoRefresh.clicked.connect(self.listarOrcamentos)
         self.botaoAprovar.clicked.connect(self.aprovar)
+        self.botaoReprovar.clicked.connect(self.reprovar)
         self.botaoGerarPDF.clicked.connect(self.gerarPDF)
         self.botaoExcluir.clicked.connect(self.excluirOrcamento)
         self.tabela.verticalScrollBar().valueChanged.connect(self.scrolled)
@@ -118,6 +140,7 @@ class TelaConsultaOrcamento(QtWidgets.QMainWindow):
         self.lineEditBusca.textChanged.connect(self.buffer)
         self.comboBoxOrdenacao.currentIndexChanged.connect(self.buffer)
         self.comboBoxStatus.currentIndexChanged.connect(self.buffer)
+        self.comboBoxStatus.currentIndexChanged.connect(self.renderBotoes)
         self.botaoNovo.clicked.connect(lambda: self.novoOrcamento.emit(1))
         self.listarOrcamentos()
 
@@ -128,6 +151,7 @@ class TelaConsultaOrcamento(QtWidgets.QMainWindow):
         self.labelTitulo.setText(_translate("MainWindow", "Orçamentos"))
         self.botaoEditar.setText(_translate("MainWindow", "Editar"))
         self.botaoAprovar.setText(_translate("MainWindow", "Aprovar"))
+        self.botaoReprovar.setText(_translate("MainWindow", "Reprovar"))
         self.botaoGerarPDF.setText(_translate("MainWindow", "Gerar PDF"))
         self.botaoExcluir.setText(_translate("MainWindow", "Excluir"))
 
@@ -214,6 +238,29 @@ class TelaConsultaOrcamento(QtWidgets.QMainWindow):
             msg.setText(str(e))
             msg.exec()
 
+    def reprovar(self):
+        try:
+            linha = self.tabela.selectionModel().selectedRows()
+            if linha:
+                id = self.tabela.model().index(linha[0].row(), 0).data()
+                r = self.orcamentoCtrl.aprovarOrcamento(id)
+                if isinstance(r, Exception):
+                    raise Exception(r)
+                msg = QtWidgets.QMessageBox()
+                msg.setWindowIcon(QtGui.QIcon('resources/logo-icon.png'))
+                msg.setIcon(QtWidgets.QMessageBox.Icon.Information)
+                msg.setWindowTitle("Aviso")
+                msg.setText("Orçamento reprovado com sucesso!")
+                msg.exec()
+                self.listarOrcamentos()
+        except Exception as e:
+            msg = QtWidgets.QMessageBox()
+            msg.setWindowIcon(QtGui.QIcon('resources/logo-icon.png'))
+            msg.setIcon(QtWidgets.QMessageBox.Icon.Critical)
+            msg.setWindowTitle("Erro")
+            msg.setText(str(e))
+            msg.exec()
+
     def excluirOrcamento(self):
         try:
             msgBox = QtWidgets.QMessageBox()
@@ -284,4 +331,14 @@ class TelaConsultaOrcamento(QtWidgets.QMainWindow):
                 return
             pdf = GeraPDF()
             pdf.generatePDF(orcamento, fones, itemServicos, itemPecas, path)
+
+    def renderBotoes(self):
+        if self.comboBoxStatus.currentIndex() == 1:
+            self.botaoEditar.hide()
+            self.botaoAprovar.hide()
+            self.botaoReprovar.hide()
+            self.botaoGerarPDF.hide()
+        else:
+            self.botaoEditar.show()
+            self.botaoExcluir.show()
             
