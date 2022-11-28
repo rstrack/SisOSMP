@@ -210,7 +210,8 @@ QToolTip{
 }
 
 QDialog#helpMessageBox QLabel{
-    margin: 5px;
+    padding:0px;
+    margin:0px;
 }
 
 QDialog#helpMessageBox QPushButton{

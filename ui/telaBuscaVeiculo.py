@@ -15,6 +15,7 @@ class TelaBuscaVeiculo(QtWidgets.QMainWindow):
 
     def setupUi(self):
         self.resize(800, 600)
+        self.setWindowModality(QtCore.Qt.WindowModality.ApplicationModal)
         self.main_frame = QtWidgets.QFrame(self)
         self.main_frame.setObjectName("main_frame")
         self.hlayout = QtWidgets.QHBoxLayout(self.main_frame)

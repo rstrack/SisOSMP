@@ -3,6 +3,7 @@ from decimal import Decimal
 from PyQt6 import QtCore, QtWidgets, QtGui
 from datetime import datetime
 
+from ui.help import HELPCADASTROORCAMENTO, help
 from ui.messageBox import MessageBox
 from ui.telaBuscaCliente import TelaBuscaCliente
 from ui.telaBuscaVeiculo import TelaBuscaVeiculo
@@ -16,20 +17,6 @@ SIGLAESTADOS = ['AC', 'AL', 'AP', 'AM', 'BA', 'CE', 'DF', 'ES', 'GO', 'MA', 'MT'
                 'MG', 'PA', 'PB', 'PR', 'PE', 'PI', 'RJ', 'RN', 'RS', 'RO', 'RR', 'SC', 'SP', 'SE', 'TO']
 UNIDADES = ['CM', 'CM2', 'CM3', 'CX', 'DZ', 'G', 'KG',
             'L', 'M', 'M2', 'M3', 'ML', 'PAR', 'PCT', 'ROLO', 'UN']
-
-
-HELPORCAMENTO = \
-'''\t\tCadastro de orçamento de manutenção de veículos. Cadastre um novo cliente e/ou veículo ou selecione um já existente. Ao selecionar, é possível editar seus dados.
-
-\t\tSelecione ou cadastre um novo veículo. Ao selecionar, é possível editar seus dados.
-
-\t\tAdicione peças e serviços ao orçamento. Necessário pelo menos um serviço. Para adicionar mais peças ou serviços, clique no botão "+" disponível em suas respectivas seções.
-
-\t\tUtilize o campo de observações para anotações referentes ao orçamento.
-
-\t\tApós concluir, selecione a opção de salvar somente ou salvar e gerar o arquivo PDF para visualização do orçamento
-
-'''
 
 class TelaCadastroOrcamento(QtWidgets.QMainWindow):
 
@@ -407,7 +394,7 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
         self.checkboxNovoVeiculo.stateChanged.connect(self.verificarCamposVeiculo)
 
 
-        self.botaoHelp.clicked.connect(lambda: self.helpMsg('Ajuda - Cadastro de Orçamentos', HELPORCAMENTO))
+        self.botaoHelp.clicked.connect(lambda: help('Ajuda - Cadastro de Orçamentos', HELPCADASTROORCAMENTO))
 
     ##############################################################################################################################
                                                             #FUNÇÕES
@@ -991,9 +978,4 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
             self.removerLinhaServico(3)
         self.limparCampos()
 
-    def helpMsg(self, title, body):
-        msg = HelpMessageBox()
-        msg.setWindowTitle(title)
-        msg.setMessage(body)
-        msg.exec()
 

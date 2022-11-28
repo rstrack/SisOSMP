@@ -7,29 +7,39 @@ class HelpMessageBox(QtWidgets.QDialog):
         self.setObjectName('helpMessageBox')
         self.setWindowTitle("Ajuda")
         self.setWindowIcon(QtGui.QIcon('./resources/logo-icon.png'))
-        # self.setWindowFlags(QtCore.Qt.WindowType.FramelessWindowHint)
-        # self.setAttribute(QtCore.Qt.WidgetAttribute.WA_TranslucentBackground)
+        self.setWindowModality(QtCore.Qt.WindowModality.ApplicationModal)
         QBtn = QtWidgets.QDialogButtonBox.StandardButton.Ok
         self.buttonBox = QtWidgets.QDialogButtonBox(QBtn)
         self.buttonBox.accepted.connect(self.accept)
-        self.layout = QtWidgets.QVBoxLayout()
-        self.label = QtWidgets.QLabel()
-        self.label.setWordWrap(True)
-        self.label.setAlignment(QtCore.Qt.AlignmentFlag.AlignJustify | QtCore.Qt.AlignmentFlag.AlignVCenter)
-        self.setModal(True)
-        self.layout.addWidget(self.label)
-        self.layout.addWidget(self.buttonBox)
-        self.setLayout(self.layout)
+        self.layout1 = QtWidgets.QVBoxLayout()
+        self.layout1.setSpacing(9)
+        self.layout1.setContentsMargins(16,16,16,0)
+        self.setLayout(self.layout1)
         self.setFixedWidth(350)
 
     def setMessage(self, str: str):
-        self.label.setText(str)
-
+        labels = str.split('\n')
+        for label in labels:
+            l = QtWidgets.QLabel()
+            l.setWordWrap(True)
+            l.setAlignment(QtCore.Qt.AlignmentFlag.AlignJustify | QtCore.Qt.AlignmentFlag.AlignVCenter)
+            l.setSizePolicy(QtWidgets.QSizePolicy.Policy.Preferred, QtWidgets.QSizePolicy.Policy.Maximum)
+            l.setText('<p style="text-indent:30px;line-height:20px;">'+label+'</p>')
+            self.layout1.addWidget(l)
+        self.layout1.addWidget(self.buttonBox)
+        spacerItem = QtWidgets.QSpacerItem(
+            40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
+        self.layout1.addItem(spacerItem)
+        self.setFixedHeight(self.sizeHint().height()-150)
 
 if __name__=="__main__":
     app = QtWidgets.QApplication(sys.argv)
+    style = open('resources/styles.qss').read()
+    app.setStyleSheet(style)
     msg = HelpMessageBox()
-    msg.setMessage('''Neque porro quisquam est qui dolorem ipsum
-quia dolor sit amet, consectetur, adipisci velit''')
+    msg.setMessage('''Cadastro de orçamento de manutenção de veículos. Cadastre um novo cliente e/ou veículo ou selecione um já existente. Ao selecionar, é possível editar seus dados.
+Se estiver com acesso à internet, campos de endereço são completados automaticamente ao inserir o CEP.
+Adicione peças e serviços ao orçamento. Necessário pelo menos um serviço. Para adicionar mais peças ou serviços, clique no botão "+" disponível em suas respectivas seções.
+Após concluir, selecione a opção de salvar somente ou salvar e gerar o arquivo PDF para visualização do orçamento.''')
     msg.exec()
     app.exec(sys.exit())

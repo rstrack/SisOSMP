@@ -13,6 +13,7 @@ class TelaMarcas(QtWidgets.QMainWindow):
 
     def setupUi(self):
         self.resize(400, 400)
+        self.setWindowModality(QtCore.Qt.WindowModality.ApplicationModal)
         self.main_frame = QtWidgets.QFrame(self)
         self.main_frame.setObjectName("main_frame")
         self.vlayout = QtWidgets.QVBoxLayout(self.main_frame)
