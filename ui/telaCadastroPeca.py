@@ -117,7 +117,7 @@ class TelaCadastroPeca(QtWidgets.QMainWindow):
         self.botaoadd.clicked.connect(self.addLinhaPeca)
         self.botaolimpar.clicked.connect(self.resetarTela)
         self.botaosalvar.clicked.connect(self.salvarPecas)
-        self.botaoHelp.clicked.connect(lambda: help('Ajuda - Cadastro de Orçamentos', HELPCADASTROPECA))
+        self.botaoHelp.clicked.connect(lambda: help('Ajuda - Cadastro de Peças', HELPCADASTROPECA))
 
     def retranslateUi(self):
         _translate = QtCore.QCoreApplication.translate

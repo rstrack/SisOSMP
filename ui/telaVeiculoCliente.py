@@ -1,5 +1,5 @@
 from PyQt6 import QtCore, QtWidgets
-from ui.help import HELPVEICULOCLIENTE, help
+from ui.help import HELPCLIENTES_VEICULO, HELPVEICULOS_CLIENTE, help
 from ui.hoverButton import HoverButton
 from util.container import handleDeps
 
@@ -105,6 +105,7 @@ class TelaVeiculoCliente(QtWidgets.QMainWindow):
                 400)
         else:
             self.tabela.setRowCount(0)
+        self.botaoHelp.clicked.connect(lambda: help('Ajuda - Veículos de um Cliente', HELPVEICULOS_CLIENTE))
 
     def desvincularVeiculo(self):
         button = QtWidgets.QApplication.focusWidget()
@@ -175,6 +176,7 @@ class TelaVeiculoCliente(QtWidgets.QMainWindow):
                 400)
         else:
             self.tabela.setRowCount(0)
+        self.botaoHelp.clicked.connect(lambda: help('Ajuda - Clientes Vinculados a um Veículo', HELPCLIENTES_VEICULO))
 
     def desvincularCliente(self):
         button = QtWidgets.QApplication.focusWidget()
@@ -200,3 +202,7 @@ class TelaVeiculoCliente(QtWidgets.QMainWindow):
     def closeEvent(self, event):
         self.janelaFechada.emit(1)
         event.accept()
+
+    def keyPressEvent(self, event) -> None:
+        if event.key() == QtCore.Qt.Key.Key_F1:
+            self.botaoHelp.click()

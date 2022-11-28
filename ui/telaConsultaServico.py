@@ -118,7 +118,7 @@ class TelaConsultaServico(QtWidgets.QMainWindow):
         self.botaoEditar.clicked.connect(self.editarServico)
         self.botaoExcluir.clicked.connect(self.excluirServico)
         self.botaoNovo.clicked.connect(lambda: self.novoServico.emit(1))
-        self.botaoHelp.clicked.connect(lambda: help('Ajuda - Cadastro de Orçamentos', HELPCONSULTASERVICO))
+        self.botaoHelp.clicked.connect(lambda: help('Ajuda - Consulta por Serviço', HELPCONSULTASERVICO))
 
     def retranslateUi(self):
         _translate = QtCore.QCoreApplication.translate

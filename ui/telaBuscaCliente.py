@@ -112,8 +112,7 @@ class TelaBuscaCliente(QtWidgets.QMainWindow):
         self.tabela.verticalScrollBar().actionTriggered.connect(self.scrolled)
         self.lineEditBusca.textChanged.connect(self.buffer)
         self.comboBoxOrdenacao.currentIndexChanged.connect(self.buffer)
-        self.botaoHelp.clicked.connect(lambda: help())
-        self.botaoHelp.clicked.connect(lambda: help('Ajuda - Cadastro de Orçamentos', HELPBUSCACLIENTE))
+        self.botaoHelp.clicked.connect(lambda: help('Ajuda - Buscar Cliente', HELPBUSCACLIENTE))
 
     def retranslateUi(self):
         _translate = QtCore.QCoreApplication.translate
@@ -193,3 +192,6 @@ class TelaBuscaCliente(QtWidgets.QMainWindow):
             self.telaVeiculoCliente.botaoConcluir.clicked.connect(self.listarClientes)
             self.telaVeiculoCliente.show()
 
+    def keyPressEvent(self, event) -> None:
+        if event.key() == QtCore.Qt.Key.Key_F1:
+            self.botaoHelp.click()

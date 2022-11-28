@@ -60,6 +60,7 @@ class TelaMarcas(QtWidgets.QMainWindow):
         self.setCentralWidget(self.main_frame)
         self.retranslateUi()
         self.botaoConcluir.clicked.connect(self.close)
+        self.botaoHelp.clicked.connect(lambda: help('Ajuda - Marcas', HELPMARCAS))
 
     def retranslateUi(self):
         _translate = QtCore.QCoreApplication.translate
@@ -153,3 +154,6 @@ class TelaMarcas(QtWidgets.QMainWindow):
         self.janelaFechada.emit(1)
         event.accept()
 
+    def keyPressEvent(self, event) -> None:
+        if event.key() == QtCore.Qt.Key.Key_F1:
+            self.botaoHelp.click()

@@ -111,7 +111,7 @@ class TelaCadastroServico(QtWidgets.QMainWindow):
         self.botaoadd.clicked.connect(self.addlinhaservico)
         self.botaoLimpar.clicked.connect(self.resetarTela)
         self.botaoSalvar.clicked.connect(self.salvarServicos)
-        self.botaoHelp.clicked.connect(lambda: help('Ajuda - Cadastro de Orçamentos', HELPCADASTROSERVICO))
+        self.botaoHelp.clicked.connect(lambda: help('Ajuda - Cadastro de Serviços', HELPCADASTROSERVICO))
 
     def retranslateUi(self):
         _translate = QtCore.QCoreApplication.translate

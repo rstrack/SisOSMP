@@ -175,7 +175,7 @@ class TelaEditarCliente(QtWidgets.QMainWindow):
         self.botaoSalvar.clicked.connect(self.editar)
         self.comboBoxPessoa.currentIndexChanged.connect(self.escolherTipoPessoa)
         self.lineEditCEP.textChanged.connect(self.buscarDadosCEP)
-        self.botaoHelp.clicked.connect(lambda: help('Ajuda - Cadastro de Orçamentos', HELPEDITARCLIENTE))
+        self.botaoHelp.clicked.connect(lambda: help('Ajuda - Editar Cliente', HELPEDITARCLIENTE))
 
     def retranslateUi(self):
         _translate = QtCore.QCoreApplication.translate

@@ -130,7 +130,7 @@ class TelaConsultaVeiculo(QtWidgets.QMainWindow):
         self.lineEditBusca.textChanged.connect(self.buffer)
         self.comboBoxOrdenacao.currentIndexChanged.connect(self.buffer)
         self.botaoNovo.clicked.connect(lambda: self.novoVeiculo.emit(1))
-        self.botaoHelp.clicked.connect(lambda: help('Ajuda - Cadastro de Orçamentos', HELPCONSULTAVEICULO))
+        self.botaoHelp.clicked.connect(lambda: help('Ajuda - Consulta por Veículo', HELPCONSULTAVEICULO))
 
     def retranslateUi(self):
         _translate = QtCore.QCoreApplication.translate

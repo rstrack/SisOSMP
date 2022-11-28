@@ -143,7 +143,7 @@ class TelaConsultaOrcamento(QtWidgets.QMainWindow):
         self.comboBoxStatus.currentIndexChanged.connect(self.buffer)
         self.comboBoxStatus.currentIndexChanged.connect(self.renderBotoes)
         self.botaoNovo.clicked.connect(lambda: self.novoOrcamento.emit(1))
-        self.botaoHelp.clicked.connect(lambda: help('Ajuda - Cadastro de Orçamentos', HELPCONSULTAORCAMENTO))
+        self.botaoHelp.clicked.connect(lambda: help('Ajuda - Consulta por Orçamentos', HELPCONSULTAORCAMENTO))
         self.listarOrcamentos()
 
     def retranslateUi(self):

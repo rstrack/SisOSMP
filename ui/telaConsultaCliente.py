@@ -128,7 +128,7 @@ class TelaConsultaCliente(QtWidgets.QMainWindow):
         self.lineEditBusca.textChanged.connect(self.buffer)
         self.comboBoxOrdenacao.currentIndexChanged.connect(self.buffer)
         self.botaoNovo.clicked.connect(lambda: self.novoCliente.emit(1))
-        self.botaoHelp.clicked.connect(lambda: help('Ajuda - Cadastro de Orçamentos', HELPCONSULTACLIENTE))
+        self.botaoHelp.clicked.connect(lambda: help('Ajuda - Consulta por Clientes', HELPCONSULTACLIENTE))
 
     def retranslateUi(self):
         _translate = QtCore.QCoreApplication.translate

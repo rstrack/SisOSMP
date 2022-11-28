@@ -130,7 +130,7 @@ class TelaConsultaOS(QtWidgets.QMainWindow):
         self.comboBoxOrdenacao.currentIndexChanged.connect(self.buffer)
         self.comboBoxStatus.currentIndexChanged.connect(self.buffer)
         self.comboBoxStatus.currentIndexChanged.connect(self.renderBotoes)
-        self.botaoHelp.clicked.connect(lambda: help('Ajuda - Cadastro de Orçamentos', HELPCONSULTAOS))
+        self.botaoHelp.clicked.connect(lambda: help('Ajuda - Consulta por O.S.', HELPCONSULTAOS))
         self.listarOS()
 
     def retranslateUi(self):
