@@ -111,6 +111,9 @@ class TelaConsultaOS(QtWidgets.QMainWindow):
         self.botaoEditar.setFixedSize(100, 35)
         self.botaoEditar.setObjectName('botaoprincipal')
         self.hlayoutbotoes.addWidget(self.botaoEditar)
+        self.botaoFinalizar = QtWidgets.QPushButton(self.framebotoes)
+        self.botaoFinalizar.setFixedSize(100, 35)
+        self.hlayoutbotoes.addWidget(self.botaoFinalizar)
         self.botaoGerarPDF = QtWidgets.QPushButton(self.framebotoes)
         self.botaoGerarPDF.setFixedSize(100, 35)
         self.hlayoutbotoes.addWidget(self.botaoGerarPDF)
@@ -122,6 +125,7 @@ class TelaConsultaOS(QtWidgets.QMainWindow):
         self.setCentralWidget(self.main_frame)
         self.retranslateUi()
         self.botaoRefresh.clicked.connect(self.listarOS)
+        self.botaoFinalizar.clicked.connect(self.finalizarOS)
         self.botaoGerarPDF.clicked.connect(self.gerarPDF)
         self.botaoExcluir.clicked.connect(self.excluirOS)
         self.tabela.verticalScrollBar().valueChanged.connect(self.scrolled)
@@ -138,6 +142,7 @@ class TelaConsultaOS(QtWidgets.QMainWindow):
         self.labelTitulo.setText(_translate("MainWindow", "Ordens de Serviço"))
         self.setWindowTitle(_translate("MainWindow", "Busca"))
         self.botaoEditar.setText(_translate("MainWindow", "Editar"))
+        self.botaoFinalizar.setText(_translate("MainWindow", "Finalizar"))
         self.botaoGerarPDF.setText(_translate("MainWindow", "Gerar PDF"))
         self.botaoExcluir.setText(_translate("MainWindow", "Excluir"))
 
@@ -202,6 +207,21 @@ class TelaConsultaOS(QtWidgets.QMainWindow):
         linha = self.tabela.selectionModel().selectedRows()
         if linha:
             return self.tabela.model().index(linha[0].row(), 0).data()
+
+    def finalizarOS(self):
+        linha = self.tabela.selectionModel().selectedRows()
+        if linha:
+            id = self.tabela.model().index(linha[0].row(), 0).data()
+            r = self.orcamentoCtrl.finalizarOrcamento(id)
+            if isinstance(r, Exception):
+                raise Exception(r)
+            msg = QtWidgets.QMessageBox()
+            msg.setWindowIcon(QtGui.QIcon('resources/logo-icon.png'))
+            msg.setIcon(QtWidgets.QMessageBox.Icon.Information)
+            msg.setWindowTitle("Aviso")
+            msg.setText("Ordem de serviço finalizada com sucesso!")
+            msg.exec()
+            self.listarOS()
 
     def gerarPDF(self):
         linha = self.tabela.selectionModel().selectedRows()

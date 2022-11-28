@@ -79,7 +79,7 @@ class Orcamento(BaseModel):
 
 '''status:
 0 = Aguardando aprovação
-1 = Não aprovado
+1 = Reprovado
 2 = Aprovado
 3 = Finalizado
 '''

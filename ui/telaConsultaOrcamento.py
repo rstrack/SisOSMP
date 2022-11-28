@@ -88,7 +88,7 @@ class TelaConsultaOrcamento(QtWidgets.QMainWindow):
         self.hlayoutOrdenacao.addWidget(self.botaoNovo)
         self.comboBoxStatus = QtWidgets.QComboBox(self.frameOrdenacao)
         self.comboBoxStatus.setFixedHeight(25)
-        self.comboBoxStatus.addItems(['Aguardando aprovação', 'Não aprovados'])
+        self.comboBoxStatus.addItems(['Aguardando aprovação', 'Reprovados'])
         self.hlayoutOrdenacao.addWidget(self.comboBoxStatus)
         self.comboBoxOrdenacao = QtWidgets.QComboBox(self.frameOrdenacao)
         self.comboBoxOrdenacao.setFixedHeight(25)
