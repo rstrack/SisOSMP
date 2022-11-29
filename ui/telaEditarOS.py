@@ -2,7 +2,6 @@ from decimal import Decimal
 from PyQt6 import QtCore, QtWidgets, QtGui
 from ui.help import HELPEDITAROS, help
 from ui.hoverButton import HoverButton
-from ui.telaCadastroCliente import REGEXPLACA
 from util.container import handleDeps
 
 import re

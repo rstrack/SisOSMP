@@ -34,10 +34,10 @@ class TelaInicial(QtWidgets.QMainWindow):
         # logo
         self.botaoLogo = QtWidgets.QPushButton(self.logo_frame)
         self.botaoLogo.setFixedHeight(150)
-        self.botaoLogo.setIcon(QtGui.QIcon("resources/logo-menu.png"))
-        self.botaoLogo.setIconSize(QtCore.QSize(250,150))
+        icon = QtGui.QIcon(QtGui.QPixmap("resources/logo-menu.png").scaled(200,120))
+        self.botaoLogo.setIcon(icon)
+        self.botaoLogo.setIconSize(QtCore.QSize(200,120))
         self.botaoLogo.setStyleSheet('''
-            QPushButton{margin-top:10px;}
             QPushButton:hover{background-color:transparent;}''')
         self.vlayout2.addWidget(self.botaoLogo)
         self.vlayout1.addWidget(self.logo_frame)

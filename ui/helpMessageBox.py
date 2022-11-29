@@ -16,6 +16,7 @@ class HelpMessageBox(QtWidgets.QDialog):
         self.layout1.setContentsMargins(16,16,16,0)
         self.setLayout(self.layout1)
         self.setFixedWidth(350)
+        self.setWindowFlags(QtCore.Qt.WindowType.MSWindowsFixedSizeDialogHint)
 
     def setMessage(self, str: str):
         labels = str.split('\n')
@@ -30,16 +31,13 @@ class HelpMessageBox(QtWidgets.QDialog):
         spacerItem = QtWidgets.QSpacerItem(
             40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
         self.layout1.addItem(spacerItem)
-        self.setFixedHeight(self.sizeHint().height()-120 if self.sizeHint().height()>120 else self.sizeHint().height())
+        self.setFixedHeight(self.sizeHint().height()-100 if self.sizeHint().height()>120 else self.sizeHint().height()-40)
 
 if __name__=="__main__":
     app = QtWidgets.QApplication(sys.argv)
     style = open('resources/styles.qss').read()
     app.setStyleSheet(style)
     msg = HelpMessageBox()
-    msg.setMessage('''Cadastro de orçamento de manutenção de veículos. Cadastre um novo cliente e/ou veículo ou selecione um já existente. Ao selecionar, é possível editar seus dados.
-Se estiver com acesso à internet, campos de endereço são completados automaticamente ao inserir o CEP.
-Adicione peças e serviços ao orçamento. Necessário pelo menos um serviço. Para adicionar mais peças ou serviços, clique no botão "+" disponível em suas respectivas seções.
-Após concluir, selecione a opção de salvar somente ou salvar e gerar o arquivo PDF para visualização do orçamento.''')
+    msg.setMessage('''''')
     msg.exec()
     app.exec(sys.exit())
