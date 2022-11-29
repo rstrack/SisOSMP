@@ -339,8 +339,10 @@ class TelaConsultaOrcamento(QtWidgets.QMainWindow):
             self.botaoEditar.hide()
             self.botaoAprovar.hide()
             self.botaoReprovar.hide()
-            self.botaoGerarPDF.hide()
+            self.botaoExcluir.hide()
         else:
             self.botaoEditar.show()
+            self.botaoAprovar.show()
+            self.botaoReprovar.show()
             self.botaoExcluir.show()
             

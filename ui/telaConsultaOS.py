@@ -289,7 +289,9 @@ class TelaConsultaOS(QtWidgets.QMainWindow):
     def renderBotoes(self):
         if self.comboBoxStatus.currentIndex() == 1:
             self.botaoEditar.hide()
+            self.botaoFinalizar.hide()
             self.botaoExcluir.hide()
         else:
             self.botaoEditar.show()
+            self.botaoFinalizar.show()
             self.botaoExcluir.show()
