@@ -320,6 +320,8 @@ class TelaCadastroCliente(QtWidgets.QMainWindow):
         else:
             raise Exception("Nome do cliente obrigatório!")
         if (self.lineEditCEP.text()):
+            if not self.lineEditCEP.text().isnumeric():
+                raise Exception('Digite apenas números no campo "CEP"!')
             if len(self.lineEditCEP.text()) != 8:
                 raise Exception("CEP inválido!")
             dict['cep'] = self.lineEditCEP.text()

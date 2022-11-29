@@ -174,7 +174,7 @@ class TelaCadastroPeca(QtWidgets.QMainWindow):
 
     def resetarTela(self):
         while len(self.linhasPeca)>1:
-            self.removerLinha(3)
+            self.removerLinha(2)
         self.limparCampos()
         
 

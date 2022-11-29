@@ -169,7 +169,7 @@ class TelaCadastroServico(QtWidgets.QMainWindow):
 
     def resetarTela(self):
         while len(self.linhasServico)>1:
-            self.removerLinha(3)
+            self.removerLinha(2)
         self.limparCampos()
 
     def getServicos(self):
