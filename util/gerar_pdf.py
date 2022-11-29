@@ -10,6 +10,7 @@ from reportlab.lib import colors
 import os
 import locale
 import phonenumbers
+import string
 
 class GeraPDF():
     def __init__(self):
@@ -68,6 +69,7 @@ class GeraPDF():
     def generatePDF(self, orcamento: dict, listaFones: list[dict], listaServicos: list[dict], listaPecas: list[dict] = None,
                     path: str = None):
         nomearquivo = f"{orcamento['veiculo']['modelo']} {orcamento['veiculo']['placa']} ({orcamento['cliente']['nome']}) {orcamento['dataOrcamento'].strftime('%d-%m-%Y')}.pdf"
+        nomearquivo = nomearquivo.replace("/", "-").replace("#", '').replace("<", '').replace(">", '').replace("!", '').replace("$", '').replace("+", '').replace("*", '').replace("{", '').replace("}", '').replace("|", '').replace("@", '')
         if path:
             pdf = canvas.Canvas(f"{path}\\{nomearquivo}", pagesize=A4)
         else:
@@ -257,10 +259,9 @@ class GeraPDF():
                 f2.wrapOn(pdf, width, height)
                 s2.wrapOn(pdf, width, height)
                 f.drawOn(pdf, 39, y)
-                self.paginacao(pdf,countpage)
+                self.paginacao(pdf,(countpage+1))
                 pdf.showPage()
-                countpage =+ 1
-                self.paginacao(pdf,countpage)
+                self.paginacao(pdf,(countpage+1))
                 f2.drawOn(pdf, 39, y2)
                 s2.drawOn(pdf, 39, alturaser)
                 self.tabelas_pos(pdf, orcamento, l, g)
@@ -285,10 +286,9 @@ class GeraPDF():
                     s.wrapOn(pdf, width, height)
                     s2.wrapOn(pdf, width, height)
                     s.drawOn(pdf, 39, z2)
-                    self.paginacao(pdf,countpage)
+                    self.paginacao(pdf,(countpage+1))
                     pdf.showPage()
-                    countpage =+ 1
-                    self.paginacao(pdf,countpage)
+                    self.paginacao(pdf,(countpage+1))
                     s2.drawOn(pdf, 39, alturaser)
                     self.tabelas_pos(pdf, orcamento, l, g)
 
@@ -316,10 +316,9 @@ class GeraPDF():
                         f.wrapOn(pdf, width, height)
                         s.wrapOn(pdf, width, height)
                         f.drawOn(pdf, 39, y)
-                        self.paginacao(pdf,countpage)
+                        self.paginacao(pdf,(countpage+1))
                         pdf.showPage()
-                        countpage =+ 1
-                        self.paginacao(pdf,countpage)
+                        self.paginacao(pdf,(countpage+1))
                         s.drawOn(pdf, 39, alturaser)
                         l -= 0.4 * inch
                         g -= 0.4 * inch
@@ -337,10 +336,9 @@ class GeraPDF():
                         s2.wrapOn(pdf, width, height)
                         f.drawOn(pdf, 39, y)
                         s.drawOn(pdf, 39, z2)
-                        self.paginacao(pdf,countpage)
+                        self.paginacao(pdf,(countpage+1))
                         pdf.showPage()
-                        countpage =+ 1
-                        self.paginacao(pdf,countpage)
+                        self.paginacao(pdf,(countpage+1))
                         s2.drawOn(pdf, 39, alturaser)
                     # Não deixar o cabeçalho ficar separado da tabela
                     self.tabelas_pos(pdf, orcamento, l, g)

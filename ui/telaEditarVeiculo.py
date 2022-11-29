@@ -112,6 +112,7 @@ class TelaEditarVeiculo(QtWidgets.QMainWindow):
 
         self.botaoCancelar.clicked.connect(self.cancelarEdicao)
         self.botaoSalvar.clicked.connect(self.editar)
+        self.botaoHelp.clicked.connect(lambda: help('Ajuda - Editar Serviço', HELPEDITARVEICULO))
 
     def retranslateUi(self):
         _translate = QtCore.QCoreApplication.translate
