@@ -216,7 +216,6 @@ class APP():
                 self.telaConsultaOrcamento.botaoHelp.click()
             case self.telaConsultaOS:
                 self.telaConsultaOS.botaoHelp.click()
-
             case self.telaEditarPeca:
                 self.telaEditarPeca.botaoHelp.click()
             case self.telaEditarServico:
@@ -228,8 +227,7 @@ class APP():
             case self.telaEditarOrcamento:
                 self.telaEditarOrcamento.botaoHelp.click()
             case self.telaEditarOS:
-                self.telaEditarOS.botaoHelp.click()
-               
+                self.telaEditarOS.botaoHelp.click()               
             case _:
                 return
 

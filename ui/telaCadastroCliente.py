@@ -2,11 +2,13 @@ from PyQt6 import QtCore, QtWidgets, QtGui
 from ui.help import HELPCADASTROCLIENTE, help
 from ui.hoverButton import HoverButton
 from util.container import handleDeps
+import re
 import threading
 
 SIGLAESTADOS = ['AC', 'AL', 'AP', 'AM', 'BA', 'CE', 'DF', 'ES', 'GO', 'MA', 'MT', 'MS',
                 'MG', 'PA', 'PB', 'PR', 'PE', 'PI', 'RJ', 'RN', 'RS', 'RO', 'RR', 'SC', 'SP', 'SE', 'TO']
 
+REGEXPLACA = '([A-Za-z][A-Za-z][A-Za-z0-9][0-9][A-Za-z0-9][A-Za-z0-9][A-Za-z0-9])|([A-Za-z][A-Za-z][A-Za-z][0-9][0-9][0-9][0-9])'
 
 class TelaCadastroCliente(QtWidgets.QMainWindow):
 
@@ -248,16 +250,16 @@ class TelaCadastroCliente(QtWidgets.QMainWindow):
             if cliente and veiculo:
                 fones = self.getFones()
                 r = self.clienteCtrl.salvarClienteVeiculo(cliente, fones, veiculo)
-                string = 'Cliente e Veiculo inseridos com sucesso!'
+                string = 'Cliente e Veiculo cadastrados com sucesso!'
             #se somente possuem dados sobre cliente:
             elif cliente:
                 fones = self.getFones()
                 r = self.clienteCtrl.salvarCliente(cliente, fones)
-                string = 'Cliente inserido com sucesso!'
+                string = 'Cliente cadastrado com sucesso!'
             #se somente possuem dados sobre veiculo:
             elif veiculo: 
                 r = self.clienteCtrl.salvarVeiculo(veiculo)
-                string = 'Veiculo inserido com sucesso!'
+                string = 'Veiculo cadastrado com sucesso!'
             else: raise Exception('Campos vazios!')
             if isinstance(r, Exception):
                 raise Exception(r)
@@ -380,7 +382,7 @@ class TelaCadastroCliente(QtWidgets.QMainWindow):
         else:
             raise Exception('Modelo obrigatório!')
         if self.lineEditPlaca.text():
-            if not self.lineEditPlaca.text().isalnum() or len(self.lineEditPlaca.text()) != 7:
+            if not re.match(REGEXPLACA, self.lineEditPlaca.text()):
                 raise Exception('Placa inválida!')
             dict['placa'] = self.lineEditPlaca.text().upper()
         else:

@@ -1,5 +1,7 @@
+import re
 from PyQt6 import QtCore, QtWidgets, QtGui
 from ui.help import HELPEDITARVEICULO, help
+from ui.telaCadastroCliente import REGEXPLACA
 from ui.hoverButton import HoverButton
 from util.container import handleDeps
 
@@ -138,7 +140,7 @@ class TelaEditarVeiculo(QtWidgets.QMainWindow):
         else:
             raise Exception('Modelo obrigatório!')
         if self.lineEditPlaca.text():
-            if not self.lineEditPlaca.text().isalnum() or len(self.lineEditPlaca.text()) != 7:
+            if not re.match(REGEXPLACA, self.lineEditPlaca.text()):
                 raise Exception('Placa inválida!')
             dict['placa'] = self.lineEditPlaca.text().upper()
         else:

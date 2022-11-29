@@ -1,4 +1,5 @@
 import threading
+import re
 from decimal import Decimal
 from PyQt6 import QtCore, QtWidgets, QtGui
 from datetime import datetime
@@ -8,7 +9,7 @@ from ui.messageBox import MessageBox
 from ui.telaBuscaCliente import TelaBuscaCliente
 from ui.telaBuscaVeiculo import TelaBuscaVeiculo
 from ui.hoverButton import HoverButton
-from ui.helpMessageBox import HelpMessageBox
+from ui.telaCadastroCliente import REGEXPLACA
 
 from util.gerar_pdf import GeraPDF
 from util.container import handleDeps
@@ -708,7 +709,7 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
         else:
             raise Exception('Modelo obrigatório!')
         if self.lineEditPlaca.text():
-            if not self.lineEditPlaca.text().isalnum() or len(self.lineEditPlaca.text()) != 7:
+            if not re.match(REGEXPLACA, self.lineEditPlaca.text()):
                 raise Exception('Placa inválida!')
             dict['placa'] = self.lineEditPlaca.text().upper()
         else:
