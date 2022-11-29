@@ -265,17 +265,17 @@ class TelaConsultaOrcamento(QtWidgets.QMainWindow):
 
     def excluirOrcamento(self):
         try:
-            msgBox = QtWidgets.QMessageBox()
-            msgBox.setWindowTitle("Aviso")
-            msgBox.setText('Tem certeza que deseja excluir?')
-            y = msgBox.addButton("Sim", QtWidgets.QMessageBox.ButtonRole.YesRole)
-            n = msgBox.addButton("Não", QtWidgets.QMessageBox.ButtonRole.NoRole)
-            y.setFixedWidth(60)
-            n.setFixedWidth(60)
-            msgBox.exec()
-            if msgBox.clickedButton() == y:
-                linha = self.tabela.selectionModel().selectedRows()
-                if linha:
+            linha = self.tabela.selectionModel().selectedRows()
+            if linha:
+                msgBox = QtWidgets.QMessageBox()
+                msgBox.setWindowTitle("Aviso")
+                msgBox.setText('Tem certeza que deseja excluir?')
+                y = msgBox.addButton("Sim", QtWidgets.QMessageBox.ButtonRole.YesRole)
+                n = msgBox.addButton("Não", QtWidgets.QMessageBox.ButtonRole.NoRole)
+                y.setFixedWidth(60)
+                n.setFixedWidth(60)
+                msgBox.exec()
+                if msgBox.clickedButton() == y:
                     id = self.tabela.model().index(linha[0].row(), 0).data()
                     r = self.orcamentoCtrl.excluirOrcamento(id)
                     if isinstance(r, Exception):
@@ -287,9 +287,9 @@ class TelaConsultaOrcamento(QtWidgets.QMainWindow):
                         msg.setWindowTitle("Aviso")
                         msg.setWindowIcon(QtGui.QIcon('resources/logo-icon.png'))
                         msg.setIcon(QtWidgets.QMessageBox.Icon.Information)
-                        msg.setText(f"Orçamento excluído com sucesso!")
+                        msg.setText(f"Ordem de Serviço excluída com sucesso!")
                         msg.exec()
-                        self.listarOrcamentos()
+                        self.listarOS()
         except Exception as e:
             msg = QtWidgets.QMessageBox()
             msg.setWindowIcon(QtGui.QIcon('resources/logo-icon.png'))
