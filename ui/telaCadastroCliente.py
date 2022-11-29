@@ -267,7 +267,7 @@ class TelaCadastroCliente(QtWidgets.QMainWindow):
             msg.setWindowTitle("Aviso")
             msg.setText(string)
             msg.exec()
-            self.limparCampos()
+            self.resetarTela()
         except Exception as e:
             msg = QtWidgets.QMessageBox()
             msg.setWindowIcon(QtGui.QIcon('resources/logo-icon.png'))
