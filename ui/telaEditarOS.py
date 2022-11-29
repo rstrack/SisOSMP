@@ -320,6 +320,7 @@ class TelaEditarOS(QtWidgets.QMainWindow):
         self.botaoSalvar.clicked.connect(self.editarOS)
         self.botaoFinalizar.clicked.connect(self.finalizarOS)
         self.botaoCancelar.clicked.connect(self.cancelarEdicao)
+        self.botaoHelp.clicked.connect(lambda: help('Ajuda - Editar Peça', HELPEDITAROS))
 
     ##############################################################################################################################
                                                             #FUNÇÕES

@@ -89,7 +89,7 @@ class TelaEditarServico(QtWidgets.QMainWindow):
         # conexoes
         self.botaoCancelar.clicked.connect(self.cancelarEdicao)
         self.botaoSalvar.clicked.connect(self.editarServico)
-
+        self.botaoHelp.clicked.connect(lambda: help('Ajuda - Editar Serviço', HELPEDITARSERVICO))
     def retranslateUi(self):
         _translate = QtCore.QCoreApplication.translate
         self.setWindowTitle(_translate("MainWindow", "MainWindow"))

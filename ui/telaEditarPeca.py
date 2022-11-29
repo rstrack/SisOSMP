@@ -98,6 +98,7 @@ class TelaEditarPeca(QtWidgets.QMainWindow):
         # conexoes
         self.botaoCancelar.clicked.connect(self.cancelarEdicao)
         self.botaoSalvar.clicked.connect(self.editarPeca)
+        self.botaoHelp.clicked.connect(lambda: help('Ajuda - Editar Peça', HELPEDITARPECA))
 
     def retranslateUi(self):
         _translate = QtCore.QCoreApplication.translate
