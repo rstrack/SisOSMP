@@ -410,6 +410,7 @@ class TelaEditarOS(QtWidgets.QMainWindow):
                         self.gridLayoutPecas.addWidget(self.gridLayoutPecas.itemAtPosition(x, y).widget(), x-1, y, 1, 1)
         del self.linhasPeca[linha-1]
         self.gridLayoutPecas.addItem(self.spacerpeca, len(self.linhasPeca)+2, 0, 1, 1)
+        self.setValor()
         if len(self.linhasPeca) == 0:
             self.labelNomePeca.hide()
             self.labelQtdePeca.hide()
@@ -454,6 +455,7 @@ class TelaEditarOS(QtWidgets.QMainWindow):
                         self.gridLayoutServicos.addWidget(self.gridLayoutServicos.itemAtPosition(x, y).widget(), x-1, y, 1, 1)
         del self.linhasServico[linha-1]
         self.gridLayoutServicos.addItem(self.spacerservico, len(self.linhasServico)+2, 0, 1, 1)
+        self.setValor()
         if len(self.linhasServico) == 0:
             self.labelNomeServico.hide()
             self.labelQtdeServico.hide()

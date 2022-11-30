@@ -330,7 +330,7 @@ class TelaEditarOrcamento(QtWidgets.QMainWindow):
     def retranslateUi(self):
         _translate = QtCore.QCoreApplication.translate
         self.setWindowTitle(_translate("MainWindow", "Mecânica Pasetto"))
-        self.botaoAprovar.setText(_translate("MainWindow", "Editar e Aprovar"))
+        self.botaoAprovar.setText(_translate("MainWindow", "Salvar e Aprovar"))
         self.botaoReprovar.setText(_translate("MainWindow", "Reprovar"))
         self.botaoSalvar.setText(_translate("MainWindow", "Salvar"))
         self.botaoSalvareGerarPDF.setText(_translate("MainWindow", "Salvar e Gerar PDF"))
@@ -409,6 +409,7 @@ class TelaEditarOrcamento(QtWidgets.QMainWindow):
                         self.gridLayoutPecas.addWidget(self.gridLayoutPecas.itemAtPosition(x, y).widget(), x-1, y, 1, 1)
         del self.linhasPeca[linha-1]
         self.gridLayoutPecas.addItem(self.spacerpeca, len(self.linhasPeca)+2, 0, 1, 1)
+        self.setValor()
         if len(self.linhasPeca) == 0:
             self.labelNomePeca.hide()
             self.labelQtdePeca.hide()
@@ -453,6 +454,7 @@ class TelaEditarOrcamento(QtWidgets.QMainWindow):
                         self.gridLayoutServicos.addWidget(self.gridLayoutServicos.itemAtPosition(x, y).widget(), x-1, y, 1, 1)
         del self.linhasServico[linha-1]
         self.gridLayoutServicos.addItem(self.spacerservico, len(self.linhasServico)+2, 0, 1, 1)
+        self.setValor()
         if len(self.linhasServico) == 0:
             self.labelNomeServico.hide()
             self.labelQtdeServico.hide()

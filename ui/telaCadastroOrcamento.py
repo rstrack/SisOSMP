@@ -484,6 +484,7 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
         del self.linhasPeca[linha-1]
         self.gridLayoutPecas.removeItem(self.spacerpeca)
         self.gridLayoutPecas.addItem(self.spacerpeca, len(self.linhasPeca)+1, 0, 1, 1)
+        self.setValor()
 
     def addLinhaServico(self):
         lineedit1 = QtWidgets.QLineEdit()
@@ -521,6 +522,7 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
         del self.linhasServico[linha-1]
         self.gridLayoutServicos.removeItem(self.spacerservico)
         self.gridLayoutServicos.addItem(self.spacerservico, len(self.linhasServico)+1, 0, 1, 1)
+        self.setValor()
 
     def limparDadosCliente(self):
         self.lineEditNomeCliente.clear()
@@ -734,6 +736,8 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
                 else:
                     if not (qtde.text().replace(',','',1).isnumeric() or qtde.text().replace('.','',1).isnumeric()):
                         raise Exception('Campo "qtde" inválido!')
+                    if not float(qtde.text().replace(',', '.', 1)) > 0:
+                        raise Exception('Campo "qtde" inválido!')
                     dict['qtde'] = qtde.text().replace(',','.',1)
                 dict['un'] = un.currentText()
                 if not (valor.text().replace(',','',1).isnumeric() or valor.text().replace('.','',1).isnumeric()):
@@ -758,6 +762,8 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
                 else:
                     if not qtde.text().isnumeric():
                         raise Exception('Campo "qtde" em "serviços" deve ser um número inteiro!')
+                    if not int(qtde.text()) > 0:
+                        raise Exception('Campo "qtde" inválido!')
                     dict['qtde'] = qtde.text().replace(',','.',1)
                 if not (valor.text().replace(',','',1).isnumeric() or valor.text().replace('.','',1).isnumeric()):
                     raise Exception('Campo "valor" inválido!')
@@ -825,6 +831,7 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
 
     def salvarOrcamento(self):
         try:
+            self.setValor()
             cliente = self.getDadosCliente()
             fones = self.getFones()
             veiculo = self.getDadosVeiculo()
@@ -835,6 +842,7 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
             r = self.orcamentoCtrl.salvarOrcamento(cliente, fones, self.clienteSelected, veiculo, self.veiculoSelected, orcamento, pecas, servicos)
             if isinstance(r, Exception):
                 raise Exception(r)
+            print(r)
             msg = QtWidgets.QMessageBox()
             msg.setWindowIcon(QtGui.QIcon('resources/logo-icon.png'))
             msg.setIcon(QtWidgets.QMessageBox.Icon.Information)
