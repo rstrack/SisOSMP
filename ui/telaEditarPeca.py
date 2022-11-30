@@ -166,6 +166,7 @@ class TelaEditarPeca(QtWidgets.QMainWindow):
         self.pecaID = id
         peca = self.pecaCtrl.getPeca(id)
         self.lineEditDescricao.setText(peca['descricao'])
+        self.comboboxun.setCurrentIndex(self.comboboxun.findText(peca['un'], QtCore.Qt.MatchFlag.MatchExactly))
         self.lineEditValorPeca.setText('{:.2f}'.format(peca['valor']).replace('.',',',1))
 
     def limparCampos(self):
