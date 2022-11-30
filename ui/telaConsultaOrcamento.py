@@ -245,7 +245,7 @@ class TelaConsultaOrcamento(QtWidgets.QMainWindow):
             linha = self.tabela.selectionModel().selectedRows()
             if linha:
                 id = self.tabela.model().index(linha[0].row(), 0).data()
-                r = self.orcamentoCtrl.aprovarOrcamento(id)
+                r = self.orcamentoCtrl.reprovarOrcamento(id)
                 if isinstance(r, Exception):
                     raise Exception(r)
                 msg = QtWidgets.QMessageBox()

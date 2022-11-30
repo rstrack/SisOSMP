@@ -548,9 +548,13 @@ class TelaEditarOS(QtWidgets.QMainWindow):
                 else:
                     if not (qtde.text().replace(',','',1).isnumeric() or qtde.text().replace('.','',1).isnumeric()):
                         raise Exception('Campo "qtde" inválido!')
+                    if not float(qtde.text().replace(',', '.', 1)) > 0:
+                        raise Exception('Campo "qtde" inválido!')
                     dict['qtde'] = qtde.text().replace(',','.',1)
                 dict['un'] = un.currentText()
                 if not (valor.text().replace(',','',1).isnumeric() or valor.text().replace('.','',1).isnumeric()):
+                    raise Exception('Campo "valor" inválido!')
+                if not float(valor.text().replace(',','.',1))>0:
                     raise Exception('Campo "valor" inválido!')
                 if -Decimal(valor.text().replace(',','.',1)).as_tuple().exponent > 2:
                     raise Exception("Valores devem possuir no máximo duas casas decimais!")
@@ -572,6 +576,8 @@ class TelaEditarOS(QtWidgets.QMainWindow):
                 else:
                     if not qtde.text().isnumeric():
                         raise Exception('Campo "qtde" em "serviços" deve ser um número inteiro!')
+                    if not int(qtde.text()) > 0:
+                        raise Exception('Campo "qtde" inválido!')
                     dict['qtde'] = qtde.text().replace(',','.',1)
                 if not (valor.text().replace(',','',1).isnumeric() or valor.text().replace('.','',1).isnumeric()):
                     raise Exception('Campo "valor" inválido!')
@@ -596,7 +602,7 @@ class TelaEditarOS(QtWidgets.QMainWindow):
         if dataAprovacao.date() > datetime.now().date():
             raise Exception('Data de Aprovação não deve ser no futuro!')
         if dataAprovacao.date() < dataOrcamento.date():
-            raise Exception('Data de Aprovação não pode ser antes da Data do Orçamento')
+            raise Exception('Data de Aprovação não deve ser antes da Data do Orçamento!')
         orcamento['dataAprovacao'] = dataAprovacao.strftime("%Y-%m-%d")
         if self.lineEditKm.text():
             if self.lineEditKm.text() > '0' and self.lineEditKm.text().isnumeric():
@@ -609,32 +615,30 @@ class TelaEditarOS(QtWidgets.QMainWindow):
     def setValor(self):
         self.valorTotal=0.00
         for _,qtde,_,valor in self.linhasPeca:
-            if not valor.text():
-                continue
-            if not (valor.text().replace(',','',1).isnumeric() or valor.text().replace('.','',1).isnumeric()):
-                self.labelValorTotal2.setText('0,00')
-                return
-            if qtde.text():
-                if not (qtde.text().replace(',','',1).isnumeric() or qtde.text().replace('.','',1).isnumeric()):
+            if valor.text():
+                if not (valor.text().replace(',','',1).isnumeric() or valor.text().replace('.','',1).isnumeric()):
                     self.labelValorTotal2.setText('0,00')
-                    return 
-                self.valorTotal+=float(valor.text().replace(',','.',1))*float(qtde.text().replace(',','.',1))
-            else:
-                self.valorTotal+=float(valor.text().replace(',','.',1))
+                    return
+                if qtde.text():
+                    if not (qtde.text().replace(',','',1).isnumeric() or qtde.text().replace('.','',1).isnumeric()):
+                        self.labelValorTotal2.setText('0,00')
+                        return 
+                    self.valorTotal+=float(valor.text().replace(',','.',1))*float(qtde.text().replace(',','.',1))
+                else:
+                    self.valorTotal+=float(valor.text().replace(',','.',1))
 
         for _,qtde,valor in self.linhasServico:
-            if not valor.text():
-                continue
-            if not (valor.text().replace(',','',1).isnumeric() or valor.text().replace('.','',1).isnumeric()):
-                self.labelValorTotal2.setText('0,00')
-                return
-            if qtde.text():
-                if not (qtde.text().replace(',','',1).isnumeric() or qtde.text().replace('.','',1).isnumeric()):
+            if valor.text():
+                if not (valor.text().replace(',','',1).isnumeric() or valor.text().replace('.','',1).isnumeric()):
                     self.labelValorTotal2.setText('0,00')
-                    return 
-                self.valorTotal+=float(valor.text().replace(',','.',1))*float(qtde.text().replace(',','.',1))
-            else:
-                self.valorTotal+=float(valor.text().replace(',','.',1))
+                    return
+                if qtde.text():
+                    if not (qtde.text().replace(',','',1).isnumeric() or qtde.text().replace('.','',1).isnumeric()):
+                        self.labelValorTotal2.setText('0,00')
+                        return 
+                    self.valorTotal+=float(valor.text().replace(',','.',1))*float(qtde.text().replace(',','.',1))
+                else:
+                    self.valorTotal+=float(valor.text().replace(',','.',1))
         self.labelValorTotal2.setText(('{:.2f}'.format(self.valorTotal)).replace('.',',',1))
 
     def buscarPeca(self, lineEditDesc, comboBoxUn, lineEditValor):
@@ -695,7 +699,7 @@ class TelaEditarOS(QtWidgets.QMainWindow):
             servicos  = self.getServicos()
             orcamento = self.getDadosOrcamento()
             orcamento['valorTotal'] = self.valorTotal
-            r = self.orcamentoCtrl.editarOS(self.orcamentoID, orcamento, pecas, servicos)
+            r = self.orcamentoCtrl.editarOrcamento(self.orcamentoID, orcamento, pecas, servicos)
             if isinstance(r, Exception):
                 raise Exception(r)
             msg = QtWidgets.QMessageBox()

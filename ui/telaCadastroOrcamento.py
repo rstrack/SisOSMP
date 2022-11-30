@@ -742,6 +742,8 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
                 dict['un'] = un.currentText()
                 if not (valor.text().replace(',','',1).isnumeric() or valor.text().replace('.','',1).isnumeric()):
                     raise Exception('Campo "valor" inválido!')
+                if not float(valor.text().replace(',','.',1))>0:
+                    raise Exception('Campo "valor" inválido!')
                 if -Decimal(valor.text().replace(',','.',1)).as_tuple().exponent > 2:
                     raise Exception("Valores devem possuir no máximo duas casas decimais!")
                 dict['valor'] = valor.text().replace(',','.',1)
@@ -794,27 +796,33 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
         return orcamento
 
     def setValor(self):
-        try:
-            self.valorTotal=0.00
-            for desc, qtde, _, valor in self.linhasPeca:
-                if not desc.text() and not valor.text():
-                    continue
+        self.valorTotal=0.00
+        for _,qtde,_,valor in self.linhasPeca:
+            if valor.text():
+                if not (valor.text().replace(',','',1).isnumeric() or valor.text().replace('.','',1).isnumeric()):
+                    self.labelValorTotal2.setText('0,00')
+                    return
                 if qtde.text():
+                    if not (qtde.text().replace(',','',1).isnumeric() or qtde.text().replace('.','',1).isnumeric()):
+                        self.labelValorTotal2.setText('0,00')
+                        return 
                     self.valorTotal+=float(valor.text().replace(',','.',1))*float(qtde.text().replace(',','.',1))
                 else:
                     self.valorTotal+=float(valor.text().replace(',','.',1))
-            for desc, qtde, valor in self.linhasServico:
-                if not desc.text() and not valor.text():
-                    continue
+
+        for _,qtde,valor in self.linhasServico:
+            if valor.text():
+                if not (valor.text().replace(',','',1).isnumeric() or valor.text().replace('.','',1).isnumeric()):
+                    self.labelValorTotal2.setText('0,00')
+                    return
                 if qtde.text():
+                    if not (qtde.text().replace(',','',1).isnumeric() or qtde.text().replace('.','',1).isnumeric()):
+                        self.labelValorTotal2.setText('0,00')
+                        return 
                     self.valorTotal+=float(valor.text().replace(',','.',1))*float(qtde.text().replace(',','.',1))
                 else:
                     self.valorTotal+=float(valor.text().replace(',','.',1))
-            self.valorTotal = round(self.valorTotal, 2)
-            self.labelValorTotal2.setText('{:.2f}'.format(self.valorTotal).replace('.',',',1))
-        except:
-            self.valorTotal=0.00
-            self.labelValorTotal2.setText('0,00')
+        self.labelValorTotal2.setText(('{:.2f}'.format(self.valorTotal)).replace('.',',',1))
 
     def buscarPeca(self, lineEditDesc, comboBoxUn, lineEditValor):
         qPeca = self.pecaCtrl.getPecaByDescricao(lineEditDesc.text())
@@ -842,7 +850,6 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
             r = self.orcamentoCtrl.salvarOrcamento(cliente, fones, self.clienteSelected, veiculo, self.veiculoSelected, orcamento, pecas, servicos)
             if isinstance(r, Exception):
                 raise Exception(r)
-            print(r)
             msg = QtWidgets.QMessageBox()
             msg.setWindowIcon(QtGui.QIcon('resources/logo-icon.png'))
             msg.setIcon(QtWidgets.QMessageBox.Icon.Information)
