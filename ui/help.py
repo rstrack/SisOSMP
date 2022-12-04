@@ -42,23 +42,23 @@ Para ver clientes vinculados ao veículo selecionado, clique no botão "Clientes
 
 HELPCONSULTAORCAMENTO = \
 '''Consulta por orçamentos cadastrados. Selecione o status do orçamento desejado (aguardando aprovação ou reprovado), pesquise-o no campo de pesquisa e selecione-o. 
-É possivel selecionar o cadastro e exclusão de orçamentos. Caso o orçamento esteja aguardando aprovação, é possível selecionar também as opções de editar, gerar arquivo PDF, aprovar ou reprovar o orçamento. Caso tenha sido reprovado, somente pode ser excluído.'''
+É possivel selecionar o cadastro e exclusão de orçamentos. Caso o orçamento esteja aguardando aprovação, é possível selecionar também as opções de editar, gerar arquivo PDF, aprovar ou reprovar o orçamento. Caso tenha sido reprovado, somente pode ser gerado o seu arquivo PDF.'''
 
 HELPCONSULTAOS = \
 '''Consulta por ordens de serviço. Selecione o status da ordem de serviço desejada (finalizada ou não finalizada), pesquise-a no campo de pesquisa e selecione-a.
 É possivel selecionar a geração do arquivo PDF das ordens de serviço. Caso a ordem de serviço esteja em andamento, é possível selecionar também as opções de editar, finalizar, e excluir'''
 
 HELPEDITARPECA = \
-'''Edição de peças cadastradas. Altere os dados da peça selecionada modificando os seus campos, então clique no botão "salvar" para que as modificações sejam salvas. Caso deseje limpar os campos da tela, clique no botão "limpar".'''
+'''Edição de peças cadastradas. Altere os dados da peça selecionada modificando os seus campos, então clique no botão "salvar" para que as modificações sejam salvas..'''
 
 HELPEDITARSERVICO = \
-'''Edição de serviços cadastrados. Altere os dados do serviço selecionado modificando os seus campos, então clique no botão "salvar" para que as modificações sejam salvas. Caso deseje limpar os campos da tela, clique no botão "limpar".'''
+'''Edição de serviços cadastrados. Altere os dados do serviço selecionado modificando os seus campos, então clique no botão "salvar" para que as modificações sejam salvas.'''
 
 HELPEDITARCLIENTE = \
-'''Edição de clientes cadastrados. Modifique as informações do cliente selecionado alterando os seus campo, em seguida clique no botão "salvar" para que as alterações sejam salvas. Caso deseje limpar os campos da tela, clique no botão "limpar".'''
+'''Edição de clientes cadastrados. Modifique as informações do cliente selecionado alterando os seus campo, em seguida clique no botão "salvar" para que as alterações sejam salvas.'''
 
 HELPEDITARVEICULO = \
-'''Edição de veículo cadastrados. Altere os dados do veículo selecionado modificando as informações dos seus campos, em seguida clique no botão "salvar" para salvar as modificações. Caso deseje limpar os campos da tela, clique no botão "limpar".'''
+'''Edição de veículo cadastrados. Altere os dados do veículo selecionado modificando as informações dos seus campos, em seguida clique no botão "salvar" para salvar as modificações.'''
 
 HELPEDITARORCAMENTO = \
 '''Edição de orçamentos cadastrados. Altere os dados do orçamento selecionado modificando as informações contidas nos campos.
