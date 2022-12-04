@@ -12,13 +12,15 @@ Preencha os campos e então clique no botão "salvar". Caso deseje limpar os cam
 HELPCADASTROCLIENTE = \
 '''Cadastro de Clientes e/ou veículos. É possível cadastrar somente um cliente, somente um veículo ou ambos.
 Para cadastrar somente cliente ou somente veículo, desmarque a caixa localizada no canto superior esquerdo dos dados do cadastro não desejado.
-Caso cadastre cliente e veículo juntos, será criado um vínculo entre eles, facilitando a procura dos mesmos.
+Ao cadastrar um cliente, se estiver com acesso à internet, campos de endereço são completados automaticamente ao inserir o CEP. Senão, preencha os campos de endereço manualmente.
+Ao cadastrar um veículo, selecione uma marca de veículo já cadastrada ou cadastre uma nova marca.
+Caso cadastre cliente e veículo juntos, será criado um vínculo entre eles, facilitando utilizações futuras.
 Caso tente cadastrar um cliente e um veículo de placa já cadastrada, um aviso aparecerá para escolher se deseja vincular este veículo ao cliente ou cancelar o cadastro.
 Preencha os campos e então clique no botão "salvar". Caso deseje limpar os campos da tela, clique no botão "limpar".'''
 
 HELPCADASTROORCAMENTO = \
 '''Cadastro de orçamento de manutenção de veículos. Cadastre um novo cliente e/ou veículo ou selecione um já existente. Ao selecionar, é possível editar seus dados.
-Se estiver com acesso à internet, campos de endereço são completados automaticamente ao inserir o CEP.
+Se estiver com acesso à internet, campos de endereço são completados automaticamente ao inserir o CEP. Senão, preencha os campos de endereço manualmente.
 Adicione peças e serviços ao orçamento. Necessário pelo menos um serviço. Para adicionar mais peças ou serviços, clique no botão "+" disponível em suas respectivas seções.
 Preencha os campos e então clique no botão "salvar" ou "salvar e gerar PDF". Caso deseje limpar os campos da tela, clique no botão "limpar".'''
 
@@ -49,27 +51,33 @@ HELPCONSULTAOS = \
 É possivel selecionar a geração do arquivo PDF das ordens de serviço. Caso a ordem de serviço esteja em andamento, é possível selecionar também as opções de editar, finalizar, e excluir'''
 
 HELPEDITARPECA = \
-'''Edição de peças cadastradas. Altere os dados da peça selecionada modificando os seus campos, então clique no botão "salvar" para que as modificações sejam salvas. Caso deseje limpar os campos da tela, clique no botão "limpar".'''
+'''Edição de peças cadastradas. Altere os dados da peça selecionada e então clique no botão "Salvar" para que as modificações sejam salvas. 
+Caso não deseje mais realizar a edição, clique no botão "Cancelar".'''
 
 HELPEDITARSERVICO = \
-'''Edição de serviços cadastrados. Altere os dados do serviço selecionado modificando os seus campos, então clique no botão "salvar" para que as modificações sejam salvas. Caso deseje limpar os campos da tela, clique no botão "limpar".'''
+'''Edição de serviços cadastrados. Altere os dados do serviço selecionado e então clique no botão "Salvar" para que as modificações sejam salvas. 
+Caso não deseje mais realizar a edição, clique no botão "Cancelar".'''
 
 HELPEDITARCLIENTE = \
-'''Edição de clientes cadastrados. Modifique as informações do cliente selecionado alterando os seus campo, em seguida clique no botão "salvar" para que as alterações sejam salvas. Caso deseje limpar os campos da tela, clique no botão "limpar".'''
+'''Edição de clientes cadastrados. Modifique as informações do cliente selecionado e então clique no botão "Salvar" para que as modificações sejam salvas.
+Se estiver com acesso à internet, campos de endereço são completados automaticamente ao inserir o CEP. Senão, preencha os campos de endereço manualmente.
+Caso não deseje mais realizar a edição, clique no botão "Cancelar".'''
 
 HELPEDITARVEICULO = \
-'''Edição de veículo cadastrados. Altere os dados do veículo selecionado modificando as informações dos seus campos, em seguida clique no botão "salvar" para salvar as modificações. Caso deseje limpar os campos da tela, clique no botão "limpar".'''
+'''Edição de veículo cadastrados. Altere os dados do veículo selecionado e então clique no botão "Salvar" para que as modificações sejam salvas. 
+Caso não deseje mais realizar a edição, clique no botão "Cancelar".'''
 
 HELPEDITARORCAMENTO = \
-'''Edição de orçamentos cadastrados. Altere os dados do orçamento selecionado modificando as informações contidas nos campos.
- Após realizar a modificação clique no botão "Salvar" para salvar as modificações, caso queira salvar e gerar um arquivo pdf do orçamento clique no botão "Salvar e gerar PDF".
- Se for necessária a aprovação o orçamento após a edição, clique no botão "Editar e Aprovar", caso seja queira reprovar o orçamento, clique no botão "Reprovar".
- Caso deseje alterar os dados do cliente e/ou veículo, é necessário ir em suas próprias páginas de edição.'''
+'''Edição de orçamentos cadastrados. Altere peças e serviços do orçamento, além dos campos de data e quilometragem. Caso deseje alterar os dados do cliente e/ou veículo, é necessário ir em suas próprias páginas de edição.
+Após realizar as alterações clique no botão "Salvar". Caso queira salvar edições e gerar o arquivo PDF do orçamento clique no botão "Salvar e gerar PDF".
+Se o cliente aprovar o orçamento, clique no botão "Editar e Aprovar", caso contrário, clique no botão "Reprovar".
+Caso não deseje mais realizar a edição, clique no botão "Cancelar".'''
 
 HELPEDITAROS = \
 '''Edição de ordens de serviços cadastradas.Altere os dados da ordem de serviço selecionada modificando as informações contidas nos campos.
- Após realizar a modificação clique no botão "Salvar" para salvar as modificações, caso queira finalizar a ordem de serviço clique no botão "Finalizar OS".
- Se deseja alterar os dados do cliente e/ou veículo, é necessário ir em suas próprias páginas de edição.'''
+Após realizar a modificação clique no botão "Salvar" para salvar as modificações, caso queira finalizar a ordem de serviço clique no botão "Finalizar OS".
+Se deseja alterar os dados do cliente e/ou veículo, é necessário ir em suas próprias páginas de edição.
+Caso não deseje mais realizar a edição, clique no botão "Cancelar".'''
 
 HELPBUSCACLIENTE = \
 '''Busca por cliente. Pesquise e selecione o cliente desejado, então clique no botão "selecionar" para utilizá-lo no orçamento.
