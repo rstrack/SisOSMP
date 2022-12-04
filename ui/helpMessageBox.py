@@ -25,7 +25,7 @@ class HelpMessageBox(QtWidgets.QDialog):
             l.setWordWrap(True)
             l.setAlignment(QtCore.Qt.AlignmentFlag.AlignJustify | QtCore.Qt.AlignmentFlag.AlignVCenter)
             l.setSizePolicy(QtWidgets.QSizePolicy.Policy.Preferred, QtWidgets.QSizePolicy.Policy.Maximum)
-            l.setText('<p style="text-indent:30px;line-height:20px;">'+label+'</p>')
+            l.setText('<p style="text-indent:20px;line-height:20px;">'+label+'</p>')
             self.layout1.addWidget(l)
         self.layout1.addWidget(self.buttonBox)
         spacerItem = QtWidgets.QSpacerItem(

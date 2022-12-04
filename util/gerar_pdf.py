@@ -18,7 +18,6 @@ class GeraPDF():
 
     def draw_paragraph(self, pdf, msg, x, y, max_width, max_height):
         msg = msg.replace("\n", " ")
-        print(msg)
         message_style = ParagraphStyle('Estilo do paragrafo de observacao', fontName='Helvetica',splitLongWords=False)
         message = msg.replace('\n', '<br />')
         message = Paragraph(message, style=message_style)
