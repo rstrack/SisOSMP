@@ -47,7 +47,7 @@ HELPCONSULTAORCAMENTO = \
 É possivel selecionar o cadastro e exclusão de orçamentos. Caso o orçamento esteja aguardando aprovação, é possível selecionar também as opções de editar, gerar arquivo PDF, aprovar ou reprovar o orçamento. Caso tenha sido reprovado, somente pode ser excluído.'''
 
 HELPCONSULTAOS = \
-'''Consulta por ordens de serviço. Selecione o status da ordem de serviço desejada (finalizada ou não finalizada), pesquise-a no campo de pesquisa e selecione-a.
+'''Consulta por ordens de serviço (orçamentos aprovados). Selecione o status da ordem de serviço desejada (finalizada ou não finalizada), pesquise-a no campo de pesquisa e selecione-a.
 É possivel selecionar a geração do arquivo PDF das ordens de serviço. Caso a ordem de serviço esteja em andamento, é possível selecionar também as opções de editar, finalizar, e excluir'''
 
 HELPEDITARPECA = \
@@ -69,15 +69,14 @@ Caso não deseje mais realizar a edição, clique no botão "Cancelar".'''
 
 HELPEDITARORCAMENTO = \
 '''Edição de orçamentos cadastrados. Altere peças e serviços do orçamento, além dos campos de data e quilometragem. Caso deseje alterar os dados do cliente e/ou veículo, é necessário ir em suas próprias páginas de edição.
-Após realizar as alterações clique no botão "Salvar". Caso queira salvar edições e gerar o arquivo PDF do orçamento clique no botão "Salvar e gerar PDF".
+Após realizar as edições, clique no botão "Salvar". Caso queira salvar edições e gerar o arquivo PDF do orçamento clique no botão "Salvar e gerar PDF".
 Se o cliente aprovar o orçamento, clique no botão "Editar e Aprovar", caso contrário, clique no botão "Reprovar".
 Caso não deseje mais realizar a edição, clique no botão "Cancelar".'''
 
 HELPEDITAROS = \
 '''Edição de ordens de serviços cadastradas.Altere os dados da ordem de serviço selecionada modificando as informações contidas nos campos.
-Após realizar a modificação clique no botão "Salvar" para salvar as modificações, caso queira finalizar a ordem de serviço clique no botão "Finalizar OS".
-Se deseja alterar os dados do cliente e/ou veículo, é necessário ir em suas próprias páginas de edição.
-Caso não deseje mais realizar a edição, clique no botão "Cancelar".'''
+ Após realizar a modificação clique no botão "Salvar" para salvar as modificações, caso queira finalizar a ordem de serviço clique no botão "Finalizar OS".
+ Se deseja alterar os dados do cliente e/ou veículo, é necessário ir em suas próprias páginas de edição.'''
 
 HELPBUSCACLIENTE = \
 '''Busca por cliente. Pesquise e selecione o cliente desejado, então clique no botão "selecionar" para utilizá-lo no orçamento.
