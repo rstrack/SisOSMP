@@ -1,5 +1,6 @@
 import os
 from PyQt6 import QtCore, QtGui, QtWidgets
+from model.modelo import DATABASE_NAME, USER, PASSWORD
 
 class TelaInicial(QtWidgets.QMainWindow):
     ajudaSolicitada = QtCore.pyqtSignal(int)
@@ -176,7 +177,22 @@ class TelaInicial(QtWidgets.QMainWindow):
             if os.path.exists("C:/Program Files/MySQL/MySQL Server 8.0/bin"):
                 mysqldump_path = "C:/Program Files/MySQL/MySQL Server 8.0/bin"
             else: mysqldump_path = "bin/"
-            os.popen('"%s/mysql" -u %s -p%s %s < "%s"' % (mysqldump_path, "root", "admin", "dbpasetto", path[0]))
+            pipe = os.popen('"%s/mysql" -u %s -p%s %s < "%s"' % (mysqldump_path, USER, PASSWORD, DATABASE_NAME, path[0]))
+            status = pipe.close()
+            if status:
+                msg = QtWidgets.QMessageBox()
+                msg.setWindowIcon(QtGui.QIcon('resources/logo-icon.png'))
+                msg.setIcon(QtWidgets.QMessageBox.Icon.Critical)
+                msg.setWindowTitle("Erro")
+                msg.setText("Erro ao importar backup")
+                msg.exec()
+            else:
+                msg = QtWidgets.QMessageBox()
+                msg.setWindowIcon(QtGui.QIcon('resources/logo-icon.png'))
+                msg.setIcon(QtWidgets.QMessageBox.Icon.Information)
+                msg.setWindowTitle("Erro")
+                msg.setText("Dados importados com sucesso!")
+                msg.exec()
         except Exception as e:
             msg = QtWidgets.QMessageBox()
             msg.setWindowIcon(QtGui.QIcon('resources/logo-icon.png'))
@@ -195,7 +211,22 @@ class TelaInicial(QtWidgets.QMainWindow):
             if os.path.exists("C:/Program Files/MySQL/MySQL Server 8.0/bin"):
                 mysqldump_path = "C:/Program Files/MySQL/MySQL Server 8.0/bin"
             else: mysqldump_path = "bin/"
-            os.popen('"%s/mysqldump" -u %s -p%s %s > "%s"' % (mysqldump_path, "root", "admin", "dbpasetto", path[0]))
+            pipe = os.popen('"%s/mysqldump" -u %s -p%s %s > "%s"' % (mysqldump_path, USER, PASSWORD, DATABASE_NAME, path[0]))
+            status = pipe.close()
+            if status:
+                msg = QtWidgets.QMessageBox()
+                msg.setWindowIcon(QtGui.QIcon('resources/logo-icon.png'))
+                msg.setIcon(QtWidgets.QMessageBox.Icon.Critical)
+                msg.setWindowTitle("Erro")
+                msg.setText("Erro ao exportar backup")
+                msg.exec()
+            else:
+                msg = QtWidgets.QMessageBox()
+                msg.setWindowIcon(QtGui.QIcon('resources/logo-icon.png'))
+                msg.setIcon(QtWidgets.QMessageBox.Icon.Information)
+                msg.setWindowTitle("Erro")
+                msg.setText("Dados exportados com sucesso!")
+                msg.exec()
         except Exception as e:
             msg = QtWidgets.QMessageBox()
             msg.setWindowIcon(QtGui.QIcon('resources/logo-icon.png'))
