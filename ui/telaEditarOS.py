@@ -326,7 +326,7 @@ class TelaEditarOS(QtWidgets.QMainWindow):
         self.botaoSalvareGerarPDF.clicked.connect(self.salvareGerarPDF)
         self.botaoFinalizar.clicked.connect(self.finalizarOS)
         self.botaoCancelar.clicked.connect(self.cancelarEdicao)
-        self.botaoHelp.clicked.connect(lambda: help('Ajuda - Editar Peça', HELPEDITAROS))
+        self.botaoHelp.clicked.connect(lambda: help('Ajuda - Editar O.S.', HELPEDITAROS))
 
     ##############################################################################################################################
                                                             #FUNÇÕES

@@ -98,9 +98,10 @@ HELPCLIENTES_VEICULO = \
 HELPMARCAS = \
 '''Marcas de veículos. É possivel realizar a edição ou exclusão de uma marca. Exclusão somente é permitida caso a marca não possua nenhum veículo cadastrado.'''
 
-def help(title:str, body:str):
+def help(title:str, body:str, width=None):
     msg = HelpMessageBox()
     msg.setWindowTitle(title)
+    if width: msg.setFixedWidth(width)
     msg.setMessage(body)
     msg.exec()
 

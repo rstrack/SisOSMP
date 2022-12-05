@@ -31,7 +31,9 @@ class HelpMessageBox(QtWidgets.QDialog):
         spacerItem = QtWidgets.QSpacerItem(
             40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
         self.layout1.addItem(spacerItem)
-        self.setFixedHeight(self.sizeHint().height()-100 if self.sizeHint().height()>120 else self.sizeHint().height()-40)
+        if self.layout1.count() > 3:
+            self.setFixedHeight(self.sizeHint().height()-200 if self.sizeHint().height()>200 else self.sizeHint().height()-120)
+        else: self.setFixedHeight(self.sizeHint().height()-80)
 
 if __name__=="__main__":
     app = QtWidgets.QApplication(sys.argv)
