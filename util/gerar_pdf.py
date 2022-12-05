@@ -122,16 +122,17 @@ class GeraPDF():
         pdf.drawString(44, 638, "Endereço: {}".format(str(orcamento['cliente']['endereco'] or ' ')))
         pdf.rect(39, 634, 441, 15, fill=False, stroke=True)
         pdf.drawString(44, 623, "Bairro:")
-        if len(orcamento['cliente']['bairro']) < 25 : 
-            pdf.drawString(74, 623, "{}".format(str(orcamento['cliente']['bairro'] or ' ')))
-        elif len(orcamento['cliente']['bairro']) < 35:
-            pdf.setFont('Helvetica', 8)
-            pdf.drawString(74, 624, "{}".format(str(orcamento['cliente']['bairro'] or ' ')))
-            pdf.setFont('Helvetica', 10)
-        else:
-            pdf.setFont('Helvetica', 5)
-            pdf.drawString(74, 624, "{}".format(str(orcamento['cliente']['bairro'] or ' ')))
-            pdf.setFont('Helvetica', 10)
+        if orcamento['cliente']['bairro']:
+            if len(orcamento['cliente']['bairro']) < 25 : 
+                pdf.drawString(74, 623, "{}".format(str(orcamento['cliente']['bairro'] or ' ')))
+            elif len(orcamento['cliente']['bairro']) < 35:
+                pdf.setFont('Helvetica', 8)
+                pdf.drawString(74, 624, "{}".format(str(orcamento['cliente']['bairro'] or ' ')))
+                pdf.setFont('Helvetica', 10)
+            else:
+                pdf.setFont('Helvetica', 5)
+                pdf.drawString(74, 624, "{}".format(str(orcamento['cliente']['bairro'] or ' ')))
+                pdf.setFont('Helvetica', 10)
             
         pdf.rect(242, 619, 198, 15, fill=False, stroke=True)
         pdf.drawString(443, 623, "CEP: {}".format(self.formatar_cep(orcamento['cliente']['cep'])) or ' ')
