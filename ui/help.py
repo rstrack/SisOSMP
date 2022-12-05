@@ -21,7 +21,8 @@ Preencha os campos e então clique no botão "Salvar". Caso deseje limpar os cam
 HELPCADASTROORCAMENTO = \
 '''Cadastro de orçamento de manutenção de veículos. Cadastre um novo cliente e/ou veículo ou selecione um já existente. Ao selecionar, é possível editar seus dados.
 Se estiver com acesso à internet, campos de endereço são completados automaticamente ao inserir o CEP. Senão, preencha os campos de endereço manualmente.
-Adicione peças e serviços ao orçamento. Necessário pelo menos um serviço. Para adicionar mais peças ou serviços, clique no botão "+" disponível em suas respectivas seções.
+Adicione peças e serviços ao orçamento. Necessário pelo menos um serviço. Para adicionar mais peças ou serviços, clique no botão "+" disponível em suas respectivas seções. 
+Ao utilizar peças e serviços já cadastrados, haverá a opção de autocompletar as descrições e valores dos mesmos. O cadastro de peças e serviços ainda não cadastrados é feito automaticamente.
 Preencha os campos e então clique no botão "Salvar" ou "Salvar e gerar PDF". Caso deseje limpar os campos da tela, clique no botão "Limpar".'''
 
 HELPCONSULTAPECA = \
@@ -72,12 +73,14 @@ Caso não deseje mais realizar a edição, clique no botão "Cancelar".'''
 
 HELPEDITARORCAMENTO = \
 '''Edição de orçamentos cadastrados. Altere peças e serviços do orçamento, além dos campos de data e quilometragem. Caso deseje alterar os dados do cliente e/ou veículo, é necessário ir em suas próprias páginas de edição.
+Ao utilizar peças e serviços já cadastrados, haverá a opção de autocompletar as descrições e valores dos mesmos. O cadastro de peças e serviços ainda não cadastrados é feito automaticamente.
 Após realizar as edições, clique no botão "Salvar". Caso queira salvar edições e gerar o arquivo PDF do orçamento clique no botão "Salvar e gerar PDF".
 Se o cliente aprovar o orçamento, clique no botão "Editar e Aprovar", caso contrário, clique no botão "Reprovar".
 Caso não deseje mais realizar a edição, clique no botão "Cancelar".'''
 
 HELPEDITAROS = \
 '''Edição de ordens de serviço cadastradas. Altere peças e serviços da ordem de serviço, além dos campos de data e quilometragem. Caso deseje alterar os dados do cliente e/ou veículo, é necessário ir em suas próprias páginas de edição.
+Ao utilizar peças e serviços já cadastrados, haverá a opção de autocompletar as descrições e valores dos mesmos. O cadastro de peças e serviços ainda não cadastrados é feito automaticamente.
 Após realizar as edições, clique no botão "Salvar". Caso queira salvar edições e gerar o arquivo PDF da ordem de serviço, clique no botão "Salvar e gerar PDF".
 Se a ordem de serviço for concluída, clique no botão "Finalizar".
 Caso não deseje mais realizar a edição, clique no botão "Cancelar".'''

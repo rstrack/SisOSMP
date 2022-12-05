@@ -1,10 +1,13 @@
 from peewee import *
 
 DATABASE_NAME="dbpasetto"
+USER = "user"
+PASSWORD = "pswd123"
+PORT = 3306
 
 SIGLAESTADOS = "'AC', 'AL', 'AP', 'AM', 'BA', 'CE', 'DF', 'ES', 'GO', 'MA', 'MT', 'MS', 'MG', 'PA', 'PB', 'PR', 'PE', 'PI', 'RJ', 'RN', 'RS', 'RO', 'RR', 'SC', 'SP', 'SE', 'TO'"
 
-db = MySQLDatabase(DATABASE_NAME, user='root', password='admin', host='localhost', port=3306)
+db = MySQLDatabase(DATABASE_NAME, user=USER, password=PASSWORD, host='localhost', port=PORT)
 
 
 class BaseModel(Model):

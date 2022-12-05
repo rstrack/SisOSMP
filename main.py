@@ -3,13 +3,13 @@ import warnings
 import pymysql as sql
 from PyQt6 import QtWidgets, QtGui
 from app import APP
-from model.modelo import DATABASE_NAME, create_tables
+from model.modelo import DATABASE_NAME, USER, PASSWORD, PORT, create_tables
 
 ############################################################
 #      ARQUIVO MAIN: INICIALIZA O BANCO E A APLICAÇÃO      #
 ############################################################
 
-driver = sql.connect(user='root', password='admin', host='localhost', port=3306)
+driver = sql.connect(user=USER, password=PASSWORD, host='localhost', port=PORT)
 cursor = driver.cursor()
 
 # VERIFICA SE O BANCO DE DADOS EXISTE

@@ -321,7 +321,7 @@ class TelaEditarOrcamento(QtWidgets.QMainWindow):
         self.botaoAprovar.clicked.connect(self.aprovarOrcamento)
         self.botaoReprovar.clicked.connect(self.reprovarOrcamento)
         self.botaoCancelar.clicked.connect(self.cancelarEdicao)
-        self.botaoHelp.clicked.connect(lambda: help('Ajuda - Editar Orçamento', HELPEDITARORCAMENTO))
+        self.botaoHelp.clicked.connect(lambda: help('Ajuda - Editar Orçamento', HELPEDITARORCAMENTO, 450))
 
     ##############################################################################################################################
                                                             #FUNÇÕES
