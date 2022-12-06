@@ -59,7 +59,7 @@ class ClienteController():
                     raise Exception(cliente)
                 qVeiculo = self.veiculoRep.findByPlaca(dadosVeiculo['placa'])
                 if qVeiculo:
-                    question = MessageBox.question(f'Veiculo {qVeiculo.modelo} placa {qVeiculo.placa} já registrado. ' \
+                    question = MessageBox.question(MessageBox(), f'Veiculo {qVeiculo.modelo} placa {qVeiculo.placa} já registrado. ' \
                     +f'Deseja utilizá-lo para o cliente {cliente.nome}? ')
                     if question == 'sim':
                         self.veiculoClienteRep.save(qVeiculo, cliente)
