@@ -229,7 +229,7 @@ class TelaConsultaCliente(QtWidgets.QMainWindow):
                         msg.setWindowTitle("Aviso")
                         msg.setText(f"Cliente excluído com sucesso!")
                         msg.exec()
-                        self.listarClientes
+                        self.listarClientes()
                     else: raise Exception('Erro ao excluir')
         except Exception as e:
             msg = QtWidgets.QMessageBox()

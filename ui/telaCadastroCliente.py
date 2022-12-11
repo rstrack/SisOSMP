@@ -281,10 +281,12 @@ class TelaCadastroCliente(QtWidgets.QMainWindow):
     def limparCliente(self):
         for lineedit in self.groupBoxCliente.findChildren(QtWidgets.QLineEdit):
             lineedit.clear()
+        self.groupBoxCliente.setChecked(True)
 
     def limparVeiculo(self):
         for lineedit in self.groupBoxVeiculo.findChildren(QtWidgets.QLineEdit):
             lineedit.clear()
+        self.groupBoxVeiculo.setChecked(True)
 
     def resetarTela(self):
         self.limparCliente()
