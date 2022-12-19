@@ -1,0 +1,28 @@
+[tool.poetry]
+name = "sisosmp"
+version = "0.9"
+description = ""
+authors = ["Rafael Strack <strackinado@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+peewee = "^3.15.4"
+pymysql = "^1.0.2"
+pyqt6 = "^6.4.0"
+phonenumbers = "^8.13.2"
+reportlab = "^3.6.12"
+dateparser = "^1.1.4"
+flatdict = "^4.0.1"
+requests = "^2.28.1"
+cryptography = "^38.0.4"
+black = "^22.12.0"
+
+
+[tool.poetry.group.dev.dependencies]
+isort = "^5.11.3"
+prospector = "^1.8.3"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

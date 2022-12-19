@@ -1,6 +1,7 @@
 from PyQt6 import QtWidgets
 
-class MessageBox():
+
+class MessageBox:
     def __init__(self) -> None:
         pass
 
@@ -10,15 +11,14 @@ class MessageBox():
         msgBox.setText(string)
         y = msgBox.addButton("Sim", QtWidgets.QMessageBox.ButtonRole.YesRole)
         n = msgBox.addButton("Não", QtWidgets.QMessageBox.ButtonRole.NoRole)
-        c = msgBox.addButton(
-            "Cancelar", QtWidgets.QMessageBox.ButtonRole.RejectRole)
+        c = msgBox.addButton("Cancelar", QtWidgets.QMessageBox.ButtonRole.RejectRole)
         y.setFixedWidth(60)
         n.setFixedWidth(60)
         c.setFixedWidth(100)
         msgBox.exec()
         if msgBox.clickedButton() == y:
-            return 'sim'
+            return "sim"
         if msgBox.clickedButton() == n:
-            return 'nao'
+            return "nao"
         if msgBox.clickedButton() == c:
-            return 'cancelar'
+            return "cancelar"

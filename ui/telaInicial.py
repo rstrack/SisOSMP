@@ -1,9 +1,13 @@
 import os
+
 from PyQt6 import QtCore, QtGui, QtWidgets
-from model.modelo import DATABASE_NAME, USER, PASSWORD
+
+from model.modelo import DATABASE_NAME, PASSWORD, USER
+
 
 class TelaInicial(QtWidgets.QMainWindow):
     ajudaSolicitada = QtCore.pyqtSignal(int)
+
     def __init__(self):
         super(TelaInicial, self).__init__()
         self.setupUi()
@@ -28,23 +32,25 @@ class TelaInicial(QtWidgets.QMainWindow):
         self.vlayout1.setSpacing(0)
         # frame da logo(dentro do frame lateral)
         self.logo_frame = QtWidgets.QFrame(self.framelateral)
-        self.logo_frame.setObjectName('framelogo')
+        self.logo_frame.setObjectName("framelogo")
         self.vlayout2 = QtWidgets.QVBoxLayout(self.logo_frame)
         self.vlayout2.setContentsMargins(6, 0, 6, 0)
         self.vlayout2.setSpacing(0)
         # logo
         self.botaoLogo = QtWidgets.QPushButton(self.logo_frame)
         self.botaoLogo.setFixedHeight(150)
-        icon = QtGui.QIcon(QtGui.QPixmap("resources/logo-menu.png").scaled(200,120))
+        icon = QtGui.QIcon(QtGui.QPixmap("resources/logo-menu.png").scaled(200, 120))
         self.botaoLogo.setIcon(icon)
-        self.botaoLogo.setIconSize(QtCore.QSize(200,120))
-        self.botaoLogo.setStyleSheet('''
-            QPushButton:hover{background-color:transparent;}''')
+        self.botaoLogo.setIconSize(QtCore.QSize(200, 120))
+        self.botaoLogo.setStyleSheet(
+            """
+            QPushButton:hover{background-color:transparent;}"""
+        )
         self.vlayout2.addWidget(self.botaoLogo)
         self.vlayout1.addWidget(self.logo_frame)
         # frame do menu(dentro do frame lateral)
         self.framemenu = QtWidgets.QFrame(self.framelateral)
-        self.framemenu.setObjectName('framemenu')
+        self.framemenu.setObjectName("framemenu")
         self.vlayout3 = QtWidgets.QVBoxLayout(self.framemenu)
         self.vlayout3.setContentsMargins(0, 0, 0, 0)
         # frames do menu
@@ -58,7 +64,7 @@ class TelaInicial(QtWidgets.QMainWindow):
         self.vlayout3.addWidget(self.framemenu4)
         # aba "cadastro"
         self.labelcadastro = QtWidgets.QLabel(self.framemenu1)
-        self.labelcadastro.setObjectName('labelmenu')
+        self.labelcadastro.setObjectName("labelmenu")
         self.labelcadastro.setText("CADASTRO")
         self.labelcadastro.setFixedHeight(40)
         self.hline1 = QtWidgets.QFrame(self.framemenu3)
@@ -66,12 +72,13 @@ class TelaInicial(QtWidgets.QMainWindow):
         self.hline1.setFrameShape(QtWidgets.QFrame.Shape.HLine)
         self.hline1.setFrameShadow(QtWidgets.QFrame.Shadow.Plain)
         self.vlayout4 = QtWidgets.QVBoxLayout(self.framemenu2)
-        self.vlayout4.setContentsMargins(0,0,0,0)
+        self.vlayout4.setContentsMargins(0, 0, 0, 0)
         self.vlayout4.setSpacing(0)
         self.vlayout4.setSizeConstraint(
-            QtWidgets.QLayout.SizeConstraint.SetDefaultConstraint)
+            QtWidgets.QLayout.SizeConstraint.SetDefaultConstraint
+        )
         self.vlayout4.addWidget(self.labelcadastro)
-        #self.vlayout4.addWidget(self.hline1)
+        # self.vlayout4.addWidget(self.hline1)
         # opçoes da aba
         self.botao_pecas = QtWidgets.QPushButton(self.framemenu2)
         self.vlayout4.addWidget(self.botao_pecas)
@@ -83,7 +90,7 @@ class TelaInicial(QtWidgets.QMainWindow):
         self.vlayout4.addWidget(self.botao_orcamentos)
         # aba "consulta"
         self.labelconsulta = QtWidgets.QLabel(self.framemenu3)
-        self.labelconsulta.setObjectName('labelmenu')
+        self.labelconsulta.setObjectName("labelmenu")
         self.labelconsulta.setText("CONSULTA")
         self.labelconsulta.setFixedHeight(40)
         self.hline2 = QtWidgets.QFrame(self.framemenu3)
@@ -91,10 +98,10 @@ class TelaInicial(QtWidgets.QMainWindow):
         self.hline2.setFrameShape(QtWidgets.QFrame.Shape.HLine)
         self.hline2.setFrameShadow(QtWidgets.QFrame.Shadow.Plain)
         self.vlayout5 = QtWidgets.QVBoxLayout(self.framemenu4)
-        self.vlayout5.setContentsMargins(0,0,0,0)
+        self.vlayout5.setContentsMargins(0, 0, 0, 0)
         self.vlayout5.setSpacing(0)
         self.vlayout5.addWidget(self.labelconsulta)
-        #self.vlayout5.addWidget(self.hline2)
+        # self.vlayout5.addWidget(self.hline2)
         # opçoes da aba
         self.botao_pecas_2 = QtWidgets.QPushButton(self.framemenu4)
         self.vlayout5.addWidget(self.botao_pecas_2)
@@ -109,7 +116,11 @@ class TelaInicial(QtWidgets.QMainWindow):
         self.botao_os = QtWidgets.QPushButton(self.framemenu4)
         self.vlayout5.addWidget(self.botao_os)
         spacerItem1 = QtWidgets.QSpacerItem(
-            20, 40, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding)
+            20,
+            40,
+            QtWidgets.QSizePolicy.Policy.Minimum,
+            QtWidgets.QSizePolicy.Policy.Expanding,
+        )
         self.vlayout3.addItem(spacerItem1)
         self.vlayout1.addWidget(self.framemenu)
         self.hlayout1.addWidget(self.framelateral)
@@ -145,7 +156,9 @@ class TelaInicial(QtWidgets.QMainWindow):
         self.actionExportar_dados.triggered.connect(self.exportar)
         self.retranslateUi()
 
-        self.botaoLogo.clicked.connect(lambda: self.stackedWidget.setCurrentWidget(self.label_inicio))
+        self.botaoLogo.clicked.connect(
+            lambda: self.stackedWidget.setCurrentWidget(self.label_inicio)
+        )
 
     def retranslateUi(self):
         _translate = QtCore.QCoreApplication.translate
@@ -162,40 +175,42 @@ class TelaInicial(QtWidgets.QMainWindow):
         self.botao_os.setText(_translate("MainWindow", "ORDENS DE SERVIÇO"))
         self.label_inicio.setText(_translate("MainWindow", "Bem Vindo!"))
         self.menuFerramentas.setTitle(_translate("MainWindow", "Ferramentas"))
-        self.actionImportar_dados.setText(
-            _translate("MainWindow", "Importar dados"))
-        self.actionExportar_dados.setText(
-            _translate("MainWindow", "Exportar dados"))
+        self.actionImportar_dados.setText(_translate("MainWindow", "Importar dados"))
+        self.actionExportar_dados.setText(_translate("MainWindow", "Exportar dados"))
 
     def importar(self):
         try:
             window = QtWidgets.QMainWindow()
             fd = QtWidgets.QFileDialog()
-            path = fd.getOpenFileName(window, 'Importar', './')
-            if path[0] == '':
+            path = fd.getOpenFileName(window, "Importar", "./")
+            if path[0] == "":
                 return
             if os.path.exists("C:/Program Files/MySQL/MySQL Server 8.0/bin"):
                 mysqldump_path = "C:/Program Files/MySQL/MySQL Server 8.0/bin"
-            else: mysqldump_path = "bin/"
-            pipe = os.popen('"%s/mysql" -u %s -p%s %s < "%s"' % (mysqldump_path, USER, PASSWORD, DATABASE_NAME, path[0]))
+            else:
+                mysqldump_path = "bin/"
+            pipe = os.popen(
+                '"%s/mysql" -u %s -p%s %s < "%s"'
+                % (mysqldump_path, USER, PASSWORD, DATABASE_NAME, path[0])
+            )
             status = pipe.close()
             if status:
                 msg = QtWidgets.QMessageBox()
-                msg.setWindowIcon(QtGui.QIcon('resources/logo-icon.png'))
+                msg.setWindowIcon(QtGui.QIcon("resources/logo-icon.png"))
                 msg.setIcon(QtWidgets.QMessageBox.Icon.Critical)
                 msg.setWindowTitle("Erro")
                 msg.setText("Erro ao importar backup")
                 msg.exec()
             else:
                 msg = QtWidgets.QMessageBox()
-                msg.setWindowIcon(QtGui.QIcon('resources/logo-icon.png'))
+                msg.setWindowIcon(QtGui.QIcon("resources/logo-icon.png"))
                 msg.setIcon(QtWidgets.QMessageBox.Icon.Information)
                 msg.setWindowTitle("Erro")
                 msg.setText("Dados importados com sucesso!")
                 msg.exec()
         except Exception as e:
             msg = QtWidgets.QMessageBox()
-            msg.setWindowIcon(QtGui.QIcon('resources/logo-icon.png'))
+            msg.setWindowIcon(QtGui.QIcon("resources/logo-icon.png"))
             msg.setIcon(QtWidgets.QMessageBox.Icon.Critical)
             msg.setWindowTitle("Erro")
             msg.setText(str(e))
@@ -205,31 +220,37 @@ class TelaInicial(QtWidgets.QMainWindow):
         try:
             window = QtWidgets.QMainWindow()
             fd = QtWidgets.QFileDialog()
-            path = fd.getSaveFileName(window, 'Exportar como', './', "Arquivos SQL (*.sql)")
-            if path[0] == '':
+            path = fd.getSaveFileName(
+                window, "Exportar como", "./", "Arquivos SQL (*.sql)"
+            )
+            if path[0] == "":
                 return
             if os.path.exists("C:/Program Files/MySQL/MySQL Server 8.0/bin"):
                 mysqldump_path = "C:/Program Files/MySQL/MySQL Server 8.0/bin"
-            else: mysqldump_path = "bin/"
-            pipe = os.popen('"%s/mysqldump" -u %s -p%s %s > "%s"' % (mysqldump_path, USER, PASSWORD, DATABASE_NAME, path[0]))
+            else:
+                mysqldump_path = "bin/"
+            pipe = os.popen(
+                '"%s/mysqldump" -u %s -p%s %s > "%s"'
+                % (mysqldump_path, USER, PASSWORD, DATABASE_NAME, path[0])
+            )
             status = pipe.close()
             if status:
                 msg = QtWidgets.QMessageBox()
-                msg.setWindowIcon(QtGui.QIcon('resources/logo-icon.png'))
+                msg.setWindowIcon(QtGui.QIcon("resources/logo-icon.png"))
                 msg.setIcon(QtWidgets.QMessageBox.Icon.Critical)
                 msg.setWindowTitle("Erro")
                 msg.setText("Erro ao exportar backup")
                 msg.exec()
             else:
                 msg = QtWidgets.QMessageBox()
-                msg.setWindowIcon(QtGui.QIcon('resources/logo-icon.png'))
+                msg.setWindowIcon(QtGui.QIcon("resources/logo-icon.png"))
                 msg.setIcon(QtWidgets.QMessageBox.Icon.Information)
                 msg.setWindowTitle("Erro")
                 msg.setText("Dados exportados com sucesso!")
                 msg.exec()
         except Exception as e:
             msg = QtWidgets.QMessageBox()
-            msg.setWindowIcon(QtGui.QIcon('resources/logo-icon.png'))
+            msg.setWindowIcon(QtGui.QIcon("resources/logo-icon.png"))
             msg.setIcon(QtWidgets.QMessageBox.Icon.Critical)
             msg.setWindowTitle("Erro")
             msg.setText(str(e))

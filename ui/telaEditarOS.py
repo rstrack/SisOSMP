@@ -1,31 +1,75 @@
+import re
+from datetime import datetime
 from decimal import Decimal
-from PyQt6 import QtCore, QtWidgets, QtGui
+
+from PyQt6 import QtCore, QtGui, QtWidgets
+
 from ui.help import HELPEDITAROS, help
 from ui.hoverButton import HoverButton
 from ui.messageBox import MessageBox
-from util.container import handleDeps
-
-import re
-from datetime import datetime
-
+from util.container import handle_deps
 from util.gerar_pdf import GeraPDF
 
-SIGLAESTADOS = ['AC', 'AL', 'AP', 'AM', 'BA', 'CE', 'DF', 'ES', 'GO', 'MA', 'MT', 'MS',
-                'MG', 'PA', 'PB', 'PR', 'PE', 'PI', 'RJ', 'RN', 'RS', 'RO', 'RR', 'SC', 'SP', 'SE', 'TO']
-UNIDADES = ['CM', 'CM2', 'CM3', 'CX', 'DZ', 'G', 'KG',
-            'L', 'M', 'M2', 'M3', 'ML', 'PAR', 'PCT', 'ROLO', 'UN']
+SIGLAESTADOS = [
+    "AC",
+    "AL",
+    "AP",
+    "AM",
+    "BA",
+    "CE",
+    "DF",
+    "ES",
+    "GO",
+    "MA",
+    "MT",
+    "MS",
+    "MG",
+    "PA",
+    "PB",
+    "PR",
+    "PE",
+    "PI",
+    "RJ",
+    "RN",
+    "RS",
+    "RO",
+    "RR",
+    "SC",
+    "SP",
+    "SE",
+    "TO",
+]
+UNIDADES = [
+    "CM",
+    "CM2",
+    "CM3",
+    "CX",
+    "DZ",
+    "G",
+    "KG",
+    "L",
+    "M",
+    "M2",
+    "M3",
+    "ML",
+    "PAR",
+    "PCT",
+    "ROLO",
+    "UN",
+]
 
 
 class TelaEditarOS(QtWidgets.QMainWindow):
     paraTelaConsulta = QtCore.pyqtSignal(int)
+
     def __init__(self):
         super(TelaEditarOS, self).__init__()
-        self.orcamentoCtrl = handleDeps.getDep('ORCAMENTOCTRL')
-        self.clienteCtrl = handleDeps.getDep('CLIENTECTRL')
-        self.pecaCtrl = handleDeps.getDep('PECACTRL')
-        self.servicoCtrl = handleDeps.getDep('SERVICOCTRL')
-        self.marcaCtrl = handleDeps.getDep('MARCACTRL')
-        self.buscaCEP = handleDeps.getDep('CEP')
+        self.orcamentoCtrl = handle_deps.getDep("ORCAMENTOCTRL")
+        self.clienteCtrl = handle_deps.getDep("CLIENTECTRL")
+        self.pecaCtrl = handle_deps.getDep("PECACTRL")
+        self.servicoCtrl = handle_deps.getDep("SERVICOCTRL")
+        self.marcaCtrl = handle_deps.getDep("MARCACTRL")
+        self.buscaCEP = handle_deps.getDep("CEP")
         self.orcamentoID = None
         self.setupUi()
 
@@ -38,24 +82,38 @@ class TelaEditarOS(QtWidgets.QMainWindow):
         self.main_frame.setObjectName("main_frame")
         self.hlayout = QtWidgets.QHBoxLayout(self.main_frame)
         spacer = QtWidgets.QSpacerItem(
-            20, 10, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Preferred)
+            20,
+            10,
+            QtWidgets.QSizePolicy.Policy.Minimum,
+            QtWidgets.QSizePolicy.Policy.Preferred,
+        )
         self.hlayout.addItem(spacer)
         self.framegeral = QtWidgets.QFrame(self.main_frame)
-        self.framegeral.setSizePolicy(QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Preferred)
-        self.framegeral.setMaximumWidth(int(QtGui.QGuiApplication.primaryScreen().size().width()*0.65) 
-            if QtGui.QGuiApplication.primaryScreen().size().width()> 1280 else QtGui.QGuiApplication.primaryScreen().size().width())
+        self.framegeral.setSizePolicy(
+            QtWidgets.QSizePolicy.Policy.Expanding,
+            QtWidgets.QSizePolicy.Policy.Preferred,
+        )
+        self.framegeral.setMaximumWidth(
+            int(QtGui.QGuiApplication.primaryScreen().size().width() * 0.65)
+            if QtGui.QGuiApplication.primaryScreen().size().width() > 1280
+            else QtGui.QGuiApplication.primaryScreen().size().width()
+        )
         self.hlayout.addWidget(self.framegeral)
         spacer = QtWidgets.QSpacerItem(
-            20, 10, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Preferred)
+            20,
+            10,
+            QtWidgets.QSizePolicy.Policy.Minimum,
+            QtWidgets.QSizePolicy.Policy.Preferred,
+        )
         self.hlayout.addItem(spacer)
         self.vlayout = QtWidgets.QVBoxLayout(self.framegeral)
-        self.vlayout.setContentsMargins(0,0,0,0)
+        self.vlayout.setContentsMargins(0, 0, 0, 0)
         self.vlayout.setSpacing(0)
         # titulo
         self.frameTitulo = QtWidgets.QFrame(self.framegeral)
         self.vlayout.addWidget(self.frameTitulo)
         self.hlayouttitulo = QtWidgets.QHBoxLayout(self.frameTitulo)
-        self.hlayouttitulo.setContentsMargins(0,0,0,0)
+        self.hlayouttitulo.setContentsMargins(0, 0, 0, 0)
         self.hlayouttitulo.setSpacing(0)
         self.hlayouttitulo.setAlignment(QtCore.Qt.AlignmentFlag.AlignHCenter)
         self.labelTitulo = QtWidgets.QLabel(self.frameTitulo)
@@ -63,39 +121,48 @@ class TelaEditarOS(QtWidgets.QMainWindow):
         self.labelTitulo.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
         self.labelTitulo.setObjectName("titulo")
         self.hlayouttitulo.addWidget(self.labelTitulo)
-        self.botaoHelp = HoverButton("", "./resources/help-icon1.png", "./resources/help-icon2.png", self.frameTitulo)
-        self.botaoHelp.setToolTip('Ajuda')
-        self.botaoHelp.setObjectName('botaohelp')
-        self.botaoHelp.setHelpIconSize(20,20)
+        self.botaoHelp = HoverButton(
+            "",
+            "./resources/help-icon1.png",
+            "./resources/help-icon2.png",
+            self.frameTitulo,
+        )
+        self.botaoHelp.setToolTip("Ajuda")
+        self.botaoHelp.setObjectName("botaohelp")
+        self.botaoHelp.setHelpIconSize(20, 20)
         self.hlayouttitulo.addWidget(self.botaoHelp)
         self.framedados = QtWidgets.QFrame(self.main_frame)
         self.gridLayoutGeral = QtWidgets.QGridLayout(self.framedados)
         self.gridLayoutGeral.setVerticalSpacing(6)
         self.gridLayoutGeral.setHorizontalSpacing(9)
         self.vlayout.addWidget(self.framedados)
-        #data
+        # data
         self.frameData = QtWidgets.QFrame(self.framedados)
         self.gridLayoutGeral.addWidget(self.frameData, 0, 0, 1, -1)
         self.glayoutData = QtWidgets.QGridLayout(self.frameData)
-        self.glayoutData.setContentsMargins(0,0,0,0)
+        self.glayoutData.setContentsMargins(0, 0, 0, 0)
         self.glayoutData.setSpacing(12)
         self.labelData = QtWidgets.QLabel(self.frameData)
         self.lineEditData = QtWidgets.QDateEdit(self.frameData)
         self.lineEditData.setFixedWidth(125)
         self.lineEditData.setCalendarPopup(True)
         self.lineEditData.setDateTime(QtCore.QDateTime.currentDateTime())
-        self.glayoutData.addWidget(self.labelData,0,0)
-        self.glayoutData.addWidget(self.lineEditData,1,0)
+        self.glayoutData.addWidget(self.labelData, 0, 0)
+        self.glayoutData.addWidget(self.lineEditData, 1, 0)
         self.labelDataAprovacao = QtWidgets.QLabel(self.frameData)
         self.lineEditDataAprovacao = QtWidgets.QDateEdit(self.frameData)
         self.lineEditDataAprovacao.setFixedWidth(125)
         self.lineEditDataAprovacao.setCalendarPopup(True)
         self.lineEditDataAprovacao.setDateTime(QtCore.QDateTime.currentDateTime())
-        self.glayoutData.addWidget(self.labelDataAprovacao,0,1)
-        self.glayoutData.addWidget(self.lineEditDataAprovacao,1,1)
+        self.glayoutData.addWidget(self.labelDataAprovacao, 0, 1)
+        self.glayoutData.addWidget(self.lineEditDataAprovacao, 1, 1)
         spacer = QtWidgets.QSpacerItem(
-            40, 10, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
-        self.glayoutData.addItem(spacer, 1,3)
+            40,
+            10,
+            QtWidgets.QSizePolicy.Policy.Expanding,
+            QtWidgets.QSizePolicy.Policy.Minimum,
+        )
+        self.glayoutData.addItem(spacer, 1, 3)
         # dados do cliente
         self.groupBoxCliente = QtWidgets.QGroupBox(self.framedados)
         self.gridLayoutCliente = QtWidgets.QGridLayout(self.groupBoxCliente)
@@ -110,7 +177,9 @@ class TelaEditarOS(QtWidgets.QMainWindow):
         self.labelFone2 = QtWidgets.QLabel(self.groupBoxCliente)
         self.gridLayoutCliente.addWidget(self.labelFone2, 0, 5, 1, 1)
         self.comboBoxPessoa = QtWidgets.QComboBox(self.groupBoxCliente)
-        self.comboBoxPessoa.addItems(["PESSOA FÍSICA", "PESSOA JURÍDICA", "ESTRANGEIRO"])
+        self.comboBoxPessoa.addItems(
+            ["PESSOA FÍSICA", "PESSOA JURÍDICA", "ESTRANGEIRO"]
+        )
         self.gridLayoutCliente.addWidget(self.comboBoxPessoa, 1, 0, 1, 1)
         self.lineEditDocumento = QtWidgets.QLineEdit(self.groupBoxCliente)
         self.gridLayoutCliente.addWidget(self.lineEditDocumento, 1, 1, 1, 1)
@@ -191,11 +260,14 @@ class TelaEditarOS(QtWidgets.QMainWindow):
         self.scrollarea1 = QtWidgets.QScrollArea(self.groupBoxPecas)
         self.scrollarea1.setWidgetResizable(True)
         self.scrollarea1.setVerticalScrollBarPolicy(
-            QtCore.Qt.ScrollBarPolicy.ScrollBarAlwaysOn)
+            QtCore.Qt.ScrollBarPolicy.ScrollBarAlwaysOn
+        )
         self.vlayoutgpecas.addWidget(self.scrollarea1)
         self.framegroupboxpecas = QtWidgets.QFrame(self.scrollarea1)
         self.framegroupboxpecas.setSizePolicy(
-            QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Expanding)
+            QtWidgets.QSizePolicy.Policy.Expanding,
+            QtWidgets.QSizePolicy.Policy.Expanding,
+        )
         self.scrollarea1.setWidget(self.framegroupboxpecas)
         self.gridLayoutPecas = QtWidgets.QGridLayout(self.framegroupboxpecas)
         self.labelNomePeca = QtWidgets.QLabel(self.framegroupboxpecas)
@@ -207,11 +279,15 @@ class TelaEditarOS(QtWidgets.QMainWindow):
         self.labelValorPeca = QtWidgets.QLabel(self.framegroupboxpecas)
         self.gridLayoutPecas.addWidget(self.labelValorPeca, 0, 3, 1, 1)
         self.botaoAddPecas = QtWidgets.QPushButton(self.framegroupboxpecas)
-        self.botaoAddPecas.setFixedSize(25,25)
-        self.botaoAddPecas.setToolTip('Adicionar linha')
+        self.botaoAddPecas.setFixedSize(25, 25)
+        self.botaoAddPecas.setToolTip("Adicionar linha")
         self.gridLayoutPecas.addWidget(self.botaoAddPecas, 1, 5, 1, 1)
         self.spacerpeca = QtWidgets.QSpacerItem(
-            40, 20, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding)
+            40,
+            20,
+            QtWidgets.QSizePolicy.Policy.Minimum,
+            QtWidgets.QSizePolicy.Policy.Expanding,
+        )
         self.gridLayoutPecas.addItem(self.spacerpeca, 2, 0, 1, 1)
         self.gridLayoutGeral.addWidget(self.groupBoxPecas, 3, 0, 1, 1)
         self.labelNomePeca.hide()
@@ -228,11 +304,14 @@ class TelaEditarOS(QtWidgets.QMainWindow):
         self.scrollarea2 = QtWidgets.QScrollArea(self.groupBoxServicos)
         self.scrollarea2.setWidgetResizable(True)
         self.scrollarea2.setVerticalScrollBarPolicy(
-            QtCore.Qt.ScrollBarPolicy.ScrollBarAlwaysOn)
+            QtCore.Qt.ScrollBarPolicy.ScrollBarAlwaysOn
+        )
         self.vlayoutgservicos.addWidget(self.scrollarea2)
         self.framegroupboxservicos = QtWidgets.QFrame(self.scrollarea2)
         self.framegroupboxservicos.setSizePolicy(
-            QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Expanding)
+            QtWidgets.QSizePolicy.Policy.Expanding,
+            QtWidgets.QSizePolicy.Policy.Expanding,
+        )
         self.scrollarea2.setWidget(self.framegroupboxservicos)
         self.gridLayoutServicos = QtWidgets.QGridLayout(self.framegroupboxservicos)
         self.labelNomeServico = QtWidgets.QLabel(self.framegroupboxservicos)
@@ -242,10 +321,15 @@ class TelaEditarOS(QtWidgets.QMainWindow):
         self.labelValorServico = QtWidgets.QLabel(self.framegroupboxservicos)
         self.gridLayoutServicos.addWidget(self.labelValorServico, 0, 2, 1, 1)
         self.botaoAddServicos = QtWidgets.QPushButton(self.framegroupboxservicos)
-        self.botaoAddServicos.setFixedSize(25,25)
-        self.botaoAddServicos.setToolTip('Adicionar linha')
+        self.botaoAddServicos.setFixedSize(25, 25)
+        self.botaoAddServicos.setToolTip("Adicionar linha")
         self.gridLayoutServicos.addWidget(self.botaoAddServicos, 1, 4, 1, 1)
-        self.spacerservico = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding)
+        self.spacerservico = QtWidgets.QSpacerItem(
+            20,
+            40,
+            QtWidgets.QSizePolicy.Policy.Minimum,
+            QtWidgets.QSizePolicy.Policy.Expanding,
+        )
         self.gridLayoutServicos.addItem(self.spacerservico, 2, 0, 1, 1)
         self.gridLayoutGeral.addWidget(self.groupBoxServicos, 3, 1, 1, 1)
         self.labelNomeServico.hide()
@@ -254,17 +338,21 @@ class TelaEditarOS(QtWidgets.QMainWindow):
         self.gridLayoutServicos.setColumnStretch(0, 6)
         self.gridLayoutServicos.setColumnStretch(1, 1)
         self.gridLayoutServicos.setColumnStretch(2, 1)
-        #dados orcamento
+        # dados orcamento
         self.frameValorTotal = QtWidgets.QFrame(self.framedados)
         self.gridLayoutGeral.addWidget(self.frameValorTotal, 4, 0, 1, -1)
         self.hlayoutValor = QtWidgets.QHBoxLayout(self.frameValorTotal)
         self.labelValorTotal1 = QtWidgets.QLabel(self.frameValorTotal)
-        self.labelValorTotal1.setObjectName('boldText')
+        self.labelValorTotal1.setObjectName("boldText")
         self.labelValorTotal2 = QtWidgets.QLabel(self.frameValorTotal)
-        self.labelValorTotal2.setObjectName('boldText')
-        self.labelValorTotal2.setText('0,00')
+        self.labelValorTotal2.setObjectName("boldText")
+        self.labelValorTotal2.setText("0,00")
         spacer = QtWidgets.QSpacerItem(
-            40, 10, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
+            40,
+            10,
+            QtWidgets.QSizePolicy.Policy.Expanding,
+            QtWidgets.QSizePolicy.Policy.Minimum,
+        )
         self.hlayoutValor.addItem(spacer)
         self.hlayoutValor.addWidget(self.labelValorTotal1)
         self.hlayoutValor.addWidget(self.labelValorTotal2)
@@ -283,11 +371,15 @@ class TelaEditarOS(QtWidgets.QMainWindow):
         self.labelLegenda = QtWidgets.QLabel(self.framebotoes)
         self.hlayout4.addWidget(self.labelLegenda)
         spacerItem5 = QtWidgets.QSpacerItem(
-            40, 10, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
+            40,
+            10,
+            QtWidgets.QSizePolicy.Policy.Expanding,
+            QtWidgets.QSizePolicy.Policy.Minimum,
+        )
         self.hlayout4.addItem(spacerItem5)
         self.botaoSalvar = QtWidgets.QPushButton(self.framebotoes)
         self.botaoSalvar.setMinimumSize(100, 35)
-        self.botaoSalvar.setObjectName('botaoprincipal')
+        self.botaoSalvar.setObjectName("botaoprincipal")
         self.hlayout4.addWidget(self.botaoSalvar)
         self.botaoSalvareGerarPDF = QtWidgets.QPushButton(self.framebotoes)
         self.botaoSalvareGerarPDF.setMinimumSize(150, 35)
@@ -302,21 +394,27 @@ class TelaEditarOS(QtWidgets.QMainWindow):
         self.vlayout.addWidget(self.framebotoes)
         self.setCentralWidget(self.main_frame)
         self.completerPeca = QtWidgets.QCompleter([])
-        self.completerPeca.setCaseSensitivity(
-            QtCore.Qt.CaseSensitivity.CaseInsensitive)
+        self.completerPeca.setCaseSensitivity(QtCore.Qt.CaseSensitivity.CaseInsensitive)
         self.completerPeca.setCompletionMode(
-            QtWidgets.QCompleter.CompletionMode.UnfilteredPopupCompletion)
+            QtWidgets.QCompleter.CompletionMode.UnfilteredPopupCompletion
+        )
         self.completerServico = QtWidgets.QCompleter([])
         self.completerServico.setCaseSensitivity(
-            QtCore.Qt.CaseSensitivity.CaseInsensitive)
+            QtCore.Qt.CaseSensitivity.CaseInsensitive
+        )
         self.completerServico.setCompletionMode(
-            QtWidgets.QCompleter.CompletionMode.UnfilteredPopupCompletion)
-        for lineedit in self.groupBoxCliente.findChildren((QtWidgets.QLineEdit, QtWidgets.QComboBox)):
+            QtWidgets.QCompleter.CompletionMode.UnfilteredPopupCompletion
+        )
+        for lineedit in self.groupBoxCliente.findChildren(
+            (QtWidgets.QLineEdit, QtWidgets.QComboBox)
+        ):
             lineedit.setEnabled(False)
-        for lineedit in self.groupBoxVeiculo.findChildren((QtWidgets.QLineEdit, QtWidgets.QComboBox)):
+        for lineedit in self.groupBoxVeiculo.findChildren(
+            (QtWidgets.QLineEdit, QtWidgets.QComboBox)
+        ):
             lineedit.setEnabled(False)
         self.lineEditKm.setEnabled(True)
- 
+
         self.retranslateUi()
         self.botaoAddPecas.clicked.connect(self.addLinhaPeca)
         self.botaoAddServicos.clicked.connect(self.addLinhaServico)
@@ -326,17 +424,21 @@ class TelaEditarOS(QtWidgets.QMainWindow):
         self.botaoSalvareGerarPDF.clicked.connect(self.salvareGerarPDF)
         self.botaoFinalizar.clicked.connect(self.finalizarOS)
         self.botaoCancelar.clicked.connect(self.cancelarEdicao)
-        self.botaoHelp.clicked.connect(lambda: help('Ajuda - Editar O.S.', HELPEDITAROS, 450))
+        self.botaoHelp.clicked.connect(
+            lambda: help("Ajuda - Editar O.S.", HELPEDITAROS, 450)
+        )
 
     ##############################################################################################################################
-                                                            #FUNÇÕES
+    # FUNÇÕES
     ##############################################################################################################################
 
     def retranslateUi(self):
         _translate = QtCore.QCoreApplication.translate
         self.setWindowTitle(_translate("MainWindow", "Mecânica Pasetto"))
         self.botaoSalvar.setText(_translate("MainWindow", "Salvar"))
-        self.botaoSalvareGerarPDF.setText(_translate("MainWindow", "Salvar e Gerar PDF"))
+        self.botaoSalvareGerarPDF.setText(
+            _translate("MainWindow", "Salvar e Gerar PDF")
+        )
         self.botaoFinalizar.setText(_translate("MainWindow", "Finalizar OS"))
         self.botaoCancelar.setText(_translate("MainWindow", "Cancelar"))
         self.labelTitulo.setText(_translate("MainWindow", "Editar Ordem de Serviço"))
@@ -371,7 +473,9 @@ class TelaEditarOS(QtWidgets.QMainWindow):
         self.botaoAddServicos.setText(_translate("MainWindow", "+"))
         self.groupBoxServicos.setTitle(_translate("MainWindow", "Serviços"))
         self.labelLegenda.setText(_translate("MainWindow", "* Campos Obrigatórios"))
-        self.groupBoxObs.setTitle(_translate("MainWindow", "Observações (Max. 200 caracteres)"))
+        self.groupBoxObs.setTitle(
+            _translate("MainWindow", "Observações (Max. 200 caracteres)")
+        )
         self.groupBoxPecas.setTitle(_translate("MainWindow", "Peças"))
         self.labelValorTotal1.setText(_translate("MainWindow", "VALOR TOTAL: R$"))
 
@@ -385,23 +489,33 @@ class TelaEditarOS(QtWidgets.QMainWindow):
         comboBox.setCurrentIndex(15)
         lineedit4 = QtWidgets.QLineEdit()
         botaoRemoverLinha = QtWidgets.QPushButton()
-        botaoRemoverLinha.setFixedSize(25,25)
-        botaoRemoverLinha.setToolTip('Remover linha')
+        botaoRemoverLinha.setFixedSize(25, 25)
+        botaoRemoverLinha.setToolTip("Remover linha")
         botaoRemoverLinha.setText("-")
-        botaoRemoverLinha.setObjectName('excluir')
-        self.gridLayoutPecas.addWidget(lineedit1, len(self.linhasPeca)+1, 0, 1, 1)
-        self.gridLayoutPecas.addWidget(lineedit2, len(self.linhasPeca)+1, 1, 1, 1)
-        self.gridLayoutPecas.addWidget(comboBox, len(self.linhasPeca)+1, 2, 1, 1)
-        self.gridLayoutPecas.addWidget(lineedit4, len(self.linhasPeca)+1, 3, 1, 1)
-        self.gridLayoutPecas.addWidget(botaoRemoverLinha, len(self.linhasPeca)+1, 4, 1, 1)
+        botaoRemoverLinha.setObjectName("excluir")
+        self.gridLayoutPecas.addWidget(lineedit1, len(self.linhasPeca) + 1, 0, 1, 1)
+        self.gridLayoutPecas.addWidget(lineedit2, len(self.linhasPeca) + 1, 1, 1, 1)
+        self.gridLayoutPecas.addWidget(comboBox, len(self.linhasPeca) + 1, 2, 1, 1)
+        self.gridLayoutPecas.addWidget(lineedit4, len(self.linhasPeca) + 1, 3, 1, 1)
+        self.gridLayoutPecas.addWidget(
+            botaoRemoverLinha, len(self.linhasPeca) + 1, 4, 1, 1
+        )
         self.linhasPeca.append([lineedit1, lineedit2, comboBox, lineedit4])
         self.gridLayoutPecas.removeItem(self.spacerpeca)
-        self.gridLayoutPecas.addItem(self.spacerpeca, len(self.linhasPeca)+1, 0, 1, 1)
+        self.gridLayoutPecas.addItem(self.spacerpeca, len(self.linhasPeca) + 1, 0, 1, 1)
         lineedit1.textChanged.connect(self.setValor)
         lineedit2.textChanged.connect(self.setValor)
         lineedit4.textChanged.connect(self.setValor)
-        lineedit1.textChanged.connect(lambda: self.buscarPeca(lineedit1, comboBox, lineedit4))
-        botaoRemoverLinha.clicked.connect(lambda: self.removerLinhaPeca(self.gridLayoutPecas.getItemPosition(self.gridLayoutPecas.indexOf(botaoRemoverLinha))[0]))
+        lineedit1.textChanged.connect(
+            lambda: self.buscarPeca(lineedit1, comboBox, lineedit4)
+        )
+        botaoRemoverLinha.clicked.connect(
+            lambda: self.removerLinhaPeca(
+                self.gridLayoutPecas.getItemPosition(
+                    self.gridLayoutPecas.indexOf(botaoRemoverLinha)
+                )[0]
+            )
+        )
         self.labelNomePeca.show()
         self.labelQtdePeca.show()
         self.labelUnPeca.show()
@@ -409,15 +523,27 @@ class TelaEditarOS(QtWidgets.QMainWindow):
 
     def removerLinhaPeca(self, linha):
         for x in range(5):
-            if self.gridLayoutPecas.itemAtPosition(linha, x) != None:
+            if self.gridLayoutPecas.itemAtPosition(linha, x) is not None:
                 self.gridLayoutPecas.itemAtPosition(linha, x).widget().setParent(None)
         for x in range(self.gridLayoutPecas.rowCount()):
             if x > linha:
                 for y in range(5):
-                    if not isinstance(self.gridLayoutPecas.itemAtPosition(x, y), QtWidgets.QSpacerItem) and self.gridLayoutPecas.itemAtPosition(x, y) != None:
-                        self.gridLayoutPecas.addWidget(self.gridLayoutPecas.itemAtPosition(x, y).widget(), x-1, y, 1, 1)
-        del self.linhasPeca[linha-1]
-        self.gridLayoutPecas.addItem(self.spacerpeca, len(self.linhasPeca)+2, 0, 1, 1)
+                    if (
+                        not isinstance(
+                            self.gridLayoutPecas.itemAtPosition(x, y),
+                            QtWidgets.QSpacerItem,
+                        )
+                        and self.gridLayoutPecas.itemAtPosition(x, y) is not None
+                    ):
+                        self.gridLayoutPecas.addWidget(
+                            self.gridLayoutPecas.itemAtPosition(x, y).widget(),
+                            x - 1,
+                            y,
+                            1,
+                            1,
+                        )
+        del self.linhasPeca[linha - 1]
+        self.gridLayoutPecas.addItem(self.spacerpeca, len(self.linhasPeca) + 2, 0, 1, 1)
         self.setValor()
         if len(self.linhasPeca) == 0:
             self.labelNomePeca.hide()
@@ -432,37 +558,69 @@ class TelaEditarOS(QtWidgets.QMainWindow):
         lineedit2 = QtWidgets.QLineEdit()
         lineedit3 = QtWidgets.QLineEdit()
         botaoRemoverLinha = QtWidgets.QPushButton()
-        botaoRemoverLinha.setFixedSize(25,25)
-        botaoRemoverLinha.setToolTip('Remover linha')
+        botaoRemoverLinha.setFixedSize(25, 25)
+        botaoRemoverLinha.setToolTip("Remover linha")
         botaoRemoverLinha.setText("-")
-        botaoRemoverLinha.setObjectName('excluir')
-        self.gridLayoutServicos.addWidget(lineedit1, len(self.linhasServico)+1, 0, 1, 1)
-        self.gridLayoutServicos.addWidget(lineedit2, len(self.linhasServico)+1, 1, 1, 1)
-        self.gridLayoutServicos.addWidget(lineedit3, len(self.linhasServico)+1, 2, 1, 1)
-        self.gridLayoutServicos.addWidget(botaoRemoverLinha, len(self.linhasServico)+1, 3, 1, 1)
+        botaoRemoverLinha.setObjectName("excluir")
+        self.gridLayoutServicos.addWidget(
+            lineedit1, len(self.linhasServico) + 1, 0, 1, 1
+        )
+        self.gridLayoutServicos.addWidget(
+            lineedit2, len(self.linhasServico) + 1, 1, 1, 1
+        )
+        self.gridLayoutServicos.addWidget(
+            lineedit3, len(self.linhasServico) + 1, 2, 1, 1
+        )
+        self.gridLayoutServicos.addWidget(
+            botaoRemoverLinha, len(self.linhasServico) + 1, 3, 1, 1
+        )
         self.linhasServico.append([lineedit1, lineedit2, lineedit3])
         self.gridLayoutServicos.removeItem(self.spacerservico)
-        self.gridLayoutServicos.addItem(self.spacerservico, len(self.linhasServico)+1, 0, 1, 1)
+        self.gridLayoutServicos.addItem(
+            self.spacerservico, len(self.linhasServico) + 1, 0, 1, 1
+        )
         lineedit1.textChanged.connect(self.setValor)
         lineedit2.textChanged.connect(self.setValor)
         lineedit3.textChanged.connect(self.setValor)
         lineedit1.textChanged.connect(lambda: self.buscarServico(lineedit1, lineedit3))
-        botaoRemoverLinha.clicked.connect(lambda: self.removerLinhaServico(self.gridLayoutServicos.getItemPosition(self.gridLayoutServicos.indexOf(botaoRemoverLinha))[0]))
+        botaoRemoverLinha.clicked.connect(
+            lambda: self.removerLinhaServico(
+                self.gridLayoutServicos.getItemPosition(
+                    self.gridLayoutServicos.indexOf(botaoRemoverLinha)
+                )[0]
+            )
+        )
         self.labelNomeServico.show()
         self.labelQtdeServico.show()
         self.labelValorServico.show()
 
     def removerLinhaServico(self, linha):
         for x in range(4):
-            if self.gridLayoutServicos.itemAtPosition(linha, x) != None:
-                self.gridLayoutServicos.itemAtPosition(linha, x).widget().setParent(None)
+            if self.gridLayoutServicos.itemAtPosition(linha, x) is not None:
+                self.gridLayoutServicos.itemAtPosition(linha, x).widget().setParent(
+                    None
+                )
         for x in range(self.gridLayoutServicos.rowCount()):
             if x > linha:
                 for y in range(4):
-                    if not isinstance(self.gridLayoutServicos.itemAtPosition(x, y), QtWidgets.QSpacerItem) and self.gridLayoutServicos.itemAtPosition(x, y) != None:
-                        self.gridLayoutServicos.addWidget(self.gridLayoutServicos.itemAtPosition(x, y).widget(), x-1, y, 1, 1)
-        del self.linhasServico[linha-1]
-        self.gridLayoutServicos.addItem(self.spacerservico, len(self.linhasServico)+2, 0, 1, 1)
+                    if (
+                        not isinstance(
+                            self.gridLayoutServicos.itemAtPosition(x, y),
+                            QtWidgets.QSpacerItem,
+                        )
+                        and self.gridLayoutServicos.itemAtPosition(x, y) is not None
+                    ):
+                        self.gridLayoutServicos.addWidget(
+                            self.gridLayoutServicos.itemAtPosition(x, y).widget(),
+                            x - 1,
+                            y,
+                            1,
+                            1,
+                        )
+        del self.linhasServico[linha - 1]
+        self.gridLayoutServicos.addItem(
+            self.spacerservico, len(self.linhasServico) + 2, 0, 1, 1
+        )
         self.setValor()
         if len(self.linhasServico) == 0:
             self.labelNomeServico.hide()
@@ -473,10 +631,10 @@ class TelaEditarOS(QtWidgets.QMainWindow):
         self.lineEditNomeCliente.setText(nome)
         if documento:
             self.lineEditDocumento.setText(documento)
-            if tipo == '0':
+            if tipo == "0":
                 self.labelDocumento.setText("CPF")
                 self.comboBoxPessoa.setCurrentIndex(0)
-            elif tipo == '1':
+            elif tipo == "1":
                 self.labelDocumento.setText("CNPJ")
                 self.comboBoxPessoa.setCurrentIndex(1)
             else:
@@ -485,7 +643,9 @@ class TelaEditarOS(QtWidgets.QMainWindow):
         self.lineEditFone1.setText(tel1)
         self.lineEditFone2.setText(tel2)
 
-    def setEndereco(self, cep=None, ender=None, num=None, bairro=None, cidade=None, uf=None):
+    def setEndereco(
+        self, cep=None, ender=None, num=None, bairro=None, cidade=None, uf=None
+    ):
         self.lineEditCEP.setText(cep)
         self.lineEditEnder.setText(ender)
         self.lineEditNumero.setText(num)
@@ -493,40 +653,66 @@ class TelaEditarOS(QtWidgets.QMainWindow):
         self.lineEditCidade.setText(cidade)
         if uf:
             self.comboBoxuf.setCurrentIndex(
-                self.comboBoxuf.findText(uf, QtCore.Qt.MatchFlag.MatchExactly))
+                self.comboBoxuf.findText(uf, QtCore.Qt.MatchFlag.MatchExactly)
+            )
 
     def setVeiculo(self, marca, modelo, placa, ano=None):
         self.lineEditModelo.setText(modelo)
         self.lineEditAno.setText(ano)
         self.lineEditPlaca.setText(placa)
         self.comboBoxMarca.setCurrentIndex(
-            self.comboBoxMarca.findText(marca, QtCore.Qt.MatchFlag.MatchExactly))
-    
-    def setPecas(self, listaPecas:list):
+            self.comboBoxMarca.findText(marca, QtCore.Qt.MatchFlag.MatchExactly)
+        )
+
+    def setPecas(self, listaPecas: list):
         for _ in range(len(listaPecas)):
             self.addLinhaPeca()
         for linha in self.linhasPeca:
-            linha[0].setText(listaPecas[self.linhasPeca.index(linha)]['descricao'])
-            linha[1].setText(str(listaPecas[self.linhasPeca.index(linha)]['qtde']).replace('.',',',1))
-            linha[2].setCurrentIndex(linha[2].findText(listaPecas[self.linhasPeca.index(linha)]['un'], QtCore.Qt.MatchFlag.MatchExactly))
-            linha[3].setText('{:.2f}'.format(listaPecas[self.linhasPeca.index(linha)]['valor']).replace('.',',',1))
+            linha[0].setText(listaPecas[self.linhasPeca.index(linha)]["descricao"])
+            linha[1].setText(
+                str(listaPecas[self.linhasPeca.index(linha)]["qtde"]).replace(
+                    ".", ",", 1
+                )
+            )
+            linha[2].setCurrentIndex(
+                linha[2].findText(
+                    listaPecas[self.linhasPeca.index(linha)]["un"],
+                    QtCore.Qt.MatchFlag.MatchExactly,
+                )
+            )
+            linha[3].setText(
+                "{:.2f}".format(
+                    listaPecas[self.linhasPeca.index(linha)]["valor"]
+                ).replace(".", ",", 1)
+            )
 
-    def setServicos(self, listaServicos:list):
+    def setServicos(self, listaServicos: list):
         for _ in range(len(listaServicos)):
             self.addLinhaServico()
         for linha in self.linhasServico:
-            linha[0].setText(listaServicos[self.linhasServico.index(linha)]['descricao'])
-            linha[1].setText(str(listaServicos[self.linhasServico.index(linha)]['qtde']).replace('.',',',1))
-            linha[2].setText('{:.2f}'.format(listaServicos[self.linhasServico.index(linha)]['valor']).replace('.',',',1))
+            linha[0].setText(
+                listaServicos[self.linhasServico.index(linha)]["descricao"]
+            )
+            linha[1].setText(
+                str(listaServicos[self.linhasServico.index(linha)]["qtde"]).replace(
+                    ".", ",", 1
+                )
+            )
+            linha[2].setText(
+                "{:.2f}".format(
+                    listaServicos[self.linhasServico.index(linha)]["valor"]
+                ).replace(".", ",", 1)
+            )
 
     def setMarcas(self):
         currentText = self.comboBoxMarca.currentText()
         self.comboBoxMarca.clear()
         marcas = self.marcaCtrl.listarMarcas()
         for marca in marcas:
-            self.comboBoxMarca.addItem(marca['nome'])
+            self.comboBoxMarca.addItem(marca["nome"])
         self.comboBoxMarca.setCurrentIndex(
-            self.comboBoxMarca.findText(currentText, QtCore.Qt.MatchFlag.MatchExactly))
+            self.comboBoxMarca.findText(currentText, QtCore.Qt.MatchFlag.MatchExactly)
+        )
 
     def setCompleters(self):
         pecas = self.pecaCtrl.listarPecas()
@@ -535,10 +721,10 @@ class TelaEditarOS(QtWidgets.QMainWindow):
         listaServicos = []
         if pecas:
             for peca in pecas:
-                listaPecas.append(peca['descricao'])
+                listaPecas.append(peca["descricao"])
         if servicos:
             for servico in servicos:
-                listaServicos.append(servico['descricao'])
+                listaServicos.append(servico["descricao"])
         modelPecas = QtCore.QStringListModel()
         modelPecas.setStringList(listaPecas)
         self.completerPeca.setModel(modelPecas)
@@ -551,25 +737,34 @@ class TelaEditarOS(QtWidgets.QMainWindow):
         for desc, qtde, un, valor in self.linhasPeca:
             if desc.text() and valor.text():
                 dict = {}
-                dict['descricao'] = desc.text()
-                if not qtde.text(): dict['qtde'] = 1
+                dict["descricao"] = desc.text()
+                if not qtde.text():
+                    dict["qtde"] = 1
                 else:
-                    if not (qtde.text().replace(',','',1).isnumeric() or qtde.text().replace('.','',1).isnumeric()):
+                    if not (
+                        qtde.text().replace(",", "", 1).isnumeric()
+                        or qtde.text().replace(".", "", 1).isnumeric()
+                    ):
                         raise Exception('Campo "qtde" inválido!')
-                    if not float(qtde.text().replace(',', '.', 1)) > 0:
+                    if not float(qtde.text().replace(",", ".", 1)) > 0:
                         raise Exception('Campo "qtde" inválido!')
-                    dict['qtde'] = qtde.text().replace(',','.',1)
-                dict['un'] = un.currentText()
-                if not (valor.text().replace(',','',1).isnumeric() or valor.text().replace('.','',1).isnumeric()):
+                    dict["qtde"] = qtde.text().replace(",", ".", 1)
+                dict["un"] = un.currentText()
+                if not (
+                    valor.text().replace(",", "", 1).isnumeric()
+                    or valor.text().replace(".", "", 1).isnumeric()
+                ):
                     raise Exception('Campo "valor" inválido!')
-                if not float(valor.text().replace(',','.',1))>0:
+                if not float(valor.text().replace(",", ".", 1)) > 0:
                     raise Exception('Campo "valor" inválido!')
-                if -Decimal(valor.text().replace(',','.',1)).as_tuple().exponent > 2:
-                    raise Exception("Valores devem possuir no máximo duas casas decimais!")
-                dict['valor'] = valor.text().replace(',','.',1)
+                if -Decimal(valor.text().replace(",", ".", 1)).as_tuple().exponent > 2:
+                    raise Exception(
+                        "Valores devem possuir no máximo duas casas decimais!"
+                    )
+                dict["valor"] = valor.text().replace(",", ".", 1)
                 pecas.append(dict)
             elif desc.text() or valor.text():
-                raise Exception('Preencha todos os campos de cada peça!')
+                raise Exception("Preencha todos os campos de cada peça!")
         return pecas
 
     def getServicos(self):
@@ -577,89 +772,123 @@ class TelaEditarOS(QtWidgets.QMainWindow):
         linhasValidas = 0
         for desc, qtde, valor in self.linhasServico:
             if desc.text() and valor.text():
-                linhasValidas+=1
+                linhasValidas += 1
                 dict = {}
-                dict['descricao'] = desc.text()
-                if not qtde.text(): dict['qtde'] = 1
+                dict["descricao"] = desc.text()
+                if not qtde.text():
+                    dict["qtde"] = 1
                 else:
                     if not qtde.text().isnumeric():
-                        raise Exception('Campo "qtde" em "serviços" deve ser um número inteiro!')
+                        raise Exception(
+                            'Campo "qtde" em "serviços" deve ser um número inteiro!'
+                        )
                     if not int(qtde.text()) > 0:
                         raise Exception('Campo "qtde" inválido!')
-                    dict['qtde'] = qtde.text().replace(',','.',1)
-                if not (valor.text().replace(',','',1).isnumeric() or valor.text().replace('.','',1).isnumeric()):
+                    dict["qtde"] = qtde.text().replace(",", ".", 1)
+                if not (
+                    valor.text().replace(",", "", 1).isnumeric()
+                    or valor.text().replace(".", "", 1).isnumeric()
+                ):
                     raise Exception('Campo "valor" inválido!')
-                if -Decimal(valor.text().replace(',','.',1)).as_tuple().exponent > 2:
-                    raise Exception("Valores devem possuir no máximo duas casas decimais!")  
-                dict['valor'] = valor.text().replace(',','.',1)
+                if -Decimal(valor.text().replace(",", ".", 1)).as_tuple().exponent > 2:
+                    raise Exception(
+                        "Valores devem possuir no máximo duas casas decimais!"
+                    )
+                dict["valor"] = valor.text().replace(",", ".", 1)
                 servicos.append(dict)
             elif desc.text() or valor.text():
-                raise Exception('Preencha todos os campos de cada serviço!')
-        if linhasValidas==0:
-            raise Exception('A ordem de serviço precisa de pelo menos um serviço realizado!')
+                raise Exception("Preencha todos os campos de cada serviço!")
+        if linhasValidas == 0:
+            raise Exception(
+                "A ordem de serviço precisa de pelo menos um serviço realizado!"
+            )
         return servicos
 
     def getDadosOrcamento(self):
         orcamento = {}
         dataOrcamento = datetime.strptime(self.lineEditData.text(), "%d/%m/%Y")
         if dataOrcamento.date() > datetime.now().date():
-            raise Exception('Data do orçamento não deve ser no futuro!')
-        orcamento['dataOrcamento'] = dataOrcamento.strftime("%Y-%m-%d")
+            raise Exception("Data do orçamento não deve ser no futuro!")
+        orcamento["dataOrcamento"] = dataOrcamento.strftime("%Y-%m-%d")
 
         dataAprovacao = datetime.strptime(self.lineEditDataAprovacao.text(), "%d/%m/%Y")
         if dataAprovacao.date() > datetime.now().date():
-            raise Exception('Data de Aprovação não deve ser no futuro!')
+            raise Exception("Data de Aprovação não deve ser no futuro!")
         if dataAprovacao.date() < dataOrcamento.date():
-            raise Exception('Data de Aprovação não deve ser antes da Data do Orçamento!')
-        orcamento['dataAprovacao'] = dataAprovacao.strftime("%Y-%m-%d")
+            raise Exception(
+                "Data de Aprovação não deve ser antes da Data do Orçamento!"
+            )
+        orcamento["dataAprovacao"] = dataAprovacao.strftime("%Y-%m-%d")
         if self.lineEditKm.text():
-            if self.lineEditKm.text() > '0' and self.lineEditKm.text().isnumeric():
-                orcamento['km'] = self.lineEditKm.text()
-            else: raise Exception("Quilometragem do veículo inválida!")
-        else: raise Exception("Quilometragem do veículo obrigatória!")
-        orcamento['observacoes']=self.textEdit.toPlainText()
+            if self.lineEditKm.text() > "0" and self.lineEditKm.text().isnumeric():
+                orcamento["km"] = self.lineEditKm.text()
+            else:
+                raise Exception("Quilometragem do veículo inválida!")
+        else:
+            raise Exception("Quilometragem do veículo obrigatória!")
+        orcamento["observacoes"] = self.textEdit.toPlainText()
         return orcamento
 
     def setValor(self):
-        self.valorTotal=0.00
-        for _,qtde,_,valor in self.linhasPeca:
+        self.valorTotal = 0.00
+        for _, qtde, _, valor in self.linhasPeca:
             if valor.text():
-                if not (valor.text().replace(',','',1).isnumeric() or valor.text().replace('.','',1).isnumeric()):
-                    self.labelValorTotal2.setText('0,00')
+                if not (
+                    valor.text().replace(",", "", 1).isnumeric()
+                    or valor.text().replace(".", "", 1).isnumeric()
+                ):
+                    self.labelValorTotal2.setText("0,00")
                     return
                 if qtde.text():
-                    if not (qtde.text().replace(',','',1).isnumeric() or qtde.text().replace('.','',1).isnumeric()):
-                        self.labelValorTotal2.setText('0,00')
-                        return 
-                    self.valorTotal+=float(valor.text().replace(',','.',1))*float(qtde.text().replace(',','.',1))
+                    if not (
+                        qtde.text().replace(",", "", 1).isnumeric()
+                        or qtde.text().replace(".", "", 1).isnumeric()
+                    ):
+                        self.labelValorTotal2.setText("0,00")
+                        return
+                    self.valorTotal += float(valor.text().replace(",", ".", 1)) * float(
+                        qtde.text().replace(",", ".", 1)
+                    )
                 else:
-                    self.valorTotal+=float(valor.text().replace(',','.',1))
+                    self.valorTotal += float(valor.text().replace(",", ".", 1))
 
-        for _,qtde,valor in self.linhasServico:
+        for _, qtde, valor in self.linhasServico:
             if valor.text():
-                if not (valor.text().replace(',','',1).isnumeric() or valor.text().replace('.','',1).isnumeric()):
-                    self.labelValorTotal2.setText('0,00')
+                if not (
+                    valor.text().replace(",", "", 1).isnumeric()
+                    or valor.text().replace(".", "", 1).isnumeric()
+                ):
+                    self.labelValorTotal2.setText("0,00")
                     return
                 if qtde.text():
-                    if not (qtde.text().replace(',','',1).isnumeric() or qtde.text().replace('.','',1).isnumeric()):
-                        self.labelValorTotal2.setText('0,00')
-                        return 
-                    self.valorTotal+=float(valor.text().replace(',','.',1))*float(qtde.text().replace(',','.',1))
+                    if not (
+                        qtde.text().replace(",", "", 1).isnumeric()
+                        or qtde.text().replace(".", "", 1).isnumeric()
+                    ):
+                        self.labelValorTotal2.setText("0,00")
+                        return
+                    self.valorTotal += float(valor.text().replace(",", ".", 1)) * float(
+                        qtde.text().replace(",", ".", 1)
+                    )
                 else:
-                    self.valorTotal+=float(valor.text().replace(',','.',1))
-        self.labelValorTotal2.setText(('{:.2f}'.format(self.valorTotal)).replace('.',',',1))
+                    self.valorTotal += float(valor.text().replace(",", ".", 1))
+        self.labelValorTotal2.setText(
+            ("{:.2f}".format(self.valorTotal)).replace(".", ",", 1)
+        )
 
     def buscarPeca(self, lineEditDesc, comboBoxUn, lineEditValor):
         qPeca = self.pecaCtrl.getPecaByDescricao(lineEditDesc.text())
         if qPeca:
-            comboBoxUn.setCurrentText(qPeca['un'])
-            lineEditValor.setText('{:.2f}'.format(qPeca['valor']).replace('.',',',1))
+            comboBoxUn.setCurrentText(qPeca["un"])
+            lineEditValor.setText("{:.2f}".format(qPeca["valor"]).replace(".", ",", 1))
             self.setValor()
 
     def buscarServico(self, lineEditDesc, lineEditValor):
         qServico = self.servicoCtrl.getServicoByDescricao(lineEditDesc.text())
         if qServico:
-            lineEditValor.setText('{:.2f}'.format(qServico['valor']).replace('.',',',1))
+            lineEditValor.setText(
+                "{:.2f}".format(qServico["valor"]).replace(".", ",", 1)
+            )
             self.setValor()
 
     def renderEditar(self, id):
@@ -667,64 +896,83 @@ class TelaEditarOS(QtWidgets.QMainWindow):
         self.setCompleters()
         self.orcamentoID = id
         orcamento = self.orcamentoCtrl.getOrcamento(id)
-        fones = self.clienteCtrl.listarFones(orcamento['cliente']['idCliente'])
-        itemPecas = self.orcamentoCtrl.listarItemPecas(orcamento['idOrcamento'])
-        itemServicos = self.orcamentoCtrl.listarItemServicos(orcamento['idOrcamento'])
+        fones = self.clienteCtrl.listarFones(orcamento["cliente"]["idCliente"])
+        itemPecas = self.orcamentoCtrl.listarItemPecas(orcamento["idOrcamento"])
+        itemServicos = self.orcamentoCtrl.listarItemServicos(orcamento["idOrcamento"])
         if itemPecas:
             for item in itemPecas:
-                peca = self.pecaCtrl.getPeca(item['peca'])
-                item['descricao'] = peca['descricao']
-                item['un'] = peca['un']
+                peca = self.pecaCtrl.getPeca(item["peca"])
+                item["descricao"] = peca["descricao"]
+                item["un"] = peca["un"]
         if itemServicos:
             for item in itemServicos:
-                servico = self.servicoCtrl.getServico(item['servico'])
-                item['descricao'] = servico['descricao']
+                servico = self.servicoCtrl.getServico(item["servico"])
+                item["descricao"] = servico["descricao"]
         listaFones = [None, None]
         if fones:
             for x in range(len(fones)):
-                listaFones[x] = fones[x]['fone']
-        if orcamento['cliente']['cidade'] != None:
-            cidade = orcamento['cliente']['cidade']['nome']
-            uf = orcamento['cliente']['cidade']['uf']
-        else: 
+                listaFones[x] = fones[x]["fone"]
+        if orcamento["cliente"]["cidade"] is not None:
+            cidade = orcamento["cliente"]["cidade"]["nome"]
+            uf = orcamento["cliente"]["cidade"]["uf"]
+        else:
             cidade = None
             uf = None
-        self.setCliente(orcamento['cliente']['tipo'], orcamento['cliente']['nome'], orcamento['cliente']['documento'], listaFones[0], listaFones[1])
-        self.setEndereco(orcamento['cliente']['cep'], orcamento['cliente']['endereco'], orcamento['cliente']['numero'], orcamento['cliente']['bairro'],
-            cidade, uf)
-        self.setVeiculo(orcamento['veiculo']['marca']['nome'], orcamento['veiculo']['modelo'], orcamento['veiculo']['placa'], orcamento['veiculo']['ano'])
+        self.setCliente(
+            orcamento["cliente"]["tipo"],
+            orcamento["cliente"]["nome"],
+            orcamento["cliente"]["documento"],
+            listaFones[0],
+            listaFones[1],
+        )
+        self.setEndereco(
+            orcamento["cliente"]["cep"],
+            orcamento["cliente"]["endereco"],
+            orcamento["cliente"]["numero"],
+            orcamento["cliente"]["bairro"],
+            cidade,
+            uf,
+        )
+        self.setVeiculo(
+            orcamento["veiculo"]["marca"]["nome"],
+            orcamento["veiculo"]["modelo"],
+            orcamento["veiculo"]["placa"],
+            orcamento["veiculo"]["ano"],
+        )
         if itemPecas:
             self.setPecas(list(itemPecas))
         self.setServicos(list(itemServicos))
-        self.lineEditKm.setText(orcamento['km'])
-        self.lineEditData.setDate(orcamento['dataOrcamento'])
-        self.textEdit.setText(orcamento['observacoes'])
-        self.lineEditDataAprovacao.setDate(orcamento['dataAprovacao'])
+        self.lineEditKm.setText(orcamento["km"])
+        self.lineEditData.setDate(orcamento["dataOrcamento"])
+        self.textEdit.setText(orcamento["observacoes"])
+        self.lineEditDataAprovacao.setDate(orcamento["dataAprovacao"])
 
     def editarOS(self):
         try:
             pecas = self.getPecas()
-            servicos  = self.getServicos()
+            servicos = self.getServicos()
             orcamento = self.getDadosOrcamento()
-            orcamento['valorTotal'] = self.valorTotal
-            r = self.orcamentoCtrl.editarOrcamento(self.orcamentoID, orcamento, pecas, servicos)
+            orcamento["valorTotal"] = self.valorTotal
+            r = self.orcamentoCtrl.editarOrcamento(
+                self.orcamentoID, orcamento, pecas, servicos
+            )
             if isinstance(r, Exception):
                 raise Exception(r)
             msg = QtWidgets.QMessageBox()
-            msg.setWindowIcon(QtGui.QIcon('resources/logo-icon.png'))
+            msg.setWindowIcon(QtGui.QIcon("resources/logo-icon.png"))
             msg.setIcon(QtWidgets.QMessageBox.Icon.Information)
             msg.setWindowTitle("Aviso")
             msg.setText("Ordem de serviço editada com sucesso!")
             msg.exec()
             self.paraTelaConsulta.emit(1)
-            #RESETA DADOS DA TELA
+            # RESETA DADOS DA TELA
             self.clienteSelected = None
             self.veiculoSelected = None
             self.valorTotal = 0
             self.orcamentoID = None
         except Exception as e:
             msg = QtWidgets.QMessageBox()
-            msg.setWindowIcon(QtGui.QIcon('resources/logo-icon.png'))
+            msg.setWindowIcon(QtGui.QIcon("resources/logo-icon.png"))
             msg.setIcon(QtWidgets.QMessageBox.Icon.Critical)
             msg.setWindowTitle("Aviso")
             msg.setText(str(e))
@@ -735,7 +983,7 @@ class TelaEditarOS(QtWidgets.QMainWindow):
         if isinstance(r, Exception):
             raise Exception(r)
         msg = QtWidgets.QMessageBox()
-        msg.setWindowIcon(QtGui.QIcon('resources/logo-icon.png'))
+        msg.setWindowIcon(QtGui.QIcon("resources/logo-icon.png"))
         msg.setIcon(QtWidgets.QMessageBox.Icon.Information)
         msg.setWindowTitle("Aviso")
         msg.setText("Ordem de serviço finalizada com sucesso!")
@@ -745,7 +993,7 @@ class TelaEditarOS(QtWidgets.QMainWindow):
     def cancelarEdicao(self):
         msgBox = QtWidgets.QMessageBox()
         msgBox.setWindowTitle("Aviso")
-        msgBox.setText('Deseja cancelar a edição? Alterações serão perdidas')
+        msgBox.setText("Deseja cancelar a edição? Alterações serão perdidas")
         y = msgBox.addButton("Sim", QtWidgets.QMessageBox.ButtonRole.YesRole)
         n = msgBox.addButton("Não", QtWidgets.QMessageBox.ButtonRole.NoRole)
         y.setFixedWidth(60)
@@ -757,51 +1005,58 @@ class TelaEditarOS(QtWidgets.QMainWindow):
     def salvareGerarPDF(self):
         try:
             pecas = self.getPecas()
-            servicos  = self.getServicos()
+            servicos = self.getServicos()
             orcamento = self.getDadosOrcamento()
-            orcamento['valorTotal'] = self.valorTotal
-            r = self.orcamentoCtrl.editarOrcamento(self.orcamentoID, orcamento, pecas, servicos)
+            orcamento["valorTotal"] = self.valorTotal
+            r = self.orcamentoCtrl.editarOrcamento(
+                self.orcamentoID, orcamento, pecas, servicos
+            )
             if isinstance(id, Exception):
                 return
-            _orcamento = self.orcamentoCtrl.getOrcamento(r['idOrcamento'])
-            fones = self.clienteCtrl.listarFones(_orcamento['cliente']['idCliente'])
-            if fones: fones = list(fones)
-            itemPecas = self.orcamentoCtrl.listarItemPecas(_orcamento['idOrcamento'])
+            _orcamento = self.orcamentoCtrl.getOrcamento(r["idOrcamento"])
+            fones = self.clienteCtrl.listarFones(_orcamento["cliente"]["idCliente"])
+            if fones:
+                fones = list(fones)
+            itemPecas = self.orcamentoCtrl.listarItemPecas(_orcamento["idOrcamento"])
             if itemPecas:
                 for item in itemPecas:
-                    peca = self.pecaCtrl.getPeca(item['peca'])
-                    item['descricao'] = peca['descricao']
-                    item['un'] = peca['un']
+                    peca = self.pecaCtrl.getPeca(item["peca"])
+                    item["descricao"] = peca["descricao"]
+                    item["un"] = peca["un"]
                 itemPecas = list(itemPecas)
-            itemServicos = self.orcamentoCtrl.listarItemServicos(_orcamento['idOrcamento'])
-            if itemServicos: 
+            itemServicos = self.orcamentoCtrl.listarItemServicos(
+                _orcamento["idOrcamento"]
+            )
+            if itemServicos:
                 for item in itemServicos:
-                    item['descricao'] = self.servicoCtrl.getServico(item['servico'])['descricao']
+                    item["descricao"] = self.servicoCtrl.getServico(item["servico"])[
+                        "descricao"
+                    ]
                 itemServicos = list(itemServicos)
             msg = MessageBox()
-            r = msg.question('Deseja salvar o arquivo?')
-            if r == 'cancelar':
+            r = msg.question("Deseja salvar o arquivo?")
+            if r == "cancelar":
                 msg = QtWidgets.QMessageBox()
-                msg.setWindowIcon(QtGui.QIcon('resources/logo-icon.png'))
+                msg.setWindowIcon(QtGui.QIcon("resources/logo-icon.png"))
                 msg.setIcon(QtWidgets.QMessageBox.Icon.Information)
                 msg.setWindowTitle("Aviso")
                 msg.setText("Geração do PDF cancelada")
                 msg.exec()
-            elif r == 'nao':
+            elif r == "nao":
                 pdf = GeraPDF()
                 pdf.generatePDF(_orcamento, fones, itemServicos, itemPecas)
             else:
                 window = QtWidgets.QMainWindow()
                 fd = QtWidgets.QFileDialog()
-                path = fd.getExistingDirectory(window, 'Salvar como', './')
-                if path == '':
+                path = fd.getExistingDirectory(window, "Salvar como", "./")
+                if path == "":
                     return
                 pdf = GeraPDF()
                 pdf.generatePDF(_orcamento, fones, itemServicos, itemPecas, path)
             self.paraTelaConsulta.emit(1)
-        except Exception as e:    
+        except Exception as e:
             msg = QtWidgets.QMessageBox()
-            msg.setWindowIcon(QtGui.QIcon('resources/logo-icon.png'))
+            msg.setWindowIcon(QtGui.QIcon("resources/logo-icon.png"))
             msg.setIcon(QtWidgets.QMessageBox.Icon.Critical)
             msg.setWindowTitle("Erro")
             msg.setText(str(e))
@@ -812,9 +1067,8 @@ class TelaEditarOS(QtWidgets.QMainWindow):
             lineedit.clear()
 
     def resetarTela(self):
-        while len(self.linhasPeca)>0:
+        while len(self.linhasPeca) > 0:
             self.removerLinhaPeca(1)
-        while len(self.linhasServico)>0:
+        while len(self.linhasServico) > 0:
             self.removerLinhaServico(1)
         self.limparCampos()
-

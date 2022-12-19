@@ -1,6 +1,7 @@
 from model.modelo import Marca
 
-class MarcaRepository():
+
+class MarcaRepository:
     def __init__(self):
         pass
 
@@ -14,15 +15,15 @@ class MarcaRepository():
 
     def delete(self, id):
         return Marca.delete_by_id(id)
-        
+
     def findAll(self):
         return Marca.select().order_by(Marca.nome)
 
     def findByID(self, id):
-        return Marca.select().where(Marca.idMarca==id).get()
+        return Marca.select().where(Marca.idMarca == id).get()
 
     def findByNome(self, nome):
-        marca = Marca.select().where(Marca.nome==nome)
+        marca = Marca.select().where(Marca.nome == nome)
         if marca:
             return marca.get()
-        else: return None
+        return None

@@ -1,13 +1,14 @@
 from model.modelo import Cidade
 
-class CidadeRepository():
+
+class CidadeRepository:
     def __init__(self):
         pass
 
-    def save(self, cidade:dict):
+    def save(self, cidade: dict):
         return Cidade.create(**cidade)
 
-    def update(self, cidade:dict):
+    def update(self, cidade: dict):
         _cidade = Cidade(**cidade)
         _cidade.save()
         return _cidade
@@ -19,10 +20,10 @@ class CidadeRepository():
         return Cidade.select()
 
     def findByID(seld, id):
-        return Cidade.select().where(Cidade.idCidade==id).get()
+        return Cidade.select().where(Cidade.idCidade == id).get()
 
     def findCidadeByNomeAndUF(self, nome, uf):
-        cidade = Cidade.select().where((Cidade.nome==nome) & (Cidade.uf==uf))
-        if cidade: return cidade.get()
-        else: return None
-
+        cidade = Cidade.select().where((Cidade.nome == nome) & (Cidade.uf == uf))
+        if cidade:
+            return cidade.get()
+        return None

@@ -1,21 +1,51 @@
 import threading
-from PyQt6 import QtCore, QtWidgets, QtGui
+
+from PyQt6 import QtCore, QtGui, QtWidgets
+
 from ui.help import HELPEDITARCLIENTE, help
 from ui.hoverButton import HoverButton
-from util.container import handleDeps
+from util.container import handle_deps
 
-SIGLAESTADOS = ['AC', 'AL', 'AP', 'AM', 'BA', 'CE', 'DF', 'ES', 'GO', 'MA', 'MT', 'MS',
-                'MG', 'PA', 'PB', 'PR', 'PE', 'PI', 'RJ', 'RN', 'RS', 'RO', 'RR', 'SC', 'SP', 'SE', 'TO']
+SIGLAESTADOS = [
+    "AC",
+    "AL",
+    "AP",
+    "AM",
+    "BA",
+    "CE",
+    "DF",
+    "ES",
+    "GO",
+    "MA",
+    "MT",
+    "MS",
+    "MG",
+    "PA",
+    "PB",
+    "PR",
+    "PE",
+    "PI",
+    "RJ",
+    "RN",
+    "RS",
+    "RO",
+    "RR",
+    "SC",
+    "SP",
+    "SE",
+    "TO",
+]
 
 
 class TelaEditarCliente(QtWidgets.QMainWindow):
     paraTelaConsulta = QtCore.pyqtSignal(int)
+
     def __init__(self):
         super(TelaEditarCliente, self).__init__()
-        self.clienteCtrl = handleDeps.getDep('CLIENTECTRL')
-        self.cidadeCtrl = handleDeps.getDep('CIDADECTRL')
-        self.marcaCtrl = handleDeps.getDep('MARCACTRL')
-        self.buscaCEP = handleDeps.getDep('CEP')
+        self.clienteCtrl = handle_deps.getDep("CLIENTECTRL")
+        self.cidadeCtrl = handle_deps.getDep("CIDADECTRL")
+        self.marcaCtrl = handle_deps.getDep("MARCACTRL")
+        self.buscaCEP = handle_deps.getDep("CEP")
         self.setupUi()
 
     def setupUi(self):
@@ -24,24 +54,38 @@ class TelaEditarCliente(QtWidgets.QMainWindow):
         self.main_frame.setObjectName("main_frame")
         self.hlayout = QtWidgets.QHBoxLayout(self.main_frame)
         spacer = QtWidgets.QSpacerItem(
-            20, 10, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Preferred)
+            20,
+            10,
+            QtWidgets.QSizePolicy.Policy.Minimum,
+            QtWidgets.QSizePolicy.Policy.Preferred,
+        )
         self.hlayout.addItem(spacer)
         self.framegeral = QtWidgets.QFrame(self.main_frame)
-        self.framegeral.setSizePolicy(QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Preferred)
-        self.framegeral.setMaximumWidth(int(QtGui.QGuiApplication.primaryScreen().size().width()*0.65) 
-            if QtGui.QGuiApplication.primaryScreen().size().width()> 1280 else QtGui.QGuiApplication.primaryScreen().size().width())
+        self.framegeral.setSizePolicy(
+            QtWidgets.QSizePolicy.Policy.Expanding,
+            QtWidgets.QSizePolicy.Policy.Preferred,
+        )
+        self.framegeral.setMaximumWidth(
+            int(QtGui.QGuiApplication.primaryScreen().size().width() * 0.65)
+            if QtGui.QGuiApplication.primaryScreen().size().width() > 1280
+            else QtGui.QGuiApplication.primaryScreen().size().width()
+        )
         self.hlayout.addWidget(self.framegeral)
         spacer = QtWidgets.QSpacerItem(
-            20, 10, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Preferred)
+            20,
+            10,
+            QtWidgets.QSizePolicy.Policy.Minimum,
+            QtWidgets.QSizePolicy.Policy.Preferred,
+        )
         self.hlayout.addItem(spacer)
         self.vlayout = QtWidgets.QVBoxLayout(self.framegeral)
-        self.vlayout.setContentsMargins(0,0,0,0)
+        self.vlayout.setContentsMargins(0, 0, 0, 0)
         self.vlayout.setSpacing(0)
         # titulo
         self.frameTitulo = QtWidgets.QFrame(self.framegeral)
         self.vlayout.addWidget(self.frameTitulo)
         self.hlayouttitulo = QtWidgets.QHBoxLayout(self.frameTitulo)
-        self.hlayouttitulo.setContentsMargins(0,0,0,0)
+        self.hlayouttitulo.setContentsMargins(0, 0, 0, 0)
         self.hlayouttitulo.setSpacing(0)
         self.hlayouttitulo.setAlignment(QtCore.Qt.AlignmentFlag.AlignHCenter)
         self.labelTitulo = QtWidgets.QLabel(self.frameTitulo)
@@ -49,10 +93,15 @@ class TelaEditarCliente(QtWidgets.QMainWindow):
         self.labelTitulo.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
         self.labelTitulo.setObjectName("titulo")
         self.hlayouttitulo.addWidget(self.labelTitulo)
-        self.botaoHelp = HoverButton("", "./resources/help-icon1.png", "./resources/help-icon2.png", self.frameTitulo)
-        self.botaoHelp.setToolTip('Ajuda')
-        self.botaoHelp.setObjectName('botaohelp')
-        self.botaoHelp.setHelpIconSize(20,20)
+        self.botaoHelp = HoverButton(
+            "",
+            "./resources/help-icon1.png",
+            "./resources/help-icon2.png",
+            self.frameTitulo,
+        )
+        self.botaoHelp.setToolTip("Ajuda")
+        self.botaoHelp.setObjectName("botaohelp")
+        self.botaoHelp.setHelpIconSize(20, 20)
         self.hlayouttitulo.addWidget(self.botaoHelp)
         self.framedados = QtWidgets.QFrame(self.main_frame)
         self.glayoutp = QtWidgets.QGridLayout(self.framedados)
@@ -68,7 +117,9 @@ class TelaEditarCliente(QtWidgets.QMainWindow):
         self.labelDocumento = QtWidgets.QLabel(self.groupBoxCliente)
         self.gridLayout.addWidget(self.labelDocumento, 0, 2, 1, 1)
         self.comboBoxPessoa = QtWidgets.QComboBox(self.groupBoxCliente)
-        self.comboBoxPessoa.addItems(["PESSOA FÍSICA", "PESSOA JURÍDICA", "ESTRANGEIRO"])
+        self.comboBoxPessoa.addItems(
+            ["PESSOA FÍSICA", "PESSOA JURÍDICA", "ESTRANGEIRO"]
+        )
         self.gridLayout.addWidget(self.comboBoxPessoa, 1, 0, 1, 1)
         self.lineEditNomeCliente = QtWidgets.QLineEdit(self.groupBoxCliente)
         self.lineEditNomeCliente.setMaxLength(80)
@@ -80,7 +131,11 @@ class TelaEditarCliente(QtWidgets.QMainWindow):
         self.gridLayout.setColumnStretch(1, 5)
         self.gridLayout.setColumnStretch(2, 1)
         spacerItem2 = QtWidgets.QSpacerItem(
-            20, 10, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Maximum)
+            20,
+            10,
+            QtWidgets.QSizePolicy.Policy.Minimum,
+            QtWidgets.QSizePolicy.Policy.Maximum,
+        )
         self.glayoutp.addItem(spacerItem2)
         # dados de endereço
         self.groupBoxEnder = QtWidgets.QGroupBox(self.framedados)
@@ -117,13 +172,17 @@ class TelaEditarCliente(QtWidgets.QMainWindow):
         self.gridLayout2.addWidget(self.lineEditCidade, 3, 2, 1, 1)
         self.comboBoxuf = QtWidgets.QComboBox(self.groupBoxEnder)
         self.comboBoxuf.addItems(SIGLAESTADOS)
-        self.comboBoxuf.setCurrentText('PR')
+        self.comboBoxuf.setCurrentText("PR")
         self.gridLayout2.addWidget(self.comboBoxuf, 3, 3, 1, 1)
         self.gridLayout2.setColumnStretch(1, 2)
         self.gridLayout2.setColumnStretch(2, 5)
         self.gridLayout2.setColumnStretch(3, 1)
         spacerItem3 = QtWidgets.QSpacerItem(
-            20, 10, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Maximum)
+            20,
+            10,
+            QtWidgets.QSizePolicy.Policy.Minimum,
+            QtWidgets.QSizePolicy.Policy.Maximum,
+        )
         self.glayoutp.addItem(spacerItem3)
         # telefone
         self.groupBoxTel = QtWidgets.QGroupBox(self.framedados)
@@ -140,7 +199,12 @@ class TelaEditarCliente(QtWidgets.QMainWindow):
         self.lineEditFone2 = QtWidgets.QLineEdit(self.groupBoxTel)
         self.lineEditFone2.setMaxLength(14)
         self.vlayout7.addWidget(self.lineEditFone2)
-        spacerItem4 = QtWidgets.QSpacerItem(20, 10, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Maximum)
+        spacerItem4 = QtWidgets.QSpacerItem(
+            20,
+            10,
+            QtWidgets.QSizePolicy.Policy.Minimum,
+            QtWidgets.QSizePolicy.Policy.Maximum,
+        )
         self.glayoutp.addItem(spacerItem4)
         self.vlayout.addWidget(self.framedados)
         self.glayoutp.setColumnStretch(0, 3)
@@ -150,32 +214,46 @@ class TelaEditarCliente(QtWidgets.QMainWindow):
         self.hlayout4 = QtWidgets.QHBoxLayout(self.framebotoes)
         self.labelLegenda = QtWidgets.QLabel(self.framebotoes)
         self.hlayout4.addWidget(self.labelLegenda)
-        spacerItem5 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
+        spacerItem5 = QtWidgets.QSpacerItem(
+            40,
+            20,
+            QtWidgets.QSizePolicy.Policy.Expanding,
+            QtWidgets.QSizePolicy.Policy.Minimum,
+        )
         self.hlayout4.addItem(spacerItem5)
         self.botaoSalvar = QtWidgets.QPushButton(self.framebotoes)
         self.botaoSalvar.setMinimumSize(100, 35)
-        self.botaoSalvar.setObjectName('botaoprincipal')
+        self.botaoSalvar.setObjectName("botaoprincipal")
         self.hlayout4.addWidget(self.botaoSalvar)
         self.botaoCancelar = QtWidgets.QPushButton(self.framebotoes)
         self.botaoCancelar.setMinimumSize(100, 35)
         self.hlayout4.addWidget(self.botaoCancelar)
         self.vlayout.addWidget(self.framebotoes)
-        spacerItem6 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding)
+        spacerItem6 = QtWidgets.QSpacerItem(
+            40,
+            20,
+            QtWidgets.QSizePolicy.Policy.Minimum,
+            QtWidgets.QSizePolicy.Policy.Expanding,
+        )
         self.glayoutp.addItem(spacerItem6)
         self.setCentralWidget(self.main_frame)
         self.completerCidade = QtWidgets.QCompleter([])
         self.completerCidade.setMaxVisibleItems(5)
         self.completerCidade.setCaseSensitivity(
-            QtCore.Qt.CaseSensitivity.CaseInsensitive)
+            QtCore.Qt.CaseSensitivity.CaseInsensitive
+        )
         self.completerCidade.setCompletionMode(
-            QtWidgets.QCompleter.CompletionMode.PopupCompletion)
+            QtWidgets.QCompleter.CompletionMode.PopupCompletion
+        )
         self.lineEditCidade.setCompleter(self.completerCidade)
         self.retranslateUi()
         self.botaoCancelar.clicked.connect(self.cancelarEdicao)
         self.botaoSalvar.clicked.connect(self.editar)
         self.comboBoxPessoa.currentIndexChanged.connect(self.escolherTipoPessoa)
         self.lineEditCEP.textChanged.connect(self.buscarDadosCEP)
-        self.botaoHelp.clicked.connect(lambda: help('Ajuda - Editar Cliente', HELPEDITARCLIENTE))
+        self.botaoHelp.clicked.connect(
+            lambda: help("Ajuda - Editar Cliente", HELPEDITARCLIENTE)
+        )
 
     def retranslateUi(self):
         _translate = QtCore.QCoreApplication.translate
@@ -195,7 +273,7 @@ class TelaEditarCliente(QtWidgets.QMainWindow):
         self.labelLegenda.setText(_translate("MainWindow", "* Campos Obrigatórios"))
         self.botaoCancelar.setText(_translate("MainWindow", "Cancelar"))
         self.botaoSalvar.setText(_translate("MainWindow", "Salvar"))
-    
+
     def editar(self):
         try:
             cliente = self.getDadosCliente()
@@ -204,15 +282,15 @@ class TelaEditarCliente(QtWidgets.QMainWindow):
             if isinstance(r, Exception):
                 raise Exception(r)
             msg = QtWidgets.QMessageBox()
-            msg.setWindowIcon(QtGui.QIcon('resources/logo-icon.png'))
+            msg.setWindowIcon(QtGui.QIcon("resources/logo-icon.png"))
             msg.setIcon(QtWidgets.QMessageBox.Icon.Information)
             msg.setWindowTitle("Aviso")
-            msg.setText('Cliente editado com sucesso!')
+            msg.setText("Cliente editado com sucesso!")
             msg.exec()
             self.paraTelaConsulta.emit(1)
         except Exception as e:
             msg = QtWidgets.QMessageBox()
-            msg.setWindowIcon(QtGui.QIcon('resources/logo-icon.png'))
+            msg.setWindowIcon(QtGui.QIcon("resources/logo-icon.png"))
             msg.setIcon(QtWidgets.QMessageBox.Icon.Critical)
             msg.setWindowTitle("Erro")
             msg.setText(str(e))
@@ -221,7 +299,7 @@ class TelaEditarCliente(QtWidgets.QMainWindow):
     def cancelarEdicao(self):
         msgBox = QtWidgets.QMessageBox()
         msgBox.setWindowTitle("Aviso")
-        msgBox.setText('Deseja cancelar a edição? Alterações serão perdidas')
+        msgBox.setText("Deseja cancelar a edição? Alterações serão perdidas")
         y = msgBox.addButton("Sim", QtWidgets.QMessageBox.ButtonRole.YesRole)
         n = msgBox.addButton("Não", QtWidgets.QMessageBox.ButtonRole.NoRole)
         y.setFixedWidth(60)
@@ -240,91 +318,100 @@ class TelaEditarCliente(QtWidgets.QMainWindow):
         lista.extend(self.groupBoxEnder.findChildren(QtWidgets.QLineEdit))
         lista.extend(self.groupBoxTel.findChildren(QtWidgets.QLineEdit))
         if len(list(filter(lambda dados: dados.text(), lista))) == 0:
-            raise Exception('Campos vazios!')
+            raise Exception("Campos vazios!")
         dict = {}
-        dict['tipo'] = self.comboBoxPessoa.currentIndex()
-        if (self.lineEditDocumento.text()):
-            if dict['tipo'] == 0:
-                documento = 'CPF'
+        dict["tipo"] = self.comboBoxPessoa.currentIndex()
+        if self.lineEditDocumento.text():
+            if dict["tipo"] == 0:
+                documento = "CPF"
                 if len(self.lineEditDocumento.text()) != 11:
-                    raise Exception('CPF inválido')
-            elif dict['tipo'] == 1:
-                documento = 'CNPJ'
+                    raise Exception("CPF inválido")
+            elif dict["tipo"] == 1:
+                documento = "CNPJ"
                 if len(self.lineEditDocumento.text()) != 14:
-                    raise Exception('CNPJ inválido')
-            else: documento = 'Documento'
+                    raise Exception("CNPJ inválido")
+            else:
+                documento = "Documento"
             if not self.lineEditDocumento.text().isnumeric():
                 raise Exception(f'Digite apenas números no campo "{documento}"')
-            dict['documento'] = self.lineEditDocumento.text()
+            dict["documento"] = self.lineEditDocumento.text()
         else:
-            dict['documento'] = None
-        if (self.lineEditNomeCliente.text()):
-            dict['nome'] = self.lineEditNomeCliente.text().title()
+            dict["documento"] = None
+        if self.lineEditNomeCliente.text():
+            dict["nome"] = self.lineEditNomeCliente.text().title()
         else:
             raise Exception("Nome do cliente obrigatório")
-        if (self.lineEditCEP.text()):
+        if self.lineEditCEP.text():
             if not self.lineEditCEP.text().isnumeric():
                 raise Exception('Digite apenas números no campo "CEP"!')
             if len(self.lineEditCEP.text()) != 8:
                 raise Exception("CEP inválido!")
-            dict['cep'] = self.lineEditCEP.text()
+            dict["cep"] = self.lineEditCEP.text()
         else:
-            dict['cep'] = None
-        if (self.lineEditEnder.text()):
-            dict['endereco'] = self.lineEditEnder.text()
+            dict["cep"] = None
+        if self.lineEditEnder.text():
+            dict["endereco"] = self.lineEditEnder.text()
         else:
-            dict['endereco'] = None
-        if (self.lineEditNumero.text()):
-            dict['numero'] = self.lineEditNumero.text()
+            dict["endereco"] = None
+        if self.lineEditNumero.text():
+            dict["numero"] = self.lineEditNumero.text()
         else:
-            dict['numero'] = None
-        if (self.lineEditBairro.text()):
-            dict['bairro'] = self.lineEditBairro.text()
+            dict["numero"] = None
+        if self.lineEditBairro.text():
+            dict["bairro"] = self.lineEditBairro.text()
         else:
-            dict['bairro'] = None
-        if (self.lineEditCidade.text()):
-            dict['cidade'] = self.lineEditCidade.text().title()
+            dict["bairro"] = None
+        if self.lineEditCidade.text():
+            dict["cidade"] = self.lineEditCidade.text().title()
         else:
-            dict['cidade'] = None
-        dict['uf'] = self.comboBoxuf.currentText()
+            dict["cidade"] = None
+        dict["uf"] = self.comboBoxuf.currentText()
         return dict
 
     def getFones(self):
         fones = []
         cont = 0
-        if (self.lineEditFone1.text()):
-            if not self.lineEditFone1.text().isnumeric() or len(self.lineEditFone1.text())<8:
-                raise Exception('Fone 1 inválido')
+        if self.lineEditFone1.text():
+            if (
+                not self.lineEditFone1.text().isnumeric()
+                or len(self.lineEditFone1.text()) < 8
+            ):
+                raise Exception("Fone 1 inválido")
             fones.append(self.lineEditFone1.text())
             cont += 1
         else:
             fones.append(None)
-        if (self.lineEditFone2.text()):
-            if not self.lineEditFone2.text().isnumeric() or len(self.lineEditFone2.text())<8:
-                raise Exception('Fone 2 inválido')
+        if self.lineEditFone2.text():
+            if (
+                not self.lineEditFone2.text().isnumeric()
+                or len(self.lineEditFone2.text()) < 8
+            ):
+                raise Exception("Fone 2 inválido")
             fones.append(self.lineEditFone2.text())
             cont += 1
         else:
             fones.append(None)
         if cont == 0:
-            raise Exception('Fone obrigatório')
+            raise Exception("Fone obrigatório")
         return fones
 
     def setCliente(self, tipo, nome, documento=None, tel1=None, tel2=None):
         self.lineEditNomeCliente.setText(nome)
         if documento:
             self.lineEditDocumento.setText(documento)
-            if tipo == '0':
+            if tipo == "0":
                 self.labelDocumento.setText("CPF")
-            elif tipo == '1':
+            elif tipo == "1":
                 self.labelDocumento.setText("CNPJ")
-            elif tipo == '2':
+            elif tipo == "2":
                 self.labelDocumento.setText("Documento")
         self.comboBoxPessoa.setCurrentIndex(int(tipo))
         self.lineEditFone1.setText(tel1)
         self.lineEditFone2.setText(tel2)
 
-    def setEndereco(self, cep=None, ender=None, numero=None, bairro=None, cidade=None, uf=None):
+    def setEndereco(
+        self, cep=None, ender=None, numero=None, bairro=None, cidade=None, uf=None
+    ):
         if cep:
             self.lineEditCEP.textChanged.disconnect()
             self.lineEditCEP.setText(cep)
@@ -339,21 +426,23 @@ class TelaEditarCliente(QtWidgets.QMainWindow):
             self.lineEditCidade.setText(cidade)
         if uf:
             self.comboBoxuf.setCurrentIndex(
-                self.comboBoxuf.findText(uf, QtCore.Qt.MatchFlag.MatchExactly))
+                self.comboBoxuf.findText(uf, QtCore.Qt.MatchFlag.MatchExactly)
+            )
 
     def escolherTipoPessoa(self):
-        if (self.comboBoxPessoa.currentIndex() == 0):
-            self.labelDocumento.setText('CPF')
-        elif (self.comboBoxPessoa.currentIndex() == 1):
-            self.labelDocumento.setText('CNPJ')
-        else: self.labelDocumento.setText('Documento')
+        if self.comboBoxPessoa.currentIndex() == 0:
+            self.labelDocumento.setText("CPF")
+        elif self.comboBoxPessoa.currentIndex() == 1:
+            self.labelDocumento.setText("CNPJ")
+        else:
+            self.labelDocumento.setText("Documento")
 
     def setCompleters(self):
         cidades = self.cidadeCtrl.listarCidades()
         listaCidades = []
         if cidades:
             for cidade in cidades:
-                listaCidades.append(cidade['nome'])
+                listaCidades.append(cidade["nome"])
         modelCidades = QtCore.QStringListModel()
         modelCidades.setStringList(listaCidades)
         self.completerCidade.setModel(modelCidades)
@@ -363,36 +452,50 @@ class TelaEditarCliente(QtWidgets.QMainWindow):
         self.setCompleters()
         self.clienteID = id
         cliente = self.clienteCtrl.getCliente(id)
-        fones = self.clienteCtrl.listarFones(cliente['idCliente'])
+        fones = self.clienteCtrl.listarFones(cliente["idCliente"])
         listaFones = [None, None]
         if fones:
             for x in range(len(fones)):
-                listaFones[x] = fones[x]['fone']
-        self.setCliente(cliente['tipo'], cliente['nome'], cliente['documento'], listaFones[0], listaFones[1])
-        if cliente['cidade'] != None:
-            cidade = cliente['cidade']['nome']
-            uf = cliente['cidade']['uf']
-        else: 
+                listaFones[x] = fones[x]["fone"]
+        self.setCliente(
+            cliente["tipo"],
+            cliente["nome"],
+            cliente["documento"],
+            listaFones[0],
+            listaFones[1],
+        )
+        if cliente["cidade"] is not None:
+            cidade = cliente["cidade"]["nome"]
+            uf = cliente["cidade"]["uf"]
+        else:
             cidade = None
             uf = None
-        self.setEndereco(cliente['cep'], cliente['endereco'], cliente['numero'], cliente['bairro'], cidade, uf)
+        self.setEndereco(
+            cliente["cep"],
+            cliente["endereco"],
+            cliente["numero"],
+            cliente["bairro"],
+            cidade,
+            uf,
+        )
 
     def buscarDadosCEP(self):
         cep = self.lineEditCEP.text()
-        if len(cep) !=8:
+        if len(cep) != 8:
             return
         t = threading.Thread(target=self.threadCEP, args=(cep,))
         t.start()
 
-
     def threadCEP(self, cep):
         dados = self.buscaCEP.buscarCEP(cep)
-        if dados == None:
+        if dados is None:
             return
-        if 'erro' in dados:
+        if "erro" in dados:
             return
-        self.lineEditEnder.setText(dados['logradouro'])
-        self.lineEditBairro.setText(dados['bairro'])
-        self.lineEditCidade.setText(dados['localidade'])
-        self.comboBoxuf.setCurrentIndex(self.comboBoxuf.findText(dados['uf'], QtCore.Qt.MatchFlag.MatchExactly))
+        self.lineEditEnder.setText(dados["logradouro"])
+        self.lineEditBairro.setText(dados["bairro"])
+        self.lineEditCidade.setText(dados["localidade"])
+        self.comboBoxuf.setCurrentIndex(
+            self.comboBoxuf.findText(dados["uf"], QtCore.Qt.MatchFlag.MatchExactly)
+        )
         return
