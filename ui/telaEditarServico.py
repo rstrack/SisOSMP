@@ -1,7 +1,5 @@
 from decimal import Decimal
-
 from PyQt6 import QtCore, QtGui, QtWidgets
-
 from ui.help import HELPEDITARSERVICO, help
 from ui.hoverButton import HoverButton
 from util.container import handle_deps
