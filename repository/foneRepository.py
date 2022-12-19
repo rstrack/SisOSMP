@@ -1,6 +1,7 @@
 from model.modelo import Fone
 
-class FoneRepository():
+
+class FoneRepository:
     def __init__(self) -> None:
         pass
 
@@ -11,13 +12,17 @@ class FoneRepository():
         pass
 
     def findByClienteID(self, id):
-        return Fone.select().where(Fone.cliente==id)
+        return Fone.select().where(Fone.cliente == id)
 
     def delete(self, cliente, fone):
-        return Fone.delete().where((Fone.cliente==cliente) & (Fone.fone==fone)).execute()
+        return (
+            Fone.delete()
+            .where((Fone.cliente == cliente) & (Fone.fone == fone))
+            .execute()
+        )
 
     def findByFone(self, fone):
-        _fone = Fone.select().where(Fone.fone==fone)
+        _fone = Fone.select().where(Fone.fone == fone)
         if _fone:
             return _fone.get()
-        else: return None
+        return None

@@ -1,13 +1,14 @@
 from model.modelo import Servico
 
-class ServicoRepository():
+
+class ServicoRepository:
     def __init__(self) -> None:
         pass
 
     def save(self, servico: dict):
         return Servico.create(**servico)
 
-    def update(self, servico:dict):
+    def update(self, servico: dict):
         _servico = Servico(**servico)
         _servico.save()
         return _servico
@@ -19,15 +20,15 @@ class ServicoRepository():
         return Servico.select().order_by(Servico.descricao)
 
     def findByID(self, id):
-        return Servico.select().where(Servico.idServico==id).get()
+        return Servico.select().where(Servico.idServico == id).get()
 
     def findByDescricao(self, desc):
-        servico = Servico.select().where(Servico.descricao==desc)
+        servico = Servico.select().where(Servico.descricao == desc)
         if servico:
             return servico.get()
-        else: return None
+        return None
 
-    def findByInput(self, input, limit=None, orderBy = None):
+    def findByInput(self, input, limit=None, orderBy=None):
         match orderBy:
             case 0:
                 order_by = Servico.descricao
@@ -35,8 +36,13 @@ class ServicoRepository():
                 order_by = -Servico.descricao
             case _:
                 order_by = Servico.descricao
-        _servico = Servico.select().where(Servico.descricao.contains(input)).order_by(order_by).limit(limit).distinct()
+        _servico = (
+            Servico.select()
+            .where(Servico.descricao.contains(input))
+            .order_by(order_by)
+            .limit(limit)
+            .distinct()
+        )
         if _servico:
             return _servico
-        else: 
-            return None
+        return None

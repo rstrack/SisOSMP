@@ -1,12 +1,12 @@
-class Container():
+class Container:
     def __init__(self) -> None:
-        self.container = dict()
+        self.container = {}
 
-    def setDep(self, flag:str, obj:object):
+    def setDep(self, flag: str, obj: object):
         self.container[flag] = obj
 
-    def getDep(self, flag:str):
+    def getDep(self, flag: str):
         return self.container[flag]
 
-handleDeps = Container()
 
+handle_deps = Container()

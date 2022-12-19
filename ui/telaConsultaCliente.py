@@ -1,16 +1,19 @@
 from PyQt6 import QtCore, QtGui, QtWidgets
-from ui.hoverButton import HoverButton
+
 from ui.help import HELPCONSULTACLIENTE, help
-from ui.telaVeiculoCliente import TelaVeiculoCliente
+from ui.hoverButton import HoverButton
 from ui.infiniteScroll import AlignDelegate, InfiniteScrollTableModel
-from util.container import handleDeps
+from ui.telaVeiculoCliente import TelaVeiculoCliente
+from util.container import handle_deps
+
 
 class TelaConsultaCliente(QtWidgets.QMainWindow):
     novoCliente = QtCore.pyqtSignal(int)
+
     def __init__(self):
         super(TelaConsultaCliente, self).__init__()
-        self.clienteCtrl = handleDeps.getDep('CLIENTECTRL')
-        self.busca = ''
+        self.clienteCtrl = handle_deps.getDep("CLIENTECTRL")
+        self.busca = ""
         self.orderBy = 0
         self.setupUi()
 
@@ -20,23 +23,37 @@ class TelaConsultaCliente(QtWidgets.QMainWindow):
         self.main_frame.setObjectName("main_frame")
         self.hlayout = QtWidgets.QHBoxLayout(self.main_frame)
         spacer = QtWidgets.QSpacerItem(
-            20, 10, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Preferred)
+            20,
+            10,
+            QtWidgets.QSizePolicy.Policy.Minimum,
+            QtWidgets.QSizePolicy.Policy.Preferred,
+        )
         self.hlayout.addItem(spacer)
         self.framegeral = QtWidgets.QFrame(self.main_frame)
-        self.framegeral.setSizePolicy(QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Preferred)
-        self.framegeral.setMaximumWidth(int(QtGui.QGuiApplication.primaryScreen().size().width()*0.65) 
-            if QtGui.QGuiApplication.primaryScreen().size().width()> 1280 else QtGui.QGuiApplication.primaryScreen().size().width())
+        self.framegeral.setSizePolicy(
+            QtWidgets.QSizePolicy.Policy.Expanding,
+            QtWidgets.QSizePolicy.Policy.Preferred,
+        )
+        self.framegeral.setMaximumWidth(
+            int(QtGui.QGuiApplication.primaryScreen().size().width() * 0.65)
+            if QtGui.QGuiApplication.primaryScreen().size().width() > 1280
+            else QtGui.QGuiApplication.primaryScreen().size().width()
+        )
         self.hlayout.addWidget(self.framegeral)
         spacer = QtWidgets.QSpacerItem(
-            20, 10, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Preferred)
+            20,
+            10,
+            QtWidgets.QSizePolicy.Policy.Minimum,
+            QtWidgets.QSizePolicy.Policy.Preferred,
+        )
         self.hlayout.addItem(spacer)
         self.vlayout = QtWidgets.QVBoxLayout(self.framegeral)
-        self.vlayout.setContentsMargins(0,0,0,0)
+        self.vlayout.setContentsMargins(0, 0, 0, 0)
         self.vlayout.setSpacing(0)
         self.frameTitulo = QtWidgets.QFrame(self.framegeral)
         self.vlayout.addWidget(self.frameTitulo)
         self.hlayouttitulo = QtWidgets.QHBoxLayout(self.frameTitulo)
-        self.hlayouttitulo.setContentsMargins(0,0,0,0)
+        self.hlayouttitulo.setContentsMargins(0, 0, 0, 0)
         self.hlayouttitulo.setSpacing(0)
         self.hlayouttitulo.setAlignment(QtCore.Qt.AlignmentFlag.AlignHCenter)
         self.labelTitulo = QtWidgets.QLabel(self.frameTitulo)
@@ -44,77 +61,103 @@ class TelaConsultaCliente(QtWidgets.QMainWindow):
         self.labelTitulo.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
         self.labelTitulo.setObjectName("titulo")
         self.hlayouttitulo.addWidget(self.labelTitulo)
-        self.botaoHelp = HoverButton("", "./resources/help-icon1.png", "./resources/help-icon2.png", self.frameTitulo)
-        self.botaoHelp.setToolTip('Ajuda')
-        self.botaoHelp.setObjectName('botaohelp')
-        self.botaoHelp.setHelpIconSize(20,20)
+        self.botaoHelp = HoverButton(
+            "",
+            "./resources/help-icon1.png",
+            "./resources/help-icon2.png",
+            self.frameTitulo,
+        )
+        self.botaoHelp.setToolTip("Ajuda")
+        self.botaoHelp.setObjectName("botaohelp")
+        self.botaoHelp.setHelpIconSize(20, 20)
         self.hlayouttitulo.addWidget(self.botaoHelp)
-        '''self.labelTitulo = QtWidgets.QLabel(self.framegeral)
+        """self.labelTitulo = QtWidgets.QLabel(self.framegeral)
         self.labelTitulo.setFixedHeight(80)
         self.labelTitulo.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
         self.labelTitulo.setObjectName('titulo')
-        self.vlayout.addWidget(self.labelTitulo)'''
+        self.vlayout.addWidget(self.labelTitulo)"""
         self.frameBusca = QtWidgets.QFrame(self.main_frame)
         self.vlayout.addWidget(self.frameBusca)
         self.hlayoutBusca = QtWidgets.QHBoxLayout(self.frameBusca)
         self.lineEditBusca = QtWidgets.QLineEdit(self.frameBusca)
         self.lineEditBusca.setFixedHeight(30)
-        self.lineEditBusca.setPlaceholderText("Pesquisar por nome, documento, fone, modelo ou placa de um veículo vinculado")
+        self.lineEditBusca.setPlaceholderText(
+            "Pesquisar por nome, documento, fone, modelo ou placa de um veículo vinculado"
+        )
         self.lineEditBusca.setClearButtonEnabled(True)
         iconBusca = QtGui.QIcon("resources/search-icon.png")
         self.lineEditBusca.addAction(
-            iconBusca, QtWidgets.QLineEdit.ActionPosition.LeadingPosition)
+            iconBusca, QtWidgets.QLineEdit.ActionPosition.LeadingPosition
+        )
         self.hlayoutBusca.addWidget(self.lineEditBusca)
         self.botaoRefresh = QtWidgets.QPushButton(self.frameBusca)
-        self.botaoRefresh.setToolTip('Atualizar')
-        self.botaoRefresh.setFixedSize(30,30)
+        self.botaoRefresh.setToolTip("Atualizar")
+        self.botaoRefresh.setFixedSize(30, 30)
         self.botaoRefresh.setIcon(QtGui.QIcon("resources/refresh-icon.png"))
         self.hlayoutBusca.addWidget(self.botaoRefresh)
         self.frameOrdenacao = QtWidgets.QFrame(self.main_frame)
         self.vlayout.addWidget(self.frameOrdenacao)
         self.hlayoutOrdenacao = QtWidgets.QHBoxLayout(self.frameOrdenacao)
         spacer = QtWidgets.QSpacerItem(
-            20, 10, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Preferred)
+            20,
+            10,
+            QtWidgets.QSizePolicy.Policy.Expanding,
+            QtWidgets.QSizePolicy.Policy.Preferred,
+        )
         self.hlayoutOrdenacao.addItem(spacer)
         self.botaoNovo = QtWidgets.QPushButton(self.frameOrdenacao)
-        self.botaoNovo.setFixedSize(80,25)
+        self.botaoNovo.setFixedSize(80, 25)
         self.hlayoutOrdenacao.addWidget(self.botaoNovo)
         self.comboBoxOrdenacao = QtWidgets.QComboBox(self.frameOrdenacao)
         self.comboBoxOrdenacao.setFixedHeight(25)
-        self.comboBoxOrdenacao.setToolTip('Ordenar')
-        self.comboBoxOrdenacao.addItems(['Nome: A-Z', 'Nome: Z-A'])
+        self.comboBoxOrdenacao.setToolTip("Ordenar")
+        self.comboBoxOrdenacao.addItems(["Nome: A-Z", "Nome: Z-A"])
         self.hlayoutOrdenacao.addWidget(self.comboBoxOrdenacao)
         self.framedados = QtWidgets.QFrame(self.main_frame)
-        self.framedados.setSizePolicy(QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Preferred)
+        self.framedados.setSizePolicy(
+            QtWidgets.QSizePolicy.Policy.Expanding,
+            QtWidgets.QSizePolicy.Policy.Preferred,
+        )
         self.vlayout.addWidget(self.framedados)
         self.vlayoutdados = QtWidgets.QVBoxLayout(self.framedados)
         self.tabela = QtWidgets.QTableView(self.framedados)
         self.vlayoutdados.addWidget(self.tabela)
         self.tabela.setEditTriggers(
-            QtWidgets.QAbstractItemView.EditTrigger.NoEditTriggers)
+            QtWidgets.QAbstractItemView.EditTrigger.NoEditTriggers
+        )
         self.tabela.setSelectionBehavior(
-            QtWidgets.QAbstractItemView.SelectionBehavior.SelectRows)
+            QtWidgets.QAbstractItemView.SelectionBehavior.SelectRows
+        )
         self.tabela.setSelectionMode(
-            QtWidgets.QAbstractItemView.SelectionMode.SingleSelection)
+            QtWidgets.QAbstractItemView.SelectionMode.SingleSelection
+        )
         self.tabela.horizontalHeader().setHighlightSections(False)
-        self.delegateRight = AlignDelegate(QtCore.Qt.AlignmentFlag.AlignRight | QtCore.Qt.AlignmentFlag.AlignVCenter)
-        self.tabela.horizontalHeader().setDefaultAlignment(QtCore.Qt.AlignmentFlag.AlignLeft | QtCore.Qt.AlignmentFlag.AlignVCenter)
+        self.delegateRight = AlignDelegate(
+            QtCore.Qt.AlignmentFlag.AlignRight | QtCore.Qt.AlignmentFlag.AlignVCenter
+        )
+        self.tabela.horizontalHeader().setDefaultAlignment(
+            QtCore.Qt.AlignmentFlag.AlignLeft | QtCore.Qt.AlignmentFlag.AlignVCenter
+        )
         self.tabela.verticalHeader().setVisible(False)
         self.framebotoes = QtWidgets.QFrame(self.main_frame)
         self.vlayout.addWidget(self.framebotoes)
         self.hlayoutbotoes = QtWidgets.QHBoxLayout(self.framebotoes)
         spacer = QtWidgets.QSpacerItem(
-            20, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
+            20,
+            20,
+            QtWidgets.QSizePolicy.Policy.Expanding,
+            QtWidgets.QSizePolicy.Policy.Minimum,
+        )
         self.hlayoutbotoes.addItem(spacer)
         self.botaoEditar = QtWidgets.QPushButton(self.framebotoes)
         self.botaoEditar.setFixedSize(100, 35)
-        self.botaoEditar.setObjectName('botaoprincipal')
+        self.botaoEditar.setObjectName("botaoprincipal")
         self.hlayoutbotoes.addWidget(self.botaoEditar)
         self.botaoVeiculos = QtWidgets.QPushButton(self.framebotoes)
         self.botaoVeiculos.setFixedSize(100, 35)
         self.hlayoutbotoes.addWidget(self.botaoVeiculos)
         self.botaoExcluir = QtWidgets.QPushButton(self.framebotoes)
-        self.botaoExcluir.setObjectName('excluir')
+        self.botaoExcluir.setObjectName("excluir")
         self.botaoExcluir.setFixedSize(100, 35)
         self.hlayoutbotoes.addWidget(self.botaoExcluir)
         self.setCentralWidget(self.main_frame)
@@ -128,7 +171,9 @@ class TelaConsultaCliente(QtWidgets.QMainWindow):
         self.lineEditBusca.textChanged.connect(self.buffer)
         self.comboBoxOrdenacao.currentIndexChanged.connect(self.buffer)
         self.botaoNovo.clicked.connect(lambda: self.novoCliente.emit(1))
-        self.botaoHelp.clicked.connect(lambda: help('Ajuda - Consulta por Clientes', HELPCONSULTACLIENTE))
+        self.botaoHelp.clicked.connect(
+            lambda: help("Ajuda - Consulta por Clientes", HELPCONSULTACLIENTE)
+        )
 
     def retranslateUi(self):
         _translate = QtCore.QCoreApplication.translate
@@ -149,39 +194,50 @@ class TelaConsultaCliente(QtWidgets.QMainWindow):
         self.listarClientes()
 
     def maisClientes(self, qtde):
-        clientes = self.clienteCtrl.buscarCliente(self.busca, self.linhasCarregadas+qtde, self.orderBy)
+        clientes = self.clienteCtrl.buscarCliente(
+            self.busca, self.linhasCarregadas + qtde, self.orderBy
+        )
         if not clientes:
             return
         maxLength = len(clientes)
-        remainderRows = maxLength-self.linhasCarregadas
-        rowsToFetch=min(qtde, remainderRows)
-        if rowsToFetch<=0:
+        remainderRows = maxLength - self.linhasCarregadas
+        rowsToFetch = min(qtde, remainderRows)
+        if rowsToFetch <= 0:
             return
         initLen = self.linhasCarregadas
         maxRows = self.linhasCarregadas + rowsToFetch
         while self.linhasCarregadas < maxRows:
-            if clientes[self.linhasCarregadas]['tipo']=='0': clientes[self.linhasCarregadas]['tipo'] = 'PESSOA FÍSICA'
-            elif clientes[self.linhasCarregadas]['tipo']=='1': clientes[self.linhasCarregadas]['tipo'] = 'PESSOA JURIDICA'
-            else: clientes[self.linhasCarregadas]['tipo'] = 'ESTRANGEIRO'
-            if clientes[self.linhasCarregadas]['cidade'] == None:
-                clientes[self.linhasCarregadas]['cidade'] = {'nome':None, 'uf':None}
-            queryFones = self.clienteCtrl.listarFones(clientes[self.linhasCarregadas]['idCliente'])
+            if clientes[self.linhasCarregadas]["tipo"] == "0":
+                clientes[self.linhasCarregadas]["tipo"] = "PESSOA FÍSICA"
+            elif clientes[self.linhasCarregadas]["tipo"] == "1":
+                clientes[self.linhasCarregadas]["tipo"] = "PESSOA JURIDICA"
+            else:
+                clientes[self.linhasCarregadas]["tipo"] = "ESTRANGEIRO"
+            if clientes[self.linhasCarregadas]["cidade"] is None:
+                clientes[self.linhasCarregadas]["cidade"] = {"nome": None, "uf": None}
+            queryFones = self.clienteCtrl.listarFones(
+                clientes[self.linhasCarregadas]["idCliente"]
+            )
             if queryFones:
                 fones = []
                 for fone in queryFones:
-                    fones.append(fone['fone'])
-                clientes[self.linhasCarregadas]['fones'] = (', '.join(fones))
-            else: clientes[self.linhasCarregadas]['fones'] = ''
-            queryVeiculo = self.clienteCtrl.listarVeiculos(clientes[self.linhasCarregadas]['idCliente'])
+                    fones.append(fone["fone"])
+                clientes[self.linhasCarregadas]["fones"] = ", ".join(fones)
+            else:
+                clientes[self.linhasCarregadas]["fones"] = ""
+            queryVeiculo = self.clienteCtrl.listarVeiculos(
+                clientes[self.linhasCarregadas]["idCliente"]
+            )
             if queryVeiculo:
                 nomes = []
                 for veiculo in queryVeiculo:
-                    nomes.append(': '.join([veiculo['modelo'], veiculo['placa']]))
-                clientes[self.linhasCarregadas]['veiculos'] = ', '.join(nomes)
-            else: clientes[self.linhasCarregadas]['veiculos'] = ''
-            self.linhasCarregadas+=1
-        self.model.addData(clientes[initLen:self.linhasCarregadas])
-        colunas = ['idCliente', 'tipo', 'nome', 'documento', 'fones', 'veiculos']
+                    nomes.append(": ".join([veiculo["modelo"], veiculo["placa"]]))
+                clientes[self.linhasCarregadas]["veiculos"] = ", ".join(nomes)
+            else:
+                clientes[self.linhasCarregadas]["veiculos"] = ""
+            self.linhasCarregadas += 1
+        self.model.addData(clientes[initLen : self.linhasCarregadas])
+        colunas = ["idCliente", "tipo", "nome", "documento", "fones", "veiculos"]
         self.model.colunasDesejadas(colunas)
         self.model.setRowCount(self.linhasCarregadas)
         self.model.setColumnCount(len(colunas))
@@ -190,14 +246,15 @@ class TelaConsultaCliente(QtWidgets.QMainWindow):
     def listarClientes(self):
         self.linhasCarregadas = 0
         self.model = InfiniteScrollTableModel([{}])
-        listaHeader = ['ID', 'Tipo', 'Nome', 'Documento', 'Telefones', 'Veículos']
+        listaHeader = ["ID", "Tipo", "Nome", "Documento", "Telefones", "Veículos"]
         self.model.setHorizontalHeaderLabels(listaHeader)
         self.tabela.setModel(self.model)
         self.maisClientes(50)
         if self.linhasCarregadas > 0:
             header = self.tabela.horizontalHeader()
             header.setSectionResizeMode(
-                QtWidgets.QHeaderView.ResizeMode.ResizeToContents)
+                QtWidgets.QHeaderView.ResizeMode.ResizeToContents
+            )
             header.setStretchLastSection(True)
 
     def editarCliente(self):
@@ -211,7 +268,7 @@ class TelaConsultaCliente(QtWidgets.QMainWindow):
             if linha:
                 msgBox = QtWidgets.QMessageBox()
                 msgBox.setWindowTitle("Aviso")
-                msgBox.setText('Tem certeza que deseja excluir?')
+                msgBox.setText("Tem certeza que deseja excluir?")
                 y = msgBox.addButton("Sim", QtWidgets.QMessageBox.ButtonRole.YesRole)
                 n = msgBox.addButton("Não", QtWidgets.QMessageBox.ButtonRole.NoRole)
                 y.setFixedWidth(60)
@@ -224,16 +281,17 @@ class TelaConsultaCliente(QtWidgets.QMainWindow):
                         raise Exception(r)
                     if r:
                         msg = QtWidgets.QMessageBox()
-                        msg.setWindowIcon(QtGui.QIcon('resources/logo-icon.png'))
+                        msg.setWindowIcon(QtGui.QIcon("resources/logo-icon.png"))
                         msg.setIcon(QtWidgets.QMessageBox.Icon.Information)
                         msg.setWindowTitle("Aviso")
                         msg.setText(f"Cliente excluído com sucesso!")
                         msg.exec()
                         self.listarClientes()
-                    else: raise Exception('Erro ao excluir')
+                    else:
+                        raise Exception("Erro ao excluir")
         except Exception as e:
             msg = QtWidgets.QMessageBox()
-            msg.setWindowIcon(QtGui.QIcon('resources/logo-icon.png'))
+            msg.setWindowIcon(QtGui.QIcon("resources/logo-icon.png"))
             msg.setIcon(QtWidgets.QMessageBox.Icon.Critical)
             msg.setWindowTitle("Erro")
             msg.setText(str(e))

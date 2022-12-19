@@ -1,9 +1,10 @@
+from playhouse.shortcuts import model_to_dict
+
 from model.modelo import db
 from repository.cidadeRepository import CidadeRepository
 
-from playhouse.shortcuts import model_to_dict
 
-class CidadeController():
+class CidadeController:
     def __init__(self):
         self.cidadeRep = CidadeRepository()
 
@@ -12,11 +13,11 @@ class CidadeController():
             try:
                 _listaCidades = []
                 listaCidades = self.cidadeRep.findAll()
-                if listaCidades: 
+                if listaCidades:
                     for cidade in listaCidades:
                         _listaCidades.append(model_to_dict(cidade))
                     return _listaCidades
-                else: return None
+                return None
             except Exception as e:
                 transaction.rollback()
                 return e
@@ -25,8 +26,9 @@ class CidadeController():
         with db.atomic() as transaction:
             try:
                 cidade = self.cidadeRep.findByID(id)
-                if cidade: return model_to_dict(cidade)
-                else: return None
+                if cidade:
+                    return model_to_dict(cidade)
+                return None
             except Exception as e:
                 transaction.rollback()
                 return e

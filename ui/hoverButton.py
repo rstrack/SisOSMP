@@ -1,4 +1,5 @@
-from PyQt6 import QtWidgets, QtGui, QtCore
+from PyQt6 import QtCore, QtGui, QtWidgets
+
 
 class HoverButton(QtWidgets.QPushButton):
     def __init__(self, title, icon_path, icon_path_hover, parent=None):
@@ -12,14 +13,14 @@ class HoverButton(QtWidgets.QPushButton):
         self.setIcon(self.defaultIcon)
         self.setIconSize(QtCore.QSize(self.w, self.h))
         self.installEventFilter(self)
-      
+
     def eventFilter(self, source, event):
         if event.type() == QtCore.QEvent.Type.HoverEnter:
             self.setIcon(self.hoverIcon)
             self.setIconSize(QtCore.QSize(self.w, self.h))
         elif event.type() == QtCore.QEvent.Type.HoverLeave:
             self.setIcon(self.defaultIcon)
-        
+
         return super().eventFilter(source, event)
 
     def setHelpIconSize(self, w=15, h=15):

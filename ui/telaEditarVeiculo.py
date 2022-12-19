@@ -1,20 +1,50 @@
 import re
-from PyQt6 import QtCore, QtWidgets, QtGui
-from ui.help import HELPEDITARVEICULO, help
-from ui.telaCadastroCliente import REGEXPLACA
-from ui.hoverButton import HoverButton
-from util.container import handleDeps
 
-SIGLAESTADOS = ['AC', 'AL', 'AP', 'AM', 'BA', 'CE', 'DF', 'ES', 'GO', 'MA', 'MT', 'MS',
-                'MG', 'PA', 'PB', 'PR', 'PE', 'PI', 'RJ', 'RN', 'RS', 'RO', 'RR', 'SC', 'SP', 'SE', 'TO']
+from PyQt6 import QtCore, QtGui, QtWidgets
+
+from ui.help import HELPEDITARVEICULO, help
+from ui.hoverButton import HoverButton
+from ui.telaCadastroCliente import REGEXPLACA
+from util.container import handle_deps
+
+SIGLAESTADOS = [
+    "AC",
+    "AL",
+    "AP",
+    "AM",
+    "BA",
+    "CE",
+    "DF",
+    "ES",
+    "GO",
+    "MA",
+    "MT",
+    "MS",
+    "MG",
+    "PA",
+    "PB",
+    "PR",
+    "PE",
+    "PI",
+    "RJ",
+    "RN",
+    "RS",
+    "RO",
+    "RR",
+    "SC",
+    "SP",
+    "SE",
+    "TO",
+]
 
 
 class TelaEditarVeiculo(QtWidgets.QMainWindow):
     paraTelaConsulta = QtCore.pyqtSignal(int)
+
     def __init__(self):
         super(TelaEditarVeiculo, self).__init__()
-        self.clienteCtrl = handleDeps.getDep('CLIENTECTRL')
-        self.marcaCtrl = handleDeps.getDep('MARCACTRL')
+        self.clienteCtrl = handle_deps.getDep("CLIENTECTRL")
+        self.marcaCtrl = handle_deps.getDep("MARCACTRL")
         self.VeiculoID = None
         self.setupUi()
 
@@ -24,24 +54,38 @@ class TelaEditarVeiculo(QtWidgets.QMainWindow):
         self.main_frame.setObjectName("main_frame")
         self.hlayout = QtWidgets.QHBoxLayout(self.main_frame)
         spacer = QtWidgets.QSpacerItem(
-            20, 10, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Preferred)
+            20,
+            10,
+            QtWidgets.QSizePolicy.Policy.Minimum,
+            QtWidgets.QSizePolicy.Policy.Preferred,
+        )
         self.hlayout.addItem(spacer)
         self.framegeral = QtWidgets.QFrame(self.main_frame)
-        self.framegeral.setSizePolicy(QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Preferred)
-        self.framegeral.setMaximumWidth(int(QtGui.QGuiApplication.primaryScreen().size().width()*0.65) 
-            if QtGui.QGuiApplication.primaryScreen().size().width()> 1280 else QtGui.QGuiApplication.primaryScreen().size().width())
+        self.framegeral.setSizePolicy(
+            QtWidgets.QSizePolicy.Policy.Expanding,
+            QtWidgets.QSizePolicy.Policy.Preferred,
+        )
+        self.framegeral.setMaximumWidth(
+            int(QtGui.QGuiApplication.primaryScreen().size().width() * 0.65)
+            if QtGui.QGuiApplication.primaryScreen().size().width() > 1280
+            else QtGui.QGuiApplication.primaryScreen().size().width()
+        )
         self.hlayout.addWidget(self.framegeral)
         spacer = QtWidgets.QSpacerItem(
-            20, 10, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Preferred)
+            20,
+            10,
+            QtWidgets.QSizePolicy.Policy.Minimum,
+            QtWidgets.QSizePolicy.Policy.Preferred,
+        )
         self.hlayout.addItem(spacer)
         self.vlayout = QtWidgets.QVBoxLayout(self.framegeral)
-        self.vlayout.setContentsMargins(0,0,0,0)
+        self.vlayout.setContentsMargins(0, 0, 0, 0)
         self.vlayout.setSpacing(0)
         # titulo
         self.frameTitulo = QtWidgets.QFrame(self.framegeral)
         self.vlayout.addWidget(self.frameTitulo)
         self.hlayouttitulo = QtWidgets.QHBoxLayout(self.frameTitulo)
-        self.hlayouttitulo.setContentsMargins(0,0,0,0)
+        self.hlayouttitulo.setContentsMargins(0, 0, 0, 0)
         self.hlayouttitulo.setSpacing(0)
         self.hlayouttitulo.setAlignment(QtCore.Qt.AlignmentFlag.AlignHCenter)
         self.labelTitulo = QtWidgets.QLabel(self.frameTitulo)
@@ -49,10 +93,15 @@ class TelaEditarVeiculo(QtWidgets.QMainWindow):
         self.labelTitulo.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
         self.labelTitulo.setObjectName("titulo")
         self.hlayouttitulo.addWidget(self.labelTitulo)
-        self.botaoHelp = HoverButton("", "./resources/help-icon1.png", "./resources/help-icon2.png", self.frameTitulo)
-        self.botaoHelp.setToolTip('Ajuda')
-        self.botaoHelp.setObjectName('botaohelp')
-        self.botaoHelp.setHelpIconSize(20,20)
+        self.botaoHelp = HoverButton(
+            "",
+            "./resources/help-icon1.png",
+            "./resources/help-icon2.png",
+            self.frameTitulo,
+        )
+        self.botaoHelp.setToolTip("Ajuda")
+        self.botaoHelp.setObjectName("botaohelp")
+        self.botaoHelp.setHelpIconSize(20, 20)
         self.hlayouttitulo.addWidget(self.botaoHelp)
         self.framedados = QtWidgets.QFrame(self.main_frame)
         self.glayoutp = QtWidgets.QGridLayout(self.framedados)
@@ -86,7 +135,11 @@ class TelaEditarVeiculo(QtWidgets.QMainWindow):
         self.gridLayout4.setColumnStretch(2, 1)
         self.glayoutp.addWidget(self.groupBoxVeiculo, 0, 0, 1, -1)
         spacerItem4 = QtWidgets.QSpacerItem(
-            20, 10, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Maximum)
+            20,
+            10,
+            QtWidgets.QSizePolicy.Policy.Minimum,
+            QtWidgets.QSizePolicy.Policy.Maximum,
+        )
         self.glayoutp.addItem(spacerItem4)
         self.vlayout.addWidget(self.framedados)
         # botoes
@@ -95,18 +148,26 @@ class TelaEditarVeiculo(QtWidgets.QMainWindow):
         self.labelLegenda = QtWidgets.QLabel(self.framebotoes)
         self.hlayout4.addWidget(self.labelLegenda)
         spacerItem5 = QtWidgets.QSpacerItem(
-            40, 20, QtWidgets.QSizePolicy.Policy.Expanding, QtWidgets.QSizePolicy.Policy.Minimum)
+            40,
+            20,
+            QtWidgets.QSizePolicy.Policy.Expanding,
+            QtWidgets.QSizePolicy.Policy.Minimum,
+        )
         self.hlayout4.addItem(spacerItem5)
         self.botaoSalvar = QtWidgets.QPushButton(self.framebotoes)
         self.botaoSalvar.setMinimumSize(100, 35)
-        self.botaoSalvar.setObjectName('botaoprincipal')
+        self.botaoSalvar.setObjectName("botaoprincipal")
         self.hlayout4.addWidget(self.botaoSalvar)
         self.botaoCancelar = QtWidgets.QPushButton(self.framebotoes)
         self.botaoCancelar.setMinimumSize(100, 35)
         self.hlayout4.addWidget(self.botaoCancelar)
         self.vlayout.addWidget(self.framebotoes)
         spacerItem6 = QtWidgets.QSpacerItem(
-            40, 20, QtWidgets.QSizePolicy.Policy.Minimum, QtWidgets.QSizePolicy.Policy.Expanding)
+            40,
+            20,
+            QtWidgets.QSizePolicy.Policy.Minimum,
+            QtWidgets.QSizePolicy.Policy.Expanding,
+        )
         self.glayoutp.addItem(spacerItem6)
         self.setCentralWidget(self.main_frame)
 
@@ -114,7 +175,9 @@ class TelaEditarVeiculo(QtWidgets.QMainWindow):
 
         self.botaoCancelar.clicked.connect(self.cancelarEdicao)
         self.botaoSalvar.clicked.connect(self.editar)
-        self.botaoHelp.clicked.connect(lambda: help('Ajuda - Editar Veículo', HELPEDITARVEICULO))
+        self.botaoHelp.clicked.connect(
+            lambda: help("Ajuda - Editar Veículo", HELPEDITARVEICULO)
+        )
 
     def retranslateUi(self):
         _translate = QtCore.QCoreApplication.translate
@@ -129,31 +192,45 @@ class TelaEditarVeiculo(QtWidgets.QMainWindow):
         self.botaoSalvar.setText(_translate("MainWindow", "Salvar"))
 
     def getDadosVeiculo(self):
-        if len(list(filter(lambda dados: dados.text(), self.groupBoxVeiculo.findChildren(QtWidgets.QLineEdit)))) == 0:
+        if (
+            len(
+                list(
+                    filter(
+                        lambda dados: dados.text(),
+                        self.groupBoxVeiculo.findChildren(QtWidgets.QLineEdit),
+                    )
+                )
+            )
+            == 0
+        ):
             return None
         dict = {}
         if self.comboBoxMarca.currentText():
-            dict['marca'] = self.comboBoxMarca.currentText().title()
+            dict["marca"] = self.comboBoxMarca.currentText().title()
         else:
-            raise Exception('Marca obrigatória!')
+            raise Exception("Marca obrigatória!")
         if self.lineEditModelo.text():
-            dict['modelo'] = self.lineEditModelo.text()[0].upper() + self.lineEditModelo.text()[1:]
+            dict["modelo"] = (
+                self.lineEditModelo.text()[0].upper() + self.lineEditModelo.text()[1:]
+            )
         else:
-            raise Exception('Modelo obrigatório!')
+            raise Exception("Modelo obrigatório!")
         if self.lineEditPlaca.text():
             if not re.match(REGEXPLACA, self.lineEditPlaca.text()):
-                raise Exception('Placa inválida!')
-            dict['placa'] = self.lineEditPlaca.text().upper()
+                raise Exception("Placa inválida!")
+            dict["placa"] = self.lineEditPlaca.text().upper()
         else:
-            raise Exception('Placa obrigatória!')
+            raise Exception("Placa obrigatória!")
         if self.lineEditAno.text():
             if self.lineEditAno.text().isnumeric():
                 if int(self.lineEditAno.text()) > 1900:
-                    dict['ano'] = self.lineEditAno.text()
-                else: raise Exception('Ano do veículo inválido!')
-            else: raise Exception('Ano do veículo inválido!')
+                    dict["ano"] = self.lineEditAno.text()
+                else:
+                    raise Exception("Ano do veículo inválido!")
+            else:
+                raise Exception("Ano do veículo inválido!")
         else:
-            dict['ano'] = None
+            dict["ano"] = None
         return dict
 
     def setVeiculo(self, marca, modelo, placa, ano=None):
@@ -161,17 +238,19 @@ class TelaEditarVeiculo(QtWidgets.QMainWindow):
         self.lineEditAno.setText(ano)
         self.lineEditPlaca.setText(placa)
         self.comboBoxMarca.setCurrentIndex(
-            self.comboBoxMarca.findText(marca, QtCore.Qt.MatchFlag.MatchExactly))
+            self.comboBoxMarca.findText(marca, QtCore.Qt.MatchFlag.MatchExactly)
+        )
 
     def setMarcas(self):
         currentText = self.comboBoxMarca.currentText()
         self.comboBoxMarca.clear()
         marcas = self.marcaCtrl.listarMarcas()
         for marca in marcas:
-            self.comboBoxMarca.addItem(marca['nome'])
+            self.comboBoxMarca.addItem(marca["nome"])
         self.comboBoxMarca.setCurrentIndex(
-            self.comboBoxMarca.findText(currentText, QtCore.Qt.MatchFlag.MatchExactly))
-    
+            self.comboBoxMarca.findText(currentText, QtCore.Qt.MatchFlag.MatchExactly)
+        )
+
     def editar(self):
         try:
             veiculo = self.getDadosVeiculo()
@@ -179,15 +258,15 @@ class TelaEditarVeiculo(QtWidgets.QMainWindow):
             if isinstance(r, Exception):
                 raise Exception(r)
             msg = QtWidgets.QMessageBox()
-            msg.setWindowIcon(QtGui.QIcon('resources/logo-icon.png'))
+            msg.setWindowIcon(QtGui.QIcon("resources/logo-icon.png"))
             msg.setIcon(QtWidgets.QMessageBox.Icon.Information)
             msg.setWindowTitle("Aviso")
-            msg.setText('Veiculo editado com sucesso!')
+            msg.setText("Veiculo editado com sucesso!")
             msg.exec()
             self.paraTelaConsulta.emit(1)
         except Exception as e:
             msg = QtWidgets.QMessageBox()
-            msg.setWindowIcon(QtGui.QIcon('resources/logo-icon.png'))
+            msg.setWindowIcon(QtGui.QIcon("resources/logo-icon.png"))
             msg.setIcon(QtWidgets.QMessageBox.Icon.Critical)
             msg.setWindowTitle("Erro")
             msg.setText(str(e))
@@ -196,7 +275,7 @@ class TelaEditarVeiculo(QtWidgets.QMainWindow):
     def cancelarEdicao(self):
         msgBox = QtWidgets.QMessageBox()
         msgBox.setWindowTitle("Aviso")
-        msgBox.setText('Deseja cancelar a edição? Alterações serão perdidas')
+        msgBox.setText("Deseja cancelar a edição? Alterações serão perdidas")
         y = msgBox.addButton("Sim", QtWidgets.QMessageBox.ButtonRole.YesRole)
         n = msgBox.addButton("Não", QtWidgets.QMessageBox.ButtonRole.NoRole)
         y.setFixedWidth(60)
@@ -205,7 +284,7 @@ class TelaEditarVeiculo(QtWidgets.QMainWindow):
         if msgBox.clickedButton() == y:
             self.VeiculoID = None
             self.paraTelaConsulta.emit(1)
-    
+
     def limparCampos(self):
         for lineedit in self.framedados.findChildren(QtWidgets.QLineEdit):
             lineedit.clear()
@@ -215,4 +294,9 @@ class TelaEditarVeiculo(QtWidgets.QMainWindow):
         self.setMarcas()
         self.VeiculoID = id
         veiculo = self.clienteCtrl.getVeiculo(id)
-        self.setVeiculo(veiculo['marca']['nome'], veiculo['modelo'], veiculo['placa'], veiculo['ano'])
+        self.setVeiculo(
+            veiculo["marca"]["nome"],
+            veiculo["modelo"],
+            veiculo["placa"],
+            veiculo["ano"],
+        )
