@@ -2,7 +2,7 @@ teste.py
 dados.py
 gerador.py
 icon-exe.ico
-
+poetry.lock
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
