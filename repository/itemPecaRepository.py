@@ -2,36 +2,40 @@ from model.modelo import ItemPeca
 
 
 class ItemPecaRepository:
-    def __init__(self) -> None:
-        pass
-
-    def save(self, itemPeca: dict):
+    @staticmethod
+    def save( itemPeca: dict):
         return ItemPeca.create(**itemPeca)
-
-    def update(self, itemPeca: dict):
+    
+    @staticmethod
+    def update( itemPeca: dict):
         _itemPeca = ItemPeca(**itemPeca)
         _itemPeca.save()
         return _itemPeca
 
-    def delete(self, id):
+    @staticmethod
+    def delete( id):
         return ItemPeca.delete_by_id(id)
 
-    def findAll(self):
+    @staticmethod
+    def findAll():
         return ItemPeca.select()
 
-    def findByOrcamento(self, orcamento):
+    @staticmethod
+    def findByOrcamento( orcamento):
         itemPecas = ItemPeca.select().where(ItemPeca.orcamento == orcamento)
         if itemPecas:
             return itemPecas
         return None
 
-    def findByPeca(self, peca):
+    @staticmethod
+    def findByPeca( peca):
         itemPecas = ItemPeca.select().where(ItemPeca.peca == peca)
         if itemPecas:
             return itemPecas
         return None
 
-    def findByOrcamentoAndPeca(self, orcamento, peca):
+    @staticmethod
+    def findByOrcamentoAndPeca( orcamento, peca):
         itemPeca = ItemPeca.select().where(
             (ItemPeca.orcamento == orcamento) & (ItemPeca.peca == peca)
         )

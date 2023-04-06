@@ -1,9 +1,10 @@
 from PyQt6 import QtCore, QtGui, QtWidgets
 
+from controller.pecaController import PecaController
+
 from ui.help import HELPCONSULTAPECA, help
 from ui.hoverButton import HoverButton
 from ui.infiniteScroll import AlignDelegate, InfiniteScrollTableModel
-from util.container import handle_deps
 
 
 class TelaConsultaPeca(QtWidgets.QMainWindow):
@@ -11,7 +12,6 @@ class TelaConsultaPeca(QtWidgets.QMainWindow):
 
     def __init__(self):
         super(TelaConsultaPeca, self).__init__()
-        self.pecaCtrl = handle_deps.getDep("PECACTRL")
         self.busca = ""
         self.orderBy = 0
         self.setupUi()
@@ -179,7 +179,7 @@ class TelaConsultaPeca(QtWidgets.QMainWindow):
         self.listarPecas()
 
     def maisPecas(self, qtde):
-        pecas = self.pecaCtrl.buscarPeca(
+        pecas = PecaController.buscarPeca(
             self.busca, self.linhasCarregadas + qtde, self.orderBy
         )
         if not pecas:
@@ -240,7 +240,7 @@ class TelaConsultaPeca(QtWidgets.QMainWindow):
                 msgBox.exec()
                 if msgBox.clickedButton() == y:
                     id = self.tabela.model().index(linha[0].row(), 0).data()
-                    r = self.pecaCtrl.excluirPeca(id)
+                    r = PecaController.excluirPeca(id)
                     if isinstance(r, Exception):
                         raise Exception(r)
                     elif not r:

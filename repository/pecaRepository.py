@@ -2,33 +2,37 @@ from model.modelo import Peca
 
 
 class PecaRepository:
-    def __init__(self) -> None:
-        pass
-
-    def save(self, peca: dict):
+    @staticmethod
+    def save(peca: dict):
         return Peca.create(**peca)
 
-    def update(self, peca: dict):
+    @staticmethod
+    def update(peca: dict):
         _peca = Peca(**peca)
         _peca.save()
         return _peca
 
-    def delete(self, id):
+    @staticmethod
+    def delete(id):
         return Peca.delete_by_id(id)
 
-    def findAll(self):
+    @staticmethod
+    def findAll():
         return Peca.select().order_by(Peca.descricao)
 
-    def findByID(self, id):
+    @staticmethod
+    def findByID(id):
         return Peca.select().where(Peca.idPeca == id).get()
 
-    def findByDescricao(self, desc):
+    @staticmethod
+    def findByDescricao(desc):
         _peca = Peca.select().where(Peca.descricao == desc)
         if _peca:
             return _peca.get()
         return None
 
-    def findByInput(self, input, limit=None, orderBy=None):
+    @staticmethod
+    def findByInput(input, limit=None, orderBy=None):
         match orderBy:
             case 0:
                 order_by = Peca.descricao

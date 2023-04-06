@@ -1,6 +1,6 @@
 from PyQt6 import QtCore, QtGui, QtWidgets
 
-from util.container import handle_deps
+from controller.marcaController import MarcaController
 
 
 class TelaEditarMarca(QtWidgets.QMainWindow):
@@ -8,7 +8,6 @@ class TelaEditarMarca(QtWidgets.QMainWindow):
 
     def __init__(self):
         super(TelaEditarMarca, self).__init__()
-        self.marcaCtrl = handle_deps.getDep("MARCACTRL")
         self.setupUi()
 
     def setupUi(self):
@@ -55,7 +54,7 @@ class TelaEditarMarca(QtWidgets.QMainWindow):
 
     def render(self, idMarca):
         self.marcaID = idMarca
-        marca = self.marcaCtrl.getMarca(idMarca)
+        marca = MarcaController.getMarca(idMarca)
         self.lineEdit.setText(marca["nome"])
         self.show()
 
@@ -64,7 +63,7 @@ class TelaEditarMarca(QtWidgets.QMainWindow):
             if not self.lineEdit.text():
                 raise Exception("Insira a marca!")
             nomeMarca = self.lineEdit.text()
-            r = self.marcaCtrl.editarMarca(self.marcaID, {"nome": nomeMarca})
+            r = MarcaController.editarMarca(self.marcaID, {"nome": nomeMarca})
             if isinstance(r, Exception):
                 raise Exception(r)
             msg = QtWidgets.QMessageBox()

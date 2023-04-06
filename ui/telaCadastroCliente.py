@@ -3,9 +3,14 @@ import threading
 
 from PyQt6 import QtCore, QtGui, QtWidgets
 
+from controller.cidadeController import CidadeController
+from controller.clienteController import ClienteController
+from controller.marcaController import MarcaController
+
 from ui.help import HELPCADASTROCLIENTE, help
 from ui.hoverButton import HoverButton
-from util.container import handle_deps
+
+from util.buscaCEP import BuscaCEP
 
 SIGLAESTADOS = [
     "AC",
@@ -43,10 +48,6 @@ REGEXPLACA = "([A-Za-z][A-Za-z][A-Za-z0-9][0-9][A-Za-z0-9][A-Za-z0-9][A-Za-z0-9]
 class TelaCadastroCliente(QtWidgets.QMainWindow):
     def __init__(self):
         super(TelaCadastroCliente, self).__init__()
-        self.clienteCtrl = handle_deps.getDep("CLIENTECTRL")
-        self.cidadeCtrl = handle_deps.getDep("CIDADECTRL")
-        self.marcaCtrl = handle_deps.getDep("MARCACTRL")
-        self.buscaCEP = handle_deps.getDep("CEP")
         self.setupUi()
 
     def setupUi(self):
@@ -313,16 +314,16 @@ class TelaCadastroCliente(QtWidgets.QMainWindow):
             # se tem valores escritos nos campos de cliente e veiculo, tenta salvar os dois
             if cliente and veiculo:
                 fones = self.getFones()
-                r = self.clienteCtrl.salvarClienteVeiculo(cliente, fones, veiculo)
+                r = ClienteController.salvarClienteVeiculo(cliente, fones, veiculo)
                 string = "Cliente e Veiculo cadastrados com sucesso!"
             # se somente possuem dados sobre cliente:
             elif cliente:
                 fones = self.getFones()
-                r = self.clienteCtrl.salvarCliente(cliente, fones)
+                r = ClienteController.salvarCliente(cliente, fones)
                 string = "Cliente cadastrado com sucesso!"
             # se somente possuem dados sobre veiculo:
             elif veiculo:
-                r = self.clienteCtrl.salvarVeiculo(veiculo)
+                r = ClienteController.salvarVeiculo(veiculo)
                 string = "Veiculo cadastrado com sucesso!"
             else:
                 raise Exception("Campos vazios!")
@@ -504,7 +505,7 @@ class TelaCadastroCliente(QtWidgets.QMainWindow):
     def setMarcas(self):
         currentText = self.comboBoxMarca.currentText()
         self.comboBoxMarca.clear()
-        marcas = self.marcaCtrl.listarMarcas()
+        marcas = MarcaController.listarMarcas()
         for marca in marcas:
             self.comboBoxMarca.addItem(marca["nome"])
         self.comboBoxMarca.setCurrentIndex(
@@ -512,7 +513,7 @@ class TelaCadastroCliente(QtWidgets.QMainWindow):
         )
 
     def setCompleters(self):
-        cidades = self.cidadeCtrl.listarCidades()
+        cidades = CidadeController.listarCidades()
         listaCidades = []
         if cidades:
             for cidade in cidades:
@@ -529,7 +530,7 @@ class TelaCadastroCliente(QtWidgets.QMainWindow):
         t.start()
 
     def threadCEP(self, cep):
-        dados = self.buscaCEP.buscarCEP(cep)
+        dados = BuscaCEP.buscarCEP(cep)
         if dados is None:
             return
         if "erro" in dados:

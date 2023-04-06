@@ -4,39 +4,44 @@ from model.modelo import Cliente, Marca, Veiculo, Veiculo_Cliente
 
 
 class VeiculoRepository:
-    def __init__(self):
-        pass
-
-    def save(self, veiculo: dict):
+    @staticmethod
+    def save(veiculo: dict):
         return Veiculo.create(**veiculo)
 
-    def update(self, veiculo: dict):
+    @staticmethod
+    def update(veiculo: dict):
         _veiculo = Veiculo(**veiculo)
         _veiculo.save()
         return _veiculo
 
-    def delete(self, id):
+    @staticmethod
+    def delete(id):
         return Veiculo.delete_by_id(id)
 
-    def findAll(self):
+    @staticmethod
+    def findAll():
         return Veiculo.select().join(Marca).order_by(Marca.nome, Veiculo.modelo)
 
-    def findByID(self, id):
+    @staticmethod
+    def findByID(id):
         return Veiculo.select().where(Veiculo.idVeiculo == id).get()
 
-    def findByMarca(self, idMarca):
+    @staticmethod
+    def findByMarca(idMarca):
         veiculo = Veiculo.select().where(Veiculo.marca == idMarca)
         if veiculo:
             return veiculo
         return None
 
-    def findByPlaca(self, placa):
+    @staticmethod
+    def findByPlaca(placa):
         veiculo = Veiculo.select().where(Veiculo.placa == placa)
         if veiculo:
             return veiculo.get()
         return None
 
-    def findByInput(self, input, limit=None, orderBy=None):
+    @staticmethod
+    def findByInput(input, limit=None, orderBy=None):
         match orderBy:
             case 0:
                 order_by1 = Marca.nome

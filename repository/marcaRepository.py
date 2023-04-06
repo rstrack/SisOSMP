@@ -2,27 +2,30 @@ from model.modelo import Marca
 
 
 class MarcaRepository:
-    def __init__(self):
-        pass
-
-    def save(self, marca):
+    @staticmethod
+    def save(marca):
         return Marca.create(**marca)
-
-    def update(self, marca):
+    
+    @staticmethod
+    def update(marca):
         _marca = Marca(**marca)
         _marca.save()
         return _marca
 
-    def delete(self, id):
+    @staticmethod
+    def delete(id):
         return Marca.delete_by_id(id)
 
-    def findAll(self):
+    @staticmethod
+    def findAll():
         return Marca.select().order_by(Marca.nome)
 
-    def findByID(self, id):
+    @staticmethod
+    def findByID(id):
         return Marca.select().where(Marca.idMarca == id).get()
 
-    def findByNome(self, nome):
+    @staticmethod
+    def findByNome(nome):
         marca = Marca.select().where(Marca.nome == nome)
         if marca:
             return marca.get()

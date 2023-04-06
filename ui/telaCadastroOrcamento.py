@@ -5,13 +5,21 @@ from decimal import Decimal
 
 from PyQt6 import QtCore, QtGui, QtWidgets
 
+from controller.cidadeController import CidadeController
+from controller.clienteController import ClienteController
+from controller.marcaController import MarcaController
+from controller.orcamentoController import OrcamentoController
+from controller.pecaController import PecaController
+from controller.servicoController import ServicoController
+
 from ui.help import HELPCADASTROORCAMENTO, help
 from ui.hoverButton import HoverButton
 from ui.messageBox import MessageBox
 from ui.telaBuscaCliente import TelaBuscaCliente
 from ui.telaBuscaVeiculo import TelaBuscaVeiculo
 from ui.telaCadastroCliente import REGEXPLACA
-from util.container import handle_deps
+
+from util.buscaCEP import BuscaCEP
 from util.gerar_pdf import GeraPDF
 
 SIGLAESTADOS = [
@@ -66,13 +74,6 @@ UNIDADES = [
 class TelaCadastroOrcamento(QtWidgets.QMainWindow):
     def __init__(self):
         super(TelaCadastroOrcamento, self).__init__()
-        self.orcamentoCtrl = handle_deps.getDep("ORCAMENTOCTRL")
-        self.clienteCtrl = handle_deps.getDep("CLIENTECTRL")
-        self.cidadeCtrl = handle_deps.getDep("CIDADECTRL")
-        self.marcaCtrl = handle_deps.getDep("MARCACTRL")
-        self.pecaCtrl = handle_deps.getDep("PECACTRL")
-        self.servicoCtrl = handle_deps.getDep("SERVICOCTRL")
-        self.buscaCEP = handle_deps.getDep("CEP")
         self.clienteSelected = None
         self.veiculoSelected = None
         self.valorTotal = 0
@@ -767,7 +768,7 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
     def setMarcas(self):
         currentText = self.comboBoxMarca.currentText()
         self.comboBoxMarca.clear()
-        marcas = self.marcaCtrl.listarMarcas()
+        marcas = MarcaController.listarMarcas()
         for marca in marcas:
             self.comboBoxMarca.addItem(marca["nome"])
         self.comboBoxMarca.setCurrentIndex(
@@ -775,9 +776,9 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
         )
 
     def setCompleters(self):
-        pecas = self.pecaCtrl.listarPecas()
-        servicos = self.servicoCtrl.listarServicos()
-        cidades = self.cidadeCtrl.listarCidades()
+        pecas = PecaController.listarPecas()
+        servicos = ServicoController.listarServicos()
+        cidades = CidadeController.listarCidades()
         listaPecas = []
         listaServicos = []
         listaCidades = []
@@ -1046,14 +1047,14 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
         )
 
     def buscarPeca(self, lineEditDesc, comboBoxUn, lineEditValor):
-        qPeca = self.pecaCtrl.getPecaByDescricao(lineEditDesc.text())
+        qPeca = PecaController.getPecaByDescricao(lineEditDesc.text())
         if qPeca:
             comboBoxUn.setCurrentText(qPeca["un"])
             lineEditValor.setText("{:.2f}".format(qPeca["valor"]).replace(".", ",", 1))
             self.setValor()
 
     def buscarServico(self, lineEditDesc, lineEditValor):
-        qServico = self.servicoCtrl.getServicoByDescricao(lineEditDesc.text())
+        qServico = ServicoController.getServicoByDescricao(lineEditDesc.text())
         if qServico:
             lineEditValor.setText(
                 "{:.2f}".format(qServico["valor"]).replace(".", ",", 1)
@@ -1070,7 +1071,7 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
             servicos = self.getServicos()
             orcamento = self.getDadosOrcamento()
             orcamento["valorTotal"] = round(self.valorTotal, 2)
-            r = self.orcamentoCtrl.salvarOrcamento(
+            r = OrcamentoController.salvarOrcamento(
                 cliente,
                 fones,
                 self.clienteSelected,
@@ -1108,23 +1109,23 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
             id = self.salvarOrcamento()
             if isinstance(id, Exception):
                 return
-            orcamento = self.orcamentoCtrl.getOrcamento(id)
-            fones = self.clienteCtrl.listarFones(orcamento["cliente"]["idCliente"])
+            orcamento = OrcamentoController.getOrcamento(id)
+            fones = ClienteController.listarFones(orcamento["cliente"]["idCliente"])
             if fones:
                 fones = list(fones)
-            itemPecas = self.orcamentoCtrl.listarItemPecas(orcamento["idOrcamento"])
+            itemPecas = OrcamentoController.listarItemPecas(orcamento["idOrcamento"])
             if itemPecas:
                 for item in itemPecas:
-                    peca = self.pecaCtrl.getPeca(item["peca"])
+                    peca = PecaController.getPeca(item["peca"])
                     item["descricao"] = peca["descricao"]
                     item["un"] = peca["un"]
                 itemPecas = list(itemPecas)
-            itemServicos = self.orcamentoCtrl.listarItemServicos(
+            itemServicos = OrcamentoController.listarItemServicos(
                 orcamento["idOrcamento"]
             )
             if itemServicos:
                 for item in itemServicos:
-                    item["descricao"] = self.servicoCtrl.getServico(item["servico"])[
+                    item["descricao"] = ServicoController.getServico(item["servico"])[
                         "descricao"
                     ]
                 itemServicos = list(itemServicos)
@@ -1160,9 +1161,9 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
         linha = self.telaCliente.tabela.selectionModel().selectedRows()
         if linha:
             id = self.telaCliente.tabela.model().index(linha[0].row(), 0).data()
-            cliente = self.clienteCtrl.getCliente(id)
+            cliente = ClienteController.getCliente(id)
             listaFones = [None, None]
-            fones = self.clienteCtrl.listarFones(cliente["idCliente"])
+            fones = ClienteController.listarFones(cliente["idCliente"])
             if fones:
                 for x in range(len(fones)):
                     listaFones[x] = fones[x]["fone"]
@@ -1189,7 +1190,7 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
             )
             self.clienteSelected = id
             self.checkboxNovoCliente.setChecked(False)
-            veiculos = self.clienteCtrl.listarVeiculos(cliente["idCliente"])
+            veiculos = ClienteController.listarVeiculos(cliente["idCliente"])
             if veiculos:
                 if len(veiculos) == 1:
                     self.setVeiculo(
@@ -1211,7 +1212,7 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
         linha = self.telaVeiculo.tabela.selectionModel().selectedRows()
         if linha:
             id = self.telaVeiculo.tabela.model().index(linha[0].row(), 0).data()
-            veiculo = self.clienteCtrl.getVeiculo(id)
+            veiculo = ClienteController.getVeiculo(id)
             self.setVeiculo(
                 veiculo["marca"]["nome"],
                 veiculo["modelo"],
@@ -1230,7 +1231,7 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
         t.start()
 
     def threadCEP(self, cep):
-        dados = self.buscaCEP.buscarCEP(cep)
+        dados = BuscaCEP.buscarCEP(cep)
         if dados is None:
             return
         if "erro" in dados:

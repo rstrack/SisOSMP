@@ -2,12 +2,6 @@ import sys
 
 from PyQt6 import QtCore, QtGui, QtWidgets
 
-from controller.cidadeController import CidadeController
-from controller.clienteController import ClienteController
-from controller.marcaController import MarcaController
-from controller.orcamentoController import OrcamentoController
-from controller.pecaController import PecaController
-from controller.servicoController import ServicoController
 from ui.telaCadastroCliente import TelaCadastroCliente
 from ui.telaCadastroOrcamento import TelaCadastroOrcamento
 from ui.telaCadastroPeca import TelaCadastroPeca
@@ -25,8 +19,6 @@ from ui.telaEditarPeca import TelaEditarPeca
 from ui.telaEditarServico import TelaEditarServico
 from ui.telaEditarVeiculo import TelaEditarVeiculo
 from ui.telaInicial import TelaInicial
-from util.buscaCEP import BuscaCEP
-from util.container import handle_deps
 
 
 # Classe que instancia views e controllers e faz conexão entre objetos
@@ -47,7 +39,6 @@ class APP:
         font = QtGui.QFont("Helvetica")
         self.app.setFont(font)
         self.app.setWindowIcon(QtGui.QIcon("resources/logo-icon.png"))
-        self.setDeps()
         self.telaInicio = TelaInicial()
         self.telaInicio.setStyle(QtWidgets.QApplication.setStyle("Fusion"))
         self.telaInicio.setStyleSheet(style)
@@ -90,23 +81,6 @@ class APP:
         self.telaInicio.stackedWidget.addWidget(self.telaEditarOrcamento)
         self.telaInicio.stackedWidget.addWidget(self.telaEditarOS)
         self.initConnections()
-
-    # função que instancia uma unica vez cada controller, que podem ser acessados onde necessário
-    def setDeps(self):
-        pecaController = PecaController()
-        handle_deps.setDep("PECACTRL", pecaController)
-        servicoController = ServicoController()
-        handle_deps.setDep("SERVICOCTRL", servicoController)
-        clienteController = ClienteController()
-        handle_deps.setDep("CLIENTECTRL", clienteController)
-        orcamentoController = OrcamentoController()
-        handle_deps.setDep("ORCAMENTOCTRL", orcamentoController)
-        marcaController = MarcaController()
-        handle_deps.setDep("MARCACTRL", marcaController)
-        cidadeController = CidadeController()
-        handle_deps.setDep("CIDADECTRL", cidadeController)
-        buscaCEP = BuscaCEP()
-        handle_deps.setDep("CEP", buscaCEP)
 
     def initConnections(self):
         # conectando botões do menu

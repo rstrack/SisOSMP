@@ -4,33 +4,37 @@ from model.modelo import Cliente, Fone, Veiculo, Veiculo_Cliente
 
 
 class ClienteRepository:
-    def __init__(self):
-        pass
-
-    def save(self, cliente):
+    @staticmethod
+    def save(cliente):
         return Cliente.create(**cliente)
 
-    def update(self, cliente: dict):
+    @staticmethod
+    def update(cliente: dict):
         _cliente = Cliente(**cliente)
         _cliente.save()
         return _cliente
 
-    def delete(self, id):
+    @staticmethod
+    def delete(id):
         return Cliente.delete_by_id(id)
 
-    def findAll(self, limit=None):
+    @staticmethod
+    def findAll(limit=None):
         return Cliente.select().order_by(Cliente.nome).limit(limit)
 
-    def findByID(self, id):
+    @staticmethod
+    def findByID(id):
         return Cliente.select().where(Cliente.idCliente == id).get()
 
-    def findByDocumento(self, documento):
+    @staticmethod
+    def findByDocumento(documento):
         cliente = Cliente.select().where(Cliente.documento == documento)
         if cliente:
             return cliente.get()
         return None
 
-    def findByInput(self, input, limit=None, orderBy=None):
+    @staticmethod
+    def findByInput(input, limit=None, orderBy=None):
         match orderBy:
             case 0:
                 order_by = Cliente.nome

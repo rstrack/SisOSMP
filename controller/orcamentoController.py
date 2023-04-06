@@ -15,23 +15,10 @@ from repository.veiculoRepository import VeiculoRepository
 
 
 class OrcamentoController:
-    def __init__(self):
-        self.orcamentoRep = OrcamentoRepository()
-        self.cidadeRep = CidadeRepository()
-        self.clienteRep = ClienteRepository()
-        self.foneRep = FoneRepository()
-        self.marcaRep = MarcaRepository()
-        self.veiculoRep = VeiculoRepository()
-        self.veiculoClienteRep = VeiculoClienteRepository()
-        self.pecaRep = PecaRepository()
-        self.itemPecaRep = ItemPecaRepository()
-        self.servicoRep = ServicoRepository()
-        self.itemServicoRep = ItemServicoRepository()
-
     # salva um orçamento e dependencias caso necessário. Para maior praticidade, também atualiza campos de clientes e veiculos selecionados
+    @staticmethod
     def salvarOrcamento(
-        self,
-        cliente: dict,
+                cliente: dict,
         fonesTela: list,
         clienteSel,
         veiculo: dict,
@@ -44,62 +31,62 @@ class OrcamentoController:
             try:
                 # cliente
                 if cliente["cidade"] is not None:
-                    cidade = self.cidadeRep.findCidadeByNomeAndUF(
+                    cidade = CidadeRepository.findCidadeByNomeAndUF(
                         cliente["cidade"], cliente["uf"]
                     )
                     if cidade:
                         cliente["cidade"] = cidade
                     else:
-                        cliente["cidade"] = self.cidadeRep.save(
+                        cliente["cidade"] = CidadeRepository.save(
                             {"nome": cliente["cidade"], "uf": cliente["uf"]}
                         )
                 if clienteSel:
                     cliente["idCliente"] = clienteSel
-                    _cliente = self.clienteRep.update(cliente)
+                    _cliente = ClienteRepository.update(cliente)
                 else:
-                    _cliente = self.clienteRep.save(cliente)
+                    _cliente = ClienteRepository.save(cliente)
                 # fone(s)
-                fonesBanco = self.foneRep.findByClienteID(_cliente)
+                fonesBanco = FoneRepository.findByClienteID(_cliente)
                 if fonesBanco is not None:
                     fonesBanco = list(fonesBanco.dicts())
                     for fone in fonesBanco:
                         if not fone["fone"] in fonesTela:
-                            self.foneRep.delete(_cliente, fone["fone"])
+                            FoneRepository.delete(_cliente, fone["fone"])
                     for fone in fonesTela:
                         if fone is not None and next(
                             (False for item in fonesBanco if item["fone"] == fone), True
                         ):
-                            self.foneRep.save(_cliente, fone)
+                            FoneRepository.save(_cliente, fone)
                 else:
                     for fone in fonesTela:
-                        self.foneRep.save(_cliente, fone)
+                        FoneRepository.save(_cliente, fone)
                 # marca
-                marca = self.marcaRep.findByNome(veiculo["marca"])
+                marca = MarcaRepository.findByNome(veiculo["marca"])
                 if marca:
                     veiculo["marca"] = marca
                 else:
-                    veiculo["marca"] = self.marcaRep.save({"nome": veiculo["marca"]})
+                    veiculo["marca"] = MarcaRepository.save({"nome": veiculo["marca"]})
                 # veiculo
                 if veiculoSel:
                     veiculo["idVeiculo"] = veiculoSel
-                    _veiculo = self.veiculoRep.update(veiculo)
+                    _veiculo = VeiculoRepository.update(veiculo)
                 else:
-                    _veiculo = self.veiculoRep.save(veiculo)
-                veiculoCliente = self.veiculoClienteRep.findByVeiculoAndCliente(
+                    _veiculo = VeiculoRepository.save(veiculo)
+                veiculoCliente = VeiculoClienteRepository.findByVeiculoAndCliente(
                     _veiculo, _cliente
                 )
                 if veiculoCliente is None:
-                    self.veiculoClienteRep.save(_veiculo, _cliente)
+                    VeiculoClienteRepository.save(_veiculo, _cliente)
                 # orçamento
                 orcamento["cliente"] = _cliente
                 orcamento["veiculo"] = _veiculo
-                _orcamento = self.orcamentoRep.save(orcamento)
+                _orcamento = OrcamentoRepository.save(orcamento)
                 # itemPeça
                 for peca in pecas:
                     if peca["descricao"] is not None:
                         qtde = peca.pop("qtde")
-                        _peca = self.pecaRep.findByDescricao(peca["descricao"])
-                        _itemPeca = self.itemPecaRep.findByOrcamentoAndPeca(
+                        _peca = PecaRepository.findByDescricao(peca["descricao"])
+                        _itemPeca = ItemPecaRepository.findByOrcamentoAndPeca(
                             _orcamento, _peca
                         )
                         if _itemPeca:
@@ -107,17 +94,17 @@ class OrcamentoController:
                                 "Use apenas uma linha para cada peça e aumente a quantidade"
                             )
                         if not _peca:
-                            _peca = self.pecaRep.save(peca)
+                            _peca = PecaRepository.save(peca)
                         peca["qtde"] = qtde
                         peca["peca"] = _peca
                         peca["orcamento"] = _orcamento
-                        self.itemPecaRep.save(peca)
+                        ItemPecaRepository.save(peca)
                 # itemServiço
                 for servico in servicos:
                     if servico["descricao"] is not None:
                         qtde = servico.pop("qtde")
-                        _servico = self.servicoRep.findByDescricao(servico["descricao"])
-                        _itemServico = self.itemServicoRep.findByOrcamentoAndServico(
+                        _servico = ServicoRepository.findByDescricao(servico["descricao"])
+                        _itemServico = ItemServicoRepository.findByOrcamentoAndServico(
                             _orcamento, _servico
                         )
                         if _itemServico:
@@ -125,11 +112,11 @@ class OrcamentoController:
                                 "Use apenas uma linha para cada serviço e aumente a quantidade"
                             )
                         if not _servico:
-                            _servico = self.servicoRep.save(servico)
+                            _servico = ServicoRepository.save(servico)
                         servico["qtde"] = qtde
                         servico["servico"] = _servico
                         servico["orcamento"] = _orcamento
-                        self.itemServicoRep.save(servico)
+                        ItemServicoRepository.save(servico)
                 return model_to_dict(_orcamento)
             except Exception as e:
                 transaction.rollback()
@@ -137,7 +124,8 @@ class OrcamentoController:
 
     # editar orçamento -> edições como data, valor das peças e servicos e valor total, adição e remoção de peças e servicos
     # edições em cliente e veículo deverão ser feitas no cadastro do orçamento ao selecionar dados ja existentes ou em telas de edição
-    def editarOrcamento(self, id, orcamento: dict, pecas: list, servicos: list):
+    @staticmethod
+    def editarOrcamento(id, orcamento: dict, pecas: list, servicos: list):
         with db.atomic() as transaction:
             try:
                 # teste de linhas duplicadas TENTAR MELHORAR LÓGICA
@@ -158,8 +146,8 @@ class OrcamentoController:
                                 "Use apenas uma linha para cada serviço e aumente a quantidade"
                             )
                 orcamento["idOrcamento"] = id
-                _orcamento = self.orcamentoRep.update(orcamento)
-                itemPecaBanco = self.itemPecaRep.findByOrcamento(id)
+                _orcamento = OrcamentoRepository.update(orcamento)
+                itemPecaBanco = ItemPecaRepository.findByOrcamento(id)
                 if itemPecaBanco:
                     for itemBanco in itemPecaBanco:
                         if next(
@@ -167,20 +155,20 @@ class OrcamentoController:
                                 False
                                 for item in pecas
                                 if item["descricao"]
-                                == self.pecaRep.findByID(itemBanco.peca).descricao
+                                == PecaRepository.findByID(itemBanco.peca).descricao
                             ),
                             True,
                         ):
-                            self.itemPecaRep.delete((itemBanco.peca, _orcamento))
+                            ItemPecaRepository.delete((itemBanco.peca, _orcamento))
                 for peca in pecas:
                     if peca["descricao"] is not None:
-                        _peca = self.pecaRep.findByDescricao(peca["descricao"])
+                        _peca = PecaRepository.findByDescricao(peca["descricao"])
                         if _peca:
-                            _itemPeca = self.itemPecaRep.findByOrcamentoAndPeca(
+                            _itemPeca = ItemPecaRepository.findByOrcamentoAndPeca(
                                 _orcamento, _peca
                             )
                             if _itemPeca:
-                                self.itemPecaRep.update(
+                                ItemPecaRepository.update(
                                     {
                                         "orcamento": _orcamento,
                                         "peca": _peca,
@@ -189,7 +177,7 @@ class OrcamentoController:
                                     }
                                 )
                             else:
-                                self.itemPecaRep.save(
+                                ItemPecaRepository.save(
                                     {
                                         "orcamento": _orcamento,
                                         "peca": _peca,
@@ -198,14 +186,14 @@ class OrcamentoController:
                                     }
                                 )
                         else:
-                            _peca = self.pecaRep.save(
+                            _peca = PecaRepository.save(
                                 {
                                     "descricao": peca["descricao"],
                                     "un": peca["un"],
                                     "valor": peca["valor"],
                                 }
                             )
-                            self.itemPecaRep.save(
+                            ItemPecaRepository.save(
                                 {
                                     "orcamento": _orcamento,
                                     "peca": _peca,
@@ -214,7 +202,7 @@ class OrcamentoController:
                                 }
                             )
 
-                itemServicoBanco = self.itemServicoRep.findByOrcamento(id)
+                itemServicoBanco = ItemServicoRepository.findByOrcamento(id)
                 if itemServicoBanco:
                     for itemBanco in itemServicoBanco:
                         if next(
@@ -222,22 +210,22 @@ class OrcamentoController:
                                 False
                                 for item in servicos
                                 if item["descricao"]
-                                == self.servicoRep.findByID(itemBanco.servico).descricao
+                                == ServicoRepository.findByID(itemBanco.servico).descricao
                             ),
                             True,
                         ):
-                            self.itemServicoRep.delete((itemBanco.servico, _orcamento))
+                            ItemServicoRepository.delete((itemBanco.servico, _orcamento))
                 for servico in servicos:
                     if servico["descricao"] is not None:
-                        _servico = self.servicoRep.findByDescricao(servico["descricao"])
+                        _servico = ServicoRepository.findByDescricao(servico["descricao"])
                         if _servico:
                             _itemServico = (
-                                self.itemServicoRep.findByOrcamentoAndServico(
+                                ItemServicoRepository.findByOrcamentoAndServico(
                                     _orcamento, _servico
                                 )
                             )
                             if _itemServico:
-                                self.itemServicoRep.update(
+                                ItemServicoRepository.update(
                                     {
                                         "orcamento": _orcamento,
                                         "servico": _servico,
@@ -246,7 +234,7 @@ class OrcamentoController:
                                     }
                                 )
                             else:
-                                self.itemServicoRep.save(
+                                ItemServicoRepository.save(
                                     {
                                         "orcamento": _orcamento,
                                         "servico": _servico,
@@ -255,13 +243,13 @@ class OrcamentoController:
                                     }
                                 )
                         else:
-                            _servico = self.servicoRep.save(
+                            _servico = ServicoRepository.save(
                                 {
                                     "descricao": servico["descricao"],
                                     "valor": servico["valor"],
                                 }
                             )
-                            self.itemServicoRep.save(
+                            ItemServicoRepository.save(
                                 {
                                     "orcamento": _orcamento,
                                     "servico": _servico,
@@ -274,10 +262,11 @@ class OrcamentoController:
                 transaction.rollback()
                 return e
 
-    def reprovarOrcamento(self, idOrcamento):
+    @staticmethod
+    def reprovarOrcamento(idOrcamento):
         with db.atomic() as transaction:
             try:
-                r = self.orcamentoRep.update(
+                r = OrcamentoRepository.update(
                     {"idOrcamento": idOrcamento, "status": "1"}
                 )
                 return r
@@ -285,10 +274,11 @@ class OrcamentoController:
                 transaction.rollback()
                 return e
 
-    def aprovarOrcamento(self, idOrcamento):
+    @staticmethod
+    def aprovarOrcamento(idOrcamento):
         with db.atomic() as transaction:
             try:
-                r = self.orcamentoRep.update(
+                r = OrcamentoRepository.update(
                     {"idOrcamento": idOrcamento, "status": "2"}
                 )
                 return r
@@ -296,10 +286,11 @@ class OrcamentoController:
                 transaction.rollback()
                 return e
 
-    def finalizarOrcamento(self, idOrcamento):
+    @staticmethod
+    def finalizarOrcamento(idOrcamento):
         with db.atomic() as transaction:
             try:
-                r = self.orcamentoRep.update(
+                r = OrcamentoRepository.update(
                     {"idOrcamento": idOrcamento, "status": "3"}
                 )
                 return r
@@ -307,38 +298,43 @@ class OrcamentoController:
                 transaction.rollback()
                 return e
 
-    def listarOrcamentos(self, status, limit=None):
+    @staticmethod
+    def listarOrcamentos(status, limit=None):
         _orcamentos = []
-        orcamentos = self.orcamentoRep.findByStatus(status, limit)
+        orcamentos = OrcamentoRepository.findByStatus(status, limit)
         if orcamentos:
             for orcamento in orcamentos:
                 _orcamentos.append(model_to_dict(orcamento))
             return _orcamentos
         return None
 
-    def getOrcamento(self, idOrcamento):
-        orcamento = self.orcamentoRep.findByID(idOrcamento)
+    @staticmethod
+    def getOrcamento(idOrcamento):
+        orcamento = OrcamentoRepository.findByID(idOrcamento)
         if orcamento:
             return model_to_dict(orcamento)
         return None
 
-    def listarItemPecas(self, idOrcamento):
-        itemPecas = self.itemPecaRep.findByOrcamento(idOrcamento)
+    @staticmethod
+    def listarItemPecas(idOrcamento):
+        itemPecas = ItemPecaRepository.findByOrcamento(idOrcamento)
         if itemPecas:
             return itemPecas.dicts()
         return None
 
-    def listarItemServicos(self, idOrcamento):
-        itemServicos = self.itemServicoRep.findByOrcamento(idOrcamento)
+    @staticmethod
+    def listarItemServicos(idOrcamento):
+        itemServicos = ItemServicoRepository.findByOrcamento(idOrcamento)
         if itemServicos:
             return itemServicos.dicts()
         return None
 
-    def buscarOrcamento(self, status, input, limit=None, orderBy: int = None):
+    @staticmethod
+    def buscarOrcamento(status, input, limit=None, orderBy: int = None):
         with db.atomic() as transaction:
             try:
                 _orcamentos = []
-                orcamentos = self.orcamentoRep.findByInput(
+                orcamentos = OrcamentoRepository.findByInput(
                     status, input, limit, orderBy
                 )
                 if orcamentos:
@@ -350,10 +346,11 @@ class OrcamentoController:
                 transaction.rollback()
                 return e
 
-    def excluirOrcamento(self, idOrcamento):
+    @staticmethod
+    def excluirOrcamento(idOrcamento):
         with db.atomic() as transaction:
             try:
-                linesAffected = self.orcamentoRep.delete(idOrcamento)
+                linesAffected = OrcamentoRepository.delete(idOrcamento)
                 return linesAffected
             except Exception as e:
                 transaction.rollback()

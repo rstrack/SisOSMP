@@ -2,16 +2,16 @@ from decimal import Decimal
 
 from PyQt6 import QtCore, QtGui, QtWidgets
 
+from controller.pecaController import PecaController
+
 from ui.help import HELPCADASTROPECA, help
 from ui.hoverButton import HoverButton
 from ui.telaCadastroOrcamento import UNIDADES
-from util.container import handle_deps
 
 
 class TelaCadastroPeca(QtWidgets.QMainWindow):
     def __init__(self):
         super(TelaCadastroPeca, self).__init__()
-        self.pecaCtrl = handle_deps.getDep("PECACTRL")
         self.setupUi()
 
     def setupUi(self):
@@ -270,7 +270,7 @@ class TelaCadastroPeca(QtWidgets.QMainWindow):
     def salvarPecas(self):
         try:
             pecas = self.getPecas()
-            r = self.pecaCtrl.salvarPecas(pecas)
+            r = PecaController.salvarPecas(pecas)
             if isinstance(r, Exception):
                 raise Exception(r)
             msg = QtWidgets.QMessageBox()

@@ -2,15 +2,15 @@ from decimal import Decimal
 
 from PyQt6 import QtCore, QtGui, QtWidgets
 
+from controller.servicoController import ServicoController
+
 from ui.help import HELPCADASTROSERVICO, help
 from ui.hoverButton import HoverButton
-from util.container import handle_deps
 
 
 class TelaCadastroServico(QtWidgets.QMainWindow):
     def __init__(self):
         super(TelaCadastroServico, self).__init__()
-        self.servicoCtrl = handle_deps.getDep("SERVICOCTRL")
         self.setupUi()
 
     def setupUi(self):
@@ -261,7 +261,7 @@ class TelaCadastroServico(QtWidgets.QMainWindow):
     def salvarServicos(self):
         try:
             servicos = self.getServicos()
-            r = self.servicoCtrl.salvarServicos(servicos)
+            r = ServicoController.salvarServicos(servicos)
             if isinstance(r, Exception):
                 raise Exception(r)
             msg = QtWidgets.QMessageBox()

@@ -1,17 +1,17 @@
 from flatdict import FlatDict
 from PyQt6 import QtCore, QtGui, QtWidgets
 
+from controller.clienteController import ClienteController
+
 from ui.help import HELPBUSCACLIENTE, help
 from ui.hoverButton import HoverButton
 from ui.infiniteScroll import AlignDelegate, InfiniteScrollTableModel
 from ui.telaVeiculoCliente import TelaVeiculoCliente
-from util.container import handle_deps
 
 
 class TelaBuscaCliente(QtWidgets.QMainWindow):
     def __init__(self):
         super(TelaBuscaCliente, self).__init__()
-        self.clienteCtrl = handle_deps.getDep("CLIENTECTRL")
         self.busca = ""
         self.orderBy = 0
         self.setupUi()
@@ -176,7 +176,7 @@ class TelaBuscaCliente(QtWidgets.QMainWindow):
         self.listarClientes()
 
     def maisClientes(self, qtde):
-        clientes = self.clienteCtrl.buscarCliente(
+        clientes = ClienteController.buscarCliente(
             self.busca, self.linhasCarregadas + qtde, self.orderBy
         )
         if not clientes:
@@ -197,7 +197,7 @@ class TelaBuscaCliente(QtWidgets.QMainWindow):
                 clientes[self.linhasCarregadas]["tipo"] = "ESTRANGEIRO"
             if clientes[self.linhasCarregadas]["cidade"] is None:
                 clientes[self.linhasCarregadas]["cidade"] = {"nome": None, "uf": None}
-            queryFones = self.clienteCtrl.listarFones(
+            queryFones = ClienteController.listarFones(
                 clientes[self.linhasCarregadas]["idCliente"]
             )
             if queryFones:
@@ -207,7 +207,7 @@ class TelaBuscaCliente(QtWidgets.QMainWindow):
                 clientes[self.linhasCarregadas]["fones"] = ", ".join(fones)
             else:
                 clientes[self.linhasCarregadas]["fones"] = ""
-            queryVeiculo = self.clienteCtrl.listarVeiculos(
+            queryVeiculo = ClienteController.listarVeiculos(
                 clientes[self.linhasCarregadas]["idCliente"]
             )
             if queryVeiculo:

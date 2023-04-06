@@ -1,8 +1,9 @@
 from PyQt6 import QtCore, QtWidgets
 
+from controller.clienteController import ClienteController
+
 from ui.help import HELPCLIENTES_VEICULO, HELPVEICULOS_CLIENTE, help
 from ui.hoverButton import HoverButton
-from util.container import handle_deps
 
 
 class TelaVeiculoCliente(QtWidgets.QMainWindow):
@@ -10,7 +11,6 @@ class TelaVeiculoCliente(QtWidgets.QMainWindow):
 
     def __init__(self):
         super(TelaVeiculoCliente, self).__init__()
-        self.clienteCtrl = handle_deps.getDep("CLIENTECTRL")
         self.clienteID = None
         self.veiculoID = None
         self.setupUi()
@@ -92,9 +92,9 @@ class TelaVeiculoCliente(QtWidgets.QMainWindow):
         header.setStretchLastSection(True)
         self.clienteID = idCliente
         i = 0
-        cliente = self.clienteCtrl.getCliente(idCliente)
+        cliente = ClienteController.getCliente(idCliente)
         self.labelTitulo.setText(f"Veículos vinculados ao cliente\n{cliente['nome']}")
-        veiculos = self.clienteCtrl.listarVeiculos(idCliente)
+        veiculos = ClienteController.listarVeiculos(idCliente)
         if veiculos:
             self.tabela.setRowCount(len(veiculos))
             for veiculo in veiculos:
@@ -142,8 +142,8 @@ class TelaVeiculoCliente(QtWidgets.QMainWindow):
             n.setFixedWidth(60)
             msgBox.exec()
             if msgBox.clickedButton() == y:
-                veiculo = self.clienteCtrl.getVeiculo(id)
-                r = self.clienteCtrl.excluirVeiculoCliente(
+                veiculo = ClienteController.getVeiculo(id)
+                r = ClienteController.excluirVeiculoCliente(
                     veiculo["idVeiculo"], self.clienteID
                 )
                 if isinstance(r, Exception):
@@ -164,11 +164,11 @@ class TelaVeiculoCliente(QtWidgets.QMainWindow):
         header.setStretchLastSection(True)
         self.veiculoID = idVeiculo
         i = 0
-        veiculo = self.clienteCtrl.getVeiculo(idVeiculo)
+        veiculo = ClienteController.getVeiculo(idVeiculo)
         self.labelTitulo.setText(
             f"Clientes vinculados ao veículo\n{veiculo['marca']['nome']} {veiculo['modelo']}"
         )
-        clientes = self.clienteCtrl.listarClientes(idVeiculo)
+        clientes = ClienteController.listarClientes(idVeiculo)
         if clientes:
             self.tabela.setRowCount(len(clientes))
             for cliente in clientes:
@@ -178,7 +178,7 @@ class TelaVeiculoCliente(QtWidgets.QMainWindow):
                 self.tabela.setItem(i, 1, item2)
                 item3 = QtWidgets.QTableWidgetItem(cliente["documento"])
                 self.tabela.setItem(i, 2, item3)
-                queryFones = self.clienteCtrl.listarFones(cliente["idCliente"])
+                queryFones = ClienteController.listarFones(cliente["idCliente"])
                 if queryFones:
                     fones = []
                     for fone in queryFones:
@@ -224,8 +224,8 @@ class TelaVeiculoCliente(QtWidgets.QMainWindow):
             n.setFixedWidth(60)
             msgBox.exec()
             if msgBox.clickedButton() == y:
-                cliente = self.clienteCtrl.getCliente(id)
-                r = self.clienteCtrl.excluirVeiculoCliente(
+                cliente = ClienteController.getCliente(id)
+                r = ClienteController.excluirVeiculoCliente(
                     self.veiculoID, cliente["idCliente"]
                 )
                 if isinstance(r, Exception):

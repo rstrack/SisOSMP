@@ -2,10 +2,12 @@ import re
 
 from PyQt6 import QtCore, QtGui, QtWidgets
 
+from controller.clienteController import ClienteController
+from controller.marcaController import MarcaController
+
 from ui.help import HELPEDITARVEICULO, help
 from ui.hoverButton import HoverButton
 from ui.telaCadastroCliente import REGEXPLACA
-from util.container import handle_deps
 
 SIGLAESTADOS = [
     "AC",
@@ -43,8 +45,6 @@ class TelaEditarVeiculo(QtWidgets.QMainWindow):
 
     def __init__(self):
         super(TelaEditarVeiculo, self).__init__()
-        self.clienteCtrl = handle_deps.getDep("CLIENTECTRL")
-        self.marcaCtrl = handle_deps.getDep("MARCACTRL")
         self.VeiculoID = None
         self.setupUi()
 
@@ -244,7 +244,7 @@ class TelaEditarVeiculo(QtWidgets.QMainWindow):
     def setMarcas(self):
         currentText = self.comboBoxMarca.currentText()
         self.comboBoxMarca.clear()
-        marcas = self.marcaCtrl.listarMarcas()
+        marcas = MarcaController.listarMarcas()
         for marca in marcas:
             self.comboBoxMarca.addItem(marca["nome"])
         self.comboBoxMarca.setCurrentIndex(
@@ -254,7 +254,7 @@ class TelaEditarVeiculo(QtWidgets.QMainWindow):
     def editar(self):
         try:
             veiculo = self.getDadosVeiculo()
-            r = self.clienteCtrl.editarVeiculo(self.VeiculoID, veiculo)
+            r = ClienteController.editarVeiculo(self.VeiculoID, veiculo)
             if isinstance(r, Exception):
                 raise Exception(r)
             msg = QtWidgets.QMessageBox()
@@ -293,7 +293,7 @@ class TelaEditarVeiculo(QtWidgets.QMainWindow):
         self.limparCampos()
         self.setMarcas()
         self.VeiculoID = id
-        veiculo = self.clienteCtrl.getVeiculo(id)
+        veiculo = ClienteController.getVeiculo(id)
         self.setVeiculo(
             veiculo["marca"]["nome"],
             veiculo["modelo"],

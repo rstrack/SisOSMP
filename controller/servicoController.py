@@ -6,76 +6,79 @@ from repository.servicoRepository import ServicoRepository
 
 
 class ServicoController:
-    def __init__(self):
-        self.servicoRep = ServicoRepository()
-        self.itemServicoRep = ItemServicoRepository()
-
-    def salvarServico(self, servico: dict):
+    @staticmethod
+    def salvarServico(servico: dict):
         with db.atomic() as transaction:
             try:
-                qServico = self.servicoRep.findByDescricao(servico["descricao"])
+                qServico = ServicoRepository.findByDescricao(servico["descricao"])
                 if qServico:
                     raise Exception(
                         f"O serviço {servico['descricao']} já está cadastrado!"
                     )
-                return self.servicoRep.save(servico)
+                return ServicoRepository.save(servico)
             except Exception as e:
                 transaction.rollback()
                 return e
 
-    def salvarServicos(self, servicos: list):
+    @staticmethod
+    def salvarServicos(servicos: list):
         with db.atomic() as transaction:
             try:
                 for servico in servicos:
-                    _servico = self.servicoRep.findByDescricao(servico["descricao"])
+                    _servico = ServicoRepository.findByDescricao(servico["descricao"])
                     if _servico:
                         raise Exception(
                             f"O serviço {servico['descricao']} já está cadastrado!"
                         )
-                    self.servicoRep.save(servico)
+                    ServicoRepository.save(servico)
                 return True
             except Exception as e:
                 transaction.rollback()
                 return e
 
-    def editarServico(self, id, servico: dict):
+    @staticmethod
+    def editarServico(id, servico: dict):
         with db.atomic() as transaction:
             try:
-                qServico = self.servicoRep.findByDescricao(servico["descricao"])
+                qServico = ServicoRepository.findByDescricao(servico["descricao"])
                 if qServico:
                     if str(qServico.idServico) != str(id):
                         raise Exception(
                             f"O serviço {servico['descricao']} já está cadastrado!"
                         )
                 servico["idServico"] = id
-                _servico = self.servicoRep.update(servico)
+                _servico = ServicoRepository.update(servico)
                 return _servico
             except Exception as e:
                 transaction.rollback()
                 return e
 
-    def listarServicos(self):
-        servicos = self.servicoRep.findAll()
+    @staticmethod
+    def listarServicos():
+        servicos = ServicoRepository.findAll()
         if servicos:
             return servicos.dicts()
         return None
 
-    def getServico(self, id):
-        servico = self.servicoRep.findByID(id)
+    @staticmethod
+    def getServico(id):
+        servico = ServicoRepository.findByID(id)
         if servico:
             return model_to_dict(servico)
         return None
 
-    def getServicoByDescricao(self, desc):
-        servico = self.servicoRep.findByDescricao(desc)
+    @staticmethod
+    def getServicoByDescricao(desc):
+        servico = ServicoRepository.findByDescricao(desc)
         if servico:
             return model_to_dict(servico)
         return None
 
-    def buscarServico(self, input, limit=None, orderBy=None):
+    @staticmethod
+    def buscarServico(input, limit=None, orderBy=None):
         with db.atomic() as transaction:
             try:
-                servicos = self.servicoRep.findByInput(input, limit, orderBy)
+                servicos = ServicoRepository.findByInput(input, limit, orderBy)
                 if servicos:
                     _servicos = []
                     for servico in servicos:
@@ -86,15 +89,16 @@ class ServicoController:
                 transaction.rollback()
                 return e
 
-    def excluirServico(self, id):
+    @staticmethod
+    def excluirServico(id):
         with db.atomic() as transaction:
             try:
-                _itemServico = self.itemServicoRep.findByServico(id)
+                _itemServico = ItemServicoRepository.findByServico(id)
                 if _itemServico:
                     raise Exception(
                         "Não é possível excluir este serviço, ela está vinculado à orçamento(s)."
                     )
-                linesAffected = self.servicoRep.delete(id)
+                linesAffected = ServicoRepository.delete(id)
                 return linesAffected
             except Exception as e:
                 transaction.rollback()

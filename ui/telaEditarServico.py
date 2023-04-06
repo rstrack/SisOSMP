@@ -2,17 +2,16 @@ from decimal import Decimal
 
 from PyQt6 import QtCore, QtGui, QtWidgets
 
+from controller.servicoController import ServicoController
+
 from ui.help import HELPEDITARSERVICO, help
 from ui.hoverButton import HoverButton
-from util.container import handle_deps
-
 
 class TelaEditarServico(QtWidgets.QMainWindow):
     paraTelaConsulta = QtCore.pyqtSignal(int)
 
     def __init__(self):
         super(TelaEditarServico, self).__init__()
-        self.servicoCtrl = handle_deps.getDep("SERVICOCTRL")
         self.servicoID = None
         self.setupUi()
 
@@ -161,7 +160,7 @@ class TelaEditarServico(QtWidgets.QMainWindow):
     def editarServico(self):
         try:
             servico = self.getServico()
-            r = self.servicoCtrl.editarServico(self.servicoID, servico)
+            r = ServicoController.editarServico(self.servicoID, servico)
             if isinstance(r, Exception):
                 raise Exception(r)
             msg = QtWidgets.QMessageBox()
@@ -192,7 +191,7 @@ class TelaEditarServico(QtWidgets.QMainWindow):
 
     def renderEditar(self, id):
         self.servicoID = id
-        servico = self.servicoCtrl.getServico(id)
+        servico = ServicoController.getServico(id)
         self.lineEditDescricao.setText(servico["descricao"])
         self.lineEditValorServico.setText(
             "{:.2f}".format(servico["valor"]).replace(".", ",", 1)

@@ -6,38 +6,38 @@ from repository.veiculoRepository import VeiculoRepository
 
 
 class MarcaController:
-    def __init__(self) -> None:
-        self.marcaRep = MarcaRepository()
-        self.veiculoRep = VeiculoRepository()
+    @staticmethod
+    def listarMarcas():
+        return MarcaRepository.findAll().dicts()
 
-    def listarMarcas(self):
-        return self.marcaRep.findAll().dicts()
-
-    def getMarca(self, id):
-        marca = self.marcaRep.findByID(id)
+    @staticmethod
+    def getMarca(id):
+        marca = MarcaRepository.findByID(id)
         if marca:
             return model_to_dict(marca)
         return None
 
-    def editarMarca(self, id, marca):
+    @staticmethod
+    def editarMarca(id, marca):
         with db.atomic() as transaction:
             try:
                 marca["idMarca"] = id
-                _marca = self.marcaRep.update(marca)
+                _marca = MarcaRepository.update(marca)
                 return _marca
             except Exception as e:
                 transaction.rollback()
                 return e
 
-    def excluirMarca(self, id):
+    @staticmethod
+    def excluirMarca(id):
         with db.atomic() as transaction:
             try:
-                veiculos = self.veiculoRep.findByMarca(id)
+                veiculos = VeiculoRepository.findByMarca(id)
                 if veiculos:
                     raise Exception(
                         "Não é possível excluir esta marca, ela está vinculada à veículo(s)."
                     )
-                linesAffected = self.marcaRep.delete(id)
+                linesAffected = MarcaRepository.delete(id)
                 return linesAffected
             except Exception as e:
                 transaction.rollback()

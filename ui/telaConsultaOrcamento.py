@@ -1,11 +1,13 @@
 from flatdict import FlatDict
 from PyQt6 import QtCore, QtGui, QtWidgets
 
+from controller.clienteController import ClienteController
+from controller.orcamentoController import OrcamentoController
+
 from ui.help import HELPCONSULTAORCAMENTO, help
 from ui.hoverButton import HoverButton
 from ui.infiniteScroll import AlignDelegate, InfiniteScrollTableModel
 from ui.messageBox import MessageBox
-from util.container import handle_deps
 from util.gerar_pdf import GeraPDF
 
 
@@ -15,10 +17,6 @@ class TelaConsultaOrcamento(QtWidgets.QMainWindow):
 
     def __init__(self):
         super(TelaConsultaOrcamento, self).__init__()
-        self.orcamentoCtrl = handle_deps.getDep("ORCAMENTOCTRL")
-        self.clienteCtrl = handle_deps.getDep("CLIENTECTRL")
-        self.pecaCtrl = handle_deps.getDep("PECACTRL")
-        self.servicoCtrl = handle_deps.getDep("SERVICOCTRL")
         self.busca = ""
         self.status = "0"
         self.orderBy = 0
@@ -221,7 +219,7 @@ class TelaConsultaOrcamento(QtWidgets.QMainWindow):
         self.listarOrcamentos()
 
     def maisOrcamentos(self, qtde):
-        orcamentos = self.orcamentoCtrl.buscarOrcamento(
+        orcamentos = OrcamentoController.buscarOrcamento(
             self.status, self.busca, self.linhasCarregadas + qtde, self.orderBy
         )
         if not orcamentos:
@@ -240,7 +238,7 @@ class TelaConsultaOrcamento(QtWidgets.QMainWindow):
             orcamentos[self.linhasCarregadas]["valorTotal"] = "R$ {:.2f}".format(
                 orcamentos[self.linhasCarregadas]["valorTotal"]
             ).replace(".", ",", 1)
-            queryFones = self.clienteCtrl.listarFones(
+            queryFones = ClienteController.listarFones(
                 orcamentos[self.linhasCarregadas]["cliente"]["idCliente"]
             )
             if queryFones:
@@ -311,7 +309,7 @@ class TelaConsultaOrcamento(QtWidgets.QMainWindow):
             linha = self.tabela.selectionModel().selectedRows()
             if linha:
                 id = self.tabela.model().index(linha[0].row(), 0).data()
-                r = self.orcamentoCtrl.aprovarOrcamento(id)
+                r = OrcamentoController.aprovarOrcamento(id)
                 if isinstance(r, Exception):
                     raise Exception(r)
                 msg = QtWidgets.QMessageBox()
@@ -334,7 +332,7 @@ class TelaConsultaOrcamento(QtWidgets.QMainWindow):
             linha = self.tabela.selectionModel().selectedRows()
             if linha:
                 id = self.tabela.model().index(linha[0].row(), 0).data()
-                r = self.orcamentoCtrl.reprovarOrcamento(id)
+                r = OrcamentoController.reprovarOrcamento(id)
                 if isinstance(r, Exception):
                     raise Exception(r)
                 msg = QtWidgets.QMessageBox()
@@ -366,7 +364,7 @@ class TelaConsultaOrcamento(QtWidgets.QMainWindow):
                 msgBox.exec()
                 if msgBox.clickedButton() == y:
                     id = self.tabela.model().index(linha[0].row(), 0).data()
-                    r = self.orcamentoCtrl.excluirOrcamento(id)
+                    r = OrcamentoController.excluirOrcamento(id)
                     if isinstance(r, Exception):
                         raise Exception(r)
                     elif not r:
@@ -392,21 +390,21 @@ class TelaConsultaOrcamento(QtWidgets.QMainWindow):
         if linha:
             id = self.tabela.model().index(linha[0].row(), 0).data()
         return
-        orcamento = self.orcamentoCtrl.getOrcamento(id)
-        fones = self.clienteCtrl.listarFones(orcamento["cliente"]["idCliente"])
+        orcamento = OrcamentoController.getOrcamento(id)
+        fones = ClienteController.listarFones(orcamento["cliente"]["idCliente"])
         if fones:
             fones = list(fones)
-        itemPecas = self.orcamentoCtrl.listarItemPecas(orcamento["idOrcamento"])
+        itemPecas = OrcamentoController.listarItemPecas(orcamento["idOrcamento"])
         if itemPecas:
             for item in itemPecas:
-                peca = self.pecaCtrl.getPeca(item["peca"])
+                peca = PecaController.getPeca(item["peca"])
                 item["descricao"] = peca["descricao"]
                 item["un"] = peca["un"]
             itemPecas = list(itemPecas)
-        itemServicos = self.orcamentoCtrl.listarItemServicos(orcamento["idOrcamento"])
+        itemServicos = OrcamentoController.listarItemServicos(orcamento["idOrcamento"])
         if itemServicos:
             for item in itemServicos:
-                item["descricao"] = self.servicoCtrl.getServico(item["servico"])[
+                item["descricao"] = ServicoController.getServico(item["servico"])[
                     "descricao"
                 ]
             itemServicos = list(itemServicos)

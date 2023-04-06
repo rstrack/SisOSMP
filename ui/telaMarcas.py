@@ -1,9 +1,10 @@
 from PyQt6 import QtCore, QtGui, QtWidgets
 
+from controller.marcaController import MarcaController
+
 from ui.help import HELPMARCAS, help
 from ui.hoverButton import HoverButton
 from ui.telaEditarMarca import TelaEditarMarca
-from util.container import handle_deps
 
 
 class TelaMarcas(QtWidgets.QMainWindow):
@@ -11,7 +12,6 @@ class TelaMarcas(QtWidgets.QMainWindow):
 
     def __init__(self):
         super(TelaMarcas, self).__init__()
-        self.marcaCtrl = handle_deps.getDep("MARCACTRL")
         self.setupUi()
 
     def setupUi(self):
@@ -82,7 +82,7 @@ class TelaMarcas(QtWidgets.QMainWindow):
         self.botaoConcluir.setText(_translate("MainWindow", "Concluir"))
 
     def render(self):
-        marcas = self.marcaCtrl.listarMarcas()
+        marcas = MarcaController.listarMarcas()
         if not marcas:
             try:
                 self.close()
@@ -144,7 +144,7 @@ class TelaMarcas(QtWidgets.QMainWindow):
             n.setFixedWidth(60)
             msgBox.exec()
             if msgBox.clickedButton() == y:
-                r = self.marcaCtrl.excluirMarca(id)
+                r = MarcaController.excluirMarca(id)
                 if isinstance(r, Exception):
                     raise Exception(r)
             msg = QtWidgets.QMessageBox()

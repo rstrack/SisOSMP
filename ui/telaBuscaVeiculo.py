@@ -1,17 +1,17 @@
 from flatdict import FlatDict
 from PyQt6 import QtCore, QtGui, QtWidgets
 
+from controller.clienteController import ClienteController
+
 from ui.help import HELPBUSCAVEICULO, help
 from ui.hoverButton import HoverButton
 from ui.infiniteScroll import AlignDelegate, InfiniteScrollTableModel
 from ui.telaVeiculoCliente import TelaVeiculoCliente
-from util.container import handle_deps
 
 
 class TelaBuscaVeiculo(QtWidgets.QMainWindow):
     def __init__(self):
         super(TelaBuscaVeiculo, self).__init__()
-        self.clienteCtrl = handle_deps.getDep("CLIENTECTRL")
         self.busca = ""
         self.orderBy = 0
         self.setupUi()
@@ -175,7 +175,7 @@ class TelaBuscaVeiculo(QtWidgets.QMainWindow):
         self.listarVeiculos()
 
     def maisVeiculos(self, qtde):
-        veiculos = self.clienteCtrl.buscarVeiculo(
+        veiculos = ClienteController.buscarVeiculo(
             self.busca, self.linhasCarregadas + qtde, self.orderBy
         )
         if not veiculos:
@@ -188,7 +188,7 @@ class TelaBuscaVeiculo(QtWidgets.QMainWindow):
         initLen = self.linhasCarregadas
         maxRows = self.linhasCarregadas + rowsToFetch
         while self.linhasCarregadas < maxRows:
-            queryClientes = self.clienteCtrl.listarClientes(
+            queryClientes = ClienteController.listarClientes(
                 veiculos[self.linhasCarregadas]["idVeiculo"]
             )
             if queryClientes:

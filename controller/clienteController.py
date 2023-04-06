@@ -12,22 +12,14 @@ from ui.messageBox import MessageBox
 
 
 class ClienteController:
-    def __init__(self):
-        self.clienteRep = ClienteRepository()
-        self.orcamentoRep = OrcamentoRepository()
-        self.cidadeRep = CidadeRepository()
-        self.foneRep = FoneRepository()
-        self.marcaRep = MarcaRepository()
-        self.veiculoRep = VeiculoRepository()
-        self.veiculoClienteRep = VeiculoClienteRepository()
-
-    def salvarCliente(self, dados: dict, fones: list):
+    @staticmethod
+    def salvarCliente(dados: dict, fones: list):
         with db.atomic() as transaction:
             try:
                 if dados["nome"] is None:
                     raise Exception('Campo "Nome" obrigatório')
                 if dados["documento"]:
-                    cliente = self.clienteRep.findByDocumento(dados["documento"])
+                    cliente = ClienteRepository.findByDocumento(dados["documento"])
                     if cliente:
                         raise Exception(
                             f"Documento já registrado para o cliente {cliente.nome}"
@@ -36,39 +28,40 @@ class ClienteController:
                     cidade = {}
                     cidade["nome"] = dados.pop("cidade")
                     cidade["uf"] = dados.pop("uf")
-                    qCidade = self.cidadeRep.findCidadeByNomeAndUF(
+                    qCidade = CidadeRepository.findCidadeByNomeAndUF(
                         cidade["nome"], cidade["uf"]
                     )
                     if qCidade:
                         dados["cidade"] = qCidade
                     else:
-                        dados["cidade"] = self.cidadeRep.save(cidade)
-                _cliente = self.clienteRep.save(dados)
+                        dados["cidade"] = CidadeRepository.save(cidade)
+                _cliente = ClienteRepository.save(dados)
                 for fone in fones:
                     if fone is not None:
-                        _fone = self.foneRep.findByFone(fone)
+                        _fone = FoneRepository.findByFone(fone)
                         if _fone:
                             if str(_fone.cliente) == str(_cliente.idCliente):
                                 raise Exception("Fones duplicados!")
                             raise Exception(
                                 f"Fone {_fone.fone} já cadastrado por outro cliente"
                             )
-                        self.foneRep.save(_cliente, fone)
+                        FoneRepository.save(_cliente, fone)
                 return _cliente
             except Exception as e:
                 transaction.rollback()
                 return e
 
     # salva dados do cliente, telefones, veiculo e vincula-os
+    @staticmethod
     def salvarClienteVeiculo(
-        self, dadosCliente: dict, dadosFone: list, dadosVeiculo: dict
+        dadosCliente: dict, dadosFone: list, dadosVeiculo: dict
     ):
         with db.atomic() as transaction:
             try:
-                cliente = self.salvarCliente(dadosCliente, dadosFone)
+                cliente = ClienteController.salvarCliente(dadosCliente, dadosFone)
                 if isinstance(cliente, Exception):
                     raise Exception(cliente)
-                qVeiculo = self.veiculoRep.findByPlaca(dadosVeiculo["placa"])
+                qVeiculo = VeiculoRepository.findByPlaca(dadosVeiculo["placa"])
                 if qVeiculo:
                     question = MessageBox.question(
                         MessageBox(),
@@ -76,25 +69,26 @@ class ClienteController:
                         + f"Deseja utilizá-lo para o cliente {cliente.nome}? ",
                     )
                     if question == "sim":
-                        self.veiculoClienteRep.save(qVeiculo, cliente)
+                        VeiculoClienteRepository.save(qVeiculo, cliente)
                     else:
                         raise Exception("Cadastro cancelado")
                 else:
-                    veiculo = self.salvarVeiculo(dadosVeiculo)
+                    veiculo = ClienteController.salvarVeiculo(dadosVeiculo)
                     if isinstance(veiculo, Exception):
                         raise Exception(veiculo)
-                    self.veiculoClienteRep.save(veiculo, cliente)
+                    VeiculoClienteRepository.save(veiculo, cliente)
                 return True
             except Exception as e:
                 transaction.rollback()
                 return e
 
-    def editarCliente(self, idCliente, cliente: dict, fonesTela: list):
+    @staticmethod
+    def editarCliente(idCliente, cliente: dict, fonesTela: list):
         with db.atomic() as transaction:
             try:
                 cliente["idCliente"] = idCliente
                 if cliente["documento"]:
-                    qCliente = self.clienteRep.findByDocumento(cliente["documento"])
+                    qCliente = ClienteRepository.findByDocumento(cliente["documento"])
                     if qCliente:
                         if str(qCliente.idCliente) != str(idCliente):
                             raise Exception(
@@ -104,23 +98,23 @@ class ClienteController:
                     cidade = {}
                     cidade["nome"] = cliente.pop("cidade")
                     cidade["uf"] = cliente.pop("uf")
-                    qCidade = self.cidadeRep.findCidadeByNomeAndUF(
+                    qCidade = CidadeRepository.findCidadeByNomeAndUF(
                         cidade["nome"], cidade["uf"]
                     )
                     if qCidade:
                         cliente["cidade"] = qCidade
                     else:
-                        cliente["cidade"] = self.cidadeRep.save(cidade)
-                _cliente = self.clienteRep.update(cliente)
-                fonesBanco = self.foneRep.findByClienteID(_cliente)
+                        cliente["cidade"] = CidadeRepository.save(cidade)
+                _cliente = ClienteRepository.update(cliente)
+                fonesBanco = FoneRepository.findByClienteID(_cliente)
                 if fonesBanco is not None:
                     fonesBanco = list(fonesBanco.dicts())
                     for fone in fonesBanco:
                         if not fone["fone"] in fonesTela:
-                            self.foneRep.delete(_cliente, fone["fone"])
+                            FoneRepository.delete(_cliente, fone["fone"])
                     for fone in fonesTela:
                         if fone is not None:
-                            _fone = self.foneRep.findByFone(fone)
+                            _fone = FoneRepository.findByFone(fone)
                             if _fone:
                                 if str(_fone.cliente) != str(_cliente.idCliente):
                                     raise Exception(
@@ -129,27 +123,28 @@ class ClienteController:
                         if fone is not None and next(
                             (False for item in fonesBanco if item["fone"] == fone), True
                         ):
-                            self.foneRep.save(_cliente, fone)
+                            FoneRepository.save(_cliente, fone)
                 else:
                     for fone in fonesTela:
-                        self.foneRep.save(_cliente, fone)
+                        FoneRepository.save(_cliente, fone)
                 return _cliente
             except Exception as e:
                 transaction.rollback()
                 return e
 
     # listar todos os clientes ou clientes vinculados a um veiculo
-    def listarClientes(self, idVeiculo=None, qtde=None):
+    @staticmethod
+    def listarClientes(idVeiculo=None, qtde=None):
         _clientes = []
         if idVeiculo:
-            clientes = self.veiculoClienteRep.findClientesByVeiculoID(idVeiculo)
+            clientes = VeiculoClienteRepository.findClientesByVeiculoID(idVeiculo)
             if clientes:
                 for cliente in clientes:
                     _clientes.append(model_to_dict(cliente))
                 return _clientes
             return None
         else:
-            clientes = self.clienteRep.findAll(qtde)
+            clientes = ClienteRepository.findAll(qtde)
             if clientes:
                 for cliente in clientes:
                     _clientes.append(model_to_dict(cliente))
@@ -157,11 +152,12 @@ class ClienteController:
             return None
 
     # buscar clientes por uma string de alguma coluna (Ex.: nome, documento, telefone)
-    def buscarCliente(self, input, limit=None, orderBy=None):
+    @staticmethod
+    def buscarCliente(input, limit=None, orderBy=None):
         with db.atomic() as transaction:
             try:
                 _clientes = []
-                clientes = self.clienteRep.findByInput(input, limit, orderBy)
+                clientes = ClienteRepository.findByInput(input, limit, orderBy)
                 if clientes:
                     for cliente in clientes:
                         _clientes.append(model_to_dict(cliente))
@@ -172,74 +168,79 @@ class ClienteController:
                 return e
 
     # listar cliente pelo id
-    def getCliente(self, id):
-        cliente = self.clienteRep.findByID(id)
+    @staticmethod
+    def getCliente(id):
+        cliente = ClienteRepository.findByID(id)
         if cliente:
             return model_to_dict(cliente)
         return None
 
     # listar fones dado um cliente
-    def listarFones(self, idCliente):
-        fones = self.foneRep.findByClienteID(idCliente)
+    @staticmethod
+    def listarFones(idCliente):
+        fones = FoneRepository.findByClienteID(idCliente)
         if fones:
             return fones.dicts()
         return None
 
     # salva somente um veiculo
-    def salvarVeiculo(self, veiculo):
+    @staticmethod
+    def salvarVeiculo(veiculo):
         with db.atomic() as transaction:
             try:
-                qVeiculo = self.veiculoRep.findByPlaca(veiculo["placa"])
+                qVeiculo = VeiculoRepository.findByPlaca(veiculo["placa"])
                 if qVeiculo:
                     raise Exception(
                         f"Placa {qVeiculo.placa} já registrada para o veículo "
-                        + f"{self.marcaRep.findByID(qVeiculo.marca).nome} {qVeiculo.modelo}"
+                        + f"{MarcaRepository.findByID(qVeiculo.marca).nome} {qVeiculo.modelo}"
                     )
-                marca = self.marcaRep.findByNome(veiculo["marca"])
+                marca = MarcaRepository.findByNome(veiculo["marca"])
                 if not marca:
-                    marca = self.marcaRep.save({"nome": veiculo["marca"]})
+                    marca = MarcaRepository.save({"nome": veiculo["marca"]})
                 veiculo["marca"] = marca
-                return self.veiculoRep.save(veiculo)
+                return VeiculoRepository.save(veiculo)
 
             except Exception as e:
                 transaction.rollback()
                 return e
 
-    def editarVeiculo(self, idVeiculo, veiculo):
+    @staticmethod
+    def editarVeiculo(idVeiculo, veiculo):
         with db.atomic() as transaction:
             try:
-                qVeiculo = self.veiculoRep.findByPlaca(veiculo["placa"])
+                qVeiculo = VeiculoRepository.findByPlaca(veiculo["placa"])
                 if qVeiculo:
                     if str(qVeiculo.idVeiculo) != str(idVeiculo):
                         raise Exception(
                             f"Placa {qVeiculo.placa} já registrada para o veículo "
-                            + f"{self.marcaRep.findByID(qVeiculo.marca).nome} {qVeiculo.modelo}"
+                            + f"{MarcaRepository.findByID(qVeiculo.marca).nome} {qVeiculo.modelo}"
                         )
                 veiculo["idVeiculo"] = idVeiculo
-                marca = self.marcaRep.findByNome(veiculo["marca"])
+                marca = MarcaRepository.findByNome(veiculo["marca"])
                 if not marca:
-                    marca = self.marcaRep.save({"nome": veiculo["marca"]})
+                    marca = MarcaRepository.save({"nome": veiculo["marca"]})
                 veiculo["marca"] = marca
-                _veiculo = self.veiculoRep.update(veiculo)
+                _veiculo = VeiculoRepository.update(veiculo)
                 return _veiculo
             except Exception as e:
                 transaction.rollback()
                 return e
 
     # listar todos os veiculos ou veiculos vinculados a um cliente
-    def listarVeiculos(self, idCliente=None):
+    @staticmethod
+    def listarVeiculos(idCliente=None):
         with db.atomic() as transaction:
             try:
                 _veiculos = []
                 if idCliente:
-                    veiculos = self.veiculoClienteRep.findVeiculosByClienteID(idCliente)
+                    veiculos = VeiculoClienteRepository.findVeiculosByClienteID(idCliente)
                     if veiculos:
                         for veiculo in veiculos:
                             _veiculos.append(model_to_dict(veiculo))
                         return _veiculos
                     return None
                 else:
-                    veiculos = self.veiculoRep.findAll()
+                    veiculos = VeiculoRepository.findAll()
                     if veiculos:
                         for veiculo in veiculos:
                             _veiculos.append(model_to_dict(veiculo))
@@ -249,18 +250,20 @@ class ClienteController:
                 transaction.rollback()
                 return e
 
-    def getVeiculo(self, id):
-        veiculo = self.veiculoRep.findByID(id)
+    @staticmethod
+    def getVeiculo(id):
+        veiculo = VeiculoRepository.findByID(id)
         if veiculo:
             return model_to_dict(veiculo)
         return None
 
     # buscar veiculos por uma string de alguma coluna (Ex.: marca, modelo, placa)
-    def buscarVeiculo(self, input, limit=None, orderBy=None):
+    @staticmethod
+    def buscarVeiculo(input, limit=None, orderBy=None):
         with db.atomic() as transaction:
             try:
                 _veiculos = []
-                veiculos = self.veiculoRep.findByInput(input, limit, orderBy)
+                veiculos = VeiculoRepository.findByInput(input, limit, orderBy)
                 if veiculos:
                     for veiculo in veiculos:
                         _veiculos.append(model_to_dict(veiculo))
@@ -270,41 +273,44 @@ class ClienteController:
                 transaction.rollback()
                 return e
 
-    def excluirCliente(self, id):
+    @staticmethod
+    def excluirCliente(id):
         with db.atomic() as transaction:
             try:
-                orcamento = self.orcamentoRep.findByClienteID(id)
+                orcamento = OrcamentoRepository.findByClienteID(id)
                 if orcamento:
                     raise Exception(
                         "Não é possível excluir este cliente, ele está vinculado à orçamento(s)."
                     )
-                linesAffected = self.clienteRep.delete(id)
+                linesAffected = ClienteRepository.delete(id)
                 return linesAffected
             except Exception as e:
                 transaction.rollback()
                 return e
 
-    def excluirVeiculo(self, id):
+    @staticmethod
+    def excluirVeiculo(id):
         with db.atomic() as transaction:
             try:
-                orcamento = self.orcamentoRep.findByVeiculoID(id)
+                orcamento = OrcamentoRepository.findByVeiculoID(id)
                 if orcamento:
                     raise Exception(
                         "Não é possível excluir este veículo, ele está vinculado à orçamento(s)."
                     )
-                linesAffected = self.veiculoRep.delete(id)
+                linesAffected = VeiculoRepository.delete(id)
                 return linesAffected
             except Exception as e:
                 transaction.rollback()
                 return e
 
-    def excluirVeiculoCliente(self, veiculo, cliente):
+    @staticmethod
+    def excluirVeiculoCliente(veiculo, cliente):
         with db.atomic() as transaction:
             try:
-                veiculoCliente = self.veiculoClienteRep.findByVeiculoAndCliente(
+                veiculoCliente = VeiculoClienteRepository.findByVeiculoAndCliente(
                     veiculo, cliente
                 )
-                linesAffected = self.veiculoClienteRep.delete(
+                linesAffected = VeiculoClienteRepository.delete(
                     veiculoCliente.veiculo, veiculoCliente.cliente
                 )
                 if linesAffected != 0:

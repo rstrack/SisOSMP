@@ -5,24 +5,30 @@ class CidadeRepository:
     def __init__(self):
         pass
 
-    def save(self, cidade: dict):
+    @staticmethod
+    def save(cidade: dict):
         return Cidade.create(**cidade)
 
-    def update(self, cidade: dict):
+    @staticmethod
+    def update(cidade: dict):
         _cidade = Cidade(**cidade)
         _cidade.save()
         return _cidade
 
-    def delete(self, id):
+    @staticmethod
+    def delete(id):
         return Cidade.delete_by_id(id)
 
-    def findAll(self):
+    @staticmethod
+    def findAll():
         return Cidade.select()
 
-    def findByID(seld, id):
+    @staticmethod
+    def findByID(id):
         return Cidade.select().where(Cidade.idCidade == id).get()
 
-    def findCidadeByNomeAndUF(self, nome, uf):
+    @staticmethod
+    def findCidadeByNomeAndUF(nome, uf):
         cidade = Cidade.select().where((Cidade.nome == nome) & (Cidade.uf == uf))
         if cidade:
             return cidade.get()

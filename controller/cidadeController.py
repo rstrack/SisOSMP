@@ -5,14 +5,12 @@ from repository.cidadeRepository import CidadeRepository
 
 
 class CidadeController:
-    def __init__(self):
-        self.cidadeRep = CidadeRepository()
-
-    def listarCidades(self):
+    @staticmethod
+    def listarCidades():
         with db.atomic() as transaction:
             try:
                 _listaCidades = []
-                listaCidades = self.cidadeRep.findAll()
+                listaCidades = CidadeRepository.findAll()
                 if listaCidades:
                     for cidade in listaCidades:
                         _listaCidades.append(model_to_dict(cidade))
@@ -22,13 +20,15 @@ class CidadeController:
                 transaction.rollback()
                 return e
 
-    def getCidade(self, id):
+    @staticmethod
+    def getCidade(id):
         with db.atomic() as transaction:
             try:
-                cidade = self.cidadeRep.findByID(id)
+                cidade = CidadeRepository.findByID(id)
                 if cidade:
                     return model_to_dict(cidade)
                 return None
             except Exception as e:
                 transaction.rollback()
                 return e
+

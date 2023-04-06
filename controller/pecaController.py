@@ -6,54 +6,54 @@ from repository.pecaRepository import PecaRepository
 
 
 class PecaController:
-    def __init__(self):
-        self.pecaRep = PecaRepository()
-        self.itemPecaRep = ItemPecaRepository()
-
-    def salvarPeca(self, peca: dict):
+    @staticmethod
+    def salvarPeca(peca: dict):
         with db.atomic() as transaction:
             try:
-                qPeca = self.pecaRep.findByDescricao(peca["descricao"])
+                qPeca = PecaRepository.findByDescricao(peca["descricao"])
                 if qPeca:
                     raise Exception(f"A peça {qPeca.descricao} já está cadastrada!")
-                return self.pecaRep.save(peca)
+                return PecaRepository.save(peca)
             except Exception as e:
                 transaction.rollback()
                 return e
 
-    def salvarPecas(self, pecas: list):
+    @staticmethod
+    def salvarPecas(pecas: list):
         with db.atomic() as transaction:
             try:
                 for peca in pecas:
-                    _peca = self.pecaRep.findByDescricao(peca["descricao"])
+                    _peca = PecaRepository.findByDescricao(peca["descricao"])
                     if _peca:
                         raise Exception(f"A peça {_peca.descricao} já está cadastrada!")
-                    self.pecaRep.save(peca)
+                    PecaRepository.save(peca)
                 return True
             except Exception as e:
                 transaction.rollback()
                 return e
 
-    def editarPeca(self, id, peca: dict):
+    @staticmethod
+    def editarPeca(id, peca: dict):
         with db.atomic() as transaction:
             try:
-                qPeca = self.pecaRep.findByDescricao(peca["descricao"])
+                qPeca = PecaRepository.findByDescricao(peca["descricao"])
                 if qPeca:
                     if str(qPeca.idPeca) != str(id):
                         raise Exception(
                             f"A peça {peca['descricao']} já está cadastrada!"
                         )
                 peca["idPeca"] = id
-                _peca = self.pecaRep.update(peca)
+                _peca = PecaRepository.update(peca)
                 return _peca
             except Exception as e:
                 transaction.rollback()
                 return e
 
-    def listarPecas(self):
+    @staticmethod
+    def listarPecas():
         with db.atomic() as transaction:
             try:
-                pecas = self.pecaRep.findAll()
+                pecas = PecaRepository.findAll()
                 if pecas:
                     return pecas.dicts()
                 return None
@@ -61,10 +61,11 @@ class PecaController:
                 transaction.rollback()
                 return e
 
-    def getPeca(self, id):
+    @staticmethod
+    def getPeca(id):
         with db.atomic() as transaction:
             try:
-                peca = self.pecaRep.findByID(id)
+                peca = PecaRepository.findByID(id)
                 if peca:
                     return model_to_dict(peca)
                 return None
@@ -72,10 +73,11 @@ class PecaController:
                 transaction.rollback()
                 return e
 
-    def getPecaByDescricao(self, desc):
+    @staticmethod
+    def getPecaByDescricao(desc):
         with db.atomic() as transaction:
             try:
-                peca = self.pecaRep.findByDescricao(desc)
+                peca = PecaRepository.findByDescricao(desc)
                 if peca:
                     return model_to_dict(peca)
                 return None
@@ -83,10 +85,11 @@ class PecaController:
                 transaction.rollback()
                 return e
 
-    def buscarPeca(self, input, limit=None, orderBy=None):
+    @staticmethod
+    def buscarPeca(input, limit=None, orderBy=None):
         with db.atomic() as transaction:
             try:
-                pecas = self.pecaRep.findByInput(input, limit, orderBy)
+                pecas = PecaRepository.findByInput(input, limit, orderBy)
                 if pecas:
                     _pecas = []
                     for peca in pecas:
@@ -97,15 +100,16 @@ class PecaController:
                 transaction.rollback()
                 return e
 
-    def excluirPeca(self, id):
+    @staticmethod
+    def excluirPeca(id):
         with db.atomic() as transaction:
             try:
-                _itemPeca = self.itemPecaRep.findByPeca(id)
+                _itemPeca = ItemPecaRepository.findByPeca(id)
                 if _itemPeca:
                     raise Exception(
                         "Não é possível excluir esta peça, ela está vinculada à orçamento(s)."
                     )
-                linesAffected = self.pecaRep.delete(id)
+                linesAffected = PecaRepository.delete(id)
                 if linesAffected != 0:
                     return True
                 return False

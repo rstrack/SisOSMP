@@ -5,33 +5,38 @@ from model.modelo import Cliente, Fone, Marca, Orcamento, Veiculo
 
 
 class OrcamentoRepository:
-    def __init__(self):
-        pass
-
-    def save(self, orcamento: dict):
+    @staticmethod
+    def save(orcamento: dict):
         return Orcamento.create(**orcamento)
-
-    def update(self, orcamento: dict):
+    
+    @staticmethod
+    def update(orcamento: dict):
         _orcamento = Orcamento(**orcamento)
         _orcamento.save()
         return _orcamento
 
-    def delete(self, id):
+    @staticmethod
+    def delete(id):
         return Orcamento.delete_by_id(id)
 
-    def findAll(self, limit):
+    @staticmethod
+    def findAll(limit):
         return Orcamento.select().order_by(-Orcamento.dataOrcamento).limit(limit)
 
-    def findByID(self, id):
+    @staticmethod
+    def findByID(id):
         return Orcamento.select().where(Orcamento.idOrcamento == id).get()
 
-    def findByClienteID(self, id):
+    @staticmethod
+    def findByClienteID(id):
         return Orcamento.select().where(Orcamento.cliente == id)
 
-    def findByVeiculoID(self, id):
+    @staticmethod
+    def findByVeiculoID(id):
         return Orcamento.select().where(Orcamento.veiculo == id)
 
-    def findByStatus(self, status, limit):
+    @staticmethod
+    def findByStatus(status, limit):
         return (
             Orcamento.select()
             .where(Orcamento.status == status)
@@ -39,7 +44,8 @@ class OrcamentoRepository:
             .limit(limit)
         )
 
-    def findByInput(self, status, input: str, limit=None, orderBy=None):
+    @staticmethod
+    def findByInput(status, input: str, limit=None, orderBy=None):
         match orderBy:
             case 0:
                 order_by = -Orcamento.dataOrcamento

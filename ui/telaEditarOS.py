@@ -4,10 +4,16 @@ from decimal import Decimal
 
 from PyQt6 import QtCore, QtGui, QtWidgets
 
+from controller.clienteController import ClienteController
+from controller.marcaController import MarcaController
+from controller.orcamentoController import OrcamentoController
+from controller.pecaController import PecaController
+from controller.servicoController import ServicoController
+
 from ui.help import HELPEDITAROS, help
 from ui.hoverButton import HoverButton
 from ui.messageBox import MessageBox
-from util.container import handle_deps
+
 from util.gerar_pdf import GeraPDF
 
 SIGLAESTADOS = [
@@ -64,12 +70,6 @@ class TelaEditarOS(QtWidgets.QMainWindow):
 
     def __init__(self):
         super(TelaEditarOS, self).__init__()
-        self.orcamentoCtrl = handle_deps.getDep("ORCAMENTOCTRL")
-        self.clienteCtrl = handle_deps.getDep("CLIENTECTRL")
-        self.pecaCtrl = handle_deps.getDep("PECACTRL")
-        self.servicoCtrl = handle_deps.getDep("SERVICOCTRL")
-        self.marcaCtrl = handle_deps.getDep("MARCACTRL")
-        self.buscaCEP = handle_deps.getDep("CEP")
         self.orcamentoID = None
         self.setupUi()
 
@@ -707,7 +707,7 @@ class TelaEditarOS(QtWidgets.QMainWindow):
     def setMarcas(self):
         currentText = self.comboBoxMarca.currentText()
         self.comboBoxMarca.clear()
-        marcas = self.marcaCtrl.listarMarcas()
+        marcas = MarcaController.listarMarcas()
         for marca in marcas:
             self.comboBoxMarca.addItem(marca["nome"])
         self.comboBoxMarca.setCurrentIndex(
@@ -715,8 +715,8 @@ class TelaEditarOS(QtWidgets.QMainWindow):
         )
 
     def setCompleters(self):
-        pecas = self.pecaCtrl.listarPecas()
-        servicos = self.servicoCtrl.listarServicos()
+        pecas = PecaController.listarPecas()
+        servicos = ServicoController.listarServicos()
         listaPecas = []
         listaServicos = []
         if pecas:
@@ -877,14 +877,14 @@ class TelaEditarOS(QtWidgets.QMainWindow):
         )
 
     def buscarPeca(self, lineEditDesc, comboBoxUn, lineEditValor):
-        qPeca = self.pecaCtrl.getPecaByDescricao(lineEditDesc.text())
+        qPeca = PecaController.getPecaByDescricao(lineEditDesc.text())
         if qPeca:
             comboBoxUn.setCurrentText(qPeca["un"])
             lineEditValor.setText("{:.2f}".format(qPeca["valor"]).replace(".", ",", 1))
             self.setValor()
 
     def buscarServico(self, lineEditDesc, lineEditValor):
-        qServico = self.servicoCtrl.getServicoByDescricao(lineEditDesc.text())
+        qServico = ServicoController.getServicoByDescricao(lineEditDesc.text())
         if qServico:
             lineEditValor.setText(
                 "{:.2f}".format(qServico["valor"]).replace(".", ",", 1)
@@ -895,18 +895,18 @@ class TelaEditarOS(QtWidgets.QMainWindow):
         self.resetarTela()
         self.setCompleters()
         self.orcamentoID = id
-        orcamento = self.orcamentoCtrl.getOrcamento(id)
-        fones = self.clienteCtrl.listarFones(orcamento["cliente"]["idCliente"])
-        itemPecas = self.orcamentoCtrl.listarItemPecas(orcamento["idOrcamento"])
-        itemServicos = self.orcamentoCtrl.listarItemServicos(orcamento["idOrcamento"])
+        orcamento = OrcamentoController.getOrcamento(id)
+        fones = ClienteController.listarFones(orcamento["cliente"]["idCliente"])
+        itemPecas = OrcamentoController.listarItemPecas(orcamento["idOrcamento"])
+        itemServicos = OrcamentoController.listarItemServicos(orcamento["idOrcamento"])
         if itemPecas:
             for item in itemPecas:
-                peca = self.pecaCtrl.getPeca(item["peca"])
+                peca = PecaController.getPeca(item["peca"])
                 item["descricao"] = peca["descricao"]
                 item["un"] = peca["un"]
         if itemServicos:
             for item in itemServicos:
-                servico = self.servicoCtrl.getServico(item["servico"])
+                servico = ServicoController.getServico(item["servico"])
                 item["descricao"] = servico["descricao"]
         listaFones = [None, None]
         if fones:
@@ -953,7 +953,7 @@ class TelaEditarOS(QtWidgets.QMainWindow):
             servicos = self.getServicos()
             orcamento = self.getDadosOrcamento()
             orcamento["valorTotal"] = self.valorTotal
-            r = self.orcamentoCtrl.editarOrcamento(
+            r = OrcamentoController.editarOrcamento(
                 self.orcamentoID, orcamento, pecas, servicos
             )
             if isinstance(r, Exception):
@@ -979,7 +979,7 @@ class TelaEditarOS(QtWidgets.QMainWindow):
             msg.exec()
 
     def finalizarOS(self):
-        r = self.orcamentoCtrl.finalizarOrcamento(self.orcamentoID)
+        r = OrcamentoController.finalizarOrcamento(self.orcamentoID)
         if isinstance(r, Exception):
             raise Exception(r)
         msg = QtWidgets.QMessageBox()
@@ -1008,28 +1008,28 @@ class TelaEditarOS(QtWidgets.QMainWindow):
             servicos = self.getServicos()
             orcamento = self.getDadosOrcamento()
             orcamento["valorTotal"] = self.valorTotal
-            r = self.orcamentoCtrl.editarOrcamento(
+            r = OrcamentoController.editarOrcamento(
                 self.orcamentoID, orcamento, pecas, servicos
             )
             if isinstance(id, Exception):
                 return
-            _orcamento = self.orcamentoCtrl.getOrcamento(r["idOrcamento"])
-            fones = self.clienteCtrl.listarFones(_orcamento["cliente"]["idCliente"])
+            _orcamento = OrcamentoController.getOrcamento(r["idOrcamento"])
+            fones = ClienteController.listarFones(_orcamento["cliente"]["idCliente"])
             if fones:
                 fones = list(fones)
-            itemPecas = self.orcamentoCtrl.listarItemPecas(_orcamento["idOrcamento"])
+            itemPecas = OrcamentoController.listarItemPecas(_orcamento["idOrcamento"])
             if itemPecas:
                 for item in itemPecas:
-                    peca = self.pecaCtrl.getPeca(item["peca"])
+                    peca = PecaController.getPeca(item["peca"])
                     item["descricao"] = peca["descricao"]
                     item["un"] = peca["un"]
                 itemPecas = list(itemPecas)
-            itemServicos = self.orcamentoCtrl.listarItemServicos(
+            itemServicos = OrcamentoController.listarItemServicos(
                 _orcamento["idOrcamento"]
             )
             if itemServicos:
                 for item in itemServicos:
-                    item["descricao"] = self.servicoCtrl.getServico(item["servico"])[
+                    item["descricao"] = ServicoController.getServico(item["servico"])[
                         "descricao"
                     ]
                 itemServicos = list(itemServicos)

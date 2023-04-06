@@ -2,36 +2,40 @@ from model.modelo import ItemServico
 
 
 class ItemServicoRepository:
-    def __init__(self) -> None:
-        pass
-
-    def save(self, itemServico: dict):
+    @staticmethod
+    def save(itemServico: dict):
         return ItemServico.create(**itemServico)
 
-    def update(self, itemServico: dict):
+    @staticmethod
+    def update(itemServico: dict):
         _itemServico = ItemServico(**itemServico)
         _itemServico.save()
         return _itemServico
 
-    def delete(self, id):
+    @staticmethod
+    def delete(id):
         return ItemServico.delete_by_id(id)
 
-    def findAll(self):
+    @staticmethod
+    def findAll():
         return ItemServico.select()
 
-    def findByOrcamento(self, orcamento):
+    @staticmethod
+    def findByOrcamento(orcamento):
         itemServicos = ItemServico.select().where(ItemServico.orcamento == orcamento)
         if itemServicos:
             return itemServicos
         return None
 
-    def findByServico(self, servico):
+    @staticmethod
+    def findByServico(servico):
         itemServicos = ItemServico.select().where(ItemServico.servico == servico)
         if itemServicos:
             return itemServicos
         return None
 
-    def findByOrcamentoAndServico(self, orcamento, servico):
+    @staticmethod
+    def findByOrcamentoAndServico(orcamento, servico):
         _itemServico = ItemServico.select().where(
             (ItemServico.orcamento == orcamento) & (ItemServico.servico == servico)
         )

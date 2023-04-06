@@ -1,9 +1,10 @@
 from PyQt6 import QtCore, QtGui, QtWidgets
 
+from controller.servicoController import ServicoController
+
 from ui.help import HELPCONSULTASERVICO, help
 from ui.hoverButton import HoverButton
 from ui.infiniteScroll import AlignDelegate, InfiniteScrollTableModel
-from util.container import handle_deps
 
 
 class TelaConsultaServico(QtWidgets.QMainWindow):
@@ -11,7 +12,6 @@ class TelaConsultaServico(QtWidgets.QMainWindow):
 
     def __init__(self):
         super(TelaConsultaServico, self).__init__()
-        self.servicoCtrl = handle_deps.getDep("SERVICOCTRL")
         self.busca = ""
         self.orderBy = 0
         self.setupUi()
@@ -179,7 +179,7 @@ class TelaConsultaServico(QtWidgets.QMainWindow):
         self.listarServicos()
 
     def maisServicos(self, qtde):
-        servicos = self.servicoCtrl.buscarServico(
+        servicos = ServicoController.buscarServico(
             self.busca, self.linhasCarregadas + qtde, self.orderBy
         )
         if not servicos:
@@ -242,7 +242,7 @@ class TelaConsultaServico(QtWidgets.QMainWindow):
                 msgBox.exec()
                 if msgBox.clickedButton() == y:
                     id = self.tabela.model().index(linha[0].row(), 0).data()
-                    r = self.servicoCtrl.excluirServico(id)
+                    r = ServicoController.excluirServico(id)
                     if isinstance(r, Exception):
                         raise Exception(r)
                     elif not r:

@@ -2,10 +2,11 @@ from decimal import Decimal
 
 from PyQt6 import QtCore, QtGui, QtWidgets
 
+from controller.pecaController import PecaController
+
 from ui.help import HELPEDITARPECA, help
 from ui.hoverButton import HoverButton
 from ui.telaCadastroOrcamento import UNIDADES
-from util.container import handle_deps
 
 
 class TelaEditarPeca(QtWidgets.QMainWindow):
@@ -13,7 +14,6 @@ class TelaEditarPeca(QtWidgets.QMainWindow):
 
     def __init__(self):
         super(TelaEditarPeca, self).__init__()
-        self.pecaCtrl = handle_deps.getDep("PECACTRL")
         self.pecaID = None
         self.setupUi()
 
@@ -173,7 +173,7 @@ class TelaEditarPeca(QtWidgets.QMainWindow):
     def editarPeca(self):
         try:
             peca = self.getPeca()
-            r = self.pecaCtrl.editarPeca(self.pecaID, peca)
+            r = PecaController.editarPeca(self.pecaID, peca)
             if isinstance(r, Exception):
                 raise Exception(r)
             msg = QtWidgets.QMessageBox()
@@ -204,7 +204,7 @@ class TelaEditarPeca(QtWidgets.QMainWindow):
 
     def renderEditar(self, id):
         self.pecaID = id
-        peca = self.pecaCtrl.getPeca(id)
+        peca = PecaController.getPeca(id)
         self.lineEditDescricao.setText(peca["descricao"])
         self.comboboxun.setCurrentIndex(
             self.comboboxun.findText(peca["un"], QtCore.Qt.MatchFlag.MatchExactly)

@@ -2,33 +2,37 @@ from model.modelo import Servico
 
 
 class ServicoRepository:
-    def __init__(self) -> None:
-        pass
-
-    def save(self, servico: dict):
+    @staticmethod
+    def save(servico: dict):
         return Servico.create(**servico)
 
-    def update(self, servico: dict):
+    @staticmethod
+    def update(servico: dict):
         _servico = Servico(**servico)
         _servico.save()
         return _servico
 
-    def delete(self, id):
+    @staticmethod
+    def delete(id):
         return Servico.delete_by_id(id)
 
-    def findAll(self):
+    @staticmethod
+    def findAll():
         return Servico.select().order_by(Servico.descricao)
 
-    def findByID(self, id):
+    @staticmethod
+    def findByID(id):
         return Servico.select().where(Servico.idServico == id).get()
 
-    def findByDescricao(self, desc):
+    @staticmethod
+    def findByDescricao(desc):
         servico = Servico.select().where(Servico.descricao == desc)
         if servico:
             return servico.get()
         return None
 
-    def findByInput(self, input, limit=None, orderBy=None):
+    @staticmethod
+    def findByInput(input, limit=None, orderBy=None):
         match orderBy:
             case 0:
                 order_by = Servico.descricao

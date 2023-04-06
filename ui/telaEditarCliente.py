@@ -2,9 +2,12 @@ import threading
 
 from PyQt6 import QtCore, QtGui, QtWidgets
 
+from controller.clienteController import ClienteController
+
 from ui.help import HELPEDITARCLIENTE, help
 from ui.hoverButton import HoverButton
-from util.container import handle_deps
+
+from util.buscaCEP import BuscaCEP
 
 SIGLAESTADOS = [
     "AC",
@@ -42,10 +45,6 @@ class TelaEditarCliente(QtWidgets.QMainWindow):
 
     def __init__(self):
         super(TelaEditarCliente, self).__init__()
-        self.clienteCtrl = handle_deps.getDep("CLIENTECTRL")
-        self.cidadeCtrl = handle_deps.getDep("CIDADECTRL")
-        self.marcaCtrl = handle_deps.getDep("MARCACTRL")
-        self.buscaCEP = handle_deps.getDep("CEP")
         self.setupUi()
 
     def setupUi(self):
@@ -278,7 +277,7 @@ class TelaEditarCliente(QtWidgets.QMainWindow):
         try:
             cliente = self.getDadosCliente()
             fones = self.getFones()
-            r = self.clienteCtrl.editarCliente(self.clienteID, cliente, fones)
+            r = ClienteController.editarCliente(self.clienteID, cliente, fones)
             if isinstance(r, Exception):
                 raise Exception(r)
             msg = QtWidgets.QMessageBox()
@@ -451,8 +450,8 @@ class TelaEditarCliente(QtWidgets.QMainWindow):
         self.limparCampos()
         self.setCompleters()
         self.clienteID = id
-        cliente = self.clienteCtrl.getCliente(id)
-        fones = self.clienteCtrl.listarFones(cliente["idCliente"])
+        cliente = ClienteController.getCliente(id)
+        fones = ClienteController.listarFones(cliente["idCliente"])
         listaFones = [None, None]
         if fones:
             for x in range(len(fones)):
@@ -487,7 +486,7 @@ class TelaEditarCliente(QtWidgets.QMainWindow):
         t.start()
 
     def threadCEP(self, cep):
-        dados = self.buscaCEP.buscarCEP(cep)
+        dados = BuscaCEP.buscarCEP(cep)
         if dados is None:
             return
         if "erro" in dados:
