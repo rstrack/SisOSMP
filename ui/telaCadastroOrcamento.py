@@ -271,7 +271,7 @@ class TelaCadastroOrcamento(QtWidgets.QMainWindow):
         self.lineEditModelo.setMaxLength(30)
         self.gridLayoutVeiculo.addWidget(self.lineEditModelo, 2, 1, 1, 1)
         self.lineEditPlaca = QtWidgets.QLineEdit(self.groupBoxVeiculo)
-        self.lineEditPlaca.setMaxLength(7)
+        self.lineEditPlaca.setMaxLength(8)
         self.gridLayoutVeiculo.addWidget(self.lineEditPlaca, 2, 2, 1, 1)
         self.lineEditAno = QtWidgets.QLineEdit(self.groupBoxVeiculo)
         self.lineEditAno.setMaxLength(4)

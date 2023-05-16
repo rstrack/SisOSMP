@@ -42,7 +42,7 @@ SIGLAESTADOS = [
     "TO",
 ]
 
-REGEXPLACA = "([A-Za-z][A-Za-z][A-Za-z0-9][0-9][A-Za-z0-9][A-Za-z0-9][A-Za-z0-9])|([A-Za-z][A-Za-z][A-Za-z][0-9][0-9][0-9][0-9])"
+REGEXPLACA = "([A-Za-z]{2}[A-Za-z0-9][0-9][A-Za-z0-9]{3})|([A-Za-z]{3}-?[0-9]{4})"
 
 
 class TelaCadastroCliente(QtWidgets.QMainWindow):
@@ -214,7 +214,7 @@ class TelaCadastroCliente(QtWidgets.QMainWindow):
         self.lineEditModelo.setMaxLength(30)
         self.gridLayout4.addWidget(self.lineEditModelo, 1, 1, 1, 1)
         self.lineEditPlaca = QtWidgets.QLineEdit(self.groupBoxVeiculo)
-        self.lineEditPlaca.setMaxLength(7)
+        self.lineEditPlaca.setMaxLength(8)
         self.gridLayout4.addWidget(self.lineEditPlaca, 1, 2, 1, 1)
         self.labelAno = QtWidgets.QLabel(self.groupBoxVeiculo)
         self.gridLayout4.addWidget(self.labelAno, 2, 0, 1, 1)
@@ -347,12 +347,10 @@ class TelaCadastroCliente(QtWidgets.QMainWindow):
     def limparCliente(self):
         for lineedit in self.groupBoxCliente.findChildren(QtWidgets.QLineEdit):
             lineedit.clear()
-        self.groupBoxCliente.setChecked(True)
 
     def limparVeiculo(self):
         for lineedit in self.groupBoxVeiculo.findChildren(QtWidgets.QLineEdit):
             lineedit.clear()
-        self.groupBoxVeiculo.setChecked(True)
 
     def resetarTela(self):
         self.limparCliente()
