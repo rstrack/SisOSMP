@@ -1,7 +1,14 @@
+# arquivos de teste
 teste.py
 dados.py
 gerador.py
+
+# icone do executável
 icon-exe.ico
+
+# output do pyinstaller
+output/
+
 poetry.lock
 # Byte-compiled / optimized / DLL files
 __pycache__/
