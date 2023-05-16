@@ -3,6 +3,8 @@ from PyQt6 import QtCore, QtGui, QtWidgets
 
 from controller.clienteController import ClienteController
 from controller.orcamentoController import OrcamentoController
+from controller.pecaController import PecaController
+from controller.servicoController import ServicoController
 
 from ui.help import HELPCONSULTAORCAMENTO, help
 from ui.hoverButton import HoverButton
@@ -389,40 +391,39 @@ class TelaConsultaOrcamento(QtWidgets.QMainWindow):
         linha = self.tabela.selectionModel().selectedRows()
         if linha:
             id = self.tabela.model().index(linha[0].row(), 0).data()
-        return
-        orcamento = OrcamentoController.getOrcamento(id)
-        fones = ClienteController.listarFones(orcamento["cliente"]["idCliente"])
-        if fones:
-            fones = list(fones)
-        itemPecas = OrcamentoController.listarItemPecas(orcamento["idOrcamento"])
-        if itemPecas:
-            for item in itemPecas:
-                peca = PecaController.getPeca(item["peca"])
-                item["descricao"] = peca["descricao"]
-                item["un"] = peca["un"]
-            itemPecas = list(itemPecas)
-        itemServicos = OrcamentoController.listarItemServicos(orcamento["idOrcamento"])
-        if itemServicos:
-            for item in itemServicos:
-                item["descricao"] = ServicoController.getServico(item["servico"])[
-                    "descricao"
-                ]
-            itemServicos = list(itemServicos)
-        msg = MessageBox()
-        r = msg.question("Deseja salvar o arquivo?")
-        if r == "cancelar":
-            return
-        elif r == "nao":
-            pdf = GeraPDF()
-            pdf.generatePDF(orcamento, fones, itemServicos, itemPecas)
-        else:
-            window = QtWidgets.QMainWindow()
-            fd = QtWidgets.QFileDialog()
-            path = fd.getExistingDirectory(window, "Salvar como", "./")
-            if path == "":
+            orcamento = OrcamentoController.getOrcamento(id)
+            fones = ClienteController.listarFones(orcamento["cliente"]["idCliente"])
+            if fones:
+                fones = list(fones)
+            itemPecas = OrcamentoController.listarItemPecas(orcamento["idOrcamento"])
+            if itemPecas:
+                for item in itemPecas:
+                    peca = PecaController.getPeca(item["peca"])
+                    item["descricao"] = peca["descricao"]
+                    item["un"] = peca["un"]
+                itemPecas = list(itemPecas)
+            itemServicos = OrcamentoController.listarItemServicos(orcamento["idOrcamento"])
+            if itemServicos:
+                for item in itemServicos:
+                    item["descricao"] = ServicoController.getServico(item["servico"])[
+                        "descricao"
+                    ]
+                itemServicos = list(itemServicos)
+            msg = MessageBox()
+            r = msg.question("Deseja salvar o arquivo?")
+            if r == "cancelar":
                 return
-            pdf = GeraPDF()
-            pdf.generatePDF(orcamento, fones, itemServicos, itemPecas, path)
+            elif r == "nao":
+                pdf = GeraPDF()
+                pdf.generatePDF(orcamento, fones, itemServicos, itemPecas)
+            else:
+                window = QtWidgets.QMainWindow()
+                fd = QtWidgets.QFileDialog()
+                path = fd.getExistingDirectory(window, "Salvar como", "./")
+                if path == "":
+                    return
+                pdf = GeraPDF()
+                pdf.generatePDF(orcamento, fones, itemServicos, itemPecas, path)
 
     def renderBotoes(self):
         if self.comboBoxStatus.currentIndex() == 1:
