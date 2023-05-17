@@ -1,6 +1,6 @@
 import locale
 import os
-
+import re
 import phonenumbers
 from reportlab.lib import colors
 from reportlab.lib.pagesizes import A4
@@ -8,6 +8,7 @@ from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
 from reportlab.lib.units import inch
 from reportlab.pdfgen import canvas
 from reportlab.platypus import Paragraph, Table, TableStyle
+from reportlab.lib.enums import TA_JUSTIFY, TA_LEFT, TA_CENTER
 
 
 class GeraPDF:
@@ -28,13 +29,21 @@ class GeraPDF:
 
     # DICT DO ORÇAMENTO GERADO AO SALVAR/EDITAR
     # Configurações para geração do pdf
-    def tabelas_pos(self, pdf, orcamento: dict, l, g):
+    def tabelas_pos(self, pdf, orcamento: dict, l, g, somapeca, somaservicos):
         pdf.setFont("Helvetica-Bold", 10)
-        pdf.drawString(428, l + 4, "Valor Total")
+        pdf.drawString(410, l + 4, "Total Peças")
+        pdf.drawString(410, l - 11, "Total Serviços")
+        pdf.drawString(410, l - 26, "Valor Total")
         pdf.setFont("Helvetica", 10)
-        pdf.drawRightString(550, l + 4, str(locale.currency(orcamento["valorTotal"])))
-        pdf.rect(425, l, 59, 15, fill=False, stroke=True)
+        pdf.drawRightString(550, l - 26, str(locale.currency(orcamento["valorTotal"])))
+        pdf.drawRightString(550, l + 4, str(locale.currency(somapeca)))
+        pdf.drawRightString(550, l - 11, str(locale.currency(somaservicos)))
+        pdf.rect(407, l, 77, 15, fill=False, stroke=True)
         pdf.rect(484, l, 1 * inch, 15, fill=False, stroke=True)
+        pdf.rect(407, l - 15, 77, 15, fill=False, stroke=True)
+        pdf.rect(484, l - 15, 1 * inch, 15, fill=False, stroke=True)
+        pdf.rect(407, l - 30, 77, 15, fill=False, stroke=True)
+        pdf.rect(484, l - 30, 1 * inch, 15, fill=False, stroke=True)
         pdf.setFont("Helvetica-Bold", 10)
         pdf.drawString(44, g + 20, "Observações:")
         pdf.setFont("Helvetica", 10)
@@ -49,6 +58,12 @@ class GeraPDF:
         if cep:
             cepformatado = f"{cep[0:5]}-{cep[5:]}"
             return cepformatado
+        return str(" ")
+
+    def formatar_placa(self, placa):
+        if placa:
+            placaformatada = f"{placa[0:3]}-{placa[3:]}"
+            return placaformatada
         return str(" ")
 
     def paginacao(self, pdf, cont):
@@ -71,27 +86,27 @@ class GeraPDF:
             return fone
 
     def generatePDF(
-        self,
-        orcamento: dict,
-        listaFones: list[dict],
-        listaServicos: list[dict],
-        listaPecas: list[dict] = None,
-        path: str = None,
+            self,
+            orcamento: dict,
+            listaFones: list[dict],
+            listaServicos: list[dict],
+            listaPecas: list[dict] = None,
+            path: str = None,
     ):
         nomearquivo = f"{orcamento['veiculo']['modelo']} {orcamento['veiculo']['placa']} ({orcamento['cliente']['nome']}) {orcamento['dataOrcamento'].strftime('%d-%m-%Y')}.pdf"
         nomearquivo = (
             nomearquivo.replace("/", "-")
-            .replace("#", "")
-            .replace("<", "")
-            .replace(">", "")
-            .replace("!", "")
-            .replace("$", "")
-            .replace("+", "")
-            .replace("*", "")
-            .replace("{", "")
-            .replace("}", "")
-            .replace("|", "")
-            .replace("@", "")
+                .replace("#", "")
+                .replace("<", "")
+                .replace(">", "")
+                .replace("!", "")
+                .replace("$", "")
+                .replace("+", "")
+                .replace("*", "")
+                .replace("{", "")
+                .replace("}", "")
+                .replace("|", "")
+                .replace("@", "")
         )
         if path:
             pdf = canvas.Canvas(f"{path}\\{nomearquivo}", pagesize=A4)
@@ -184,7 +199,7 @@ class GeraPDF:
         if orcamento["cliente"]["cidade"] is None:
             pdf.drawString(245, 623, "Cidade: ")
             pdf.rect(39, 619, 203, 15, fill=False, stroke=True)
-            pdf.drawString(522, 623, "UF: ")
+            pdf.drawString(523, 623, "UF:")
             pdf.rect(520, 619, 36, 15, fill=False, stroke=True)
         else:
             pdf.drawString(
@@ -192,7 +207,7 @@ class GeraPDF:
             )
             pdf.rect(39, 619, 203, 15, fill=False, stroke=True)
             pdf.drawString(
-                521, 623, "UF: {}".format(orcamento["cliente"]["cidade"]["uf"])
+                523, 623, "UF:{}".format(orcamento["cliente"]["cidade"]["uf"])
             )
             pdf.rect(520, 619, 36, 15, fill=False, stroke=True)
         pdf.setFont("Helvetica-Bold", 12)
@@ -206,7 +221,10 @@ class GeraPDF:
             375, 583, "Ano: {}".format(str(orcamento["veiculo"]["ano"] or " "))
         )
         pdf.rect(370, 579, 55, 15, fill=False, stroke=True)
-        pdf.drawString(430, 583, "Placa: {}".format(orcamento["veiculo"]["placa"]))
+        if re.match("([A-Za-z]{3}[0-9]{4})", orcamento["veiculo"]["placa"]):
+            pdf.drawString(430, 583, "Placa: {}".format(self.formatar_placa(orcamento["veiculo"]["placa"])) or " ", )
+        else:
+            pdf.drawString(430, 583, "Placa: {}".format(orcamento["veiculo"]["placa"]))
         pdf.rect(425, 579, 131, 15, fill=False, stroke=True)
         pdf.drawString(44, 568, "Modelo: {}".format(orcamento["veiculo"]["modelo"]))
         pdf.rect(39, 564, 331, 15, fill=False, stroke=True)
@@ -228,20 +246,23 @@ class GeraPDF:
         else:
             pdf.setFont("Helvetica-Bold", 15)
             pdf.drawString(263, 729, "Orçamento")
+            pdf.setFont("Helvetica-Bold", 7)
+            pdf.drawString(44, 697, "*Orçamento sujeito a alteração.")
 
         # Tabelas de peças e serviços
         pdf.setFont("Helvetica-Bold", 12)
         pdf.drawString(253, 548, "Peças e Serviços")
         pecas = [
-            ["Nome da Peça", "UN", "Qtde", "Valor"],
+            ["Peças", "Qtde", "UN", "Valor UN", "Valor Total"],
         ]
-        servicos = [["Nome do Serviço", "Qtde", "Valor"]]
+        servicos = [["Serviços", "Valor Total"]]
+
         table_stylepecas = TableStyle(
             [
-                ("FONTNAME", (0, 0), (4, 0), "Helvetica-Bold"),
+                ("FONTNAME", (0, 0), (5, 0), "Helvetica-Bold"),
                 ("FONTSIZE", (0, 1), (1, -1), 9),
-                ("ALIGN", (1, 0), (-1, -1), "LEFT"),
-                ("ALIGN", (2, 0), (-1, -1), "RIGHT"),
+                ("ALIGN", (1, 0), (-1, -1), "RIGHT"),
+                ("ALIGN", (2, 0), (-1, -1), "LEFT"),
                 ("ALIGN", (3, 1), (-1, -1), "RIGHT"),
                 ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
                 ("INNERGRID", (0, 0), (-1, -1), 1, colors.black),
@@ -272,39 +293,82 @@ class GeraPDF:
         )
         table_stylepecaspag2 = TableStyle(
             [
-                ("FONTSIZE", (0, 0), (-1, -1), 9),
-                ("ALIGN", (0, 0), (-1, -1), "LEFT"),
-                ("ALIGN", (2, 0), (-1, -1), "RIGHT"),
-                ("ALIGN", (3, 0), (-1, -1), "RIGHT"),
+                ("FONTSIZE", (0, 1), (1, -1), 9),
+                ("ALIGN", (1, 0), (-1, -1), "RIGHT"),
+                ("ALIGN", (3, 1), (-1, -1), "RIGHT"),
                 ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
                 ("INNERGRID", (0, 0), (-1, -1), 1, colors.black),
                 ("BOX", (0, 0), (-1, -1), 1, colors.black),
             ]
         )
+
         # TRANSFORMAR PARA DICIONÁRIO
         if listaPecas:
             for dict in listaPecas:
+                dict["valortot"] = float(dict["valor"] * dict["qtde"])
                 pecas.append(
                     [
                         dict["descricao"],
-                        dict["un"],
                         round(dict["qtde"])
                         if float(dict["qtde"]).is_integer()
                         else dict["qtde"],
+                        dict["un"],
                         locale.currency(dict["valor"]),
+                        locale.currency(dict["valortot"]),
                     ]
                 )
+        somapeca = 0
+        for valor in pecas[1:]:
+            valorbruto = valor[4].replace('R$ ', "")
+            valorbruto = valorbruto.replace(',', '.')
+            somapeca += float(valorbruto)
 
         for dict in listaServicos:
             servicos.append(
-                [dict["descricao"], dict["qtde"], locale.currency(dict["valor"])]
+                [dict["descricao"], locale.currency(dict["valor"])]
             )
+        somaservicos = 0
+        for valor in servicos[1:]:
+            valorbruto = valor[1].replace('R$ ', "")
+            valorbruto = valorbruto.replace(',', '.')
+            somaservicos += float(valorbruto)
 
         y = 7.5 * inch
         width = 575
         height = 300
-        pdf.setFont("Helvetica", 10)
         countpage = 1
+        n = 0
+        style = getSampleStyleSheet()
+        styleN = style["BodyText"]
+        styleN.alignment = TA_LEFT
+        incre1 = 0
+        incre2 = 0
+        if listaPecas is not None:
+            for dict in listaPecas:
+                for n in range(len(pecas)):
+                    if n <= 26:
+                        if len(pecas[n][0]) >= 50:
+                            pecas[n][0] = [Paragraph(pecas[n][0], styleN)]
+                            pecas.insert(n + 1, [{}])
+                            table_stylepecas.add("FONTSIZE", (0, 1), (1, -1), 9)
+                            table_stylepecas.add("SPAN", (0, n), (0, n + 1))
+                            table_stylepecas.add("SPAN", (1, n), (1, n + 1))
+                            table_stylepecas.add("SPAN", (2, n), (2, n + 1))
+                            table_stylepecas.add("SPAN", (3, n), (3, n + 1))
+                            table_stylepecas.add("SPAN", (4, n), (4, n + 1))
+                            incre1 += 1
+                    else:
+                        if len(pecas[n][0]) >= 50:
+                            pecas[n][0] = [Paragraph(pecas[n][0], styleN)]
+                            pecas.insert(n + 1, [{}])
+                            table_stylepecaspag2.add("FONTSIZE", (0, 1), (1, -1), 9)
+                            table_stylepecaspag2.add('SPAN', (0, n - 27), (0, n - 26))
+                            table_stylepecaspag2.add('SPAN', (1, n - 27), (1, n - 26))
+                            table_stylepecaspag2.add('SPAN', (2, n - 27), (2, n - 26))
+                            table_stylepecaspag2.add("SPAN", (3, n - 27), (3, n - 26))
+                            table_stylepecaspag2.add("SPAN", (4, n - 27), (4, n - 26))
+                            incre2 += 1
+            incretotal = incre1 + incre2
         # Função para posicionar as tabelas de valores e o quadro de observações no pdf.
         # Formatação da primeira página (o máximo de linhas das tabelas que a primeira página pode suportar é 27)
         if len(pecas + servicos) >= 28:
@@ -320,21 +384,21 @@ class GeraPDF:
                 alturaser = y2 - 0.3 * inch
                 for _ in range(len(servicos)):
                     alturaser -= 0.2 * inch
-                l = alturaser - 0.3 * inch
-                g = l - 0.5 * inch
+                l = alturaser - 0.3 * inch * incre2
+                g = l - 1 * inch
                 f = Table(
                     pecas[0:27],
-                    colWidths=[5.18 * inch, 0.5 * inch, 0.5 * inch, 1 * inch],
+                    colWidths=[4.18 * inch, 0.5 * inch, 0.5 * inch, 1 * inch, 1 * inch],
                     rowHeights=0.2 * inch,
                 )
                 f2 = Table(
                     pecas[27:],
-                    colWidths=[5.18 * inch, 0.5 * inch, 0.5 * inch, 1 * inch],
+                    colWidths=[4.18 * inch, 0.5 * inch, 0.5 * inch, 1 * inch, 1 * inch],
                     rowHeights=0.2 * inch,
                 )
                 s2 = Table(
                     servicos,
-                    colWidths=[5.68 * inch, 0.5 * inch, 1 * inch],
+                    colWidths=[6.18 * inch, 1 * inch],
                     rowHeights=0.2 * inch,
                 )
                 f.setStyle(table_stylepecas)
@@ -349,7 +413,7 @@ class GeraPDF:
                 self.paginacao(pdf, (countpage + 1))
                 f2.drawOn(pdf, 39, y2)
                 s2.drawOn(pdf, 39, alturaser)
-                self.tabelas_pos(pdf, orcamento, l, g)
+                self.tabelas_pos(pdf, orcamento, l, g, somapeca, somaservicos)
             else:
                 # Caso a tabela peças seja vazia
                 if len(pecas) < 2:
@@ -363,15 +427,15 @@ class GeraPDF:
                     for _ in range(len(servicos[tamanho_ser:])):
                         alturaser -= 0.2 * inch
                     l = alturaser - 0.3 * inch
-                    g = l - (0.5 * inch)
+                    g = l - (1 * inch)
                     s = Table(
                         servicos[0:tamanho_ser],
-                        colWidths=[5.68 * inch, 0.5 * inch, 1 * inch],
+                        colWidths=[6.18 * inch, 1 * inch],
                         rowHeights=0.2 * inch,
                     )
                     s2 = Table(
                         servicos[tamanho_ser:],
-                        colWidths=[5.68 * inch, 0.5 * inch, 1 * inch],
+                        colWidths=[6.18 * inch, 1 * inch],
                         rowHeights=0.2 * inch,
                     )
                     s2.setStyle(table_styleservicopag2)
@@ -383,7 +447,7 @@ class GeraPDF:
                     pdf.showPage()
                     self.paginacao(pdf, (countpage + 1))
                     s2.drawOn(pdf, 39, alturaser)
-                    self.tabelas_pos(pdf, orcamento, l, g)
+                    self.tabelas_pos(pdf, orcamento, l, g, somapeca, somaservicos)
 
                 else:
                     y = 7.5 * inch
@@ -401,13 +465,13 @@ class GeraPDF:
                     g = l - 0.5 * inch
                     f = Table(
                         pecas,
-                        colWidths=[5.18 * inch, 0.5 * inch, 0.5 * inch, 1 * inch],
+                        colWidths=[4.18 * inch, 0.5 * inch, 0.5 * inch, 1 * inch, 1 * inch],
                         rowHeights=0.2 * inch,
                     )
                     if tamanho_ser == 1:
                         s = Table(
                             servicos,
-                            colWidths=[5.68 * inch, 0.5 * inch, 1 * inch],
+                            colWidths=[6.18 * inch, 1 * inch],
                             rowHeights=0.2 * inch,
                         )
                         s.setStyle(table_styleservico)
@@ -425,12 +489,12 @@ class GeraPDF:
                     else:
                         s = Table(
                             servicos[0:tamanho_ser],
-                            colWidths=[5.68 * inch, 0.5 * inch, 1 * inch],
+                            colWidths=[6.18 * inch, 1 * inch],
                             rowHeights=0.2 * inch,
                         )
                         s2 = Table(
                             servicos[tamanho_ser:],
-                            colWidths=[5.68 * inch, 0.5 * inch, 1 * inch],
+                            colWidths=[6.18 * inch, 1 * inch],
                             rowHeights=0.2 * inch,
                         )
                         s.setStyle(table_styleservico)
@@ -446,7 +510,7 @@ class GeraPDF:
                         self.paginacao(pdf, (countpage + 1))
                         s2.drawOn(pdf, 39, alturaser)
                     # Não deixar o cabeçalho ficar separado da tabela
-                    self.tabelas_pos(pdf, orcamento, l, g)
+                    self.tabelas_pos(pdf, orcamento, l, g, somapeca, somaservicos)
         else:
             if len(pecas) < 2:
                 y = 7.5 * inch
@@ -458,10 +522,10 @@ class GeraPDF:
                 height = 300
                 s = Table(
                     servicos,
-                    colWidths=[5.68 * inch, 0.5 * inch, 1 * inch],
+                    colWidths=[6.18 * inch, 1 * inch],
                     rowHeights=0.2 * inch,
                 )
-                self.tabelas_pos(pdf, orcamento, l, 70)
+                self.tabelas_pos(pdf, orcamento, l, 70, somapeca, somaservicos)
                 s.setStyle(table_styleservico)
                 s.wrapOn(pdf, width, height)
                 s.drawOn(pdf, 39, y)
@@ -479,15 +543,15 @@ class GeraPDF:
                 height = 300
                 f = Table(
                     pecas,
-                    colWidths=[5.18 * inch, 0.5 * inch, 0.5 * inch, 1 * inch],
+                    colWidths=[4.18 * inch, 0.5 * inch, 0.5 * inch, 1 * inch, 1 * inch],
                     rowHeights=0.2 * inch,
                 )
                 s = Table(
                     servicos,
-                    colWidths=[5.68 * inch, 0.5 * inch, 1 * inch],
+                    colWidths=[6.18 * inch, 1 * inch],
                     rowHeights=0.2 * inch,
                 )
-                self.tabelas_pos(pdf, orcamento, l, 70)
+                self.tabelas_pos(pdf, orcamento, l, 70, somapeca, somaservicos)
                 f.setStyle(table_stylepecas)
                 s.setStyle(table_styleservico)
                 s.wrapOn(pdf, width, height)
