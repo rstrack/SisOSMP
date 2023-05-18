@@ -261,9 +261,11 @@ class GeraPDF:
             [
                 ("FONTNAME", (0, 0), (5, 0), "Helvetica-Bold"),
                 ("FONTSIZE", (0, 1), (1, -1), 9),
+                ("ALIGN", (0, 0), (-1, -1), "LEFT"),
                 ("ALIGN", (1, 0), (-1, -1), "RIGHT"),
                 ("ALIGN", (2, 0), (-1, -1), "LEFT"),
-                ("ALIGN", (3, 1), (-1, -1), "RIGHT"),
+                ("ALIGN", (3, 0), (-1, -1), "RIGHT"),
+                ("ALIGN", (4, 0), (-1, -1), "RIGHT"),
                 ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
                 ("INNERGRID", (0, 0), (-1, -1), 1, colors.black),
                 ("BOX", (0, 0), (-1, -1), 1, colors.black),
@@ -294,9 +296,11 @@ class GeraPDF:
         table_stylepecaspag2 = TableStyle(
             [
                 ("FONTSIZE", (0, 1), (1, -1), 9),
+                ("ALIGN", (0, 0), (-1, -1), "LEFT"),
                 ("ALIGN", (1, 0), (-1, -1), "RIGHT"),
                 ("ALIGN", (2, 0), (-1, -1), "LEFT"),
-                ("ALIGN", (3, 1), (-1, -1), "RIGHT"),
+                ("ALIGN", (3, 0), (-1, -1), "RIGHT"),
+                ("ALIGN", (4, 0), (-1, -1), "RIGHT"),
                 ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
                 ("INNERGRID", (0, 0), (-1, -1), 1, colors.black),
                 ("BOX", (0, 0), (-1, -1), 1, colors.black),
