@@ -295,6 +295,7 @@ class GeraPDF:
             [
                 ("FONTSIZE", (0, 1), (1, -1), 9),
                 ("ALIGN", (1, 0), (-1, -1), "RIGHT"),
+                ("ALIGN", (2, 0), (-1, -1), "LEFT"),
                 ("ALIGN", (3, 1), (-1, -1), "RIGHT"),
                 ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
                 ("INNERGRID", (0, 0), (-1, -1), 1, colors.black),
@@ -341,84 +342,148 @@ class GeraPDF:
         style = getSampleStyleSheet()
         styleN = style["BodyText"]
         styleN.alignment = TA_LEFT
+        styleN.wordWrap = 'CJK'
         incre1 = 0
         incre2 = 0
-        if listaPecas is not None:
-            for dict in listaPecas:
-                for n in range(len(pecas)):
-                    if n <= 26:
-                        if len(pecas[n][0]) >= 50:
-                            pecas[n][0] = [Paragraph(pecas[n][0], styleN)]
-                            pecas.insert(n + 1, [{}])
-                            table_stylepecas.add("FONTSIZE", (0, 1), (1, -1), 9)
-                            table_stylepecas.add("SPAN", (0, n), (0, n + 1))
-                            table_stylepecas.add("SPAN", (1, n), (1, n + 1))
-                            table_stylepecas.add("SPAN", (2, n), (2, n + 1))
-                            table_stylepecas.add("SPAN", (3, n), (3, n + 1))
-                            table_stylepecas.add("SPAN", (4, n), (4, n + 1))
-                            incre1 += 1
-                    else:
-                        if len(pecas[n][0]) >= 50:
-                            pecas[n][0] = [Paragraph(pecas[n][0], styleN)]
-                            pecas.insert(n + 1, [{}])
-                            table_stylepecaspag2.add("FONTSIZE", (0, 1), (1, -1), 9)
-                            table_stylepecaspag2.add('SPAN', (0, n - 27), (0, n - 26))
-                            table_stylepecaspag2.add('SPAN', (1, n - 27), (1, n - 26))
-                            table_stylepecaspag2.add('SPAN', (2, n - 27), (2, n - 26))
-                            table_stylepecaspag2.add("SPAN", (3, n - 27), (3, n - 26))
-                            table_stylepecaspag2.add("SPAN", (4, n - 27), (4, n - 26))
-                            incre2 += 1
-            incretotal = incre1 + incre2
+        incre3 = 0
+        increaux = 0
+        impar = False
+        j = 0
+        aux = len(pecas)
+        pecasduaslinhas = []
+        for n in range(len(pecas)):
+            attlen = len(pecas[n][0])
+            if len(pecas[n][0]) >= 50:
+                pecasduaslinhas.append(n)
+                increaux += 1
+        for u, valoru in enumerate(pecasduaslinhas):
+            valorindice = u + valoru
+            pecas[valorindice][0] = [Paragraph(pecas[valorindice][0], styleN)]
+            pecas.insert(u + valoru + 1, [{}])
+        for j in range(len(pecas)):
+            if j <= 23:
+                if pecas[j][0] == {}:
+                    table_stylepecas.add("SPAN", (0, j - 1), (0, j))
+                    table_stylepecas.add("SPAN", (1, j - 1), (1, j))
+                    table_stylepecas.add("SPAN", (2, j - 1), (2, j))
+                    table_stylepecas.add("SPAN", (3, j - 1), (3, j))
+                    table_stylepecas.add("SPAN", (4, j - 1), (4, j))
+            else:
+                if len(pecas[j][0]) >= 50:
+                    pecas[j][0] = [Paragraph(pecas[j][0], styleN)]
+                    pecas.insert(j + 1, [{}])
+                    table_stylepecaspag2.add("FONTSIZE", (0, 1), (1, -1), 9)
+                    table_stylepecaspag2.add('SPAN', (0, j - 24), (0, j - 25))
+                    table_stylepecaspag2.add('SPAN', (1, j - 24), (1, j - 25))
+                    table_stylepecaspag2.add('SPAN', (2, j - 24), (2, j - 25))
+                    table_stylepecaspag2.add("SPAN", (3, j - 24), (3, j - 25))
+                    table_stylepecaspag2.add("SPAN", (4, j - 24), (4, j - 25))
+        incretotal = incre1 + incre2
         # Função para posicionar as tabelas de valores e o quadro de observações no pdf.
         # Formatação da primeira página (o máximo de linhas das tabelas que a primeira página pode suportar é 27)
-        if len(pecas + servicos) >= 28:
-            if len(pecas) >= 28:
-                y = 7.5 * inch
-                for _ in range(len(pecas[0:27])):
-                    y -= 0.2 * inch
-                z = y - 0.3 * inch
-                y2 = 10.8 * inch
-                for _ in range(len(pecas[27:])):
-                    y2 -= 0.2 * inch
-                z2 = y2 - 0.3 * inch
-                alturaser = y2 - 0.3 * inch
-                for _ in range(len(servicos)):
-                    alturaser -= 0.2 * inch
-                l = alturaser - 0.3 * inch * incre2
-                g = l - 1 * inch
-                f = Table(
-                    pecas[0:27],
-                    colWidths=[4.18 * inch, 0.5 * inch, 0.5 * inch, 1 * inch, 1 * inch],
-                    rowHeights=0.2 * inch,
-                )
-                f2 = Table(
-                    pecas[27:],
-                    colWidths=[4.18 * inch, 0.5 * inch, 0.5 * inch, 1 * inch, 1 * inch],
-                    rowHeights=0.2 * inch,
-                )
+        if len(pecas + servicos) >= 26:
+            if len(pecas) >= 25:
+                if pecas[23][0] is not {} and type(pecas[23][0]) is list:
+                    for j in range(len(pecas)):
+                        if j <= 26:
+                            if pecas[j][0] == {}:
+                                table_stylepecas.add("SPAN", (0, j - 1), (0, j))
+                                table_stylepecas.add("SPAN", (1, j - 1), (1, j))
+                                table_stylepecas.add("SPAN", (2, j - 1), (2, j))
+                                table_stylepecas.add("SPAN", (3, j - 1), (3, j))
+                                table_stylepecas.add("SPAN", (4, j - 1), (4, j))
+                            incre1 += 1
+                        else:
+                            if type(pecas[j][0]) is list:
+                                table_stylepecaspag2.add("FONTSIZE", (0, 1), (1, -1), 9)
+                                table_stylepecaspag2.add('SPAN', (0, j - 25), (0, j - 24))
+                                table_stylepecaspag2.add('SPAN', (1, j - 25), (1, j - 24))
+                                table_stylepecaspag2.add('SPAN', (2, j - 25), (2, j - 24))
+                                table_stylepecaspag2.add("SPAN", (3, j - 25), (3, j - 24))
+                                table_stylepecaspag2.add("SPAN", (4, j - 25), (4, j - 24))
+                                incre2 += 1
+                    f = Table(
+                        pecas[0:25],
+                        colWidths=[4.18 * inch, 0.5 * inch, 0.5 * inch, 1 * inch, 1 * inch],
+                        rowHeights=0.2 * inch,
+                    )
+                    if len(pecas) != 25:
+                        f2 = Table(
+                            pecas[25:],
+                            colWidths=[4.18 * inch, 0.5 * inch, 0.5 * inch, 1 * inch, 1 * inch],
+                            rowHeights=0.2 * inch,
+                        )
+                    y = 7.5 * inch
+                    for _ in range(len(pecas[0:25])):
+                        y -= 0.2 * inch
+                    z = y - 0.3 * inch
+                    y2 = 10.8 * inch
+                    for _ in range(len(pecas[25:])):
+                        y2 -= 0.2 * inch
+                    z2 = y2 - 0.3 * inch
+                    alturaser = y2 - 0.3 * inch
+                    for _ in range(len(servicos)):
+                        alturaser -= 0.2 * inch
+                    if len(pecas) != 25:
+                        l = alturaser - 0.3 * inch * (incre1 - 24)
+                    else:
+                        l = alturaser - 0.3 * inch
+                    g = l - 1 * inch
+                else:
+                    f = Table(
+                        pecas[0:24],
+                        colWidths=[4.18 * inch, 0.5 * inch, 0.5 * inch, 1 * inch, 1 * inch],
+                        rowHeights=0.2 * inch,
+                    )
+                    f2 = Table(
+                        pecas[24:],
+                        colWidths=[4.18 * inch, 0.5 * inch, 0.5 * inch, 1 * inch, 1 * inch],
+                        rowHeights=0.2 * inch,
+                    )
+                    y = 7.5 * inch
+                    for _ in range(len(pecas[0:24])):
+                        y -= 0.2 * inch
+                    z = y - 0.3 * inch
+                    y2 = 10.8 * inch
+                    for _ in range(len(pecas[24:])):
+                        y2 -= 0.2 * inch
+                    z2 = y2 - 0.3 * inch
+                    alturaser = y2 - 0.3 * inch
+                    for _ in range(len(servicos)):
+                        alturaser -= 0.2 * inch
+                    if len(pecas) != 25:
+                        print(incre1)
+                        l = alturaser - 0.3 * inch * incre2
+                    else:
+                        print(incre1)
+                        l = alturaser - 0.3 * inch
+                    g = l - 1 * inch
                 s2 = Table(
                     servicos,
                     colWidths=[6.18 * inch, 1 * inch],
                     rowHeights=0.2 * inch,
                 )
                 f.setStyle(table_stylepecas)
-                f2.setStyle(table_stylepecaspag2)
+                if len(pecas) != 25:
+                    f2.setStyle(table_stylepecaspag2)
                 s2.setStyle(table_styleservico)
                 f.wrapOn(pdf, width, height)
-                f2.wrapOn(pdf, width, height)
+                if len(pecas) != 25:
+                    f2.wrapOn(pdf, width, height)
                 s2.wrapOn(pdf, width, height)
                 f.drawOn(pdf, 39, y)
                 self.paginacao(pdf, (countpage + 1))
                 pdf.showPage()
                 self.paginacao(pdf, (countpage + 1))
-                f2.drawOn(pdf, 39, y2)
+                if len(pecas) != 25:
+                    f2.drawOn(pdf, 39, y2)
                 s2.drawOn(pdf, 39, alturaser)
                 self.tabelas_pos(pdf, orcamento, l, g, somapeca, somaservicos)
             else:
                 # Caso a tabela peças seja vazia
                 if len(pecas) < 2:
                     y = 8 * inch
-                    tamanho_ser = 27 - len(pecas)
+                    tamanho_ser = 24 - len(pecas)
                     z = y - 0.3 * inch
                     for _ in range(len(servicos[0:tamanho_ser])):
                         z -= 0.2 * inch
@@ -451,7 +516,7 @@ class GeraPDF:
 
                 else:
                     y = 7.5 * inch
-                    tamanho_ser = 27 - len(pecas)
+                    tamanho_ser = 25 - len(pecas)
                     for _ in range(len(pecas)):
                         y -= 0.2 * inch
                     z = y - 0.3 * inch
@@ -462,7 +527,7 @@ class GeraPDF:
                     for _ in range(len(servicos[tamanho_ser:])):
                         alturaser -= 0.2 * inch
                     l = alturaser - 0.3 * inch
-                    g = l - 0.5 * inch
+                    g = l - 1 * inch
                     f = Table(
                         pecas,
                         colWidths=[4.18 * inch, 0.5 * inch, 0.5 * inch, 1 * inch, 1 * inch],
